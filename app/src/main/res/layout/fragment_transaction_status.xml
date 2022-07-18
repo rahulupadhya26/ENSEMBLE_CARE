@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".fragment.TransactionStatusFragment">
+
+    <ImageView
+        android:id="@+id/imgTransaction"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginBottom="@dimen/_20dp"
+        android:padding="@dimen/_20dp" />
+
+    <TextView
+        android:id="@+id/txtTransStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/primaryGreen"
+        android:textSize="@dimen/_26sp"
+        android:padding="@dimen/_10dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Transaction Id"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16sp"
+        android:paddingTop="@dimen/_10dp"/>
+
+    <TextView
+        android:id="@+id/txtTransId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16sp"
+        android:paddingBottom="@dimen/_10dp" />
+
+    <Button
+        android:id="@+id/btnTransStsContinue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_style_blue"
+        android:layout_marginStart="@dimen/_30dp"
+        android:layout_marginEnd="@dimen/_30dp"
+        android:layout_marginTop="@dimen/_20dp"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_16sp"
+        android:text="Continue"/>
+
+</LinearLayout>

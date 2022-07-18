@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".fragment.TherapyBasicDetailsBFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Therapy basic details"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_26sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Street"
+            app:hintTextAppearance="@style/TextLabel"
+            android:layout_margin="@dimen/_5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etBasicDetailStreet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:inputType="text"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:textColor="@color/primaryGreen"
+                android:textSize="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="City"
+            app:hintTextAppearance="@style/TextLabel"
+            android:layout_margin="@dimen/_5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etBasicDetailCity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:inputType="text"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:textColor="@color/primaryGreen"
+                android:textSize="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="State"
+            app:hintTextAppearance="@style/TextLabel"
+            android:layout_margin="@dimen/_5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etBasicDetailState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:inputType="text"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:textColor="@color/primaryGreen"
+                android:textSize="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Postal code"
+            app:hintTextAppearance="@style/TextLabel"
+            android:layout_margin="@dimen/_5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etBasicDetailPostalCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:inputType="text"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:textColor="@color/primaryGreen"
+                android:textSize="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Country"
+            app:hintTextAppearance="@style/TextLabel"
+            android:layout_margin="@dimen/_5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etBasicDetailCountry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:inputType="text"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:textColor="@color/primaryGreen"
+                android:textSize="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="----OR----"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:textSize="@dimen/_16sp"
+            android:textStyle="bold" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="@dimen/_10dp"
+            app:cardCornerRadius="@dimen/_5dp"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp"
+            android:id="@+id/cardViewLocateMe">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Click here to locate me"
+                android:textAppearance="@style/fontfamily"
+                android:background="@drawable/button_background"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:textSize="@dimen/_16sp"
+                android:textStyle="bold" />
+
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/btnBasicDetailB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="@dimen/_20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="5dp"
+            android:textAppearance="@style/fontfamily"
+            android:background="@drawable/button_style_blue"
+            android:padding="@dimen/_5dp"
+            android:text="Continue"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

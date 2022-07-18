@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "198247959263",
+    "project_id": "selfcare-bf214",
+    "storage_bucket": "selfcare-bf214.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:198247959263:android:e4d45b2708494bbe99376a",
+        "android_client_info": {
+          "package_name": "com.app.selfcare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "198247959263-e6o1251min8i17n5r92ds6u4uoo6jcg6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCI47Qy_Hs9hu3Tkm8rd94GjAXDjhExCa8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "198247959263-e6o1251min8i17n5r92ds6u4uoo6jcg6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

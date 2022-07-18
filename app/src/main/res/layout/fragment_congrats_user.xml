@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".fragment.CongratsUserFragment">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:src="@drawable/selflove"
+        android:layout_margin="@dimen/_10dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/primaryGreen"
+        android:textSize="@dimen/_26sp"
+        android:padding="@dimen/_5dp"
+        android:text="Thank you for filling the questionnaire."
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16sp"
+        android:padding="@dimen/_5dp"
+        android:text="I really appreciate your effort and the time you devoted to filling the questionnaire. Your answers will help us improve our services for you."
+        android:gravity="center"/>
+
+    <ImageView
+        android:id="@+id/imgThankYou"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/thankyou"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_30sp"
+        android:padding="@dimen/_5dp"
+        android:text="Thank you."
+        android:layout_marginTop="@dimen/_20dp"
+        android:gravity="center"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btn_thanks_continue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_style_blue"
+        android:layout_marginStart="@dimen/_30dp"
+        android:layout_marginEnd="@dimen/_30dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_16sp"
+        android:text="Continue"
+        android:visibility="gone"/>
+
+</LinearLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/newsSlide"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:adjustViewBounds="true"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txtNewsTitle"
+            android:textAppearance="@style/fontfamily"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/txtNewsLink"
+            android:padding="5dp"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_18sp" />
+
+        <TextView
+            android:id="@+id/txtNewsLink"
+            android:textAppearance="@style/fontfamily"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/txtPubDate"
+            android:padding="5dp"
+            android:maxLines="2"
+            android:textSize="@dimen/_14sp"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/txtPubDate"
+            android:textAppearance="@style/fontfamily"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="5dp"
+            android:gravity="center"
+            android:textSize="@dimen/_14sp"
+            android:textColor="@color/secondary_text" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

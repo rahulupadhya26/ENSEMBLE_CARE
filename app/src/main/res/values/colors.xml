@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryGreen">#0C4B33</color>
+    <color name="primaryDarkGreen">#0C4B33</color>
+    <color name="accent">#ec744a</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="maroon">#d81e3d</color>
+    <color name="gray">#808080</color>
+    <color name="red">#F44336</color>
+    <color name="secondary_text">#757575</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="lightGray">#ededed</color>
+    <color name="lightTeal">#4DB6AC</color>
+    <color name="lightBlue">#42A5F5</color>
+    <color name="DarkBlue">#3D5AFE</color>
+
+    <color name="buttonGreen">#003C69</color>
+    <color name="lightGrey">#EBEAEF</color>
+    <color name="localBackground">#827b92</color>
+    <color name="remoteBackground">#484258</color>
+</resources>

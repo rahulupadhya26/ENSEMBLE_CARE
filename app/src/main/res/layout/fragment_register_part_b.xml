@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".fragment.RegisterPartBFragment">
+
+    <TextView
+        android:id="@+id/txtProfDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5dp"
+        android:layout_marginEnd="@dimen/_5dp"
+        android:layout_marginStart="@dimen/_5dp"
+        android:padding="5dp"
+        android:text="This will help you to get start with us."
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_26sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            app:hintTextAppearance="@style/TextLabel"
+            android:layout_margin="@dimen/_5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSignUpMailId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:textColor="@color/primaryGreen"
+                android:textSize="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Phone Number"
+            app:hintTextAppearance="@style/TextLabel"
+            android:layout_margin="@dimen/_5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSignUpPhoneNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:inputType="phone"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:maxLength="20"
+                android:textColor="@color/primaryGreen"
+                android:textSize="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            app:hintTextAppearance="@style/TextLabel"
+            app:passwordToggleEnabled="true"
+            android:layout_margin="@dimen/_5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSignUpPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:inputType="textPassword"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:maxLength="15"
+                android:textColor="@color/primaryGreen"
+                android:textSize="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true"
+            android:hint="Confirm Password"
+            app:hintTextAppearance="@style/TextLabel"
+            android:layout_margin="@dimen/_5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSignUpConfirmPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:inputType="textPassword"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:maxLength="15"
+                android:textColor="@color/primaryGreen"
+                android:textSize="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnRegisterB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_style_blue"
+            android:padding="@dimen/_5dp"
+            android:text="Continue"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sp"
+            android:textAppearance="@style/fontfamily" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,694 @@
+[
+  {
+    "id": "0",
+    "question": "Select your health disorder",
+    "no_of_options":"3",
+    "option_1": {
+      "option_id": "1",
+      "option": "Mental health"
+    },
+    "option_2": {
+      "option_id": "2",
+      "option": "Substance use"
+    },
+    "option_3": {
+      "option_id": "3",
+      "option": "Co-occuring disorder"
+    }
+  },
+  {
+    "id": "1",
+    "question": "Select your mental health issue",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "4",
+      "option": "Depression"
+    },
+    "option_2": {
+      "option_id": "5",
+      "option": "Anxiety"
+    }
+  },
+  {
+    "id": "4",
+    "question": "Little interest or pleasure in doing things",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "4",
+    "question": "Feeling down, depressed, or hopeless",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "4",
+    "question": "Trouble falling or staying asleep, or sleeping too much",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "4",
+    "question": "Feeling tired or having little energy",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "4",
+    "question": "Poor appetite or overeating",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "4",
+    "question": "Feeling bad about yourself - or that you are a failure or have let yourself or your family down",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "4",
+    "question": "Trouble concentrating on things, such as reading the newspaper or watching television",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "4",
+    "question": "Thoughts that you would be better off dead, or of hurting yourself",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "5",
+    "question": "Feeling nervous, anxious, or on edge",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "5",
+    "question": "Not being able to stop or control worrying",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "5",
+    "question": "Worrying too much about different things",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "5",
+    "question": "Trouble relaxing",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "5",
+    "question": "Being so restless that it is hard to sit still",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "5",
+    "question": "Becoming easily annoyed or irritable",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "5",
+    "question": "Feeling afraid, as if something awful might happen",
+    "no_of_options":"4",
+    "option_1": {
+      "option_id": "0",
+      "option": "Not at all"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "Several days"
+    },
+    "option_3": {
+      "option_id": "0",
+      "option": "More than half the days"
+    },
+    "option_4": {
+      "option_id": "0",
+      "option": "Nearly every day"
+    }
+  },
+  {
+    "id": "2",
+    "question": "Which of the following drugs causes addiction?",
+    "no_of_options":"1",
+    "option_1": {
+      "option_id": "0",
+      "option": "Ecstasy,Sleeping pills,Hashish,Analgegesics,Crack,Antibiotics pills,Shisheh,Shireh,Morphine,Naas,LSD,Heroin,Cocaine,Opium"
+    }
+  },
+  {
+    "id": "2",
+    "question": "Have you used drugs other than those required for medical reasons?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "2",
+    "question": "Do you abuse more than one drug at a time?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "2",
+    "question": "Are you unable to stop using drugs when you want to?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "2",
+    "question": "Have you ever had blackouts or flashbacks as a result of drug use?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "2",
+    "question": "Do you ever feel bad or guilty about your drug use?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "2",
+    "question": "Does your spouse (or parents) ever complain about your involvement with drugs?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "2",
+    "question": "Have you neglected your family because of your use of drugs?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "2",
+    "question": "Have you engaged in illegal activities in order to obtain drugs?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "2",
+    "question": "Have you ever experienced withdrawal symptoms (felt sick) when you stopped taking drugs",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "2",
+    "question": "Have you had medical problems as a result of your drug use (e.g., memory loss, hepatitis, convulsions, bleeding)?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Do you frequently find that you need to use higher amounts of pot in order to get high than you did in the past?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Do you experience improvements in the way you feel mentally when you use drugs or alcohol?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Have you noticed that you need to take higher amounts of substances to get the effects you desire?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Did your struggle with drugs or alcohol begin after your mental health symptoms began?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Do you ever experience feelings of guilt after you use substances?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Are there situations in your life that you feel led to your use of drugs or alcohol?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Have your mental health symptoms ever returned, even though you had been using?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Does drinking or using drugs help you feel normal again?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "When you think about the fact that you don’t have access to substances, does it give you anxiety?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Have you ever experienced a time when your mental health appeared to become worse since you started using?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Do you typically choose to use substances that produce the opposite effects of your mental illness?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Have you been diagnosed with a mental illness, or have you suspected that you should be?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Have any new symptoms started since you started heavily using substances?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Have you used drugs or alcohol as a way to cope with loneliness or anxiety?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Do you find that your relationships have been negatively impacted since you started using?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  },
+  {
+    "id": "3",
+    "question": "Do you believe that using substances helps you to forget about your past?",
+    "no_of_options":"2",
+    "option_1": {
+      "option_id": "0",
+      "option": "Yes"
+    },
+    "option_2": {
+      "option_id": "0",
+      "option": "No"
+    }
+  }
+]

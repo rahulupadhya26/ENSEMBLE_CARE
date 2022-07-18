@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.DetailJournalFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_journal_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_24sp"
+            android:maxLines="2"/>
+
+        <TextView
+            android:id="@+id/txt_journal_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textAppearance="@style/fontfamily"
+            android:padding="10dp"
+            android:gravity="left"
+            android:textSize="@dimen/_18sp"
+            android:maxLines="2"/>
+
+        <TextView
+            android:id="@+id/txt_journal_desc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:padding="10dp"
+            android:textAppearance="@style/fontfamily"
+            android:textSize="@dimen/_18sp"
+            android:scrollbars="vertical"/>
+
+    </LinearLayout>
+
+</FrameLayout>
