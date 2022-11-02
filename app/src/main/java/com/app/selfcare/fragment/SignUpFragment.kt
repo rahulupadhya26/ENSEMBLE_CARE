@@ -21,7 +21,10 @@ import com.app.selfcare.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_sign_up.*
+import org.json.JSONArray
 import org.json.JSONObject
+import retrofit2.HttpException
+import java.lang.Error
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -69,7 +72,7 @@ class SignUpFragment : BaseFragment() {
         etOtp4.addTextChangedListener(GenericTextWatcher(etOtp4, etOtp3))
 
         txtEmail.text = "Email : " + Utils.email
-        txtPhoneNo.text = "Phone No. : " + Utils.phoneNo
+        txtPhoneNo.text = "Phone No. : " + formatNumbersAsCode(Utils.phoneNo)
 
         resendBtnTimer.text = "00:45"
 
@@ -83,9 +86,10 @@ class SignUpFragment : BaseFragment() {
         }
 
         btn_verify_continue.setOnClickListener {
-            if (getText(etOtp1).isNotEmpty() && getText(etOtp1).isNotEmpty() &&
-                getText(etOtp1).isNotEmpty() && getText(etOtp1).isNotEmpty()
+            if (getText(etOtp1).isNotEmpty() && getText(etOtp2).isNotEmpty() &&
+                getText(etOtp3).isNotEmpty()
             ) {
+                it.hideKeyboard()
                 verifyOtp()
             } else {
                 displayToast("Enter the OTP.")
@@ -102,6 +106,15 @@ class SignUpFragment : BaseFragment() {
                 }
             }
         }
+    }
+
+    private fun formatNumbersAsCode(s: CharSequence): String? {
+        return java.lang.String.format(
+            "%s-%s-%s",
+            s.substring(0, 3),
+            s.substring(3, 6),
+            s.substring(6)
+        )
     }
 
     @SuppressLint("SetTextI18n")
@@ -171,7 +184,11 @@ class SignUpFragment : BaseFragment() {
                         }
                     }, { error ->
                         hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 400) {
+                            displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
                     })
             )
         }
@@ -205,7 +222,11 @@ class SignUpFragment : BaseFragment() {
                         }
                     }, { error ->
                         hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 400) {
+                            displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
                     })
             )
         }
@@ -226,7 +247,8 @@ class SignUpFragment : BaseFragment() {
             preference!![PrefKeys.PREF_DEVICE_ID, ""]!!,
             Utils.refEmp,
             Utils.employer,
-            Utils.employeeId
+            Utils.employeeId,
+            Utils.gender
         )
         preference!![PrefKeys.PREF_REG] = registerData
         preference!![PrefKeys.PREF_GENDER] = Utils.gender
@@ -267,17 +289,29 @@ class SignUpFragment : BaseFragment() {
                                     PlanFragment.TAG
                                 )
                             }
-                        } catch (e: java.lang.Exception) {
+                        } catch (e: Exception) {
                             hideProgress()
                             //displayToast("Something went wrong.. Please try after sometime")
                             displayToast("We found invalid data")
-                            replaceFragmentNoBackStack(RegistrationFragment(), R.id.layout_home, RegistrationFragment.TAG)
+                            replaceFragmentNoBackStack(
+                                RegistrationFragment(),
+                                R.id.layout_home,
+                                RegistrationFragment.TAG
+                            )
                         }
 
                     }, { error ->
                         hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
-                        replaceFragmentNoBackStack(RegistrationFragment(), R.id.layout_home, RegistrationFragment.TAG)
+                        if ((error as HttpException).code() == 400) {
+                            displayErrorMsg(error)
+                            replaceFragmentNoBackStack(
+                                RegistrationFragment(),
+                                R.id.layout_home,
+                                RegistrationFragment.TAG
+                            )
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
                     })
             )
         }

@@ -2,14 +2,13 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.app.selfcare.R
 import com.app.selfcare.data.TransactionStatus
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.set
+import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
 import kotlinx.android.synthetic.main.fragment_transaction_status.*
 
@@ -26,13 +25,13 @@ private const val ARG_PARAM2 = "param2"
 class TransactionStatusFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var transSts: TransactionStatus? = null
-    private var param2: String? = null
+    private var paymentSts: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             transSts = it.getParcelable(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            paymentSts = it.getBoolean(ARG_PARAM2)
         }
     }
 
@@ -49,10 +48,15 @@ class TransactionStatusFragment : BaseFragment() {
 
         preference!![PrefKeys.PREF_STEP] = Utils.PLAN_PAY
 
-        if(transSts!!.has_paid){
+        if (paymentSts) {
             imgTransaction.setImageResource(R.drawable.checked)
             txtTransStatus.text = "Transaction successful."
-            txtTransStatus.setTextColor(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+            txtTransStatus.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
         } else {
             imgTransaction.setImageResource(R.drawable.cancel)
             txtTransStatus.text = "Transaction failed."
@@ -61,17 +65,28 @@ class TransactionStatusFragment : BaseFragment() {
         txtTransId.text = transSts!!.transaction_id
 
         btnTransStsContinue.setOnClickListener {
-            replaceFragmentNoBackStack(
-                TherapistListFragment.newInstance(true),
-                R.id.layout_home,
-                TherapistListFragment.TAG
-            )
+            val severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
+            preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
+            if(severityRating in 0..14) {
+                replaceFragmentNoBackStack(
+                    BottomNavigationFragment(),
+                    R.id.layout_home,
+                    BottomNavigationFragment.TAG
+                )
+            } else {
+                replaceFragmentNoBackStack(
+                    TherapistListFragment.newInstance(true),
+                    R.id.layout_home,
+                    TherapistListFragment.TAG
+                )
+            }
+        }
+
             /*replaceFragmentNoBackStack(
                 DashboardFragment(),
                 R.id.layout_home,
                 DashboardFragment.TAG
             )*/
-        }
     }
 
     companion object {
@@ -85,11 +100,11 @@ class TransactionStatusFragment : BaseFragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: TransactionStatus, param2: String = "") =
+        fun newInstance(param1: TransactionStatus, param2: Boolean) =
             TransactionStatusFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putBoolean(ARG_PARAM2, param2)
                 }
             }
 

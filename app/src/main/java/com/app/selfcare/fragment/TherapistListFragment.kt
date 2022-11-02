@@ -21,6 +21,7 @@ import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.util.ArrayList
 
@@ -71,7 +72,7 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getTherapistList(PatientId(preference!![PrefKeys.PREF_PATIENT_ID, 0]!!))
+                    .getTherapistList(PatientId(preference!![PrefKeys.PREF_PATIENT_ID, 0]!!), getAccessToken())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -93,7 +94,17 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
                         }
                     }, { error ->
                         hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                getTherapistList()
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
                     })
             )
         }

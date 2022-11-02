@@ -21,7 +21,8 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/txtNewsLink"
             android:padding="5dp"
-            android:textColor="@color/primaryGreen"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             android:textSize="@dimen/_18sp" />
 
         <TextView
@@ -44,6 +45,7 @@
             android:padding="5dp"
             android:gravity="center"
             android:textSize="@dimen/_14sp"
+            android:textStyle="bold"
             android:textColor="@color/secondary_text" />
 
     </RelativeLayout>

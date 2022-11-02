@@ -7,21 +7,27 @@
     android:orientation="vertical"
     tools:context=".fragment.TherapistListFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        android:padding="10dp"
-        android:text="My Care Team"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_26sp"
-        android:textStyle="bold" />
-
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerViewTherapist"
-        android:layout_marginTop="@dimen/_10dp"/>
+        android:orientation="vertical"
+        android:layout_margin="@dimen/_20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Choose Specialist"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_26sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recyclerViewTherapist"/>
+
+    </LinearLayout>
 
 </LinearLayout>

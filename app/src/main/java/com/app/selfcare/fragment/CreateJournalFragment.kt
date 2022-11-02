@@ -1,31 +1,21 @@
 package com.app.selfcare.fragment
 
-import android.app.Activity.RESULT_CANCELED
-import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.WindowManager
 import java.text.SimpleDateFormat
 import java.util.*
-
-import android.content.Intent
-
-import android.content.DialogInterface
-import android.database.Cursor
-import android.provider.MediaStore
-import android.graphics.BitmapFactory
-
-import android.graphics.Bitmap
-import android.net.Uri
-import androidx.appcompat.app.AlertDialog
-import android.annotation.SuppressLint
+import android.util.Log
 import com.app.selfcare.R
+import com.app.selfcare.data.CreateJournal
+import com.app.selfcare.preference.PrefKeys
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_create_journal.*
-import java.io.ByteArrayOutputStream
+import com.app.selfcare.preference.PreferenceHelper.get
+import retrofit2.HttpException
+import java.lang.Exception
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -43,6 +33,7 @@ class CreateJournalFragment : BaseFragment() {
     private var param1: String? = null
     private var param2: String? = null
     var createdJournalDate: String? = null
+    var createdJournalTime: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,18 +53,23 @@ class CreateJournalFragment : BaseFragment() {
         getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
 
-        val myFormat = "dd-MMM-yyyy HH:mm:ss" // mention the format you need
+        val myFormat = "MM/dd/yyyy" // mention the format you need
         val sdf = SimpleDateFormat(myFormat)
+        val myTimeFormat = "HH:mm:ss" // mention the format you need
+        val timeSdf = SimpleDateFormat(myTimeFormat)
         val cal = Calendar.getInstance()
         val formattedDate = sdf.format(cal.time)
         createdJournalDate = formattedDate
+        val formattedTIme = timeSdf.format(cal.time)
+        createdJournalTime = formattedTIme
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { views, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                txtJournalDate.setText(sdf.format(cal.time).substring(0, 11))
+                txtJournalDate.setText(sdf.format(cal.time))
                 createdJournalDate = sdf.format(cal.time)
+                createdJournalTime = timeSdf.format(cal.time)
             }
 
         txtJournalDate.setOnClickListener {
@@ -88,10 +84,10 @@ class CreateJournalFragment : BaseFragment() {
 
         btnSaveJournal.setOnClickListener {
             if (getText(txtJournalDate).isNotEmpty()) {
-                if (edit_txt_journal_title.text.toString().trim().isNotEmpty()) {
-                    if (edit_txt_journal.text.toString().trim().isNotEmpty()) {
+                if (getText(edit_txt_journal_title).isNotEmpty()) {
+                    if (getText(edit_txt_journal).isNotEmpty()) {
                         //Call create journal api
-                        popBackStack()
+                        createJournal()
                     } else {
                         setEditTextError(edit_txt_journal, "Description cannot be empty!")
                     }
@@ -102,6 +98,62 @@ class CreateJournalFragment : BaseFragment() {
                 setEditTextError(txtJournalDate, "Date cannot be empty!")
             }
         }
+    }
+
+    private fun createJournal() {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .createJournalData(
+                        "PI0017",
+                        CreateJournal(
+                            getText(edit_txt_journal_title),
+                            getText(edit_txt_journal),
+                            preference!![PrefKeys.PREF_PATIENT_ID,""]!!,
+                            getText(txtJournalDate),
+                            createdJournalTime!!
+                        ), getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            //if (status == "200") {
+                            popBackStack()
+                            /*} else {
+                                displayMsg(
+                                    "Alert",
+                                    "Something went wrong.. Please try after sometime"
+                                )
+                            }*/
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                createJournal()
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
     }
 
     companion object {

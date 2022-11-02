@@ -11,11 +11,9 @@
         android:id="@+id/txtProfDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5dp"
-        android:layout_marginEnd="@dimen/_5dp"
-        android:layout_marginStart="@dimen/_5dp"
+        android:layout_margin="@dimen/_10dp"
         android:padding="5dp"
-        android:text="This will help you to get start with us."
+        android:text="This will help you to get started"
         android:textAppearance="@style/fontfamily"
         android:textColor="@color/black"
         android:textSize="@dimen/_26sp"
@@ -24,7 +22,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_10dp"
+        android:layout_margin="@dimen/_20dp"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -43,8 +41,9 @@
                 android:inputType="textEmailAddress"
                 android:imeOptions="actionNext"
                 android:maxLines="1"
-                android:textColor="@color/primaryGreen"
-                android:textSize="16dp"/>
+                android:textColor="@color/black"
+                android:cursorVisible="true"
+                android:textSize="@dimen/_16sp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -63,8 +62,8 @@
                 android:inputType="phone"
                 android:imeOptions="actionNext"
                 android:maxLines="1"
-                android:maxLength="20"
-                android:textColor="@color/primaryGreen"
+                android:maxLength="12"
+                android:textColor="@color/black"
                 android:textSize="16dp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,7 +85,7 @@
                 android:imeOptions="actionNext"
                 android:maxLines="1"
                 android:maxLength="15"
-                android:textColor="@color/primaryGreen"
+                android:textColor="@color/black"
                 android:textSize="16dp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,24 +107,17 @@
                 android:imeOptions="actionDone"
                 android:maxLines="1"
                 android:maxLength="15"
-                android:textColor="@color/primaryGreen"
+                android:textColor="@color/black"
                 android:textSize="16dp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btnRegisterB"
+            style="@style/buttonBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/button_style_blue"
-            android:padding="@dimen/_5dp"
-            android:text="Continue"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_16sp"
-            android:textAppearance="@style/fontfamily" />
+            android:layout_marginTop="@dimen/_30dp"
+            android:text="Continue" />
     </LinearLayout>
 
 </LinearLayout>

@@ -45,11 +45,11 @@ class DetailJournalFragment : BaseFragment() {
         getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
         txt_journal_desc.movementMethod = ScrollingMovementMethod()
-        val journalDate = DateUtils(journal!!.date)
+        val journalDate = DateUtils(journal!!.journal_date + " 01:00:00")
         txt_journal_date.text =
             Html.fromHtml("<b>Date</b> : " + journalDate.getDay() + " " + journalDate.getMonth() + " " + journalDate.getYear())
-        txt_journal_title.text = journal!!.title
-        txt_journal_desc.text = Html.fromHtml("<b>Description</b> : " + journal!!.desc)
+        txt_journal_title.text = journal!!.name
+        txt_journal_desc.text = Html.fromHtml("<b>Description</b> : " + journal!!.description)
     }
 
     companion object {

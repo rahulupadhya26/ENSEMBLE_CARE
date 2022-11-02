@@ -6,40 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".fragment.TherapySelectionFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btnTimeSlotContinue"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/_10dp"
-            android:paddingEnd="@dimen/_10dp"
-            android:text="When would you like to schedule?"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_18sp" />
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_10dp"
-            app:cardCornerRadius="@dimen/_10dp"
-            app:cardElevation="@dimen/_10dp">
-
-            <CalendarView
-                android:id="@+id/calendarView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </androidx.cardview.widget.CardView>
+        android:layout_above="@+id/btnTimeSlotContinue">
 
         <LinearLayout
-            android:id="@+id/layoutTimeSlotSelection"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btnTimeSlotContinue"
+            android:layout_margin="@dimen/_10dp"
             android:orientation="vertical">
 
             <TextView
@@ -47,32 +23,123 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/_10dp"
                 android:paddingEnd="@dimen/_10dp"
-                android:text="At what time would you like to schedule?"
+                android:text="When would you like to schedule?"
                 android:textAppearance="@style/fontfamily"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_18sp" />
+                android:textSize="@dimen/_26sp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp">
+
+                    <TextView
+                        android:id="@+id/tvDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SELECT A DATE"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/calendarGrey"
+                        android:textSize="@dimen/_20sp" />
+
+                    <TextView
+                        android:id="@+id/tvDay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/calendarGrey"
+                        android:textSize="20sp"
+                        android:layout_toRightOf="@+id/tvDate"
+                        android:layout_centerInParent="true"/>
+
+                    <Button
+                        android:id="@+id/btnRight"
+                        android:layout_width="@dimen/_30dp"
+                        android:layout_height="@dimen/_30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginEnd="@dimen/_5dp"
+                        android:background="@drawable/ic_arrow_right_24dp" />
+
+                    <Button
+                        android:id="@+id/btnLeft"
+                        android:layout_width="@dimen/_30dp"
+                        android:layout_height="@dimen/_30dp"
+                        android:background="@drawable/ic_arrow_left_24dp"
+                        android:layout_toLeftOf="@+id/btnRight"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+
+                <com.app.selfcare.calendar.SingleRowCalendar
+                    android:id="@+id/main_single_row_calendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:deselection="true"
+                    app:longPress="false"
+                    app:multiSelection="false" />
+
+            </LinearLayout>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_10dp"
-                app:cardCornerRadius="@dimen/_10dp"
-                app:cardElevation="@dimen/_10dp">
+                app:cardCornerRadius="@dimen/_5dp"
+                app:cardUseCompatPadding="true"
+                android:visibility="gone">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerviewTimeSlots"
+                <CalendarView
+                    android:id="@+id/calendarView"
                     android:layout_width="match_parent"
-                    android:layout_height="220dp" />
+                    android:layout_height="wrap_content" />
 
             </androidx.cardview.widget.CardView>
 
+            <LinearLayout
+                android:id="@+id/layoutTimeSlotSelection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/_10dp"
+                    android:paddingEnd="@dimen/_10dp"
+                    android:text="At what time would you like to schedule?"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_26sp"
+                    android:textStyle="bold" />
+
+                <!--<androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="@dimen/_10dp"
+                    app:cardUseCompatPadding="true">-->
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerviewTimeSlots"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                <!--</androidx.cardview.widget.CardView>-->
+
+            </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
 
     <Button
-        android:id="@+id/btnTimeSlotContinue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -85,6 +152,18 @@
         android:text="Continue"
         android:textAppearance="@style/fontfamily"
         android:textColor="@color/white"
-        android:textSize="@dimen/_16sp" />
+        android:textSize="@dimen/_16sp"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btnTimeSlotContinue"
+        style="@style/buttonBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/_30dp"
+        android:layout_marginEnd="@dimen/_30dp"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:text="Continue" />
 
 </RelativeLayout>

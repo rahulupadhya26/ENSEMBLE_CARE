@@ -46,17 +46,28 @@ class AppointCongratFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        text_final_fname.text =
-            preference!![PrefKeys.PREF_FNAME, ""]!! + " " +
-                    preference!![PrefKeys.PREF_MNAME, ""]!! + " " +
-                    preference!![PrefKeys.PREF_LNAME, ""]!!
-        text_appointment_date_time.text = Utils.aptScheduleDate + " " + Utils.aptScheduleTime
+        try {
+            text_final_fname.text =
+                preference!![PrefKeys.PREF_FNAME, ""]!! + " " +
+                        preference!![PrefKeys.PREF_MNAME, ""]!! + " " +
+                        preference!![PrefKeys.PREF_LNAME, ""]!!
+            text_appointment_date_time.text = Utils.aptScheduleDate + " " + Utils.aptScheduleTime
 
-        btn_go_to_dashboard.setOnClickListener {
+            btn_go_to_dashboard.setOnClickListener {
+                setBottomNavigation(null)
+                replaceFragmentNoBackStack(
+                    BottomNavigationFragment(),
+                    R.id.layout_home,
+                    BottomNavigationFragment.TAG
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            setBottomNavigation(null)
             replaceFragmentNoBackStack(
-                DashboardFragment(),
+                BottomNavigationFragment(),
                 R.id.layout_home,
-                DashboardFragment.TAG
+                BottomNavigationFragment.TAG
             )
         }
     }

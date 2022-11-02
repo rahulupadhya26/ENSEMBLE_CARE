@@ -11,7 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="@dimen/_20dp">
 
         <TextView
             android:id="@+id/txtProfDetails"
@@ -75,15 +76,14 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutJournalDate"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Select Date"
                 app:hintTextAppearance="@style/TextLabel"
-                android:layout_marginBottom="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginTop="7dp">
+                android:layout_margin="@dimen/_5dp"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtJournalDate"
@@ -91,24 +91,27 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/fontfamily"
                     android:inputType="text"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionNext"
                     android:maxLines="1"
                     android:clickable="true"
                     android:cursorVisible="false"
                     android:focusable="false"
-                    android:textColor="@color/primaryGreen"
+                    android:textColor="@color/black"
+                    android:background="@drawable/bg_corner_rounded_edittext"
                     android:textSize="@dimen/_16sp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutJournalTitle"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter Title"
                 app:hintTextAppearance="@style/TextLabel"
                 android:layout_below="@+id/layoutJournalDate"
-                android:layout_margin="5dp">
+                android:layout_margin="5dp"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_txt_journal_title"
@@ -118,19 +121,22 @@
                     android:maxLines="1"
                     android:imeOptions="actionNext"
                     android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="16dp" />
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    android:background="@drawable/bg_corner_rounded_edittext"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutJournalDesc"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Write a note here"
                 app:hintTextAppearance="@style/TextLabel"
                 android:layout_below="@+id/layoutJournalTitle"
-                android:layout_margin="5dp">
+                android:layout_margin="5dp"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_txt_journal"
@@ -140,8 +146,9 @@
                     android:maxLength="250"
                     android:imeOptions="actionNext"
                     android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="16dp" />
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    android:background="@drawable/bg_corner_rounded_edittext"/>
             </com.google.android.material.textfield.TextInputLayout>
 
         </RelativeLayout>
@@ -154,15 +161,21 @@
             android:layout_margin="@dimen/_10dp">
 
             <Button
-                android:id="@+id/btnSaveJournal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_margin="@dimen/_10dp"
                 android:background="@drawable/button_style_blue"
                 android:textAppearance="@style/fontfamily"
                 android:text="SAVE"
-                android:textSize="@dimen/_16sp" />
+                android:textSize="@dimen/_16sp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btnSaveJournal"
+                style="@style/buttonBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save" />
 
         </RelativeLayout>
 

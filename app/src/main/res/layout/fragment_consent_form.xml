@@ -22,8 +22,8 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:src="@drawable/selflove" />
+                    android:layout_height="150dp"
+                    android:src="@drawable/splash"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -39,93 +39,95 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/fontfamily"
                     android:gravity="center"
-                    android:padding="10dp"
-                    android:text="Consent Letter"
+                    android:text="Consent form"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_20sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:padding="5dp"
-                    android:text="I voluntarily agree to receive evaluation/consultation from the doctors/therapists/physicians booked through Selfcare App. I concur on the below information supplied while booking the appointment."
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="@dimen/_14sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:padding="5dp"
-                    android:text="I understand and agree that I will participate in my treatment/consultation plan."
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_14sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="SIGN BELOW"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_20sp"/>
-
-                <com.app.selfcare.utils.SignatureView
-                    android:id="@+id/signatureView"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/edittext_rectangle_bg" />
+                    android:textSize="@dimen/_26sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="1"
-                    android:layout_marginRight="@dimen/_5dp"
-                    android:layout_marginTop="@dimen/_5dp"
-                    android:layout_marginBottom="@dimen/_5dp">
+                    android:orientation="vertical"
+                    android:layout_margin="@dimen/_20dp">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="0.6"
-                        android:orientation="vertical">
+                        android:textAppearance="@style/fontfamily"
+                        android:padding="5dp"
+                        android:text="I voluntarily agree to receive evaluation/consultation from the doctors/therapists/physicians booked through Selfcare App. I concur on the below information supplied while booking the appointment."
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp" />
 
-                        <TextView
-                            android:id="@+id/txtName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/_14sp" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:padding="5dp"
+                        android:text="I understand and agree that I will participate in my treatment/consultation plan."
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp" />
 
-                        <TextView
-                            android:id="@+id/txtDate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/_14sp" />
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="SIGN BELOW"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_20sp"/>
+
+                    <com.app.selfcare.utils.SignatureView
+                        android:id="@+id/signatureView"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:background="@drawable/edittext_rectangle_bg" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.5"
-                        android:gravity="center">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp">
 
-                        <Button
-                            android:id="@+id/btn_clear"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:backgroundTint="@color/maroon"
-                            android:text="Clear"
-                            android:textColor="@color/white" />
+                            android:layout_weight="0.7"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/txtName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_14sp" />
+
+                            <TextView
+                                android:id="@+id/txtDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.3"
+                            android:gravity="center">
+
+                            <Button
+                                android:id="@+id/btn_clear"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/maroon"
+                                android:text="Clear"
+                                android:textColor="@color/white" />
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </LinearLayout>
@@ -134,7 +136,6 @@
         </ScrollView>
 
         <Button
-            android:id="@+id/btnConsentLetter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/txt_high_conf_info"
@@ -147,7 +148,20 @@
             android:background="@drawable/button_style_blue"
             android:gravity="center"
             android:text="Submit"
-            android:textSize="@dimen/_16sp" />
+            android:textSize="@dimen/_16sp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btnConsentLetter"
+            style="@style/buttonBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_30dp"
+            android:layout_marginTop="@dimen/_5dp"
+            android:layout_marginEnd="@dimen/_30dp"
+            android:layout_marginBottom="5dp"
+            android:layout_above="@+id/txt_high_conf_info"
+            android:text="Submit" />
 
         <TextView
             android:id="@+id/txt_high_conf_info"

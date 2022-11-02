@@ -3,8 +3,8 @@
 
     <stroke android:width="2dp" android:color="@color/primaryGreen" />
     <solid android:width="2dp" android:color="@color/primaryGreen" />
-    <padding android:bottom="10dp" android:left="10dp" android:right="10dp" android:top="10dp"/>
+    <padding android:bottom="15dp" android:left="15dp" android:right="15dp" android:top="15dp"/>
     <!-- Round Corners -->
-    <corners android:radius="20dp" />
+    <corners android:radius="10dp" />
 
 </shape>

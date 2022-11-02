@@ -18,172 +18,226 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="How would you like to communicate?"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_16sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/layoutPhoneCall"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_10dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="@dimen/_10dp"
-            app:cardElevation="@dimen/_10dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imgPhoneCall"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:src="@drawable/phone_call"
-                    app:tint="@color/primaryGreen" />
-
-                <TextView
-                    android:id="@+id/txtPhoneCall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/_5dp"
-                    android:gravity="center"
-                    android:padding="@dimen/_5dp"
-                    android:text="Phone Call"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="@dimen/_16sp" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/layoutVideoCall"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_10dp"
-            android:layout_weight="1"
-            app:cardCornerRadius="@dimen/_10dp"
-            app:cardElevation="@dimen/_10dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imgVideoCall"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:src="@drawable/video"
-                    app:tint="@color/primaryGreen" />
-
-                <TextView
-                    android:id="@+id/txtVideoCall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/_5dp"
-                    android:gravity="center"
-                    android:padding="@dimen/_5dp"
-                    android:text="Video Call"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="@dimen/_16sp" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/layoutOfficeVisit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/edittext_rectangle_bg"
-            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
-                android:src="@drawable/office_visit"
-                app:tint="@color/primaryGreen" />
+            android:layout_margin="@dimen/_20dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_10dp"
+                android:paddingStart="@dimen/_10dp"
+                android:paddingEnd="@dimen/_10dp"
+                android:text="How would you like to communicate?"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_26sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/layoutPhoneCall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10dp"
+                    app:cardElevation="@dimen/_10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/imgPhoneCall"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:src="@drawable/phone_call"
+                            app:tint="@color/primaryGreen" />
+
+                        <TextView
+                            android:id="@+id/txtPhoneCall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:gravity="center"
+                            android:padding="@dimen/_5dp"
+                            android:text="Phone Call"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_16sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/layoutVideoCall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="@dimen/_10dp"
+                    app:cardElevation="@dimen/_10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/imgVideoCall"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:src="@drawable/video"
+                            app:tint="@color/primaryGreen" />
+
+                        <TextView
+                            android:id="@+id/txtVideoCall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:gravity="center"
+                            android:padding="@dimen/_5dp"
+                            android:text="Video Call"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_16sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <LinearLayout
+                    android:id="@+id/layoutOfficeVisit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:src="@drawable/office_visit"
+                        app:tint="@color/primaryGreen" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_10dp"
+                        android:gravity="center"
+                        android:text="Office visit"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/_10dp"
+                android:paddingEnd="@dimen/_10dp"
+                android:text="Add a picture for therapist review (optional)"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_26sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imgPrescriptionPic"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_margin="@dimen/_10dp"
+                    android:background="@drawable/bg_corner_rounded_edittext"
+                    android:padding="@dimen/_10dp"
+                    android:src="@drawable/prescription" />
+
+                <ImageView
+                    android:id="@+id/imgTherapistReviewPicClear"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="@dimen/_10dp"
+                    android:padding="@dimen/_10dp"
+                    android:src="@drawable/cancel_appointment" />
+
+            </RelativeLayout>
+
+
+
+            <TextView
+                android:id="@+id/tvAddTherapyReviewPic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Office visit"
+                android:padding="@dimen/_10dp"
+                android:text="Click here to add a picture"
                 android:textAppearance="@style/fontfamily"
                 android:textColor="@color/primaryGreen"
-                android:textSize="@dimen/_12sp" />
+                android:textSize="@dimen/_16sp" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="@dimen/_20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/button_style_blue"
+                android:padding="@dimen/_5dp"
+                android:text="Continue"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16sp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btnBasicDetailC"
+                style="@style/buttonBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginEnd="@dimen/_20dp"
+                android:layout_marginBottom="5dp"
+                android:text="Continue" />
 
         </LinearLayout>
 
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10dp"
-        android:padding="10dp"
-        android:text="Add a picture for therapist review (optional)"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_16sp"
-        android:textStyle="bold" />
-
-    <ImageView
-        android:id="@+id/imgProfilePhoto"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_margin="@dimen/_10dp"
-        android:background="@drawable/et_rectangle_bg"
-        android:padding="@dimen/_20dp"
-        android:src="@drawable/prescription" />
-
-    <Button
-        android:id="@+id/btnBasicDetailC"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="@dimen/_20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/button_style_blue"
-        android:padding="@dimen/_5dp"
-        android:text="Continue"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_16sp" />
+    </ScrollView>
 
 </LinearLayout>

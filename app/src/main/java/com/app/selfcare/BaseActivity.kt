@@ -24,8 +24,9 @@ open class BaseActivity : AppCompatActivity(), IFragment {
         //const val baseURL: String = "https://discovertx.csardent.com/API/"
         //const val baseURL: String = "https://crm.psyclarity.csardent.com/API/"
         //const val baseURL: String = "https://democrm.csardent.com/Api/"
-        //private const val url: String = "http://18.223.195.63"
-        private const val url: String = "https://selfcare-platform.herokuapp.com"
+        private const val url: String = "http://18.217.173.1"
+
+        //private const val url: String = "https://selfcare-platform.herokuapp.com"
         private const val urlPart: String = "/api/"
         const val baseURL: String = url + urlPart
     }

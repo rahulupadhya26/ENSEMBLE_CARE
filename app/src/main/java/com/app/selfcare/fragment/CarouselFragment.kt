@@ -1,11 +1,13 @@
 package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +26,9 @@ import com.app.selfcare.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_carousel.*
+import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.*
 import org.json.JSONObject
+import retrofit2.HttpException
 import kotlin.math.abs
 
 
@@ -44,7 +48,7 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
     private var param2: String? = null
 
     private var sliderHandler = Handler()
-    private var therapySel: String? = null
+    private var therapySel: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,32 +69,77 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
 
-        /*cardViewChild.setOnClickListener {
-            therapySel = "Child"
-            sendDeviceId(therapySel!!)
+        layoutSelf.setOnClickListener {
+            relativeLayoutSelf.setBackgroundResource(R.drawable.bg_round_primary)
+            relativeLayoutTeen.setBackgroundResource(R.drawable.bg_round_gray)
+            relativeLayoutCouple.setBackgroundResource(R.drawable.bg_round_gray)
+            relativeLayoutLgbtq.setBackgroundResource(R.drawable.bg_round_gray)
+            imgSelf.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
+            imgTeen.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
+            imgCouple.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
+            imgLgbtq.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
+            therapySel = "Individual"
         }
 
-        cardViewTeen.setOnClickListener {
+        layoutTeen.setOnClickListener {
+            relativeLayoutSelf.setBackgroundResource(R.drawable.bg_round_gray)
+            relativeLayoutTeen.setBackgroundResource(R.drawable.bg_round_primary)
+            relativeLayoutCouple.setBackgroundResource(R.drawable.bg_round_gray)
+            relativeLayoutLgbtq.setBackgroundResource(R.drawable.bg_round_gray)
+            imgSelf.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
+            imgTeen.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
+            imgCouple.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
+            imgLgbtq.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
             therapySel = "Teen"
-            sendDeviceId(therapySel!!)
         }
 
-        cardViewAdult.setOnClickListener {
-            therapySel = "Adult"
-            sendDeviceId(therapySel!!)
-        }
-
-        cardViewCouple.setOnClickListener {
+        layoutCouple.setOnClickListener {
+            relativeLayoutSelf.setBackgroundResource(R.drawable.bg_round_gray)
+            relativeLayoutTeen.setBackgroundResource(R.drawable.bg_round_gray)
+            relativeLayoutCouple.setBackgroundResource(R.drawable.bg_round_primary)
+            relativeLayoutLgbtq.setBackgroundResource(R.drawable.bg_round_gray)
+            imgSelf.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
+            imgTeen.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
+            imgCouple.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
+            imgLgbtq.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
             therapySel = "Couple"
-            sendDeviceId(therapySel!!)
         }
 
-        cardViewLgbtq.setOnClickListener {
-            therapySel = "Lgbtq"
-            sendDeviceId(therapySel!!)
-        }*/
+        layoutLgbtq.setOnClickListener {
+            relativeLayoutSelf.setBackgroundResource(R.drawable.bg_round_gray)
+            relativeLayoutTeen.setBackgroundResource(R.drawable.bg_round_gray)
+            relativeLayoutCouple.setBackgroundResource(R.drawable.bg_round_gray)
+            relativeLayoutLgbtq.setBackgroundResource(R.drawable.bg_round_primary)
+            imgSelf.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
+            imgTeen.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
+            imgCouple.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
+            imgLgbtq.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
+            therapySel = "LGBTQ"
+        }
 
-        val therapyTypeList: ArrayList<TherapyType> = ArrayList()
+        btnTherapySelect.setOnClickListener {
+            if (therapySel.isNotEmpty()) {
+                sendDeviceId(therapySel)
+            }
+        }
+
+        /*val therapyTypeList: ArrayList<TherapyType> = ArrayList()
         therapyTypeList.add(TherapyType("Child", R.drawable.child))
         therapyTypeList.add(TherapyType("Teen", R.drawable.teen))
         therapyTypeList.add(TherapyType("Adult", R.drawable.adult))
@@ -103,7 +152,7 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
         recyclerViewTherapyTypeList.layoutManager = staggeredGridLayoutManager
         recyclerViewTherapyTypeList.setHasFixedSize(true)
         recyclerViewTherapyTypeList.adapter =
-            TherapyTypeListAdapter(mActivity!!, therapyTypeList, this)
+            TherapyTypeListAdapter(mActivity!!, therapyTypeList, this)*/
 
         /*viewPagerTherapySlider.clipToPadding = false
         viewPagerTherapySlider.clipChildren = false
@@ -130,18 +179,18 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
 
     @SuppressLint("HardwareIds")
     private fun sendDeviceId(selectedTherapy: String) {
-        var selectedTherapyId = 0
+        var selectedTherapyId = 1
         when (selectedTherapy) {
-            "Teen" -> {
+            "Individual" -> {
                 selectedTherapyId = 1
             }
-            "Adult" -> {
+            "Teen" -> {
                 selectedTherapyId = 2
             }
             "Couple" -> {
                 selectedTherapyId = 3
             }
-            "Lgbtq" -> {
+            "LGBTQ" -> {
                 selectedTherapyId = 4
             }
         }
@@ -156,6 +205,7 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         try {
+                            hideProgress()
                             var responseBody = result.string()
                             Log.d("Response Body", responseBody)
                             val respBody = responseBody.split("|")
@@ -174,7 +224,7 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
                                 "400" -> {
                                     displayToast("Something went wrong.. Please try after sometime")
                                 }
-                                "200" -> {
+                                "201" -> {
                                     replaceFragmentNoBackStack(
                                         QuestionnaireFragment.newInstance(selectedTherapy),
                                         R.id.layout_home,
@@ -206,11 +256,16 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
                         }
                     }, { error ->
                         hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 404) {
+                            displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
                     })
             )
         }
-        handler!!.postDelayed(runnable!!, 1000)
+        handler.postDelayed(runnable!!, 1000)
 
     }
 
@@ -246,6 +301,7 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
                     putString(ARG_PARAM2, param2)
                 }
             }
+        const val TAG = "Screen_Therapy_Select"
     }
 
     override fun onTherapyTypeClickListener(therapyType: TherapyType) {

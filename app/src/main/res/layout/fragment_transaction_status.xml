@@ -44,8 +44,17 @@
         android:textSize="@dimen/_16sp"
         android:paddingBottom="@dimen/_10dp" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Save this information for future reference"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_18sp"
+        android:paddingBottom="@dimen/_10dp" />
+
     <Button
-        android:id="@+id/btnTransStsContinue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/button_style_blue"
@@ -55,6 +64,18 @@
         android:textAppearance="@style/fontfamily"
         android:textColor="@color/white"
         android:textSize="@dimen/_16sp"
-        android:text="Continue"/>
+        android:text="Continue"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btnTransStsContinue"
+        style="@style/buttonBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/_20dp"
+        android:layout_marginStart="@dimen/_30dp"
+        android:layout_marginEnd="@dimen/_30dp"
+        android:text="Continue" />
 
 </LinearLayout>

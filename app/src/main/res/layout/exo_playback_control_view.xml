@@ -59,8 +59,7 @@
             android:contentDescription="@string/app_name"
             android:id="@+id/imgFullScreen"
             android:src="@drawable/exo_controls_fullscreen_enter"
-            android:layout_height="28dp"
-            android:visibility="gone"/>
+            android:layout_height="28dp"/>
 
     </LinearLayout>
 

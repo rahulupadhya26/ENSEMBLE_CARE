@@ -8,15 +8,20 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.app.ActivityManager
+import android.util.Base64
 import android.util.Log
+import android.widget.ImageView
+import androidx.core.graphics.drawable.toBitmap
 import com.app.selfcare.MainActivity
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 
 
 object Utils {
 
-    const val CONST_ENCRYPT_DECRYPT = false
+    const val CONST_ENCRYPT_DECRYPT = true
+    var rtmLoggedIn = false
 
     const val CONST_LIKE = "Likes"
 
@@ -75,6 +80,23 @@ object Utils {
     const val QUESTIONNAIRE = 2
     const val REGISTER = 3
     const val PLAN_PAY = 4
+
+    const val TABLE_VIDEO = "PI0014"
+    const val TABLE_PODCAST = "PI0014"
+    const val TABLE_ARTICLES = "PI0014"
+    const val TABLE_GOALS = "PI0014"
+    const val TABLE_JOURNALS = "PI0014"
+
+    const val APPOINTMENT_CREATED = 1
+    const val APPOINTMENT_BOOKED = 2
+    const val APPOINTMENT_ONGOING = 3
+    const val APPOINTMENT_COMPLETED = 4
+    const val APPOINTMENT_CANCEL = 5
+
+    const val RECOMMENDED_VIDEOS = 0
+    const val RECOMMENDED_PODCAST = 1
+    const val RECOMMENDED_ARTICLES = 2
+    const val RECOMMENDED_PROVIDER_GOAL = 3
 
     var firstName = ""
     var middleName = ""
@@ -246,4 +268,14 @@ object Utils {
                     }
                 }
             }
+
+    fun convertImageToBitmap(imageView: ImageView): Bitmap {
+        return imageView.drawable.toBitmap()
+    }
+
+    fun convert(bitmap: Bitmap): String? {
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
+    }
 }

@@ -6,19 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnPodcastItemClickListener
 import com.app.selfcare.data.Podcast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import kotlinx.android.synthetic.main.layout_item_dashboard_news.view.*
 import kotlinx.android.synthetic.main.layout_item_dashboard_podcast.view.*
 import kotlin.math.min
 
-class DashboardPodcastAdapter (
+class DashboardPodcastAdapter(
     val context: Context,
     val list: List<Podcast>, private val adapterItemClickListener: OnPodcastItemClickListener?
 ) :
@@ -40,11 +41,11 @@ class DashboardPodcastAdapter (
 
     override fun onBindViewHolder(holder: DashboardPodcastAdapter.ViewHolder, position: Int) {
         val item = list[position]
-        Glide.with(context).load(item.image)
-            .placeholder(R.drawable.img_placeholder)
+        Glide.with(context).load(BaseActivity.baseURL.dropLast(5) + item.podcast_image)
+            .placeholder(R.drawable.sample_img)
             .transform(CenterCrop(), RoundedCorners(5))
             .into(holder.podcastImage)
-        holder.podcastTitle.text = item.title
+        holder.podcastTitle.text = item.name
         holder.podcastArtist.text = item.artist
         holder.podcastLayout.setOnClickListener {
             adapterItemClickListener!!.onPodcastItemClicked(item)

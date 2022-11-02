@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnNewsItemClickListener
-import com.app.selfcare.data.News
+import com.app.selfcare.data.Articles
 import kotlinx.android.synthetic.main.layout_item_news_slider.view.*
 import kotlinx.android.synthetic.main.slide_item_container.view.newsSlide
 
 class NewsSliderAdapter(
     val context: Context,
-    var list: ArrayList<News>,
+    var list: ArrayList<Articles>,
     val viewPager: ViewPager2,
     private val adapterItemClickListener: OnNewsItemClickListener?
 ) :
@@ -38,9 +38,9 @@ class NewsSliderAdapter(
 
     override fun onBindViewHolder(holder: SliderViewHolder, position: Int) {
         val item = list[position]
-        holder.newsTitle.text = item.newsTitle
-        holder.newsLink.text = item.newsLink
-        holder.newsPubDate.text = item.newsPublishOn
+        holder.newsTitle.text = item.name
+        holder.newsLink.text = item.article_url
+        holder.newsPubDate.text = item.published_date
         if (position == list.size - 2) {
             viewPager.post(runnable)
         }

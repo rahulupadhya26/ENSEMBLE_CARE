@@ -8,6 +8,7 @@ import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
+import org.json.JSONObject
 import java.io.IOException
 
 
@@ -21,12 +22,13 @@ class DecryptionInterceptor(private val mDecryptionStrategy: CryptoStrategy?) :
             var contentType = response.header("Content-Type")
             if (TextUtils.isEmpty(contentType)) contentType = "application/json"
             //            InputStream cryptedStream = response.body().byteStream();
-            val responseStr = response.body!!.string() + "|" + response.code.toString()
+            val responseStr = response.body!!.string()
             var decryptedString: String? = null
             if (mDecryptionStrategy != null) {
                 try {
                     if (Utils.CONST_ENCRYPT_DECRYPT) {
-                        decryptedString = mDecryptionStrategy.decrypt(responseStr)
+                        val jsonObj = JSONObject(responseStr)
+                        decryptedString = mDecryptionStrategy.decrypt(jsonObj.getString("msg")) + "|" + response.code.toString()
                     } else {
                         decryptedString = responseStr
                     }

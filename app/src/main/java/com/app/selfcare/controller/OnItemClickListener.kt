@@ -23,7 +23,7 @@ interface AdapterCallback {
 }
 
 interface OnNewsItemClickListener {
-    fun onNewsItemClicked(news: News)
+    fun onNewsItemClicked(articles: Articles)
 }
 
 interface OnPodcastItemClickListener {
@@ -31,13 +31,37 @@ interface OnPodcastItemClickListener {
 }
 
 interface OnJournalItemClickListener {
-    fun onJournalItemClicked(journal: Journal, isDelete:Boolean)
+    fun onJournalItemClicked(journal: Journal, isDelete: Boolean)
 }
 
 interface OnVideoItemClickListener {
     fun onVideoItemClickListener(video: Video)
 }
 
+interface OnGoalItemClickListener {
+    fun onGoalItemClickListener(goal: Goal, isDelete: Boolean)
+}
+
 interface OnAppointmentItemClickListener {
-    fun onAppointmentItemClickListener(appointment: Appointment, isStartAppointment:Boolean)
+    fun onAppointmentItemClickListener(appointment: Appointment, isStartAppointment: Boolean)
+}
+
+interface OnGroupAppointmentItemClickListener {
+    fun onGroupAppointmentItemClickListener(groupAppointment: GroupAppointment)
+}
+
+interface OnAssessmentItemClickListener {
+    fun onAssessmentItemClickListener(assessment: Assessments, type: String, isView: Boolean)
+}
+
+interface OnMessageClickListener {
+    fun onItemClick(message: MessageBean?)
+}
+
+interface OnRecommendedItemClickListener {
+    fun onRecommendedItemClickListener(recommendedData: RecommendedData)
+}
+
+interface OnConsentRoisItemClickListener {
+    fun onConsentRoisItemClickListener(consentRois: ConsentRois)
 }

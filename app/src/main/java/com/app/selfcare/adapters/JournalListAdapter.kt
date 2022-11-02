@@ -36,19 +36,19 @@ class JournalListAdapter(
     override fun onBindViewHolder(holder: JournalListAdapter.ViewHolder, position: Int) {
 
         val item = list[position]
-        if(item.date == ""){
+        if (item.journal_date == "") {
             holder.journalDate.text = ""
             holder.journalMonth.text = ""
             holder.journalTime.text = ""
         } else {
-            val journalDate = DateUtils(item.date)
+            val journalDate = DateUtils(item.journal_date + " 01:00:00")
             holder.journalDate.text = journalDate.getDay()
             holder.journalMonth.text = journalDate.getMonth()
             holder.journalTime.text = journalDate.getTime()
         }
 
-        holder.journalTitle.text = item.title
-        holder.journalDesc.text = item.desc
+        holder.journalTitle.text = item.name
+        holder.journalDesc.text = item.description
         holder.journalLayout.setOnClickListener {
             adapterItemClickListener!!.onJournalItemClicked(item, false)
         }

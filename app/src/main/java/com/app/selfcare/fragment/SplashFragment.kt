@@ -10,6 +10,7 @@ import com.app.selfcare.R
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
+import kotlinx.android.synthetic.main.fragment_splash.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,54 +42,61 @@ class SplashFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        Handler().postDelayed({
-            if (preference!![PrefKeys.PREF_USER_ID, ""]!!.isNotEmpty()) {
-                if (preference!![PrefKeys.PREF_IS_LOGGEDIN, false]!!) {
+        btnSplash.setOnClickListener {
+            when (preference!![PrefKeys.PREF_STEP, 0]) {
+                0 -> {
                     replaceFragmentNoBackStack(
-                        DashboardFragment(),
+                        CarouselFragment(),
                         R.id.layout_home,
-                        DashboardFragment.TAG
-                    )
-                } else {
-                    replaceFragmentNoBackStack(
-                        LoginFragment(),
-                        R.id.layout_home,
-                        LoginFragment.TAG
+                        CarouselFragment.TAG
                     )
                 }
-            } else {
-                when (preference!![PrefKeys.PREF_STEP, 0]) {
-                    0 -> {
+                Utils.INTRO_SCREEN -> {
+                    replaceFragmentNoBackStack(
+                        QuestionnaireFragment(),
+                        R.id.layout_home,
+                        QuestionnaireFragment.TAG
+                    )
+                }
+                Utils.QUESTIONNAIRE -> {
+                    replaceFragmentNoBackStack(
+                        RegistrationFragment(),
+                        R.id.layout_home,
+                        RegistrationFragment.TAG
+                    )
+                }
+                Utils.REGISTER -> {
+                    replaceFragmentNoBackStack(
+                        PlanFragment(),
+                        R.id.layout_home,
+                        PlanFragment.TAG
+                    )
+                }
+                else -> {
+                    if (preference!![PrefKeys.PREF_USER_ID, ""]!!.isNotEmpty()) {
+                        if (preference!![PrefKeys.PREF_IS_LOGGEDIN, false]!!) {
+                            replaceFragmentNoBackStack(
+                                BottomNavigationFragment(),
+                                R.id.layout_home,
+                                BottomNavigationFragment.TAG
+                            )
+                        } else {
+                            replaceFragmentNoBackStack(
+                                LoginFragment(),
+                                R.id.layout_home,
+                                LoginFragment.TAG
+                            )
+                        }
+                    } else {
                         replaceFragmentNoBackStack(
-                            IntroScreenPagerFragment(),
+                            LoginFragment(),
                             R.id.layout_home,
-                            IntroScreenPagerFragment.TAG
-                        )
-                    }
-                    Utils.INTRO_SCREEN -> {
-                        replaceFragmentNoBackStack(
-                            QuestionnaireFragment(),
-                            R.id.layout_home,
-                            QuestionnaireFragment.TAG
-                        )
-                    }
-                    Utils.QUESTIONNAIRE -> {
-                        replaceFragmentNoBackStack(
-                            RegistrationFragment(),
-                            R.id.layout_home,
-                            RegistrationFragment.TAG
-                        )
-                    }
-                    Utils.REGISTER -> {
-                        replaceFragmentNoBackStack(
-                            PlanFragment(),
-                            R.id.layout_home,
-                            PlanFragment.TAG
+                            LoginFragment.TAG
                         )
                     }
                 }
             }
-        }, 5000)
+        }
     }
 
     companion object {

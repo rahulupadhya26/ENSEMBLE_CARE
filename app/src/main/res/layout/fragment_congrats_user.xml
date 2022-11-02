@@ -9,8 +9,9 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:src="@drawable/selflove"
+        android:layout_height="200dp"
+        android:src="@drawable/splash"
+        android:scaleType="centerCrop"
         android:layout_margin="@dimen/_10dp"/>
 
     <TextView

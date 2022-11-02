@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId "com.app.selfcare"
-        minSdk 21
+        minSdk 24
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -23,6 +23,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "mySPKEY", apiKeyProperties['mySPKEY'])
         buildConfigField("String", "myIVKEY", apiKeyProperties['myIVKEY'])
+        buildConfigField("String", "appId", apiKeyProperties['APP_ID'])
     }
 
     buildTypes {
@@ -33,6 +34,11 @@ android {
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
     compileOptions {
@@ -57,7 +63,7 @@ dependencies {
     //noinspection GradleDependency
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //noinspection GradleCompatible
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.6.1'
@@ -86,19 +92,27 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.5.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'com.scottyab:secure-preferences-lib:0.1.7'
     implementation "com.koushikdutta.ion:ion:2.1.8"
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.0'
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
     implementation 'com.madgag.spongycastle:core:1.58.0.0'
     implementation 'com.madgag.spongycastle:prov:1.54.0.0'
     implementation 'com.madgag.spongycastle:pkix:1.54.0.0'
     implementation 'com.madgag.spongycastle:pg:1.54.0.0'
-    implementation 'io.agora.rtc:full-sdk:3.7.0.1'
+    implementation 'io.agora.rtc:full-sdk:4.0.1'
+    implementation 'io.agora.rtm:rtm-sdk:1.5.3'
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.stripe:stripe-android:20.6.2'
+    implementation 'com.github.HaarigerHarald:android-youtubeExtractor:master-SNAPSHOT'
+    implementation('com.google.android.gms:play-services-fitness:21.1.0')
+    implementation('com.google.android.gms:play-services-auth:20.3.0')
+    implementation 'com.google.mlkit:image-labeling-custom:17.0.1'
+    implementation 'com.google.mlkit:linkfirebase:17.0.0'
+    implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
+    implementation(project(":agorauikit_android"))
 }

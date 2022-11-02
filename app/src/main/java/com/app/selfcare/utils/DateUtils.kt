@@ -9,7 +9,7 @@ class DateUtils(date: String?) {
     var mDate:Date? = null
 
     init {
-        mDate = SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).parse(date!!)
+        mDate = SimpleDateFormat("MM/dd/yyyy' 'HH:mm:ss", Locale.getDefault()).parse(date!!)
     }
 
     fun getFormattedDate():String
@@ -27,6 +27,11 @@ class DateUtils(date: String?) {
         return SimpleDateFormat("MMM",Locale.getDefault()).format(mDate!!.time)
     }
 
+    fun getFullMonthName():String
+    {
+        return SimpleDateFormat("MMMM",Locale.getDefault()).format(mDate!!.time)
+    }
+
     fun getMonthNoFormat():String
     {
         return SimpleDateFormat("MM",Locale.getDefault()).format(mDate!!.time)
@@ -39,12 +44,12 @@ class DateUtils(date: String?) {
 
     fun getMonthYear():String
     {
-        return SimpleDateFormat("MMM , yyyy",Locale.getDefault()).format(mDate!!.time)
+        return SimpleDateFormat("MMMM, yyyy",Locale.getDefault()).format(mDate!!.time)
     }
 
     fun getTime():String
     {
-        return SimpleDateFormat("h:mm a",Locale.getDefault()).format(mDate!!.time)
+        return SimpleDateFormat("HH:mm",Locale.getDefault()).format(mDate!!.time)
     }
 
     fun getHourOfDay():String

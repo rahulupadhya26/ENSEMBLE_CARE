@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
+        android:layout_margin="@dimen/_20dp"
         android:padding="5dp"
         android:text="Let us know about yourself"
         android:textAppearance="@style/fontfamily"
@@ -28,93 +27,118 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10dp"
-            android:layout_marginEnd="@dimen/_10dp"
+            android:layout_margin="@dimen/_20dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
+            <!--<com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
                 android:hint="First Name"
                 app:hintTextAppearance="@style/TextLabel"
-                android:layout_margin="@dimen/_5dp">
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSignUpFname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:inputType="text"
                     android:imeOptions="actionNext"
-                    android:maxLines="2"
+                    android:inputType="text"
                     android:maxLength="50"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="16dp"/>
+                    android:maxLines="2"
+                    android:textAppearance="@style/fontfamily"
+                    android:background="@drawable/bg_corner_rounded_edittext"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
+            </com.google.android.material.textfield.TextInputLayout>-->
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:hint="First Name"
+                app:hintTextAppearance="@style/TextLabel">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSignUpFname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLength="50"
+                    android:maxLines="2"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
                 android:hint="Middle Name"
-                app:hintTextAppearance="@style/TextLabel"
-                android:layout_margin="@dimen/_5dp">
+                app:hintTextAppearance="@style/TextLabel">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSignUpMname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:inputType="text"
                     android:imeOptions="actionNext"
-                    android:maxLines="2"
+                    android:inputType="text"
                     android:maxLength="50"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="16dp"/>
+                    android:maxLines="2"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
                 android:hint="Last Name"
-                app:hintTextAppearance="@style/TextLabel"
-                android:layout_margin="@dimen/_5dp">
+                app:hintTextAppearance="@style/TextLabel">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSignUpLname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:inputType="text"
                     android:imeOptions="actionNext"
-                    android:maxLines="2"
+                    android:inputType="text"
                     android:maxLength="50"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="16dp"/>
+                    android:maxLines="2"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
                 android:hint="SSN"
                 app:hintTextAppearance="@style/TextLabel"
-                android:layout_margin="@dimen/_5dp">
+                android:id="@+id/ssnTextField"
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSignUpSSN"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:inputType="text"
                     android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLength="11"
                     android:maxLines="1"
-                    android:maxLength="10"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="16dp"/>
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
@@ -127,64 +151,58 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5dp"
                     android:layout_weight="0.5"
                     android:hint="Gender"
-                    app:hintTextAppearance="@style/TextLabel"
-                    android:layout_margin="@dimen/_5dp">
+                    app:hintTextAppearance="@style/TextLabel">
 
                     <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                         android:id="@+id/spinner_signup_gender"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false"
-                        android:imeOptions="actionNext"
-                        android:inputType="none"/>
+                        android:imeOptions="actionDone"
+                        android:inputType="none"
+                        android:completionThreshold="0"
+                        android:textColor="@color/black"
+                        app:hintTextAppearance="@style/TextLabel"
+                        android:textSize="16sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5dp"
                     android:layout_weight="0.5"
                     android:hint="DOB"
-                    app:hintTextAppearance="@style/TextLabel"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginTop="7dp">
+                    app:hintTextAppearance="@style/TextLabel">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/txt_signup_dob"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/fontfamily"
-                        android:inputType="text"
-                        android:imeOptions="actionDone"
-                        android:maxLines="1"
                         android:clickable="true"
                         android:cursorVisible="false"
                         android:focusable="false"
-                        android:textColor="@color/primaryGreen"
-                        android:textSize="16sp"/>
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 
             <Button
                 android:id="@+id/btnRegister"
+                style="@style/buttonBackground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
-                android:textAppearance="@style/fontfamily"
-                android:background="@drawable/button_style_blue"
-                android:padding="@dimen/_5dp"
-                android:text="Continue"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_16sp" />
+                android:layout_marginTop="@dimen/_30dp"
+                android:text="Continue" />
 
         </LinearLayout>
 

@@ -13,19 +13,21 @@ import com.app.selfcare.R
 import com.app.selfcare.adapters.OptionListAdapter
 import com.app.selfcare.data.*
 import com.app.selfcare.preference.PrefKeys
+import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.preference.PreferenceHelper.set
+import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_questionnaire.*
-import com.app.selfcare.preference.PreferenceHelper.get
-import com.app.selfcare.preference.PreferenceHelper.set
-import com.app.selfcare.utils.Utils
 import org.json.JSONArray
 import org.json.JSONObject
-import java.lang.Exception
+import retrofit2.HttpException
+import java.io.*
 import java.lang.reflect.Type
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,8 +49,10 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
     private var questions: ArrayList<Question>? = null
     private var options = ArrayList<OptionModel>()
     private var question: Question? = null
-    private var totalCount: Int = 0
-    private var count: Int = 1
+    private var noOfAnswers: Int = 0
+    private var count: Int = 0
+    private var setAnswers: ArrayList<EachAnswer> = ArrayList()
+    private var nextOptionId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +74,18 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
         progressBar.max = 0
 
         therapy = preference!![PrefKeys.PREF_SELECTED_THERAPY, ""]!!
-        getQuestions()
+        if (preference!![PrefKeys.PREF_NEXT_QUESTION_ID, ""]!!.isNotEmpty()) {
+            val readDataFromFile = readFromFile()
+            val type: Type = object : TypeToken<ArrayList<Question?>?>() {}.type
+            questions = Gson().fromJson(readDataFromFile, type)
+            if (questions!!.isNotEmpty()) {
+                setFirstQuestion(questions!![0])
+            } else {
+                displayToast("Questions are not available")
+            }
+        } else {
+            getAllQuestions()
+        }
 
         tv_option_one.setOnClickListener(this)
         tv_option_two.setOnClickListener(this)
@@ -85,6 +100,60 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setQuestion()
         }*/
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun getAllQuestions() {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getAllQuestionnaire(therapy!!)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "208") {
+                                preference!![PrefKeys.PREF_STEP] = Utils.QUESTIONNAIRE
+                                replaceFragmentNoBackStack(
+                                    RegistrationFragment(),
+                                    R.id.layout_home,
+                                    RegistrationFragment.TAG
+                                )
+                            } else {
+                                storeAllQuestion(responseBody)
+                                val readDataFromFile = readFromFile()
+                                val type: Type = object : TypeToken<ArrayList<Question?>?>() {}.type
+                                questions = Gson().fromJson(readDataFromFile, type)
+                                if (questions!!.isNotEmpty()) {
+                                    setFirstQuestion(questions!![0])
+                                } else {
+                                    displayToast("Questions are not available")
+                                }
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 400) {
+                            displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -104,7 +173,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            if (responseBody == "208") {
+                            if (status == "208") {
                                 preference!![PrefKeys.PREF_STEP] = Utils.QUESTIONNAIRE
                                 replaceFragmentNoBackStack(
                                     RegistrationFragment(),
@@ -112,7 +181,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                                     RegistrationFragment.TAG
                                 )
                             } else {
-                                setQuestion(responseBody)
+                                //setQuestion(responseBody)
                             }
                         } catch (e: Exception) {
                             hideProgress()
@@ -121,7 +190,12 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
 
                     }, { error ->
                         hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 400) {
+                            displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
                     })
             )
         }
@@ -129,15 +203,14 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun sendAnswers(questionId: Int, answerId: Int) {
+    private fun sendAnswers() {
         showProgress()
+        val type: Type = object : TypeToken<ArrayList<EachAnswer?>?>() {}.type
+        setAnswers = Gson().fromJson(preference!![PrefKeys.PREF_SET_ANSWER, ""], type)
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .sendAnswers(
-                        therapy!!,
-                        SendAnswer(preference!![PrefKeys.PREF_ID, -1]!!, questionId, answerId)
-                    )
+                    .sendAllAnswers(SendAnswer(preference!![PrefKeys.PREF_ID, 0]!!, setAnswers))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -148,7 +221,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            if (responseBody == "200") {
+                            if (status == "200") {
                                 preference!![PrefKeys.PREF_STEP] = Utils.QUESTIONNAIRE
                                 replaceFragmentNoBackStack(
                                     CongratsUserFragment(),
@@ -156,62 +229,161 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                                     CongratsUserFragment.TAG
                                 )
                             } else {
-                                setQuestion(responseBody)
+                                //setQuestion(responseBody)
                             }
-                        } catch (e: Exception) {
+                        } catch (error: Exception) {
                             hideProgress()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->
                         hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 400) {
+                            displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
                     })
             )
         }
-        handler!!.postDelayed(runnable!!, 1000)
+        handler.postDelayed(runnable!!, 1000)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun setQuestion(response: String) {
-        val jsonObj = JSONObject(response)
-        if (jsonObj.has("total_count")) {
-            totalCount = jsonObj.getString("total_count").toInt()
+    private fun setFirstQuestion(question: Question) {
+        this.question = question
+        progressBar.max = 2
+        progressBar.progress = count
+        defaultOptionsView()
+        tv_current_question.text = question.question
+        tv_next_question.text = ""
+        tv_start_text.text = "Let's get started.."
+        noOfAnswers = question.answers.size
+        when (noOfAnswers) {
+            1 -> {
+                mSelectedOptionId = 0
+                rv_option_list.visibility = View.VISIBLE
+                layout_options.visibility = View.GONE
+                val mOptionList = question.answers[0].answer.split(",").toTypedArray()
+                rv_option_list.layoutManager = GridLayoutManager(
+                    requireActivity(),
+                    3
+                )
+                rv_option_list.adapter = OptionListAdapter(
+                    requireActivity(),
+                    getListData(mOptionList)
+                )
+            }
+            2 -> {
+                rv_option_list.visibility = View.GONE
+                layout_options.visibility = View.VISIBLE
+                tv_option_one.text = question.answers[0].answer
+                tv_option_two.text = question.answers[1].answer
+                tv_option_three.visibility = View.GONE
+                tv_option_four.visibility = View.GONE
+            }
+            3 -> {
+                rv_option_list.visibility = View.GONE
+                layout_options.visibility = View.VISIBLE
+                tv_option_one.text = question.answers[0].answer
+                tv_option_two.text = question.answers[1].answer
+                tv_option_three.text = question.answers[2].answer
+                tv_option_three.visibility = View.VISIBLE
+                tv_option_four.visibility = View.GONE
+            }
+            4 -> {
+                rv_option_list.visibility = View.GONE
+                layout_options.visibility = View.VISIBLE
+                tv_option_one.text = question.answers[0].answer
+                tv_option_two.text = question.answers[1].answer
+                tv_option_three.text = question.answers[2].answer
+                tv_option_four.text = question.answers[3].answer
+                tv_option_three.visibility = View.VISIBLE
+                tv_option_four.visibility = View.VISIBLE
+            }
         }
-        /*if (jsonObj.has("count")) {
-            count = jsonObj.getString("count").toInt()
-        }*/
-        val questionType: Type = object : TypeToken<Question?>() {}.type
-        question = Gson().fromJson(jsonObj.getString("question"), questionType)
-        val optionJsonArray = jsonObj.getJSONArray("answers")
-        question!!.no_of_options = optionJsonArray.length().toString()
-        setOptions(optionJsonArray)
+    }
 
-        progressBar.max = totalCount.toInt()
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun setQuestion(questions: ArrayList<Question>) {
+        for (i in 0 until questions.size) {
+            if (questions[i].option_id == nextOptionId) {
+                this.question = questions[i]
+                break
+            }
+        }
+        progressBar.max = questions.size - 1
         progressBar.progress = count
         defaultOptionsView()
         tv_current_question.text = question!!.question
         tv_next_question.text = ""
-        Log.i("Total count", totalCount.toString())
-        Log.i("count", count.toString())
         when (count) {
             1 -> {
-                tv_start_text.text = "Lets get start"
+                tv_start_text.text = "Keep going.."
             }
             2 -> {
-                tv_start_text.text = "Keep going"
+                tv_start_text.text = "Bit more.."
             }
             3 -> {
-                tv_start_text.text = "Little more"
+                tv_start_text.text = "Little more.."
             }
             4 -> {
-                tv_start_text.text = "You're doing great"
+                tv_start_text.text = "You're doing great.."
+            }
+            5 -> {
+                tv_start_text.text = "You're doing great.."
             }
             else -> {
-                tv_start_text.text = "Few more..."
+                tv_start_text.text = "Few more.."
             }
         }
-        if (totalCount == count + 1) {
+        if (question!!.next != null && question!!.next.isEmpty()) {
             tv_start_text.text = "And we are done..."
+        }
+        Log.i("Total count", (questions.size - 1).toString())
+        Log.i("Count", count.toString())
+        noOfAnswers = question!!.answers.size
+        when (noOfAnswers) {
+            1 -> {
+                mSelectedOptionId = 0
+                rv_option_list.visibility = View.VISIBLE
+                layout_options.visibility = View.GONE
+                val mOptionList = question!!.answers[0].answer.split(",").toTypedArray()
+                rv_option_list.layoutManager = GridLayoutManager(
+                    requireActivity(),
+                    3
+                )
+                rv_option_list.adapter = OptionListAdapter(
+                    requireActivity(),
+                    getListData(mOptionList)
+                )
+            }
+            2 -> {
+                rv_option_list.visibility = View.GONE
+                layout_options.visibility = View.VISIBLE
+                tv_option_one.text = question!!.answers[0].answer
+                tv_option_two.text = question!!.answers[1].answer
+                tv_option_three.visibility = View.GONE
+                tv_option_four.visibility = View.GONE
+            }
+            3 -> {
+                rv_option_list.visibility = View.GONE
+                layout_options.visibility = View.VISIBLE
+                tv_option_one.text = question!!.answers[0].answer
+                tv_option_two.text = question!!.answers[1].answer
+                tv_option_three.text = question!!.answers[2].answer
+                tv_option_three.visibility = View.VISIBLE
+                tv_option_four.visibility = View.GONE
+            }
+            4 -> {
+                rv_option_list.visibility = View.GONE
+                layout_options.visibility = View.VISIBLE
+                tv_option_one.text = question!!.answers[0].answer
+                tv_option_two.text = question!!.answers[1].answer
+                tv_option_three.text = question!!.answers[2].answer
+                tv_option_four.text = question!!.answers[3].answer
+                tv_option_three.visibility = View.VISIBLE
+                tv_option_four.visibility = View.VISIBLE
+            }
         }
         /*if (count == tempQuestions!!.size) {
             tempQuestions = ArrayList()
@@ -233,7 +405,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 tv_next_question.text = tempQuestions!![count + 1].question
             }
         }*/
-        when (question!!.no_of_options) {
+        /*when (question!!.no_of_options) {
             "1" -> {
                 mSelectedOptionId = 0
                 rv_option_list.visibility = View.VISIBLE
@@ -275,63 +447,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 tv_option_three.visibility = View.VISIBLE
                 tv_option_four.visibility = View.VISIBLE
             }
-        }
-    }
-
-    private fun setOptions(optionJsonArray: JSONArray) {
-        when (optionJsonArray.length()) {
-            1 -> {
-                question!!.option_1 = OptionData(
-                    optionJsonArray.getJSONObject(0).getString("answer_id").toInt(),
-                    optionJsonArray.getJSONObject(0).getString("answer")
-                )
-            }
-            2 -> {
-                question!!.option_1 = OptionData(
-                    optionJsonArray.getJSONObject(0).getString("answer_id").toInt(),
-                    optionJsonArray.getJSONObject(0).getString("answer")
-                )
-                question!!.option_2 = OptionData(
-                    optionJsonArray.getJSONObject(1).getString("answer_id").toInt(),
-                    optionJsonArray.getJSONObject(1).getString("answer")
-                )
-            }
-            3 -> {
-                question!!.option_1 = OptionData(
-                    optionJsonArray.getJSONObject(0).getString("answer_id").toInt(),
-                    optionJsonArray.getJSONObject(0).getString("answer")
-                )
-                question!!.option_2 = OptionData(
-                    optionJsonArray.getJSONObject(1).getString("answer_id").toInt(),
-                    optionJsonArray.getJSONObject(1).getString("answer")
-                )
-                question!!.option_3 = OptionData(
-                    optionJsonArray.getJSONObject(2).getString("answer_id").toInt(),
-                    optionJsonArray.getJSONObject(2).getString("answer")
-                )
-            }
-            4 -> {
-                question!!.option_1 = OptionData(
-                    optionJsonArray.getJSONObject(0).getString("answer_id").toInt(),
-                    optionJsonArray.getJSONObject(0).getString("answer")
-                )
-                question!!.option_2 = OptionData(
-                    optionJsonArray.getJSONObject(1).getString("answer_id").toInt(),
-                    optionJsonArray.getJSONObject(1).getString("answer")
-                )
-                question!!.option_3 = OptionData(
-                    optionJsonArray.getJSONObject(2).getString("answer_id").toInt(),
-                    optionJsonArray.getJSONObject(2).getString("answer")
-                )
-                question!!.option_4 = OptionData(
-                    optionJsonArray.getJSONObject(3).getString("answer_id").toInt(),
-                    optionJsonArray.getJSONObject(3).getString("answer")
-                )
-            }
-            else -> {
-                displayToast("No options found")
-            }
-        }
+        }*/
     }
 
     private fun getListData(optionList: Array<String>): ArrayList<OptionModel> {
@@ -361,16 +477,33 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun selectedOptionsView(tv: TextView, selectedOptionNum: Int, answeredQuestionId: Int) {
+    private fun selectedOptionsView(
+        tv: TextView,
+        selectedAnswerId: Int,
+        answeredQuestionId: Int,
+        selectedOptionId: String
+    ) {
         defaultOptionsView()
-        mSelectedOptionId = selectedOptionNum
+        mSelectedOptionId = selectedAnswerId
         mAnsweredQuesitonId = answeredQuestionId
         tv.setTextColor(requireActivity().getColor(R.color.white))
         tv.setTypeface(tv.typeface, Typeface.BOLD)
         tv.background =
             ContextCompat.getDrawable(requireActivity(), R.drawable.bg_box_border_selected)
         count += 1
-        sendAnswers(answeredQuestionId, selectedOptionNum)
+        nextOptionId = selectedOptionId
+        preference!![PrefKeys.PREF_NEXT_QUESTION_ID] = nextOptionId
+        if (preference!![PrefKeys.PREF_SET_ANSWER, ""]!!.isNotEmpty()) {
+            val type: Type = object : TypeToken<ArrayList<EachAnswer?>?>() {}.type
+            setAnswers = Gson().fromJson(preference!![PrefKeys.PREF_SET_ANSWER, ""]!!, type)
+        }
+        setAnswers.add(EachAnswer(answeredQuestionId, selectedAnswerId))
+        preference!![PrefKeys.PREF_SET_ANSWER] = Gson().toJson(setAnswers)
+        if (nextOptionId.isNotEmpty()) {
+            setQuestion(questions!!)
+        } else {
+            sendAnswers()
+        }
     }
 
     companion object {
@@ -399,32 +532,64 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.tv_option_one -> {
+                var nextQuestionId = ""
+                if (question!!.answers[0].option_id != null) {
+                    nextQuestionId = question!!.answers[0].option_id
+                } else {
+                    nextQuestionId = question!!.next
+                }
                 selectedOptionsView(
                     tv_option_one,
-                    question!!.option_1.answer_id!!, question!!.question_id.toInt()
+                    question!!.answers[0].answer_id,
+                    question!!.question_id,
+                    nextQuestionId
                 )
             }
             R.id.tv_option_two -> {
+                var nextQuestionId = ""
+                if (question!!.answers[1].option_id != null) {
+                    nextQuestionId = question!!.answers[1].option_id
+                } else {
+                    nextQuestionId = question!!.next
+                }
                 selectedOptionsView(
                     tv_option_two,
-                    question!!.option_2.answer_id!!, question!!.question_id.toInt()
+                    question!!.answers[1].answer_id,
+                    question!!.question_id,
+                    nextQuestionId
                 )
             }
             R.id.tv_option_three -> {
+                var nextQuestionId = ""
+                if (question!!.answers[2].option_id != null) {
+                    nextQuestionId = question!!.answers[2].option_id
+                } else {
+                    nextQuestionId = question!!.next
+                }
                 selectedOptionsView(
                     tv_option_three,
-                    question!!.option_3.answer_id!!, question!!.question_id.toInt()
+                    question!!.answers[2].answer_id,
+                    question!!.question_id,
+                    nextQuestionId
                 )
             }
             R.id.tv_option_four -> {
+                var nextQuestionId = ""
+                if (question!!.answers[3].option_id != null) {
+                    nextQuestionId = question!!.answers[3].option_id
+                } else {
+                    nextQuestionId = question!!.next
+                }
                 selectedOptionsView(
                     tv_option_four,
-                    question!!.option_4.answer_id!!, question!!.question_id.toInt()
+                    question!!.answers[3].answer_id,
+                    question!!.question_id,
+                    nextQuestionId
                 )
             }
             R.id.cardViewBtnNext -> {
                 if (mSelectedOptionId != 0) {
-                    sendAnswers(mAnsweredQuesitonId, mSelectedOptionId)
+                    //sendAnswers(mAnsweredQuesitonId, mSelectedOptionId)
                 } else {
                     displayToast("Please select the option")
                 }
@@ -461,5 +626,50 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 }*/
             }
         }
+    }
+
+    private fun storeAllQuestion(response: String) {
+        val file = File(requireActivity().filesDir, "Questionnaire")
+        if (!file.exists()) {
+            file.mkdir()
+        }
+        try {
+            val questionFile = File(file, "questions.json")
+            if (questionFile.exists()) {
+                questionFile.delete()
+                file.createNewFile()
+            }
+            val writer = FileWriter(questionFile)
+            writer.append(response)
+            writer.flush()
+            writer.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            displayToast("Error while create and write to the file.")
+        }
+    }
+
+    private fun readFromFile(): String {
+        val stringBuilder = StringBuilder()
+        try {
+            val file = File(requireActivity().filesDir, "Questionnaire")
+            if (file.exists()) {
+                val questionFile = File(file, "questions.json")
+                val fileReader = FileReader(questionFile)
+                val bufferedReader = BufferedReader(fileReader)
+                var line = bufferedReader.readLine()
+                while (line != null) {
+                    stringBuilder.append(line).append("\n")
+                    line = bufferedReader.readLine()
+                }
+                bufferedReader.close()
+            } else {
+                displayToast("Cannot read the file.")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            displayToast("Error while reading the file.")
+        }
+        return stringBuilder.toString()
     }
 }

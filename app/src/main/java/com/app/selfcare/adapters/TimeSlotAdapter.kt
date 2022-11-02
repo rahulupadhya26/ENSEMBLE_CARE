@@ -46,17 +46,17 @@ class TimeSlotAdapter(
     override fun onBindViewHolder(holder: TimeSlotAdapter.ViewHolder, position: Int) {
         val item = list[position]
         holder.timeSlotTxt.text =
-            item.time_slot_start.dropLast(3) + " - " + item.time_slot_end.dropLast(3)
+            item.time_slot_start/* + " - " + item.time_slot_end.dropLast(3)*/
         holder.timeSlotLayout.setOnClickListener {
             row_index = position;
             notifyDataSetChanged()
             onTextClickListener!!.onTextClickListener(item)
         }
         if (row_index == position) {
-            holder.timeSlotTxt.setBackgroundResource(R.color.primaryGreen)
+            holder.timeSlotLayout.setBackgroundResource(R.drawable.bg_time_slot_rounded_selected)
             holder.timeSlotTxt.setTextColor(ContextCompat.getColor(context, R.color.white))
         } else {
-            holder.timeSlotTxt.setBackgroundResource(R.color.white)
+            holder.timeSlotLayout.setBackgroundResource(R.drawable.bg_time_slot_rounded)
             holder.timeSlotTxt.setTextColor(ContextCompat.getColor(context, R.color.black))
         }
     }

@@ -6,15 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnAppointmentItemClickListener
-import com.app.selfcare.controller.OnPodcastItemClickListener
 import com.app.selfcare.data.Appointment
 import kotlinx.android.synthetic.main.layout_item_dashboard_appointment.view.*
-import kotlinx.android.synthetic.main.layout_item_dashboard_podcast.view.*
-import kotlin.math.min
 
 class DashboardAppointmentAdapter(
     val context: Context,
@@ -39,9 +37,9 @@ class DashboardAppointmentAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: DashboardAppointmentAdapter.ViewHolder, position: Int) {
         val item = list[position]
-        holder.therapistName.text = item.fname + " " + item.lname
-        holder.therapyType.text = item.provider_type
-        holder.therapyDateTime.text = item.pc_eventDate + " " + item.pc_startTime
+        holder.therapistName.text = item.first_name + " " + item.last_name
+        holder.therapyType.text = item.doctor_type + ", 5 yrs"
+        holder.therapyDateTime.text = item.booking_date + " " + item.starting_time.dropLast(3)
         holder.startAppointment.setOnClickListener {
             adapterItemClickListener!!.onAppointmentItemClickListener(item, true)
         }
@@ -54,7 +52,7 @@ class DashboardAppointmentAdapter(
         val therapistName: TextView = itemView.txtTherapist
         val therapyType: TextView = itemView.txtTherapistType
         val therapyDateTime: TextView = itemView.txtTherapyDateTime
-        val startAppointment: ImageView = itemView.btnStartAppointment
-        val cancelAppointment: ImageView = itemView.btnCancelAppointment
+        val startAppointment: LinearLayout = itemView.btnStartAppointment
+        val cancelAppointment: LinearLayout = itemView.btnCancelAppointment
     }
 }

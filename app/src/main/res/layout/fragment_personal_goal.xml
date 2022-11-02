@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.PersonalGoalFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_personalGoalsList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/txt_no_personal_goals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Currently you haven't create any goals."
+            android:textAppearance="@style/fontfamily"
+            android:textSize="@dimen/_22sp"
+            android:gravity="center"
+            android:padding="@dimen/_10dp"
+            android:layout_margin="@dimen/_10dp"
+            android:layout_centerInParent="true"
+            android:textColor="@color/localBackground"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_goals"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@mipmap/ic_action_add_circle"
+            app:tint="@color/white"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:backgroundTint="@color/primaryGreen"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:focusable="true"
+            app:elevation="8dp" />
+
+    </RelativeLayout>
+
+</FrameLayout>

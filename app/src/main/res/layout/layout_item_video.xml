@@ -4,8 +4,10 @@
     android:id="@+id/layout_Video"
     android:layout_width="match_parent"
     android:layout_height="250dp"
-    android:layout_margin="10dp"
-    app:cardCornerRadius="10dp">
+    android:layout_margin="@dimen/_5dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="@dimen/_5dp"
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_item_video"
@@ -17,7 +19,7 @@
         <ImageView
             android:id="@+id/img_video"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="match_parent"
             android:layout_margin="@dimen/_5dp"
             android:contentDescription="@string/app_name"
             android:scaleType="fitCenter"
@@ -54,28 +56,28 @@
 
         <TextView
             android:id="@+id/txtVideoTitle"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:ellipsize="end"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/black"
-            android:textSize="@dimen/_16sp"
+            android:textSize="@dimen/_20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/img_video"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/videosPlayer" />
 
         <TextView
             android:id="@+id/txtVideoDesc"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:ellipsize="end"
             android:textAppearance="@style/fontfamily"
-            android:maxLines="2"
             android:textColor="@color/black"
-            android:textSize="@dimen/_14sp"
+            android:textSize="@dimen/_16sp"
             app:layout_constraintStart_toEndOf="@id/img_video"
             app:layout_constraintStart_toStartOf="@id/txtVideoTitle"
             app:layout_constraintTop_toBottomOf="@id/txtVideoTitle" />

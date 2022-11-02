@@ -18,8 +18,11 @@ import com.app.selfcare.data.Plan
 class PlanViewPagerAdapter(
     private val context: Context,
     private val planList: List<Plan>,
-    private val onClickBack: AdapterCallback
+    private val onClickBack: AdapterCallback,
+    private val selectedPlan: String
 ) : RecyclerView.Adapter<PlanViewPagerAdapter.PlanViewHolder>() {
+
+    private var planName = "Plus"
 
     class PlanViewHolder(
         itemView: View
@@ -41,20 +44,34 @@ class PlanViewPagerAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: PlanViewHolder, position: Int) {
         val planObj: Plan = planList[position]
-        if (planObj.plan == "Plus") {
+        planName = if (selectedPlan.isNotEmpty()) {
+            when (selectedPlan) {
+                "Standard" -> "Plus"
+                "Plus" -> "Premium"
+                "Premium" -> "Premium"
+                else -> "Plus"
+            }
+        } else {
+            "Plus"
+        }
+        if (planObj.plan == selectedPlan) {
             holder.recommendImg.visibility = View.VISIBLE
         } else {
             holder.recommendImg.visibility = View.GONE
         }
+
+        if (planObj.plan == selectedPlan) {
+            holder.btnStartPlan.text = "Already have"
+        }
         when (planObj.plan) {
             "Standard" -> {
-                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.accent))
+                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.DarkBlue))
             }
             "Plus" -> {
                 holder.planText.setTextColor(ContextCompat.getColor(context, R.color.primaryGreen))
             }
             "Premium" -> {
-                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.buttonGreen))
+                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.maroon))
             }
         }
         holder.planText.text = planObj.plan

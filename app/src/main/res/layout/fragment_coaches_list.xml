@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.CoachesListFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_margin="@dimen/_10dp"
+        android:text="Your coach list"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_26sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10dp"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recyclerViewCoaches"/>
+
+        <TextView
+            android:id="@+id/txtNoCoachFound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="@dimen/_10dp"
+            android:gravity="center"
+            android:padding="@dimen/_10dp"
+            android:text="Currently there are no coaches on your specialization"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/localBackground"
+            android:textSize="@dimen/_22sp"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

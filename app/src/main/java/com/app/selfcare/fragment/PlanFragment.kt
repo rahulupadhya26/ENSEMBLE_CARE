@@ -3,29 +3,21 @@ package com.app.selfcare.fragment
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
-import androidx.viewpager2.widget.ViewPager2
 import com.app.selfcare.R
 import com.app.selfcare.adapters.PlanViewPagerAdapter
 import com.app.selfcare.controller.AdapterCallback
 import com.app.selfcare.data.Plan
-import com.app.selfcare.data.Question
-import com.app.selfcare.data.VerifyOtp
-import com.app.selfcare.utils.ZoomOutPageTransformer
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.app.selfcare.preference.PrefKeys
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_plan.*
-import kotlinx.android.synthetic.main.fragment_registration.*
+import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.preference.PreferenceHelper.set
 import org.json.JSONArray
-import org.json.JSONObject
-import java.lang.reflect.Type
 import kotlin.math.abs
 
 // TODO: Rename parameter arguments, choose names that match
@@ -74,7 +66,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getPlanList("PI0039")
+                    .getData("PI0039", getAccessToken())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -97,13 +89,32 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                 )
                                 planList.add(plan)
                             }
-                            val viewPagerAdapter = PlanViewPagerAdapter(requireActivity(),planList, this)
+                            val viewPagerAdapter =
+                                PlanViewPagerAdapter(
+                                    requireActivity(),
+                                    planList,
+                                    this,
+                                    preference!![PrefKeys.PREF_SELECTED_PLAN, ""]!!
+                                )
                             viewPagerPlan.adapter = viewPagerAdapter
-                            viewPagerPlan.currentItem = 1
+                            val selectedPlan = preference!![PrefKeys.PREF_SELECTED_PLAN, ""]!!
+                            var planIndex = 1
+                            planIndex = if (selectedPlan.isNotEmpty() && planList.size == 3) {
+                                when (selectedPlan) {
+                                    "Standard" -> 1
+                                    "Plus" -> 2
+                                    "Premium" -> 2
+                                    else -> 1
+                                }
+                            } else {
+                                1
+                            }
+                            viewPagerPlan.currentItem = planIndex
                             viewPagerPlan.clipToPadding = false
                             viewPagerPlan.clipChildren = false
                             viewPagerPlan.offscreenPageLimit = 3
-                            viewPagerPlan.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+                            viewPagerPlan.getChildAt(0).overScrollMode =
+                                RecyclerView.OVER_SCROLL_NEVER
                             val compositePageTransform = CompositePageTransformer()
                             compositePageTransform.addTransformer(MarginPageTransformer(20))
                             compositePageTransform.addTransformer { page, position ->
@@ -147,10 +158,68 @@ class PlanFragment : BaseFragment(), AdapterCallback {
     }
 
     override fun onItemClicked(plan: Plan) {
-        replaceFragment(
-            PaymentSelectFragment.newInstance(plan),
-            R.id.layout_home,
-            PaymentSelectFragment.TAG
-        )
+        val selectedPlan = preference!![PrefKeys.PREF_SELECTED_PLAN, ""]!!
+        if (selectedPlan == "null") {
+            replaceFragment(
+                PaymentSelectFragment.newInstance(plan),
+                R.id.layout_home,
+                PaymentSelectFragment.TAG
+            )
+        } else {
+            if (plan.plan == selectedPlan) {
+                val severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
+                preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
+                if(severityRating in 0..14) {
+                    replaceFragmentNoBackStack(
+                        BottomNavigationFragment(),
+                        R.id.layout_home,
+                        BottomNavigationFragment.TAG
+                    )
+                } else {
+                    replaceFragmentNoBackStack(
+                        TherapistListFragment.newInstance(true),
+                        R.id.layout_home,
+                        TherapistListFragment.TAG
+                    )
+                }
+            } else {
+                when (selectedPlan) {
+                    "Standard" -> if (plan.plan == "Plus" || plan.plan == "Standard") {
+                        replaceFragment(
+                            PaymentSelectFragment.newInstance(plan),
+                            R.id.layout_home,
+                            PaymentSelectFragment.TAG
+                        )
+                    } else {
+                        displayMsg("Alert", "Plan cannot be downgrade.")
+                    }
+                    "Plus" -> if (plan.plan == "Premium" || plan.plan == "Plus") {
+                        replaceFragment(
+                            PaymentSelectFragment.newInstance(plan),
+                            R.id.layout_home,
+                            PaymentSelectFragment.TAG
+                        )
+                    } else {
+                        displayMsg("Alert", "Plan cannot be downgrade.")
+                    }
+                    "Premium" -> if (plan.plan == "Premium") {
+                        replaceFragment(
+                            PaymentSelectFragment.newInstance(plan),
+                            R.id.layout_home,
+                            PaymentSelectFragment.TAG
+                        )
+                    } else {
+                        displayMsg("Alert", "Plan cannot be downgrade.")
+                    }
+                    else -> {
+                        replaceFragment(
+                            PaymentSelectFragment.newInstance(plan),
+                            R.id.layout_home,
+                            PaymentSelectFragment.TAG
+                        )
+                    }
+                }
+            }
+        }
     }
 }

@@ -7,18 +7,16 @@
     android:orientation="vertical"
     tools:context=".fragment.FinalReviewFragment">
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/checkbox_terms_conditions"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="@dimen/_20dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:text="Final Review"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/black"
@@ -28,13 +26,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:textAppearance="@style/fontfamily"
-            android:textSize="@dimen/_16sp"
+            android:textSize="@dimen/_18sp"
             android:gravity="left"
-            android:padding="5dp"
-            android:text="Awesome! Thank you for providing details required for your consultation. Please review the information before creating an appointment."
-            android:textColor="@color/primaryGreen" />
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:text="Thank you for providing your details. Please review the information before we book your consultation."
+            android:textColor="@color/black" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewFinalReview"
@@ -48,16 +46,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btnFinalReview"
-        android:layout_marginLeft="@dimen/_10dp"
+        android:layout_marginLeft="@dimen/_20dp"
         android:layout_marginTop="@dimen/_10dp"
-        android:layout_marginRight="@dimen/_10dp"
+        android:layout_marginRight="@dimen/_20dp"
         android:padding="5dp"
         android:text="I declare that I read and understand the terms and conditions"
         android:textAppearance="@style/fontfamily"
         android:textSize="@dimen/_16sp" />
 
     <Button
-        android:id="@+id/btnFinalReview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -70,7 +67,20 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_16sp"
         android:layout_above="@+id/txt_copyright"
-        app:hintTextAppearance="@style/fontfamily" />
+        app:hintTextAppearance="@style/fontfamily"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btnFinalReview"
+        style="@style/buttonBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginTop="@dimen/_5dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:layout_marginBottom="5dp"
+        android:text="Submit"
+        android:layout_above="@+id/txt_copyright"/>
 
     <TextView
         android:id="@+id/txt_copyright"
@@ -81,6 +91,6 @@
         android:gravity="center"
         android:padding="5dp"
         android:text="&#169;SelfCare.All rights reserved."
-        android:textColor="@color/primaryGreen" />
+        android:textColor="@color/localBackground" />
 
 </RelativeLayout>

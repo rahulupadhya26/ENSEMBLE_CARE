@@ -1,16 +1,34 @@
 package com.app.selfcare.fragment
 
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.GridLayoutManager
 import com.app.selfcare.R
+import com.app.selfcare.adapters.PodcastListAdapter
+import com.app.selfcare.data.InsuranceVerifyReqBody
 import com.app.selfcare.data.Plan
+import com.app.selfcare.data.Podcast
 import com.app.selfcare.data.TransactionStatus
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_insurance.*
+import kotlinx.android.synthetic.main.fragment_podcast.*
+import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_registration.*
+import retrofit2.HttpException
+import java.lang.reflect.Type
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,6 +44,8 @@ class InsuranceFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var plan: Plan? = null
     private var param2: String? = null
+    private var selectedInsuranceName: String = ""
+    private var insuranceNameData: Array<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +59,7 @@ class InsuranceFragment : BaseFragment() {
         return R.layout.fragment_insurance
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
@@ -46,27 +67,16 @@ class InsuranceFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
 
+        insuranceNameSpinner()
+
         btnInsuranceDetails.setOnClickListener {
-            if (getText(etInsuranceCompany).isNotEmpty()) {
+            if (getText(spinnerInsuranceCompany).isNotEmpty()) {
                 if (getText(etPlanId).isNotEmpty()) {
                     if (getText(etMemberId).isNotEmpty()) {
                         if (getText(etGroupId).isNotEmpty()) {
                             if (getText(etMemberName).isNotEmpty()) {
                                 //Call VerifyTx Api
-                                val transSts = TransactionStatus(
-                                    "1",
-                                    "56uyw-12edr-edry5-edtgy",
-                                    preference!![PrefKeys.PREF_EMAIL, ""]!!,
-                                    10,
-                                    "dfghj",
-                                    true,
-                                    12
-                                )
-                                replaceFragment(
-                                    TransactionStatusFragment.newInstance(transSts),
-                                    R.id.layout_home,
-                                    TransactionStatusFragment.TAG
-                                )
+                                verifyInsuranceApi()
                             } else {
                                 setEditTextError(etMemberName, "Member name cannot be empty.")
                             }
@@ -80,9 +90,99 @@ class InsuranceFragment : BaseFragment() {
                     setEditTextError(etPlanId, "Plan Id cannot be empty.")
                 }
             } else {
-                setEditTextError(etInsuranceCompany, "Insurance Company cannot be empty.")
+                displayMsg("Alert", "Select insurance name")
             }
         }
+
+        imgInsurancePic.setOnClickListener {
+            showImage(imgInsurancePic)
+        }
+
+        tvAddInsuranceCardPic.setOnClickListener {
+            captureImage(imgInsurancePic)
+        }
+
+        imgInsurancePicClear.setOnClickListener {
+            imgInsurancePic.setImageDrawable(null)
+            imgInsurancePic.setImageResource(R.drawable.health_insurance)
+        }
+    }
+
+    private fun insuranceNameSpinner() {
+        insuranceNameData = resources.getStringArray(R.array.insurance_name)
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            requireActivity(), android.R.layout.simple_spinner_dropdown_item, insuranceNameData!!
+        )
+        spinnerInsuranceCompany.setAdapter(adapter)
+        spinnerInsuranceCompany.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, arg1, position, id ->
+                //TODO: You can your own logic.
+                selectedInsuranceName = insuranceNameData!![position]
+            }
+    }
+
+    private fun verifyInsuranceApi() {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .insuranceVerifyApi(
+                        InsuranceVerifyReqBody(
+                            preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
+                            selectedInsuranceName,
+                            getText(etPlanId),
+                            getText(etMemberId),
+                            getText(etGroupId),
+                            getText(etMemberName)
+                        ), getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "200") {
+                                val transSts = TransactionStatus(
+                                    "1",
+                                    "56uyw-12edr-edry5-edtgy",
+                                    preference!![PrefKeys.PREF_EMAIL, ""]!!,
+                                    10,
+                                    "dfghj",
+                                    true,
+                                    12
+                                )
+                                replaceFragment(
+                                    TransactionStatusFragment.newInstance(transSts, true),
+                                    R.id.layout_home,
+                                    TransactionStatusFragment.TAG
+                                )
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                verifyInsuranceApi()
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
     }
 
     companion object {

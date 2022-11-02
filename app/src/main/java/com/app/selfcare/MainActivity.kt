@@ -9,8 +9,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -22,20 +24,25 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.loader.content.CursorLoader
 import com.app.selfcare.controller.IController
-import com.app.selfcare.fragment.LoginFragment
-import com.app.selfcare.fragment.ProfileFragment
-import com.app.selfcare.fragment.SplashFragment
+import com.app.selfcare.fragment.*
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
+import com.app.selfcare.utils.NSFWDetector
+import com.app.selfcare.utils.Utils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_header.*
@@ -63,14 +70,24 @@ class MainActivity : BaseActivity(), IController {
     private var mCurrentPhotoPath: String? = ""
     private var bitmapList: ArrayList<String> = ArrayList()
     private var imageView: ImageView? = null
+    private var navigationView: BottomNavigationView? = null
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adjustFontScale(resources.configuration, 1.0f)
+        //window.statusBarColor = Color.WHITE
         setContentView(R.layout.activity_main)
         preference = PreferenceHelper.defaultPrefs(this)
         drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         ic_menu.setOnClickListener { handleClick(it) }
+        imgUserPic.setOnClickListener {
+            replaceFragment(
+                ProfileFragment(),
+                R.id.layout_home,
+                ProfileFragment.TAG
+            )
+        }
         nav_view.getHeaderView(0).drawer_img_back.setOnClickListener { _view -> handleClick(_view) }
         nav_view.setNavigationItemSelectedListener { item: MenuItem ->
             drawer_layout.closeDrawer(GravityCompat.START)
@@ -81,7 +98,19 @@ class MainActivity : BaseActivity(), IController {
             requestPermission(permissionCode)
         }
 
-        replaceFragmentNoBackStack(SplashFragment(), R.id.layout_home, SplashFragment.TAG)
+        if (preference!![PrefKeys.PREF_USER_ID, ""]!!.isNotEmpty()) {
+            if (preference!![PrefKeys.PREF_IS_LOGGEDIN, false]!!) {
+                replaceFragmentNoBackStack(
+                    BottomNavigationFragment(),
+                    R.id.layout_home,
+                    BottomNavigationFragment.TAG
+                )
+            } else {
+                replaceFragmentNoBackStack(SplashFragment(), R.id.layout_home, SplashFragment.TAG)
+            }
+        } else {
+            replaceFragmentNoBackStack(SplashFragment(), R.id.layout_home, SplashFragment.TAG)
+        }
 
         getBackButton().setOnClickListener {
             popBackStack()
@@ -126,6 +155,14 @@ class MainActivity : BaseActivity(), IController {
                 //sendEventLog("", Utils.NAV_LOGOUT)
                 displayConfirmPopup()
             }
+            R.id.nav_consent -> {
+                replaceFragment(
+                    ConsentsListFragment(),
+                    R.id.layout_home,
+                    ConsentsListFragment.TAG
+                )
+            }
+
             /*R.id.nav_sync -> {
                 sendEventLog("", Utils.NAV_SYNC_HEALTH)
                 replaceFragment(
@@ -147,6 +184,7 @@ class MainActivity : BaseActivity(), IController {
         baseContext.resources.updateConfiguration(configuration, metrics)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun checkPermission(): Boolean {
         return (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED &&
@@ -157,9 +195,16 @@ class MainActivity : BaseActivity(), IController {
                 ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+                == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION)
+                == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
+                == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
                 == PackageManager.PERMISSION_GRANTED)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun requestPermission(id: Int) {
         ActivityCompat.requestPermissions(
             this, arrayOf(
@@ -167,12 +212,16 @@ class MainActivity : BaseActivity(), IController {
                 Manifest.permission.CAMERA,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.READ_PHONE_STATE
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.ACTIVITY_RECOGNITION,
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.WRITE_CALENDAR
             ),
             id
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>,
         grantResults: IntArray
@@ -184,7 +233,7 @@ class MainActivity : BaseActivity(), IController {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 && grantResults[1] == PackageManager.PERMISSION_GRANTED
             ) {
-                //takePicture()
+                takePicture()
             } else {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
             }
@@ -193,7 +242,7 @@ class MainActivity : BaseActivity(), IController {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 && grantResults[1] == PackageManager.PERMISSION_GRANTED
             ) {
-                //choosePhotoFromGallery()
+                choosePhotoFromGallery()
             } else {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
             }
@@ -201,7 +250,7 @@ class MainActivity : BaseActivity(), IController {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 && grantResults[1] == PackageManager.PERMISSION_GRANTED
             ) {
-                //uploadVideo()
+                uploadVideo()
             } else {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
             }
@@ -258,19 +307,23 @@ class MainActivity : BaseActivity(), IController {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun captureImage() {
         if (checkPermission()) takePicture() else requestPermission(permissionRequestCode)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun captureImage(imageView: ImageView) {
         this.imageView = imageView
         showPictureDialog()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun uploadPicture() {
         if (checkPermission()) choosePhotoFromGallery() else requestPermission(requestFileUpload)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun uploadVideo() {
         if (checkPermission()) {
             val videoPickIntent = Intent(Intent.ACTION_PICK)
@@ -282,25 +335,13 @@ class MainActivity : BaseActivity(), IController {
         } else requestPermission(requestVideoUpload)
     }
 
-    private fun displayConfirmPopup() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Alert")
-        builder.setMessage("Would you like to exit the App?")
-        builder.setPositiveButton(android.R.string.yes) { dialog, _ ->
-            dialog.dismiss()
-            clearCache()
-        }
-        builder.setNegativeButton(android.R.string.no) { dialog, _ ->
-            dialog.dismiss()
-        }
-        builder.show()
+
+    fun setBottomNavigation(navigationView: BottomNavigationView?) {
+        this.navigationView = navigationView
     }
 
-    private fun clearCache() {
-        preference!![PrefKeys.PREF_IS_LOGGEDIN] = false
-        getHeader().visibility = View.GONE
-        swipeSliderEnable(false)
-        replaceFragmentNoBackStack(LoginFragment(), R.id.layout_home, LoginFragment.TAG)
+    fun getBottomNavigation(): BottomNavigationView? {
+        return navigationView
     }
 
     override fun clearTempFormData() {
@@ -321,17 +362,21 @@ class MainActivity : BaseActivity(), IController {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    override fun setBottomMenu(id: Int) {
+        getBottomNavigation()!!.selectedItemId = id
+    }
+
     private fun takePicture() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val file: File = createFile()
 
         val uri: Uri = FileProvider.getUriForFile(
             this,
-            "com.app.wecare",
+            "com.app.selfcare",
             file
         )
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        startActivityForResult(intent, requestImageCapture!!)
+        startActivityForResult(intent, requestImageCapture)
     }
 
     private fun choosePhotoFromGallery() {
@@ -359,6 +404,7 @@ class MainActivity : BaseActivity(), IController {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun showPictureDialog() {
         val pictureDialog = AlertDialog.Builder(this)
         pictureDialog.setTitle("Select Action")
@@ -380,5 +426,142 @@ class MainActivity : BaseActivity(), IController {
             }
         }
         pictureDialog.show()
+    }
+
+    private fun getRealPathFromURI(contentUri: Uri): String {
+        try {
+            val proj = arrayOf(MediaStore.Images.Media.DATA)
+            val loader =
+                CursorLoader(this, contentUri, proj, null, null, null)
+            val cursor = loader.loadInBackground()
+            val columnIndex = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor.moveToFirst()
+            val result = cursor.getString(columnIndex)
+            cursor.close()
+            return result
+        } catch (e: Exception) {
+        }
+        return ""
+    }
+
+    private fun loadBitmap(fileName: String) {
+        if (imageView != null) {
+            if (BitmapFactory.decodeFile(fileName) != null) {
+                NSFWDetector.isNSFW(
+                    BitmapFactory.decodeFile(fileName),
+                    Utils.NSFW_CONFIDENCE_THRESHOLD.toFloat()
+                ) { isNSFW, label, confidence, image ->
+                    when (label) {
+                        Utils.LABEL_SFW -> {
+                            Toast.makeText(this, "This is an obscene image", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        Utils.LABEL_NSFW -> {
+                            Glide.with(this)
+                                .load(File(fileName))
+                                .into(imageView!!)
+                            //Toast.makeText(this, "SFW with confidence: $confidence", Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {
+                            Toast.makeText(this, "Error while loading image", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                }
+            } else {
+                if (imageView != null) {
+                    Glide.with(this)
+                        .load(File(fileName))
+                        .into(imageView!!)
+                } else {
+                    bitmapList.add(fileName)
+                }
+            }
+        } else {
+            bitmapList.add(fileName)
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == requestGalleryImage && resultCode == Activity.RESULT_OK) {
+
+            if (data!!.clipData != null) {
+                val count = data.clipData!!.itemCount
+                for (i in 0 until count) {
+                    mCurrentPhotoPath = getRealPathFromURI(data.clipData!!.getItemAt(i).uri)
+                    loadBitmap(mCurrentPhotoPath!!)
+                }
+            } else if (data.data != null) {
+                try {
+                    mCurrentPhotoPath = getRealPathFromURI(data.data!!)
+                    loadBitmap(mCurrentPhotoPath!!)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        } else if (requestCode == requestVideoUpload && resultCode == Activity.RESULT_OK) {
+
+            if (data!!.clipData != null) {
+                val count = data.clipData!!.itemCount
+                for (i in 0 until count) {
+                    mCurrentPhotoPath = getRealPathFromURI(data.clipData!!.getItemAt(i).uri)
+                }
+            } else if (data.data != null) {
+                try {
+                    mCurrentPhotoPath = getRealPathFromURI(data.data!!)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+            loadBitmap(mCurrentPhotoPath!!)
+            if (mCurrentPhotoPath!!.isNotEmpty()) {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Alert")
+                builder.setMessage("Do you really want to upload this video?")
+                builder.setPositiveButton("Yes") { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                    //(getCurrentFragment() as ShareMomentFragment).postVideoFeed(this)
+                }
+                //performing cancel action
+                builder.setNeutralButton("Cancel") { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                    bitmapList.clear()
+                    //(getCurrentFragment() as ShareMomentFragment).hidePhotosList()
+                }
+                val alert = builder.create()
+                alert.setCancelable(false)
+                alert.show()
+            }
+
+        } else if (requestCode == requestImageCapture && resultCode == Activity.RESULT_OK) {
+            try {
+                loadBitmap(mCurrentPhotoPath!!)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun displayConfirmPopup() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Alert")
+        builder.setMessage("Would you like to exit the App?")
+        builder.setPositiveButton(android.R.string.yes) { dialog, _ ->
+            dialog.dismiss()
+            clearCache()
+        }
+        builder.setNegativeButton(android.R.string.no) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+
+    private fun clearCache() {
+        preference!![PrefKeys.PREF_IS_LOGGEDIN] = false
+        getHeader().visibility = View.GONE
+        swipeSliderEnable(false)
+        replaceFragmentNoBackStack(LoginFragment(), R.id.layout_home, LoginFragment.TAG)
     }
 }

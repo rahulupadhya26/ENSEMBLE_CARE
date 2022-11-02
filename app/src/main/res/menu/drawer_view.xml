@@ -22,12 +22,25 @@
         <item
             android:id="@+id/nav_recover_spec"
             android:title="Become a recover specialist"
+            android:icon="@drawable/specialist"
+            android:iconTint="@color/black"
+            app:actionViewClass="android.widget.TextView" />
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_consent"
+            android:title="Consent and ROI forms"
+            android:icon="@drawable/form"
+            android:iconTint="@color/black"
             app:actionViewClass="android.widget.TextView" />
     </group>
 
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_logout"
+            android:icon="@drawable/logout"
+            android:iconTint="@color/black"
             android:title="Logout"
             app:actionViewClass="android.widget.TextView" />
     </group>

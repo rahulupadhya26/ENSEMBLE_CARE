@@ -1,18 +1,29 @@
 package com.app.selfcare.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.telephony.PhoneNumberFormattingTextWatcher
+import android.telephony.PhoneNumberUtils
+import android.text.Editable
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.app.selfcare.R
+import com.app.selfcare.data.Employee
 import com.app.selfcare.data.Register
+import com.app.selfcare.data.UserDetails
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_register_part_a.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_register_part_b.*
+import kotlinx.android.synthetic.main.fragment_register_part_c.*
+import kotlinx.android.synthetic.main.fragment_registration.*
+import retrofit2.HttpException
+import java.lang.Exception
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -57,58 +68,94 @@ class RegisterPartBFragment : BaseFragment() {
             etSignUpConfirmPass.setText(register.password2)
         }
 
+        etSignUpMailId.requestFocus()
+
+        etSignUpPhoneNo.addTextChangedListener(object : PhoneNumberFormattingTextWatcher("US") {
+            private var mFormatting = false
+            private var mAfter = 0
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                super.beforeTextChanged(s, start, count, after)
+                mAfter = after
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                super.afterTextChanged(s)
+                if (!mFormatting) {
+                    mFormatting = true
+                    // using US formatting.
+                    if (mAfter != 0) // in case back space ain't clicked.
+                        PhoneNumberUtils.formatNumber(
+                            s, PhoneNumberUtils.getFormatTypeForLocale(
+                                Locale.US
+                            )
+                        )
+                    mFormatting = false
+                }
+            }
+        })
+
         btnRegisterB.setOnClickListener {
             if (getText(etSignUpMailId).isNotEmpty()) {
-                if (getText(etSignUpPhoneNo).isNotEmpty()) {
-                    if (getText(etSignUpPass).isNotEmpty()) {
-                        if (getText(etSignUpConfirmPass).isNotEmpty()) {
-                            if (getText(etSignUpPass) == getText(etSignUpConfirmPass)) {
-                                if (isValidPasswordFormat(getText(etSignUpPass))) {
-                                    if (!(getText(etSignUpPass).contains(Utils.firstName) ||
-                                                getText(etSignUpPass).contains(Utils.middleName) ||
-                                                getText(etSignUpPass).contains(Utils.lastName) ||
-                                                getText(etSignUpPass).contains(getText(etSignUpMailId)))
-                                    ) {
-                                        Utils.email = getText(etSignUpMailId)
-                                        Utils.phoneNo = getText(etSignUpPhoneNo)
-                                        Utils.pass = getText(etSignUpPass)
-                                        Utils.confirmPass = getText(etSignUpConfirmPass)
-                                        replaceFragment(
-                                            RegisterPartCFragment(),
-                                            R.id.layout_home,
-                                            RegisterPartCFragment.TAG
-                                        )
+                if (isValidEmail(etSignUpMailId)) {
+                    if (getText(etSignUpPhoneNo).isNotEmpty()) {
+                        if (getText(etSignUpPhoneNo).replace("-", "").length == 10) {
+                            if (getText(etSignUpPass).isNotEmpty()) {
+                                if (getText(etSignUpConfirmPass).isNotEmpty()) {
+                                    if (getText(etSignUpPass) == getText(etSignUpConfirmPass)) {
+                                        if (isValidPasswordFormat(getText(etSignUpPass))) {
+                                            if (!(getText(etSignUpPass).contains(Utils.firstName) ||
+                                                        getText(etSignUpPass).contains(Utils.lastName) ||
+                                                        getText(etSignUpPass).contains(
+                                                            getText(
+                                                                etSignUpMailId
+                                                            )
+                                                        ))
+                                            ) {
+                                                validateUserDetails()
+                                            } else {
+                                                setEditTextError(
+                                                    etSignUpPass,
+                                                    "Password should not contain name or email"
+                                                )
+                                            }
+                                        } else {
+                                            setEditTextError(
+                                                etSignUpPass,
+                                                "Password must be contain at least 9 characters, 1 uppercase, alphanumeric and should not contain whitespaces."
+                                            )
+                                        }
                                     } else {
-                                        setEditTextError(
-                                            etSignUpPass,
-                                            "Password should not contain name or email"
-                                        )
+                                        displayToast("Password Mismatch")
                                     }
                                 } else {
                                     setEditTextError(
-                                        etSignUpPass,
-                                        "Password must be contain at least 9 characters, 1 uppercase, alphanumeric and should not contain whitespaces."
+                                        etSignUpConfirmPass,
+                                        "Confirm password cannot be blank"
                                     )
                                 }
                             } else {
-                                displayToast("Password Mismatch")
+                                setEditTextError(
+                                    etSignUpPass,
+                                    "Password cannot be blank"
+                                )
                             }
                         } else {
                             setEditTextError(
-                                etSignUpConfirmPass,
-                                "Confirm password cannot be blank"
+                                etSignUpPhoneNo,
+                                "Enter valid phone number"
                             )
                         }
                     } else {
                         setEditTextError(
-                            etSignUpPass,
-                            "Password cannot be blank"
+                            etSignUpPhoneNo,
+                            "Phone number cannot be blank"
                         )
                     }
                 } else {
                     setEditTextError(
-                        etSignUpPhoneNo,
-                        "Phone number cannot be blank"
+                        etSignUpMailId,
+                        "Enter valid Mail Id"
                     )
                 }
             } else {
@@ -118,6 +165,60 @@ class RegisterPartBFragment : BaseFragment() {
                 )
             }
         }
+    }
+
+    private fun validateUserDetails() {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .verifyUserDetail(
+                        UserDetails(
+                            getText(etSignUpMailId),
+                            getText(etSignUpPhoneNo),
+                            Utils.ssn
+                        )
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0].replace("\"", "")
+                            if (status == "200") {
+                                Utils.email = getText(etSignUpMailId)
+                                Utils.phoneNo = getText(etSignUpPhoneNo).replace("-", "")
+                                Utils.pass = getText(etSignUpPass)
+                                Utils.confirmPass = getText(etSignUpConfirmPass)
+                                replaceFragment(
+                                    RegisterPartCFragment(),
+                                    R.id.layout_home,
+                                    RegisterPartCFragment.TAG
+                                )
+                            } else {
+                                displayMsg("Alert", "Record already exist.")
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 404 || (error as HttpException).code() == 400) {
+                            displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
     }
 
     companion object {

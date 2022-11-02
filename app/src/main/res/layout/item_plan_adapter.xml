@@ -7,15 +7,16 @@
     
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/_10dp"
         app:cardElevation="@dimen/_10dp"
-        android:layout_margin="@dimen/_10dp">
+        app:cardUseCompatPadding="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/_10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -26,7 +27,6 @@
                     android:id="@+id/txtChoosePlan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:padding="5dp"
                     android:gravity="center"
                     android:text="Plus"
@@ -45,9 +45,9 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="80dp"
                 android:src="@drawable/therapy"
-                android:padding="20dp"/>
+                android:padding="@dimen/_10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -64,10 +64,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/fontfamily"
-                    android:padding="10dp"
+                    android:padding="5dp"
                     android:text="Evaluation, diagnosis and prescription by a medical prescriber"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_16sp" />
+                    android:textSize="@dimen/_14sp" />
 
             </LinearLayout>
 
@@ -86,10 +86,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/fontfamily"
-                    android:padding="10dp"
+                    android:padding="5dp"
                     android:text="Monthly medication delivery(if prescribed)"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_16sp" />
+                    android:textSize="@dimen/_14sp" />
 
             </LinearLayout>
 
@@ -108,10 +108,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/fontfamily"
-                    android:padding="10dp"
+                    android:padding="5dp"
                     android:text="Regular video sessions with an assigned care counselor"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_16sp" />
+                    android:textSize="@dimen/_14sp" />
 
             </LinearLayout>
 
@@ -130,10 +130,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/fontfamily"
-                    android:padding="10dp"
+                    android:padding="5dp"
                     android:text="Evidence-based behavioral health counseling and regular progress checks"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_16sp" />
+                    android:textSize="@dimen/_14sp" />
 
             </LinearLayout>
 
@@ -141,8 +141,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/_20dp"
-                android:layout_marginBottom="@dimen/_20dp"
                 android:gravity="center">
 
                 <TextView
@@ -150,8 +148,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/fontfamily"
-                    android:paddingTop="@dimen/_10dp"
-                    android:paddingBottom="@dimen/_10dp"
                     android:paddingStart="@dimen/_10dp"
                     android:textColor="@color/accent"
                     android:textSize="@dimen/_20sp"
@@ -161,8 +157,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/fontfamily"
-                    android:paddingTop="@dimen/_10dp"
-                    android:paddingBottom="@dimen/_10dp"
                     android:paddingEnd="@dimen/_10dp"
                     android:text="/week for first month"
                     android:textColor="@color/accent"
@@ -172,14 +166,22 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/btnStartToday"
                 android:layout_width="180dp"
                 android:layout_height="60dp"
                 android:background="@drawable/button_style_blue"
                 android:layout_gravity="center"
                 android:text="Start Today"
                 android:textAppearance="@style/fontfamily"
-                android:textSize="@dimen/_18sp"/>
+                android:textSize="@dimen/_18sp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btnStartToday"
+                style="@style/buttonBackground"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Start Today" />
 
         </LinearLayout>
 

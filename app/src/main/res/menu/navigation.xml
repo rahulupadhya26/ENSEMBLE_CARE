@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/home"
+        android:title="Home"/>
+
+    <item
+        android:id="@+id/navigation_explore"
+        android:icon="@drawable/explore"
+        android:title="Explore"/>
+
+    <item
+        android:enabled="false"
+        android:id="@+id/navigation_placeholder"
+        android:title="@null" />
+
+    <item
+        android:id="@+id/navigation_coaches"
+        android:icon="@drawable/coach"
+        android:title="Coaches"/>
+
+    <!--<item
+        android:id="@+id/navigation_assessment"
+        android:icon="@drawable/assessment"
+        android:title="My Assessments"/>-->
+
+    <item
+        android:id="@+id/navigation_myHealthInfo"
+        android:icon="@drawable/health"
+        android:title="Health Info"/>
+</menu>

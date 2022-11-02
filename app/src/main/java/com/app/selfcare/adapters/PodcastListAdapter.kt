@@ -38,11 +38,11 @@ class PodcastListAdapter(
     override fun onBindViewHolder(holder: PodcastListAdapter.ViewHolder, position: Int) {
         val item = list[position]
         Glide.with(context)
-            .load(item.image)
-            .placeholder(R.drawable.img_placeholder)
+            .load(item.podcast_image)
+            .placeholder(R.drawable.sample_img)
             .transform(CenterCrop(), RoundedCorners(5))
             .into(holder.podcastImage)
-        holder.podcastTitle.text = item.title
+        holder.podcastTitle.text = item.name
         holder.podcastArtist.text = item.artist
         holder.podcastLayout.setOnClickListener {
             adapterItemClickListener!!.onPodcastItemClicked(item)
@@ -50,9 +50,9 @@ class PodcastListAdapter(
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val podcastImage: ImageView = itemView.img_podcast
-        val podcastTitle: TextView = itemView.txt_podcast_title
-        val podcastArtist: TextView = itemView.txt_podcast_artist
+        val podcastImage: ImageView = itemView.imgPodcast
+        val podcastTitle: TextView = itemView.txtPodcastTitle
+        val podcastArtist: TextView = itemView.txtPodcastArtist
         val podcastLayout: CardView = itemView.cardview_podcast
     }
 }

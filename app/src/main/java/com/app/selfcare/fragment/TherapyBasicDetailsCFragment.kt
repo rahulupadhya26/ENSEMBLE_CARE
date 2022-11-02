@@ -1,14 +1,17 @@
 package com.app.selfcare.fragment
 
 import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.app.selfcare.R
 import com.app.selfcare.utils.Utils
+import kotlinx.android.synthetic.main.fragment_insurance.*
 import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -39,6 +42,7 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
         return R.layout.fragment_therapy_basic_details_c
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
@@ -96,6 +100,19 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
         layoutOfficeVisit.setOnClickListener {
             communicationType = "Office visit"
             displayToast("Office visit")
+        }
+
+        tvAddTherapyReviewPic.setOnClickListener {
+            captureImage(imgPrescriptionPic)
+        }
+
+        imgPrescriptionPic.setOnClickListener {
+            showImage(imgPrescriptionPic)
+        }
+
+        imgTherapistReviewPicClear.setOnClickListener {
+            imgPrescriptionPic.setImageDrawable(null)
+            imgPrescriptionPic.setImageResource(R.drawable.prescription)
         }
 
         btnBasicDetailC.setOnClickListener {

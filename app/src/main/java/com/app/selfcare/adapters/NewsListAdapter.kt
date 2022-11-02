@@ -9,12 +9,12 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnNewsItemClickListener
-import com.app.selfcare.data.News
+import com.app.selfcare.data.Articles
 import kotlinx.android.synthetic.main.layout_item_news_list.view.*
 
 class NewsListAdapter(
     val context: Context,
-    val list: List<News>, private val adapterItemClickListener: OnNewsItemClickListener?
+    val list: List<Articles>, private val adapterItemClickListener: OnNewsItemClickListener?
 ) :
     RecyclerView.Adapter<NewsListAdapter.ViewHolder>() {
 
@@ -34,8 +34,9 @@ class NewsListAdapter(
     override fun onBindViewHolder(holder: NewsListAdapter.ViewHolder, position: Int) {
 
         val item = list[position]
-        holder.newsTitle.text = item.newsTitle
-        holder.newsDate.text = item.newsPublishOn
+        holder.newsTitle.text = item.name
+        holder.newsDate.text = item.published_date
+        holder.newsLink.text = item.article_url
         holder.layoutNewsPane.setOnClickListener {
             adapterItemClickListener!!.onNewsItemClicked(item)
         }
@@ -44,6 +45,7 @@ class NewsListAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val newsTitle: TextView = itemView.txtNewsTitle
         val newsDate: TextView = itemView.txtNewsDate
+        val newsLink: TextView = itemView.txtNewsLink
         val layoutNewsPane: CardView = itemView.layoutNewsPane
     }
 }

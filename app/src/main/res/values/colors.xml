@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryGreen">#0C4B33</color>
-    <color name="primaryDarkGreen">#0C4B33</color>
-    <color name="accent">#ec744a</color>
+    <!--<color name="primaryGreen">#0C4B33</color>
+    <color name="primaryDarkGreen">#0C4B33</color>-->
+    <!--<color name="primaryGreen">#fea515</color>
+    <color name="primaryDarkGreen">#fea515</color>-->
+    <color name="primaryGreen">#EB1A012C</color>
+    <color name="primaryDarkGreen">#EB1A012C</color>
+    <color name="accent">#EB1A012C</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
@@ -15,9 +19,28 @@
     <color name="lightTeal">#4DB6AC</color>
     <color name="lightBlue">#42A5F5</color>
     <color name="DarkBlue">#3D5AFE</color>
+    <color name="lightestGrey">#ededed</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorLightBlue">#B3BDC8</color>
+    <color name="veryLightGrey">#f0f0f0</color>
+
+    <color name="editTextBackground">#f6f8f9</color>
+    <color name="imgCardBackground">#f0f3f5</color>
 
     <color name="buttonGreen">#003C69</color>
     <color name="lightGrey">#EBEAEF</color>
     <color name="localBackground">#827b92</color>
     <color name="remoteBackground">#484258</color>
+
+    <color name="calendarGrey">#7a7a7a</color>
+    <color name="calendarLightGrey">#aaaaaa</color>
+    <color name="calendarVeryLightGrey">#f0f0f0</color>
+
+    <color name="blue">#32c5f3</color>
+    <color name="green">#4ACC60</color>
+    <color name="darkGreen">#1B5E20</color>
+    <color name="pink">#6A2290</color>
+    <color name="blue_light">#53687D</color>
+    <color name="yellow">#FF7F24</color>
+    <color name="pink_dark">#4B0082</color>
 </resources>

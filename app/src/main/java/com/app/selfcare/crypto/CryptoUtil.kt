@@ -7,12 +7,12 @@ import java.io.IOException
 object CryptoUtil {
     @Throws(Exception::class)
     fun encrypt(data: String): String {
-        return MCrypt.encrypt(data)!!
+        return AESCrypt.encrypt(data)
     }
 
     @Throws(Exception::class)
     fun decrypt(data: String?): String {
-        return MCrypt.decrypt(data!!)!!
+        return AESCrypt.decrypt(data!!)!!
     }
 
     @Throws(IOException::class)

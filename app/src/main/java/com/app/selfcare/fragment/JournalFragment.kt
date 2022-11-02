@@ -1,17 +1,25 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.adapters.JournalListAdapter
 import com.app.selfcare.controller.OnJournalItemClickListener
 import com.app.selfcare.data.Journal
+import com.app.selfcare.data.PatientId
+import com.app.selfcare.preference.PrefKeys
+import com.app.selfcare.preference.PreferenceHelper.get
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_journal.*
+import retrofit2.HttpException
+import java.lang.reflect.Type
 import java.util.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
@@ -46,9 +54,7 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
         getHeader().visibility = View.GONE
         getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
-
-        val journalLists: ArrayList<Journal> = arrayListOf()
-        journalLists.add(
+        /*journalLists.add(
             Journal(
                 "Walking",
                 "Walk for 10 kms for good health",
@@ -77,18 +83,9 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                 "2022",
                 "12:14"
             )
-        )
-        recyclerViewJournalList.apply {
-            layoutManager = LinearLayoutManager(
-                mActivity!!,
-                RecyclerView.VERTICAL,
-                false
-            )
-            adapter = JournalListAdapter(
-                mActivity!!,
-                journalLists, this@JournalFragment
-            )
-        }
+        )*/
+
+        getJournalsData()
 
         fabCreateJournalBtn.setOnClickListener {
             replaceFragment(
@@ -97,6 +94,67 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                 CreateJournalFragment.TAG
             )
         }
+    }
+
+    private fun getJournalsData(){
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getRequiredData("PI0017", PatientId(preference!![PrefKeys.PREF_PATIENT_ID, 0]!!), getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            var journalLists: ArrayList<Journal> = arrayListOf()
+                            val journalList: Type =
+                                object : TypeToken<ArrayList<Journal?>?>() {}.type
+                            journalLists = Gson().fromJson(responseBody, journalList)
+                            if (journalLists.isNotEmpty()) {
+                                recyclerViewJournalList.visibility = View.VISIBLE
+                                txt_no_journal.visibility = View.GONE
+                                recyclerViewJournalList.apply {
+                                    layoutManager = LinearLayoutManager(
+                                        mActivity!!,
+                                        RecyclerView.VERTICAL,
+                                        false
+                                    )
+                                    adapter = JournalListAdapter(
+                                        mActivity!!,
+                                        journalLists, this@JournalFragment
+                                    )
+                                }
+                            } else {
+                                recyclerViewJournalList.visibility = View.GONE
+                                txt_no_journal.visibility = View.VISIBLE
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                getJournalsData()
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
     }
 
     companion object {
@@ -117,14 +175,25 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_journals"
     }
 
     override fun onJournalItemClicked(journal: Journal, isDelete: Boolean) {
         if (isDelete) {
             //Delete Journal
+            deleteData("PI0017", journal.id) { response ->
+                if (response == "Success") {
+                    getJournalsData()
+                }
+            }
         } else {
             //Navigate to Journal detail screen
+            replaceFragment(
+                DetailJournalFragment.newInstance(journal),
+                R.id.layout_home,
+                DetailJournalFragment.TAG
+            )
         }
     }
 }

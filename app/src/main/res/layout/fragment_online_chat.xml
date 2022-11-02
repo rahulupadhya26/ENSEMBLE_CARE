@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.OnlineChatFragment">
+
+    <TextView
+        android:id="@+id/txtTherapistChatName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Max"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_22sp"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatMessageList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/relativeLayoutMessageText"
+        android:layout_below="@+id/txtTherapistChatName" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutMessageText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/_10dp">
+
+
+        <EditText
+            android:id="@+id/editTextMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_5dp"
+            android:layout_toStartOf="@+id/relativeLayoutSend"
+            android:background="@drawable/bg_corner_rounded_edittext"
+            android:hint="Message"
+            android:maxLines="6"
+            android:padding="@dimen/_10dp"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_18sp" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutSend"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/bg_round_gray">
+
+            <ImageView
+                android:id="@+id/imgSend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@android:drawable/ic_menu_send"
+                app:tint="#388E3C" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

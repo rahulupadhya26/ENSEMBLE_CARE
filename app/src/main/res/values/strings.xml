@@ -38,10 +38,27 @@
 
     <string name="resend"><u>Resend</u></string>
 
+    <string name="send_msg_failed">Failed to send message</string>
+    <string name="peer_offline">Peer is offline</string>
+    <string name="message_cached">Message cached by server</string>
+
+    <string name="join_channel_failed">Join channel failed</string>
+    <string name="channel_title" translatable="false">%s(%d)</string>
+    <string name="reconnecting">Network reconnecting ...</string>
+    <string name="account_offline">Connection lost</string>
+
     <string-array name="gender">
+        <item>Prefer not to say</item>
         <item>Male</item>
         <item>Female</item>
         <item>Other</item>
+    </string-array>
+
+    <string-array name="martialStatus">
+        <item>Single</item>
+        <item>Married</item>
+        <item>Divorced</item>
+        <item>Prefer not to say</item>
     </string-array>
 
     <string-array name="usertype">
@@ -49,5 +66,66 @@
         <item>Doctor</item>
         <item>Therapist</item>
         <item>Coach</item>
+    </string-array>
+
+    <string-array name="goal_duration">
+        <item>Does not repeat</item>
+        <item>Every day</item>
+        <item>Every week</item>
+        <item>Every month</item>
+        <item>Every year</item>
+    </string-array>
+
+    <string-array name="insurance_name">
+        <item>AARP</item>
+        <item>Aetna</item>
+        <item>American Family Insurance</item>
+        <item>American National Insurance Company</item>
+        <item>Amerigroup</item>
+        <item>Anthem</item>
+        <item>Blue Cross and Blue Shield Association</item>
+        <item>CareSource</item>
+        <item>Cambia Health Solutions</item>
+        <item>Centene Corporation</item>
+        <item>Cigna</item>
+        <item>Coventry Health Care</item>
+        <item>Delta Dental</item>
+        <item>EmblemHealth</item>
+        <item>Fortis</item>
+        <item>Geisinger</item>
+        <item>Golden Rule Insurance Company</item>
+        <item>Group Health Cooperative</item>
+        <item>Group Health Incorporated</item>
+        <item>Harvard Pilgrim Health Care</item>
+        <item>Health Net</item>
+        <item>HealthMarkets</item>
+        <item>HealthPartners</item>
+        <item>HealthSpring</item>
+        <item>Highmark</item>
+        <item>Horace Mann Educators Corporation</item>
+        <item>Humana</item>
+        <item>Independence Blue Cross</item>
+        <item>Kaiser Permanente</item>
+        <item>Kaleida Health</item>
+        <item>Liberty Medical</item>
+        <item>LifeWise Health Plan of Oregon</item>
+        <item>MassHealth</item>
+        <item>Medica</item>
+        <item>Medical Mutual of Ohio</item>
+        <item>MEGA Life and Health Insurance</item>
+        <item>Molina Healthcare</item>
+        <item>Oscar Health</item>
+        <item>Oxford Health Plans</item>
+        <item>Premera Blue Cross</item>
+        <item>Principal Financial Group</item>
+        <item>Shelter Insurance</item>
+        <item>State Farm</item>
+        <item>Thrivent Financial for Lutherans</item>
+        <item>UnitedHealth Group</item>
+        <item>Unitrin</item>
+        <item>Universal American Corporation</item>
+        <item>US Health Group</item>
+        <item>Vantage Health Plan</item>
+        <item>WellCare</item>
     </string-array>
 </resources>

@@ -1,6 +1,7 @@
 package com.app.selfcare.fragment
 
 
+import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -9,6 +10,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.StrictMode
@@ -17,40 +19,48 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.app.selfcare.MainActivity
 import com.app.selfcare.R
 import com.app.selfcare.controller.IController
 import com.app.selfcare.controller.IFragment
+import com.app.selfcare.crypto.DecryptionImpl
+import com.app.selfcare.data.AppointmentReq
+import com.app.selfcare.data.DataId
 import com.app.selfcare.data.Login
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper
+import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.services.RequestInterface
 import com.app.selfcare.utils.Utils
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.display_image.*
+import kotlinx.android.synthetic.main.display_image.view.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
-import java.io.*
-import java.lang.Exception
-import java.util.*
+import retrofit2.HttpException
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
 
 abstract class BaseFragment : Fragment(), IFragment, IController {
@@ -167,13 +177,15 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     }
 
     protected fun isValidPasswordFormat(password: String): Boolean {
-        val passwordREGEX = Pattern.compile("^" +
-                "(?=.*[a-z])" +         //at least 1 lower case letter
-                "(?=.*[A-Z])" +         //at least 1 upper case letter
-                "(?=.*[a-zA-Z])" +      //any letter
-                "(?=\\S+$)" +           //no white spaces
-                ".{9,}" +               //at least 9 characters
-                "$");
+        val passwordREGEX = Pattern.compile(
+            "^" +
+                    "(?=.*[a-z])" +         //at least 1 lower case letter
+                    "(?=.*[A-Z])" +         //at least 1 upper case letter
+                    "(?=.*[a-zA-Z])" +      //any letter
+                    "(?=\\S+$)" +           //no white spaces
+                    ".{9,}" +               //at least 9 characters
+                    "$"
+        );
         return passwordREGEX.matcher(password).matches()
     }
 
@@ -232,18 +244,22 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         return stream.toByteArray()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun captureImage() {
         mActivity!!.captureImage()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     protected fun captureImage(imageView: ImageView) {
         mActivity!!.captureImage(imageView)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun uploadPicture() {
         mActivity!!.uploadPicture()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun uploadVideo() {
         mActivity!!.uploadVideo()
     }
@@ -306,6 +322,23 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         return Uri.parse(path)
     }
 
+    fun setBottomNavigation(navigationView: BottomNavigationView?) {
+        mActivity!!.setBottomNavigation(navigationView)
+    }
+
+    fun getBottomNavigation(): BottomNavigationView? {
+        return mActivity!!.getBottomNavigation()
+    }
+
+    override fun setBottomMenu(id: Int) {
+        mActivity!!.setBottomMenu(id)
+    }
+
+    fun redirectToHome() {
+        setBottomMenu(R.id.navigation_home)
+        popBackStack()
+    }
+
     @Synchronized
     fun getEncryptedRequestInterface(): RequestInterface {
         return mActivity!!.getEncryptedRequestInterface()
@@ -314,6 +347,10 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     @Synchronized
     fun getSyncHealthRequestInterface(syncHealthUrl: String): RequestInterface {
         return mActivity!!.getSyncHealthRequestInterface(syncHealthUrl)
+    }
+
+    fun getAccessToken(): String {
+        return "Bearer " + preference!![PrefKeys.PREF_ACCESS_TOKEN, ""]!!
     }
 
     fun userLogin(
@@ -345,7 +382,11 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
 
                     }, { error ->
                         hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 400) {
+                            displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
                     })
             )
         }
@@ -353,15 +394,25 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     }
 
     private fun saveUserDetails(jsonObj: JSONObject, password: String) {
-        preference!![PrefKeys.PREF_USER_ID] = jsonObj.getString("user_id")
+        preference!![PrefKeys.PREF_USER_ID] = jsonObj.getJSONObject("patient").getString("user")
         preference!![PrefKeys.PREF_EMAIL] = jsonObj.getString("email")
         preference!![PrefKeys.PREF_PHONE_NO] = jsonObj.getString("phone")
-        preference!![PrefKeys.PREF_FNAME] = Utils.firstName
-        preference!![PrefKeys.PREF_MNAME] = Utils.middleName
-        preference!![PrefKeys.PREF_LNAME] = Utils.lastName
-        preference!![PrefKeys.PREF_DOB] = Utils.dob
+        preference!![PrefKeys.PREF_FNAME] = jsonObj.getJSONObject("patient").getString("first_name")
+        preference!![PrefKeys.PREF_MNAME] =
+            jsonObj.getJSONObject("patient").getString("middle_name")
+        preference!![PrefKeys.PREF_LNAME] = jsonObj.getJSONObject("patient").getString("last_name")
+        preference!![PrefKeys.PREF_DOB] = jsonObj.getJSONObject("patient").getString("dob")
         preference!![PrefKeys.PREF_SSN] = Utils.ssn
-        preference!![PrefKeys.PREF_PATIENT_ID] = jsonObj.getString("patient_id")
+        preference!![PrefKeys.PREF_PATIENT_ID] =
+            jsonObj.getJSONObject("patient").getString("patient_id")
+        preference!![PrefKeys.PREF_SELECTED_PLAN] =
+            jsonObj.getJSONObject("patient").getString("selected_plan")
+        preference!![PrefKeys.PREF_SEVERITY_SCORE] =
+            jsonObj.getJSONObject("patient").getString("patient_severity_score")
+        preference!![PrefKeys.PREF_SELECTED_SERVICE] =
+            jsonObj.getJSONObject("patient").getString("selected_service")
+        preference!![PrefKeys.PREF_SELECTED_DISORDER] =
+            jsonObj.getJSONObject("patient").getString("selected_dissorder")
         preference!![PrefKeys.PREF_PASS] = password
         preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
         saveTokens(jsonObj.getString("refresh"), jsonObj.getString("access"))
@@ -370,5 +421,208 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     private fun saveTokens(refreshToken: String, accessToken: String) {
         preference!![PrefKeys.PREF_REFRESH_TOKEN] = refreshToken
         preference!![PrefKeys.PREF_ACCESS_TOKEN] = accessToken
+    }
+
+    fun displayErrorMsg(error: Throwable) {
+        val errorMsg = (error as HttpException).response()!!.errorBody()!!.string()
+        if (errorMsg.isNotEmpty()) {
+            try {
+                val errorJsonObj = JSONObject(errorMsg)
+                val encryptedErrMsg = errorJsonObj.getString("msg")
+                val decryptedErrMsg = DecryptionImpl().decrypt(encryptedErrMsg)!!
+                try {
+                    val decryptedErrorJsonObj = JSONObject(decryptedErrMsg)
+                    val errList = ArrayList<String>()
+                    val iterator: Iterator<*> = decryptedErrorJsonObj.keys()
+                    while (iterator.hasNext()) {
+                        val key = iterator.next() as String
+                        val array: JSONArray = decryptedErrorJsonObj.optJSONArray(key)!!
+                        for (i in 0 until array.length()) {
+                            errList.add(array[i].toString())
+                        }
+                    }
+                    if (errList.isNotEmpty()) {
+
+                        val errorStr = errList.joinToString("\n")
+                        displayToast(errorStr)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    displayToast(decryptedErrMsg)
+                }
+            } catch (e: Exception) {
+                displayToast(errorMsg)
+            }
+        }
+    }
+
+    fun displayAfterLoginErrorMsg(error: Throwable) {
+        try {
+            val errorMsg = (error as HttpException).response()!!.errorBody()!!.string()
+            if (errorMsg.isNotEmpty()) {
+                val errorJsonObj = JSONObject(errorMsg)
+                val encryptedErrMsg = errorJsonObj.getString("msg")
+                val decryptedErrMsg = DecryptionImpl().decrypt(encryptedErrMsg)!!
+                displayToast(decryptedErrMsg)
+            } else {
+                displayToast("Something went wrong.. Please try after sometime")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            displayToast("Something went wrong.. Please try after sometime")
+        }
+    }
+
+    @JvmName("hideKeyboard1")
+    fun View.hideKeyboard() {
+        val inputManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(windowToken, 0)
+    }
+
+    fun deleteData(tableId: String, dataId: Int, myCallback: (result: String?) -> Unit) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .deleteData(tableId, DataId(dataId), getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "200") {
+                                myCallback.invoke("Success")
+                            } else {
+                                displayToast("Something went wrong.. Please try after sometime")
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        displayToast("Error ${error.localizedMessage}")
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun callAppointmentApi(
+        apptId: String,
+        bookingDate: String,
+        visitType: String,
+        status: Int,
+        myCallback: (result: String?) -> Unit
+    ) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .changeAppointmentStatus(
+                        "PI0040",
+                        AppointmentReq(
+                            apptId,
+                            preference!![PrefKeys.PREF_PATIENT_ID, ""]!!,
+                            true,
+                            bookingDate,
+                            visitType,
+                            status,
+                            ""
+                        ), getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "202" || status == "200") {
+                                myCallback.invoke("Success")
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                callAppointmentApi(
+                                    apptId,
+                                    bookingDate,
+                                    visitType,
+                                    status
+                                ) { response ->
+                                    if (response == "Success") {
+                                        replaceFragmentNoBackStack(
+                                            TherapistFeedbackFragment(),
+                                            R.id.layout_home,
+                                            TherapistFeedbackFragment.TAG
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                            popBackStack()
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun showImage(imageView: ImageView) {
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(layoutInflater.inflate(R.layout.display_image, null))
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.btnImageDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.imgView.setImageBitmap((imageView.drawable as BitmapDrawable).bitmap)
+        dialog.show()
+    }
+
+    fun displayConfirmPopup() {
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle("Alert")
+        builder.setMessage("Would you like to exit the App?")
+        builder.setPositiveButton(android.R.string.yes) { dialog, _ ->
+            dialog.dismiss()
+            clearCache()
+        }
+        builder.setNegativeButton(android.R.string.no) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+
+    private fun clearCache() {
+        preference!![PrefKeys.PREF_IS_LOGGEDIN] = false
+        getHeader().visibility = View.GONE
+        swipeSliderEnable(false)
+        replaceFragmentNoBackStack(LoginFragment(), R.id.layout_home, LoginFragment.TAG)
+    }
+
+    fun Fragment?.runOnUiThread(action: () -> Unit) {
+        this ?: return
+        if (!isAdded) return // Fragment not attached to an Activity
+        activity?.runOnUiThread(action)
     }
 }

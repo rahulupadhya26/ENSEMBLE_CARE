@@ -13,10 +13,14 @@ import com.app.selfcare.data.AppointmentReq
 import com.app.selfcare.data.TimeSlots
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.utils.CalenderUtils
+import com.app.selfcare.utils.DateUtils
 import com.app.selfcare.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_final_review.*
+import retrofit2.HttpException
+import java.text.SimpleDateFormat
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,7 +56,12 @@ class FinalReviewFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
 
         val finalReviewList = ArrayList<String>()
-        finalReviewList.add("Need consultation for - Myself")
+        val patientName =
+            preference!![PrefKeys.PREF_FNAME, ""]!! + " " +
+                    preference!![PrefKeys.PREF_MNAME, ""]!! + " " +
+                    preference!![PrefKeys.PREF_LNAME, ""]!!
+        finalReviewList.add("Need consultation for - $patientName")
+        finalReviewList.add("Phone to reach me - " + preference!![PrefKeys.PREF_PHONE_NO, ""]!!)
         /*finalReviewList.add(
             "My location is - " + Utils.selectedStreet + "," +
                     Utils.selectedCity + "," +
@@ -61,7 +70,6 @@ class FinalReviewFragment : BaseFragment() {
                     Utils.selectedCountry
         )*/
         finalReviewList.add("Therapist - Dr. " + Utils.providerName)
-        finalReviewList.add("Phone# - " + preference!![PrefKeys.PREF_PHONE_NO, ""]!!)
         finalReviewList.add("Would like to talk to - " + Utils.providerType)
         finalReviewList.add("Mode of communications - " + Utils.selectedCommunicationMode)
         finalReviewList.add("Tentative date of appointment - " + Utils.aptScheduleDate)
@@ -87,13 +95,11 @@ class FinalReviewFragment : BaseFragment() {
 
         btnFinalReview.setOnClickListener {
             if (checkbox_terms_conditions.isChecked) {
-                //Call book appointment api
-                callBookAppointmentApi()
-                /*replaceFragmentNoBackStack(
+                replaceFragmentNoBackStack(
                     ConsentFormFragment(),
                     R.id.layout_home,
                     ConsentFormFragment.TAG
-                )*/
+                )
             } else {
                 val builder = AlertDialog.Builder(mActivity!!)
                 builder.setTitle("Message")
@@ -105,49 +111,6 @@ class FinalReviewFragment : BaseFragment() {
                 builder.show()
             }
         }
-    }
-
-    private fun callBookAppointmentApi() {
-        showProgress()
-        runnable = Runnable {
-            mCompositeDisposable.add(
-                getEncryptedRequestInterface()
-                    .bookAppointment(
-                        "PI0040",
-                        AppointmentReq(
-                            Utils.appointmentId,
-                            preference!![PrefKeys.PREF_PATIENT_ID, ""]!!,
-                            true,
-                            Utils.aptScheduleDate,
-                            Utils.selectedCommunicationMode
-                        )
-                    )
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ result ->
-                        try {
-                            hideProgress()
-                            var responseBody = result.string()
-                            Log.d("Response Body", responseBody)
-                            val respBody = responseBody.split("|")
-                            val status = respBody[1]
-                            responseBody = respBody[0]
-                            replaceFragmentNoBackStack(
-                                ConsentFormFragment(),
-                                R.id.layout_home,
-                                ConsentFormFragment.TAG
-                            )
-                        } catch (e: Exception) {
-                            hideProgress()
-                            displayToast("Something went wrong.. Please try after sometime")
-                        }
-                    }, { error ->
-                        hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
-                    })
-            )
-        }
-        handler.postDelayed(runnable!!, 1000)
     }
 
     companion object {

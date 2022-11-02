@@ -37,8 +37,7 @@ class PaymentSelectFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var plan: Plan? = null
     private var param2: String? = null
-    private var PUBLISHABLE_KEY =
-        "pk_test_51LASdbADbguK99nMZVLNAO85JxRjkpxS0O9nwWebDxrpna4DA72tSxIsicx17TvtA7MXmyZgFcZvclav6Kol13T2002cE0xWlR"
+    private var PUBLISHABLE_KEY = ""
     private var customerID: String? = null
     private var ephemeralKey: String? = null
     private var clientSecret: String? = null
@@ -91,8 +90,9 @@ class PaymentSelectFragment : BaseFragment() {
                     .getSelfPayDetails(
                         SelfPay(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!,
-                            plan!!.stripe_price_id
-                        )
+                            //plan!!.stripe_price_id
+                            "price_1LD7TsSBFqUpdWnSSJ0awbWQ"
+                        ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
@@ -147,25 +147,26 @@ class PaymentSelectFragment : BaseFragment() {
             is PaymentSheetResult.Completed -> {
                 displayToast("Payment success")
                 Log.d("Payment - ", "Success")
+                getTransStatus(true)
             }
             is PaymentSheetResult.Failed -> {
                 displayToast("Payment failed " + (paymentSheetResult as PaymentSheetResult.Failed).error)
                 Log.e("App", "Got error: ", (paymentSheetResult as PaymentSheetResult.Failed).error)
+                getTransStatus(false)
             }
             else -> {
-                displayToast("Payment cancelled")
+                displayMsg("Alert", "Payment cancelled")
                 Log.d("Payment - ", "Canceled")
             }
         }
-        getTransStatus()
     }
 
-    private fun getTransStatus() {
+    private fun getTransStatus(paymentStatus: Boolean) {
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getPaymentStatus("PI0035", PaymentStatus(paymentId!!))
+                    .getPaymentStatus("PI0035", PaymentStatus(paymentId!!), getAccessToken())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -176,14 +177,23 @@ class PaymentSelectFragment : BaseFragment() {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            transactionSts = Gson().fromJson(responseBody, TransactionStatus::class.java)
-                            replaceFragment(
-                                TransactionStatusFragment.newInstance(transactionSts!!),
-                                R.id.layout_home,
-                                TransactionStatusFragment.TAG
+                            val jsonArray = JSONArray(responseBody)
+                            transactionSts = Gson().fromJson(
+                                jsonArray.getJSONObject(0).toString(),
+                                TransactionStatus::class.java
                             )
+                            if (paymentStatus) {
+                                replaceFragment(
+                                    TransactionStatusFragment.newInstance(transactionSts!!, true),
+                                    R.id.layout_home,
+                                    TransactionStatusFragment.TAG
+                                )
+                            } else {
+                                displayMsg("Alert", "Transaction Failed.")
+                            }
                         } catch (e: Exception) {
                             hideProgress()
+                            e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->

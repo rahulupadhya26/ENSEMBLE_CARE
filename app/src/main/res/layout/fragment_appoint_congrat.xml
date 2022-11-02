@@ -68,7 +68,7 @@
                     android:textAppearance="@style/fontfamily"
                     android:gravity="center"
                     android:text="Consultation has been successfully scheduled.\nPlease check your email for\nupdates on the appointment."
-                    android:textColor="@color/primaryGreen"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/_12sp" />
             </LinearLayout>
 
@@ -95,7 +95,6 @@
             android:layout_marginBottom="10dp"/>
 
         <Button
-            android:id="@+id/btn_go_to_dashboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5dp"
@@ -105,14 +104,21 @@
             android:text="Go to Dashboard"
             android:textColor="@color/white"
             android:textSize="@dimen/_16sp"
-            app:hintTextAppearance="@style/fontfamily" />
+            app:hintTextAppearance="@style/fontfamily"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btn_go_to_dashboard"
+            style="@style/buttonBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5dp"
+            android:text="Go to Dashboard" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:layout_marginTop="20dp"
-            android:padding="10dp"
-            android:src="@drawable/selflove" />
+            android:src="@drawable/splash" />
     </LinearLayout>
 
 </FrameLayout>

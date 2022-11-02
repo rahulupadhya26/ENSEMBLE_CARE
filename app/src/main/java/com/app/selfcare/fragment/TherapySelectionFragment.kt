@@ -1,5 +1,7 @@
 package com.app.selfcare.fragment
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
@@ -9,19 +11,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.adapters.TimeSlotAdapter
+import com.app.selfcare.calendar.CalendarChangesObserver
+import com.app.selfcare.calendar.CalendarViewManager
+import com.app.selfcare.calendar.SingleRowCalendarAdapter
 import com.app.selfcare.controller.OnTextClickListener
-import com.app.selfcare.data.PatientId
-import com.app.selfcare.data.Question
 import com.app.selfcare.data.TimeSlot
 import com.app.selfcare.data.TimeSlots
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.selection.CalendarSelectionManager
+import com.app.selfcare.utils.DateUtil
 import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.calendar_item.view.*
 import kotlinx.android.synthetic.main.fragment_therapy_selection.*
+import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.util.*
 
@@ -39,8 +46,11 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    var selectedTimeSlot: String? = null
+    var selectedTimeSlot: String = ""
     var selectedDate: String? = null
+
+    private val calendar = Calendar.getInstance()
+    private var currentMonth = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,28 +72,30 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
 
         layoutTimeSlotSelection.visibility = View.GONE
 
+        selectedTimeSlot = ""
+
         calendarView.minDate = System.currentTimeMillis() - 1000
         calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
             // Note that months are indexed from 0. So, 0 means January, 1 means february, 2 means march etc.
-            selectedDate = year.toString() + "-" + (month + 1) + "-" + dayOfMonth
-            getTimeSlots()
+            selectedDate = (month + 1).toString() + "/" + dayOfMonth + "/" + year.toString()
+            //getTimeSlots()
         }
 
         // Fetch long milliseconds from calenderView.
         val dateMillis: Long = calendarView.date
         // Create Date object from milliseconds.
         val date = Date(dateMillis)
-        selectedDate = DateFormat.format("yyyy", date) as String + "-" +
-                DateFormat.format("MM", date) as String + "-" +
-                DateFormat.format("dd", date) as String
+        selectedDate = DateFormat.format("MM", date) as String + "/" +
+                DateFormat.format("dd", date) as String + "/" +
+                DateFormat.format("yyyy", date) as String
 
-        getTimeSlots()
+        //getTimeSlots()
 
         btnTimeSlotContinue.setOnClickListener {
             if (selectedDate != null) {
-                if (selectedTimeSlot != null) {
+                if (selectedTimeSlot.isNotEmpty()) {
                     Utils.aptScheduleDate = selectedDate!!
-                    Utils.aptScheduleTime = selectedTimeSlot!!
+                    Utils.aptScheduleTime = selectedTimeSlot
                     //Allergies, symptoms,
                     replaceFragment(
                         TherapyBasicDetailsCFragment(),
@@ -97,6 +109,140 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
                 displayToast("Select date")
             }
         }
+
+        calendar.time = Date()
+        currentMonth = calendar[Calendar.MONTH]
+
+        // enable white status bar with black icons
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requireActivity().window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            requireActivity().window.statusBarColor = Color.WHITE
+        }
+
+        // calendar view manager is responsible for our displaying logic
+        val myCalendarViewManager = object :
+            CalendarViewManager {
+            override fun setCalendarViewResourceId(
+                position: Int,
+                date: Date,
+                isSelected: Boolean
+            ): Int {
+                // set date to calendar according to position where we are
+                val cal = Calendar.getInstance()
+                cal.time = date
+                // if item is selected we return this layout items
+                // in this example. monday, wednesday and friday will have special item views and other days
+                // will be using basic item view
+                return if (isSelected)
+                    R.layout.selected_calendar_item
+                /*when (cal[Calendar.DAY_OF_WEEK]) {
+                    Calendar.MONDAY -> R.layout.first_special_selected_calendar_item
+                    Calendar.WEDNESDAY -> R.layout.second_special_selected_calendar_item
+                    Calendar.FRIDAY -> R.layout.third_special_selected_calendar_item
+                    else -> R.layout.selected_calendar_item
+                }*/
+                else
+                // here we return items which are not selected
+                    R.layout.calendar_item
+                /*when (cal[Calendar.DAY_OF_WEEK]) {
+                    Calendar.MONDAY -> R.layout.first_special_calendar_item
+                    Calendar.WEDNESDAY -> R.layout.second_special_calendar_item
+                    Calendar.FRIDAY -> R.layout.third_special_calendar_item
+                    else -> R.layout.calendar_item
+                }*/
+
+                // NOTE: if we don't want to do it this way, we can simply change color of background
+                // in bindDataToCalendarView method
+            }
+
+            override fun bindDataToCalendarView(
+                holder: SingleRowCalendarAdapter.CalendarViewHolder,
+                date: Date,
+                position: Int,
+                isSelected: Boolean
+            ) {
+                // using this method we can bind data to calendar view
+                // good practice is if all views in layout have same IDs in all item views
+                holder.itemView.tv_date_calendar_item.text = DateUtil.getDayNumber(date)
+                holder.itemView.tv_day_calendar_item.text = DateUtil.getDay3LettersName(date)
+            }
+        }
+
+        // using calendar changes observer we can track changes in calendar
+        val myCalendarChangesObserver = object :
+            CalendarChangesObserver {
+            override fun whenWeekMonthYearChanged(
+                weekNumber: String,
+                monthNumber: String,
+                monthName: String,
+                year: String,
+                date: Date
+            ) {
+                super.whenWeekMonthYearChanged(weekNumber, monthNumber, monthName, year, date)
+                tvDate.text = "${DateUtil.getMonthName(date)} "
+                //tvDay.text = DateUtil.getDayName(date)
+            }
+
+            // you can override more methods, in this example we need only this one
+            override fun whenSelectionChanged(isSelected: Boolean, position: Int, date: Date) {
+                super.whenSelectionChanged(isSelected, position, date)
+                tvDate.text = "${DateUtil.getMonthName(date)}, "
+                if (isSelected) {
+                    tvDay.text = "${DateUtil.getDayNumber(date)} ${DateUtil.getDayName(date)}"
+                    selectedDate = DateFormat.format("MM", date) as String + "/" +
+                            DateFormat.format("dd", date) as String + "/" +
+                            DateFormat.format("yyyy", date) as String
+                    getTimeSlots()
+                } else {
+                    tvDay.text = ""
+                    selectedTimeSlot = ""
+                    layoutTimeSlotSelection.visibility = View.GONE
+                }
+            }
+        }
+
+        // selection manager is responsible for managing selection
+        val mySelectionManager = object : CalendarSelectionManager {
+            override fun canBeItemSelected(position: Int, date: Date): Boolean {
+                // set date to calendar according to position
+                //val cal = Calendar.getInstance()
+                //cal.time = date
+                // in this example sunday and saturday can't be selected, others can
+                /*return when (cal[Calendar.DAY_OF_WEEK]) {
+                    Calendar.SATURDAY -> false
+                    Calendar.SUNDAY -> false
+                    else -> true
+                }*/
+                return true
+            }
+        }
+
+        // here we init our calendar, also you can set more properties if you haven't specified in XML layout
+        val singleRowCalendar = main_single_row_calendar.apply {
+            calendarViewManager = myCalendarViewManager
+            calendarChangesObserver = myCalendarChangesObserver
+            calendarSelectionManager = mySelectionManager
+            setDates(getFutureDatesOfCurrentMonth())
+            init()
+        }
+
+        btnRight.setOnClickListener {
+            tvDay.text = ""
+            selectedTimeSlot = ""
+            layoutTimeSlotSelection.visibility = View.GONE
+            singleRowCalendar.setDates(getDatesOfNextMonth())
+        }
+
+        btnLeft.setOnClickListener {
+            tvDay.text = ""
+            selectedTimeSlot = ""
+            layoutTimeSlotSelection.visibility = View.GONE
+            val cal = Calendar.getInstance()
+            if (currentMonth > cal[Calendar.MONTH]) {
+                singleRowCalendar.setDates(getDatesOfPreviousMonth())
+            }
+        }
     }
 
     private fun getTimeSlots() {
@@ -104,7 +250,10 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getTimeSlots(TimeSlots(Utils.providerPublicId, selectedDate!!))
+                    .getTimeSlots(
+                        TimeSlots(Utils.providerPublicId, selectedDate!!),
+                        getAccessToken()
+                    )
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -122,7 +271,17 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
                         }
                     }, { error ->
                         hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                getTimeSlots()
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
                     })
             )
         }
@@ -135,13 +294,58 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
         if (timeSlots.isNotEmpty()) {
             layoutTimeSlotSelection.visibility = View.VISIBLE
             recyclerviewTimeSlots.layoutManager = LinearLayoutManager(
-                mActivity!!, RecyclerView.VERTICAL,
+                mActivity!!, RecyclerView.HORIZONTAL,
                 false
             )
             recyclerviewTimeSlots.adapter = TimeSlotAdapter(mActivity!!, timeSlots, this)
         } else {
-            displayMsg("Alert","Time slots are empty for selected date!")
+            displayMsg("Alert", "Time slots are empty for selected date!")
         }
+    }
+
+    private fun getDatesOfNextMonth(): List<Date> {
+        currentMonth++ // + because we want next month
+        if (currentMonth == 12) {
+            // we will switch to january of next year, when we reach last month of year
+            calendar.set(Calendar.YEAR, calendar[Calendar.YEAR] + 1)
+            currentMonth = 0 // 0 == january
+        }
+        return getDates(mutableListOf())
+    }
+
+    private fun getDatesOfPreviousMonth(): List<Date> {
+        currentMonth-- // - because we want previous month
+        if (currentMonth == -1) {
+            // we will switch to december of previous year, when we reach first month of year
+            calendar.set(Calendar.YEAR, calendar[Calendar.YEAR] - 1)
+            currentMonth = 11 // 11 == december
+        }
+        return getDates(mutableListOf())
+    }
+
+    private fun getFutureDatesOfCurrentMonth(): List<Date> {
+        // get all next dates of current month
+        currentMonth = calendar[Calendar.MONTH]
+        return getDates(mutableListOf())
+    }
+
+    private fun getDates(list: MutableList<Date>): List<Date> {
+        // load dates of whole month
+        calendar.set(Calendar.MONTH, currentMonth)
+        val cal = Calendar.getInstance()
+        if (currentMonth == cal[Calendar.MONTH]) {
+            calendar.set(Calendar.DAY_OF_MONTH, cal[Calendar.DAY_OF_MONTH])
+        } else {
+            calendar.set(Calendar.DAY_OF_MONTH, 1)
+        }
+        list.add(calendar.time)
+        while (currentMonth == calendar[Calendar.MONTH]) {
+            calendar.add(Calendar.DATE, +1)
+            if (calendar[Calendar.MONTH] == currentMonth)
+                list.add(calendar.time)
+        }
+        calendar.add(Calendar.DATE, -1)
+        return list
     }
 
     companion object {
@@ -167,8 +371,7 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
     }
 
     override fun onTextClickListener(timeSlot: TimeSlot) {
-        selectedTimeSlot =
-            timeSlot.time_slot_start.dropLast(3) + " - " + timeSlot.time_slot_end.dropLast(3)
+        selectedTimeSlot = timeSlot.time_slot_start + " - " + timeSlot.time_slot_end
         Utils.appointmentId = timeSlot.appointment_id
         Utils.timeSlotId = timeSlot.time_slot_id
     }

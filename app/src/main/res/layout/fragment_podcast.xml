@@ -26,6 +26,19 @@
             android:id="@+id/recyclerViewPodcastList"
             android:layoutAnimation="@anim/layout_animation_slide_from_bottom"/>
 
+        <TextView
+            android:id="@+id/txtNoPodcasts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Currently there are no podcasts"
+            android:textAppearance="@style/fontfamily"
+            android:textSize="@dimen/_22sp"
+            android:gravity="center"
+            android:padding="@dimen/_10dp"
+            android:textColor="@color/localBackground"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
 </FrameLayout>

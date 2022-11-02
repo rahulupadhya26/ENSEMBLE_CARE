@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.AsyncTask
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat
 import com.app.selfcare.R
 import com.app.selfcare.data.Podcast
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_stream_audio.view.*
 import java.io.IOException
 import java.io.InputStream
@@ -25,11 +27,21 @@ import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.math.max
 
-class AudioStream(val context: Activity, private val audioDetails: Podcast, var mediaPlayer: MediaPlayer) {
+class AudioStream(
+    val context: Activity,
+    private val audioDetails: Podcast,
+    var mediaPlayer: MediaPlayer
+) {
 
     var dialogView: View? = null
     private val audioHandler = Handler()
     private var createStreamAudioDialog: BottomSheetDialog? = null
+
+    var progressAlive = false
+    var pDialog: ProgressDialog? = null
+
+    private lateinit var runnable: Runnable
+    private var handler: Handler = Handler()
 
     @SuppressLint("SetTextI18n")
     fun streamAudio() {
@@ -39,7 +51,7 @@ class AudioStream(val context: Activity, private val audioDetails: Podcast, var 
         )
         createStreamAudioDialog!!.setContentView(dialogView!!)
         createStreamAudioDialog!!.show()
-        dialogView!!.txt_audio_title.text = audioDetails.title
+        dialogView!!.txt_audio_title.text = audioDetails.name
         dialogView!!.txt_audio_artist.text = audioDetails.artist
 
         createStreamAudioDialog!!.setOnCancelListener {
@@ -55,14 +67,16 @@ class AudioStream(val context: Activity, private val audioDetails: Podcast, var 
         dialogView!!.img_audio_btn.setOnClickListener {
             if (mediaPlayer.isPlaying) {
                 audioHandler.removeCallbacks(updater)
+                handler.removeCallbacks(runnable)
                 mediaPlayer.pause()
                 dialogView!!.img_audio_btn.setImageResource(R.drawable.ic_play_arrow)
+                mediaPlayer.seekTo(mediaPlayer.currentPosition)
             } else {
                 startMusic()
             }
         }
 
-        prepareMediaPlayer(audioDetails.audio)
+        prepareMediaPlayer(audioDetails.podcast_url)
 
         dialogView!!.podcast_seekbar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
@@ -96,25 +110,70 @@ class AudioStream(val context: Activity, private val audioDetails: Podcast, var 
         }
 
         dialogView!!.img_audio_download_btn.setOnClickListener {
-            val async = DownloadAudioFromUrl(context, audioDetails.title)
-            async.execute(audioDetails.audio);
-
+            val async = DownloadAudioFromUrl(context, audioDetails.name)
+            async.execute(audioDetails.podcast_url);
         }
+
+        // Seek bar change listener
+        dialogView!!.podcast_seekbar.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                if (b) {
+                    mediaPlayer.seekTo(i * 1000)
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+            }
+        })
     }
 
     private fun startMusic() {
         mediaPlayer.start()
         dialogView!!.img_audio_btn.setImageResource(R.drawable.ic_pause)
-        dialogView!!.img_audio_btn.imageTintList=
+        dialogView!!.img_audio_btn.imageTintList =
             ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primaryGreen))
-        updateSeekBar()
+        initializeSeekBar()
+    }
+
+    private fun showProgress() {
+        context.runOnUiThread {
+            if (progressAlive) {
+                pDialog!!.cancel()
+                progressAlive = false
+            }
+            pDialog = ProgressDialog(context)
+            pDialog!!.setMessage("Please wait...")
+            if ("Please wait".contains("Please wait")) pDialog!!.setCanceledOnTouchOutside(false)
+            progressAlive = true
+            pDialog!!.show()
+        }
+    }
+
+    private fun hideProgress() {
+        context.runOnUiThread {
+            if (progressAlive) {
+                pDialog!!.dismiss()
+                pDialog!!.cancel()
+                progressAlive = false
+            }
+        }
     }
 
     private fun prepareMediaPlayer(audioLink: String) {
         try {
+            showProgress()
             mediaPlayer.setDataSource(context, Uri.parse(audioLink))
-            mediaPlayer.prepare()
-            dialogView!!.txtDurationTime.text = millisecondsToTimer(mediaPlayer.duration.toLong())
+            mediaPlayer.prepareAsync()
+            mediaPlayer.setOnPreparedListener {
+                hideProgress()
+                dialogView!!.txtDurationTime.text =
+                    millisecondsToTimer(mediaPlayer.duration.toLong())
+                startMusic()
+            }
             //startMusic(view)
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -135,21 +194,56 @@ class AudioStream(val context: Activity, private val audioDetails: Podcast, var 
         }
     }
 
+    // Method to initialize seek bar and audio stats
+    private fun initializeSeekBar() {
+        dialogView!!.podcast_seekbar.max = mediaPlayer.seconds
+
+        runnable = Runnable {
+            dialogView!!.podcast_seekbar.progress = mediaPlayer.currentSeconds
+
+            val currentDuration: Long = mediaPlayer.currentPosition.toLong()
+            dialogView!!.txtCurrentTime.text = millisecondsToTimer(currentDuration)
+            /*val diff = mediaPlayer.seconds - mediaPlayer.currentSeconds
+            tv_due.text = "$diff sec"*/
+
+            handler.postDelayed(runnable, 1000)
+        }
+        handler.postDelayed(runnable, 1000)
+    }
+
+    // Creating an extension property to get the media player time duration in seconds
+    private val MediaPlayer.seconds: Int
+        get() {
+            return this.duration / 1000
+        }
+
+    // Creating an extension property to get media player current position in seconds
+    private val MediaPlayer.currentSeconds: Int
+        get() {
+            return this.currentPosition / 1000
+        }
+
     private fun millisecondsToTimer(milliseconds: Long): String {
         var timerString = ""
         val secondsString: String
+        val minString: String
         val hours: Int = (milliseconds / (1000 * 60 * 60)).toInt()
         val minutes: Int = ((milliseconds % (1000 * 60 * 60)) / (1000 * 60)).toInt()
         val seconds: Int = ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000).toInt()
         if (hours > 0) {
             timerString = "$hours:"
         }
+        if (minutes < 10) {
+            minString = "0$minutes"
+        } else {
+            minString = "" + minutes
+        }
         if (seconds < 10) {
             secondsString = "0$seconds"
         } else {
             secondsString = "" + seconds
         }
-        timerString = "$timerString$minutes:$secondsString"
+        timerString = "$timerString$minString:$secondsString"
         return timerString
     }
 

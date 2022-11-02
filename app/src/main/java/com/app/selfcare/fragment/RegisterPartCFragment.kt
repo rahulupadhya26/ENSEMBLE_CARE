@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_register_part_b.*
 import kotlinx.android.synthetic.main.fragment_register_part_c.*
 import kotlinx.android.synthetic.main.fragment_registration.*
 import org.json.JSONObject
+import retrofit2.HttpException
 import java.lang.Exception
 
 // TODO: Rename parameter arguments, choose names that match
@@ -64,8 +65,10 @@ class RegisterPartCFragment : BaseFragment() {
             val radio: RadioButton = view.findViewById(checkedId)
             if (radio.text == "Yes") {
                 layout_employeeId.visibility = View.VISIBLE
+                etSignUpEmployeeId.requestFocus()
             } else {
                 layout_employeeId.visibility = View.GONE
+                hideKeyboard(layoutReferEmp)
             }
         }
 
@@ -134,7 +137,7 @@ class RegisterPartCFragment : BaseFragment() {
                             Log.d("Response Body", responseBody)
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
-                            responseBody = respBody[0]
+                            responseBody = respBody[0].replace("\"", "")
                             if (responseBody == "Record Found") {
                                 Utils.refEmp = empYes.isChecked
                                 Utils.employeeId = getText(etSignUpEmployeeId)
@@ -154,7 +157,12 @@ class RegisterPartCFragment : BaseFragment() {
 
                     }, { error ->
                         hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 404 || (error as HttpException).code() == 400) {
+                            displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
                     })
             )
         }

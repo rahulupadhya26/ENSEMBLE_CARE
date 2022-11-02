@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.AssessmentDataFragment">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="@dimen/_10dp"
+        app:cardElevation="@dimen/_5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/layoutStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvStartText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="Let's get start.."
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_24sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ProgressBar
+                        android:id="@+id/assessmentProgressBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:indeterminate="false"
+                        android:minHeight="8dp"
+                        android:progressDrawable="@drawable/curved_progress_bar" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/layoutStatus"
+                android:id="@+id/layoutCurrentAssessmentData">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvCurrentAssessmentQuestion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:ellipsize="end"
+                        android:textAppearance="@style/fontfamily"
+                        android:maxLines="5"
+                        android:padding="10dp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_20sp" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutAssessmentOption"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/tvCurrentAssessmentQuestion"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/tvAssessmentOptionOne"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_10dp"
+                            android:background="@drawable/bg_box_border_grey"
+                            android:textAppearance="@style/fontfamily"
+                            android:padding="10dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/_16sp" />
+
+                        <TextView
+                            android:id="@+id/tvAssessmentOptionTwo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_10dp"
+                            android:background="@drawable/bg_box_border_grey"
+                            android:textAppearance="@style/fontfamily"
+                            android:padding="10dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/_16sp" />
+
+                        <TextView
+                            android:id="@+id/tvAssessmentOptionThree"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_10dp"
+                            android:background="@drawable/bg_box_border_grey"
+                            android:textAppearance="@style/fontfamily"
+                            android:padding="10dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/_16sp" />
+
+                        <TextView
+                            android:id="@+id/tvAssessmentOptionFour"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_10dp"
+                            android:background="@drawable/bg_box_border_grey"
+                            android:textAppearance="@style/fontfamily"
+                            android:padding="10dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/_16sp" />
+
+                        <TextView
+                            android:id="@+id/tvAssessmentOptionFive"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_10dp"
+                            android:background="@drawable/bg_box_border_grey"
+                            android:textAppearance="@style/fontfamily"
+                            android:padding="10dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/_16sp" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_option_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/tvCurrentAssessmentQuestion"
+                        android:layout_margin="5dp"
+                        android:visibility="gone"/>
+
+                </RelativeLayout>
+            </ScrollView>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

@@ -19,14 +19,30 @@
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/black"
             android:textSize="@dimen/_26sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:layout_margin="@dimen/_20dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/recyclerViewJournalList"
             android:layout_below="@+id/txtJournals"
-            android:layout_marginBottom="@dimen/_10dp"/>
+            android:layout_margin="@dimen/_10dp"/>
+
+        <TextView
+            android:id="@+id/txt_no_journal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Currently you haven't create any journals."
+            android:textAppearance="@style/fontfamily"
+            android:textSize="@dimen/_22sp"
+            android:gravity="center"
+            android:padding="@dimen/_10dp"
+            android:layout_margin="@dimen/_10dp"
+            android:layout_centerInParent="true"
+            android:textColor="@color/localBackground"
+            android:textStyle="bold"
+            android:visibility="gone"/>
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -17,4 +17,5 @@ interface IController {
     fun getPhotoPath(): String
     fun getBitmapList(): ArrayList<String>
     fun hideKeyboard(view: View)
+    fun setBottomMenu(id: Int)
 }

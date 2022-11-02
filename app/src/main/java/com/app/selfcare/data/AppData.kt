@@ -1,22 +1,28 @@
 package com.app.selfcare.data
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
+import java.lang.reflect.Array
+
+data class EncryptDecrypt(
+    @SerializedName("msg") val data: String
+)
 
 data class Question(
     val question_id: Int,
     val question: String,
+    val option_id: String,
+    val next: String,
     var no_of_options: String,
-    var option_1: OptionData,
-    var option_2: OptionData,
-    var option_3: OptionData,
-    var option_4: OptionData
+    val answers: ArrayList<Answers>
 )
 
-data class OptionData(
-    var answer_id: Int?,
-    var answer: String?
+data class Answers(
+    val answer_id: Int,
+    val answer: String,
+    val option_id: String
 )
 
 data class OptionModel(
@@ -67,6 +73,10 @@ data class DeviceId(
 
 data class SendAnswer(
     val anonymous_user_id: Int,
+    val data: ArrayList<EachAnswer>
+)
+
+data class EachAnswer(
     val question_id: Int,
     val answer_id: Int
 )
@@ -74,6 +84,12 @@ data class SendAnswer(
 data class Employee(
     val company_name: String,
     val employee_id: String
+)
+
+data class UserDetails(
+    val email: String,
+    val phone: String,
+    val ssn: String
 )
 
 @Parcelize
@@ -90,7 +106,8 @@ data class Register(
     val device_id: String,
     val is_employee: Boolean,
     val employer: String,
-    val employee_id: String
+    val employee_id: String,
+    val gender: String
 ) : Parcelable
 
 data class SendOtp(
@@ -104,7 +121,7 @@ data class VerifyOtp(
 )
 
 data class SelfPay(
-    val customer_id: String,
+    val patient_id: String,
     val stripe_price_id: String
 )
 
@@ -116,17 +133,91 @@ data class PatientId(
     val patient_id: Int
 )
 
+data class PersonalGoalData(
+    val patient_id: Int,
+    val goal_type: String = "Personal"
+)
+
 data class TimeSlots(
     val doctor_public_id: String,
     val date: String
 )
 
+data class CreateJournal(
+    val name: String,
+    val description: String,
+    val patient_id: String,
+    val journal_date: String,
+    val journal_time: String
+)
+
+data class CreatePersonalGoal(
+    val title: String,
+    val description: String,
+    val goal_type: String,
+    val start_date: String,
+    val duration: Int,
+    val patient_id: String
+)
+
+data class DataId(
+    val id: Int
+)
+
+data class AppointmentPatientId(
+    val patient: Int
+)
+
+data class CoachReqBody(
+    val type: String,
+    val specialization: ArrayList<String>
+)
+
+data class CancelAppointment(
+    val patient_id: Int,
+    val appointment_id: Int
+)
+
+data class HealthInfo(
+    val patient: Int,
+    val total_steps: Int,
+    val total_distance: Int,
+    val total_calaroies: Int,
+    val heart_beat: Int
+)
+
+data class ProfileData(
+    val patient_id: Int,
+    val first_name: String,
+    val middle_name: String,
+    val last_name: String,
+    val dob: String,
+    val gender: String,
+    val street: String,
+    val state: String,
+    val city: String,
+    val county: String,
+    val zipcode: String,
+    val emergency_phone: String,
+    val marital_status: String
+)
+
+data class PartProfileData(
+    val patient_id: Int,
+    val first_name: String,
+    val last_name: String,
+    val dob: String,
+    val photo: String
+)
+
 data class AppointmentReq(
     val appointment_id: String,
     val patient: String,
-    val is_booked: Boolean,
+    val is_book: Boolean,
     val booking_date: String,
     val type_of_visit: String,
+    val status: Int,
+    val consent_sign_image: String
 )
 
 @Parcelize
@@ -141,62 +232,112 @@ data class TransactionStatus(
 ) : Parcelable
 
 @Parcelize
-data class News(
-    val newsTitle: String,
-    val newsLink: String,
-    val newsPublishOn: String,
+data class Articles(
+    val id: Int,
+    val name: String,
+    val description: String,
+    val banner_image: String,
+    val article_url: String,
+    val published_date: String,
 ) : Parcelable
 
 @Parcelize
 data class Podcast(
-    val title: String,
-    val image: String,
+    val id: Int,
+    val name: String,
+    val description: String,
+    val podcast_image: String,
     val artist: String,
-    val audio: String
+    val podcast_url: String
 ) : Parcelable
 
 @Parcelize
 data class Journal(
-    val title: String,
-    val desc: String,
-    val date: String,
+    val id: Int,
+    val name: String,
+    val description: String,
+    val journal_date: String,
     val month: String,
     val year: String,
-    val time: String
+    val time: String,
+    val created_on: String
 ) : Parcelable
 
 @Parcelize
 data class Video(
-    val title: String,
-    val desc: String,
-    val link: String,
+    val id: Int,
+    val name: String,
+    val description: String,
+    val video_url: String,
     val banner: String,
-    val date
-    : String,
-    val time: String
+    val date: String,
+    val time: String,
+) : Parcelable
+
+@Parcelize
+data class RecommendedData(
+    var type: Int = -1,
+    var id: Int = -1,
+    var name: String = "",
+    var description: String = "",
+    var video_url: String = "",
+    var podcast_image: String = "",
+    var artist: String = "",
+    var podcast_url: String = "",
+    var banner_image: String = "",
+    var article_url: String = "",
+    var published_date: String = ""
+) : Parcelable
+
+@Parcelize
+data class Recommended(
+    val videos: ArrayList<Video> = ArrayList(),
+    val podcasts: ArrayList<Podcast> = ArrayList(),
+    val articles: ArrayList<Articles> = ArrayList(),
+    val provider_goals: ArrayList<Goal> = ArrayList(),
+) : Parcelable
+
+@Parcelize
+data class Goal(
+    val id: Int,
+    val title: String,
+    val description: String,
+    val start_date: String,
+    val duration: Int
 ) : Parcelable
 
 @Parcelize
 data class Appointment(
-    val total: String,
-    val tele_token: String,
-    val appt_id: String,
-    val pc_eid: String,
-    val meeting_mode: String,
-    val provider_id: String,
-    val provider_type: String,
-    val pc_title: String,
-    val pc_eventDate: String,
-    val pc_startTime: String,
-    val consent: String,
-    val pc_endTime: String,
-    val pc_duration: String,
-    val pc_apptstatus: String,
-    val fname: String,
-    val lname: String,
-    val phonecell: String,
-    val physician_type: String,
-    val email: String
+    val appointment_id: Int,
+    val date: String,
+    val is_book: Boolean,
+    val type_of_visit: String,
+    val booking_date: String,
+    val doctor_id: String,
+    val ssn: String,
+    val first_name: String,
+    val middle_name: String,
+    val last_name: String,
+    val doctor_type: String,
+    val dob: String,
+    val qualification: String,
+    val years_of_experiance: String,
+    val gender: String,
+    val practice_state: String,
+    val time_slot_id: String,
+    val starting_time: String,
+    val ending_time: String,
+    val meeting_id: String,
+    val appointment: String,
+    val doctor: String,
+    val patient: String,
+    val meeting_title: String,
+    val channel_name: String,
+    val rtc_token: String,
+    val rtm_token: String,
+    val rtm_token_doctor: String,
+    val meeting_date: String,
+    val duration: String
 ) : Parcelable
 
 data class TimeSlot(
@@ -208,3 +349,146 @@ data class TimeSlot(
     val time_slot_id: String,
     var isSelected: Boolean
 )
+
+data class Coaches(
+    val coach_detail_id: Int,
+    val type: String,
+    val coach: CoachDetail,
+    val preference1: Preference,
+    val preference2: Preference,
+    val preference3: Preference,
+    val preference4: Preference,
+    val preference5: Preference,
+    val preference6: Preference,
+    val specialization: ArrayList<Preference>,
+)
+
+data class CoachDetail(
+    val doctor_id: Int,
+    val doctor_public_id: String,
+    val ssn: String,
+    val first_name: String,
+    val middle_name: String,
+    val last_name: String,
+    val doctor_type: String,
+    val dob: String,
+    val qualification: String,
+    val years_of_experiance: String,
+    val street: String,
+    val city: String,
+    val state: String,
+    val zipcode: String,
+    val county: String,
+    val emergency_phone: String,
+    val gender: String,
+    val practice_state: String,
+    val license_number: String,
+    val user: String,
+    val therapy: ArrayList<Int>,
+    val dissorder: ArrayList<Int>,
+    val available_on_day: ArrayList<Int>,
+    val available_on_time: ArrayList<Int>,
+)
+
+data class Preference(
+    val id: Int,
+    val name: String
+)
+
+data class InsuranceVerifyReqBody(
+    val patient: Int,
+    val insurance_companhy: String,
+    val plain_id: String,
+    val member_id: String,
+    val gourp_id: String,
+    val member_name: String
+)
+
+data class Feedback(
+    val patient: Int,
+    val appointment: Int,
+    val therapist_rating: Double,
+    val therapist_review: String,
+    val service_rating: Double,
+    val service_review: String
+)
+
+@Parcelize
+data class Assessments(
+    val id: Int,
+    val assign_date: String,
+    val filled_by: String,
+    val is_completed: Boolean,
+    val patient: String,
+    val doctor_first_name: String,
+    val doctor_last_name: String,
+    val type_of_assessment: String
+) : Parcelable
+
+@Parcelize
+data class ViewAssessment(
+    val questions_answers: ArrayList<QuestionAnswer>,
+    val Total_score: String,
+    val patient_score: String,
+    val id: String
+) : Parcelable
+
+@Parcelize
+data class QuestionAnswer(
+    val question: String,
+    val answer: String
+) : Parcelable
+
+@Parcelize
+data class AssessmentQuestion(
+    val id: Int,
+    val type_of_assessment: String,
+    val question: String,
+    val question_no: Int
+) : Parcelable
+
+@Parcelize
+data class AssessmentAnswer(
+    val id: Int,
+    val type_of_assessment: String,
+    val answer: String,
+    val value: Int
+) : Parcelable
+
+@Parcelize
+data class GroupAppointment(
+    val id: Int,
+    val meeting_title: String,
+    val channel_name: String,
+    val rtc_token: String,
+    val rtc_token_doctor: String,
+    val meeting_date: String,
+    val doctor_first_name: String,
+    val doctor_last_name: String,
+    val group_appointment: GroupAppointmentDetails
+) : Parcelable
+
+@Parcelize
+data class GroupAppointmentDetails(
+    val id: Int,
+    val group_appointment_uid: String,
+    val date: String,
+    val duration: String,
+    val time: String,
+    val select_am_or_pm: String,
+    val group: Int,
+    val doctor: Int,
+    val group_patient: ArrayList<Int>
+) : Parcelable
+
+@Parcelize
+data class ConsentRois(
+    val key: String,
+    val text: String,
+    val isCompleted: Boolean,
+    val patient: String,
+    val doctor: String,
+    val patient_status: String,
+    val doctor_status: String,
+    val pdf_file_url: String,
+) : Parcelable

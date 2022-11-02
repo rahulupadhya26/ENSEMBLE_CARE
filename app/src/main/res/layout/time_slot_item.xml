@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:layout_width="150dp"
     android:layout_height="wrap_content"
     android:id="@+id/layoutTimeSlot"
+    android:background="@drawable/bg_time_slot_rounded"
     android:layout_margin="@dimen/_5dp">
 
     <TextView
@@ -12,6 +13,10 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/fontfamily"
         android:textSize="@dimen/_20sp"
+        android:gravity="center"
+        android:text="10:00"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         android:padding="@dimen/_10dp"/>
 
 </LinearLayout>

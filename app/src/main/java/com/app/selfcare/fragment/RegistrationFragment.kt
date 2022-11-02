@@ -2,6 +2,11 @@ package com.app.selfcare.fragment
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.os.Handler
+import android.text.Editable
+import android.text.TextUtils.isEmpty
+import android.text.TextWatcher
+import android.view.MotionEvent
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -13,8 +18,10 @@ import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_registration.*
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -66,34 +73,84 @@ class RegistrationFragment : BaseFragment() {
         setDobCalender()
 
         onClickEvents(view)
+
+        etSignUpFname.requestFocus()
+
+        etSignUpSSN.addTextChangedListener(object : TextWatcher {
+            private var spaceDeleted = false
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                val charDeleted = s.subSequence(start, start + count)
+                spaceDeleted = "-" == charDeleted.toString()
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                try {
+                    etSignUpSSN.removeTextChangedListener(this)
+                    val cursorPosition: Int = etSignUpSSN.selectionStart
+                    val withSpaces = formatText(editable)
+                    etSignUpSSN.setText(withSpaces)
+                    etSignUpSSN.setSelection(cursorPosition + (withSpaces.length - editable.length))
+                    if (spaceDeleted) {
+                        //  userNameET.setSelection(userNameET.getSelectionStart() - 1);
+                        spaceDeleted = false
+                    }
+                    etSignUpSSN.addTextChangedListener(this)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            private fun formatText(text: CharSequence): String {
+                val formatted = StringBuilder()
+                if (text.length == 3 || text.length == 6) {
+                    if (!spaceDeleted) formatted.append("$text-") else formatted.append(text)
+                } else formatted.append(text)
+                return formatted.toString()
+            }
+        })
     }
 
     private fun genderSpinner() {
-        genderData = resources.getStringArray(R.array.gender)
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            requireActivity(), android.R.layout.simple_spinner_dropdown_item, genderData!!
-        )
-        spinner_signup_gender.setAdapter(adapter)
-        if (preference!![PrefKeys.PREF_GENDER, ""]!!.isNotEmpty()) {
-            val spinnerPosition = adapter.getPosition(preference!![PrefKeys.PREF_GENDER, ""]!!)
-            spinner_signup_gender.setSelection(spinnerPosition)
-        }
-        spinner_signup_gender.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, arg1, position, id ->
-                //TODO: You can your own logic.
-                selectedGender = genderData!![position]
+        try {
+            if (Utils.gender.isNotEmpty()) {
+                Handler().postDelayed({
+                    if (spinner_signup_gender != null)
+                        spinner_signup_gender.setText(Utils.gender, false)
+                }, 300)
             }
+            genderData = resources.getStringArray(R.array.gender)
+            val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+                requireActivity(), android.R.layout.simple_spinner_dropdown_item, genderData!!
+            )
+            spinner_signup_gender.setAdapter(adapter)
+            spinner_signup_gender.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, arg1, position, id ->
+                    //TODO: You can your own logic.
+                    selectedGender = genderData!![position]
+                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        genderSpinner()
     }
 
     private fun setDobCalender() {
         val cal = Calendar.getInstance()
+        //cal.add(Calendar.YEAR, -13)
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { views, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                val myFormat = "yyyy-MM-dd" // mention the format you need
+                val myFormat = "MM/dd/yyyy" // mention the format you need
                 val sdf = SimpleDateFormat(myFormat)
                 txt_signup_dob.setText(sdf.format(cal.time))
             }
@@ -105,7 +162,7 @@ class RegistrationFragment : BaseFragment() {
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH)
             )
-            datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+            //datePickerDialog.datePicker.maxDate = cal.timeInMillis
             datePickerDialog.show()
         }
     }
@@ -113,39 +170,46 @@ class RegistrationFragment : BaseFragment() {
     private fun onClickEvents(view: View) {
         btnRegister.setOnClickListener {
             if (getText(etSignUpFname).isNotEmpty()) {
-                if (getText(etSignUpMname).isNotEmpty()) {
-                    if (getText(etSignUpLname).isNotEmpty()) {
-                        if (getText(etSignUpSSN).isNotEmpty()) {
+                if (getText(etSignUpLname).isNotEmpty()) {
+                    if (getText(etSignUpSSN).isNotEmpty()) {
+                        if (getText(etSignUpSSN).replace("-", "").length == 9) {
                             if (txt_signup_dob.text.toString().isNotEmpty()) {
-                                Utils.firstName = getText(etSignUpFname)
-                                Utils.middleName = getText(etSignUpMname)
-                                Utils.lastName = getText(etSignUpLname)
-                                Utils.ssn = getText(etSignUpSSN)
-                                Utils.gender = selectedGender!!
-                                Utils.dob = txt_signup_dob.text.toString()
-                                replaceFragment(
-                                    RegisterPartBFragment(),
-                                    R.id.layout_home,
-                                    RegisterPartBFragment.TAG
-                                )
+                                if (spinner_signup_gender.text.toString().isNotEmpty()) {
+                                    if (getAge(txt_signup_dob.text.toString()) > 13) {
+                                        Utils.firstName = getText(etSignUpFname)
+                                        Utils.middleName = getText(etSignUpMname)
+                                        Utils.lastName = getText(etSignUpLname)
+                                        Utils.ssn = getText(etSignUpSSN).replace("-", "")
+                                        Utils.gender = spinner_signup_gender.text.toString()
+                                        Utils.dob = txt_signup_dob.text.toString()
+                                        replaceFragment(
+                                            RegisterPartBFragment(),
+                                            R.id.layout_home,
+                                            RegisterPartBFragment.TAG
+                                        )
+                                    } else {
+                                        displayMsg("Alert", "Age must be more than 13 years.")
+                                    }
+                                } else {
+                                    displayMsg("Alert", "Select the gender")
+                                }
                             } else {
-                                displayToast("DOB cannot be blank")
+                                displayMsg("Alert", "DOB cannot be blank")
                             }
                         } else {
                             setEditTextError(
-                                etSignUpSSN, "SSN cannot be blank"
+                                etSignUpSSN, "Enter valid SSN."
                             )
                         }
                     } else {
                         setEditTextError(
-                            etSignUpLname,
-                            "Last name cannot be blank"
+                            etSignUpSSN, "SSN cannot be blank"
                         )
                     }
                 } else {
                     setEditTextError(
-                        etSignUpMname,
-                        "Middle name cannot be blank"
+                        etSignUpLname,
+                        "Last name cannot be blank"
                     )
                 }
             } else {
@@ -155,6 +219,29 @@ class RegistrationFragment : BaseFragment() {
                 )
             }
         }
+    }
+
+    private fun getAge(dobString: String): Int {
+        var date: Date? = null
+        val sdf = SimpleDateFormat("MM/dd/yyyy")
+        try {
+            date = sdf.parse(dobString)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        if (date == null) return 0
+        val dob: Calendar = Calendar.getInstance()
+        val today: Calendar = Calendar.getInstance()
+        dob.time = date
+        val year: Int = dob.get(Calendar.YEAR)
+        val month: Int = dob.get(Calendar.MONTH)
+        val day: Int = dob.get(Calendar.DAY_OF_MONTH)
+        dob.set(year, month + 1, day)
+        var age: Int = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR)
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--
+        }
+        return age
     }
 
     companion object {

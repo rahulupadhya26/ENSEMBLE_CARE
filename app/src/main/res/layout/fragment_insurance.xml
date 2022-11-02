@@ -12,9 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:layout_marginBottom="@dimen/_10dp"
         android:padding="5dp"
-        android:text="Insurance Details"
+        android:text="Insurance Verification"
         android:textAppearance="@style/fontfamily"
         android:textColor="@color/black"
         android:textSize="@dimen/_26sp"
@@ -29,109 +32,112 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10dp"
-            android:layout_marginEnd="@dimen/_10dp"
+            android:layout_marginStart="@dimen/_20dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_20dp"
+            android:layout_marginBottom="@dimen/_10dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
                 android:hint="Insurance Company"
-                app:hintTextAppearance="@style/TextLabel"
-                android:layout_margin="@dimen/_5dp">
+                app:hintTextAppearance="@style/TextLabel">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etInsuranceCompany"
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/spinnerInsuranceCompany"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:inputType="text"
+                    android:focusable="false"
                     android:imeOptions="actionNext"
-                    android:maxLines="1"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="16dp"/>
+                    android:inputType="none"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:hintTextAppearance="@style/fontfamily" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
                 android:hint="Plan ID"
-                app:hintTextAppearance="@style/TextLabel"
-                android:layout_margin="@dimen/_5dp">
+                app:hintTextAppearance="@style/TextLabel">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPlanId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:inputType="text"
                     android:imeOptions="actionNext"
+                    android:inputType="text"
                     android:maxLines="1"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="16dp"/>
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
                 android:hint="Member ID"
-                app:hintTextAppearance="@style/TextLabel"
-                android:layout_margin="@dimen/_5dp">
+                app:hintTextAppearance="@style/TextLabel">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMemberId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:inputType="text"
                     android:imeOptions="actionNext"
+                    android:inputType="text"
                     android:maxLines="1"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="16dp"/>
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
                 android:hint="Group ID"
-                app:hintTextAppearance="@style/TextLabel"
-                android:layout_margin="@dimen/_5dp">
+                app:hintTextAppearance="@style/TextLabel">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etGroupId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:inputType="text"
                     android:imeOptions="actionNext"
+                    android:inputType="text"
                     android:maxLines="1"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="16dp"/>
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
                 android:hint="Member Name"
-                app:hintTextAppearance="@style/TextLabel"
-                android:layout_margin="@dimen/_5dp">
+                app:hintTextAppearance="@style/TextLabel">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMemberName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
+                    android:imeOptions="actionDone"
                     android:inputType="text"
-                    android:imeOptions="actionNext"
                     android:maxLines="1"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="16dp"/>
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -144,20 +150,45 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/_16sp" />
 
-            <ImageView
-                android:id="@+id/imgProfilePhoto"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/et_rectangle_bg"
-                android:src="@drawable/health_insurance" />
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imgInsurancePic"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/bg_corner_rounded_edittext"
+                    android:src="@drawable/health_insurance" />
+
+                <ImageView
+                    android:id="@+id/imgInsurancePicClear"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="5dp"
+                    android:padding="@dimen/_10dp"
+                    android:src="@drawable/cancel_appointment" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tvAddInsuranceCardPic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/_10dp"
+                android:text="Click here to add a picture"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_16sp" />
 
         </LinearLayout>
 
     </ScrollView>
 
     <Button
-        android:id="@+id/btnInsuranceDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -170,6 +201,19 @@
         android:padding="@dimen/_5dp"
         android:text="Verify"
         android:textColor="@color/white"
-        android:textSize="@dimen/_16sp" />
+        android:textSize="@dimen/_16sp"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btnInsuranceDetails"
+        style="@style/buttonBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/_20dp"
+        android:layout_marginBottom="@dimen/_20dp"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:text="Verify" />
 
 </RelativeLayout>

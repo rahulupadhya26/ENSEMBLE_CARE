@@ -9,6 +9,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.json.JSONObject
 import java.io.IOException
 
 
@@ -23,14 +24,16 @@ class EncryptionInterceptor(private val mEncryptionStrategy: CryptoStrategy?) :
         if (mEncryptionStrategy != null) {
             try {
                 if (rawBody != null) {
-                    val rawBodyStr: String = requestBodyToString(rawBody!!)
-                    if (Utils.CONST_ENCRYPT_DECRYPT) {
-                        encryptedBody = mEncryptionStrategy.encrypt(rawBodyStr)
+                    val rawBodyStr: String = requestBodyToString(rawBody)
+                    encryptedBody = if (Utils.CONST_ENCRYPT_DECRYPT) {
+                        val json = JSONObject()
+                        json.put("msg",mEncryptionStrategy.encrypt(rawBodyStr)).toString()
+                        //mEncryptionStrategy.encrypt(json.toString())
                     } else {
-                        encryptedBody = rawBodyStr
+                        rawBodyStr
                     }
                     Log.i("Raw body=> %s", rawBodyStr)
-                    Log.i("Encrypted BODY=> %s", encryptedBody!!)
+                    Log.i("Encrypted BODY=> %s", encryptedBody)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

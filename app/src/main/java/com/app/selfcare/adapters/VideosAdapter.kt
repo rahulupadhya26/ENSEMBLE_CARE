@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -39,15 +41,15 @@ class VideosAdapter(
     override fun onBindViewHolder(holder: VideosAdapter.ViewHolder, position: Int) {
         val item = list[position]
 
-        holder.videoTitle.text = item.title
-        if (item.desc.isNotEmpty()) {
-            holder.videoDesc.text = item.desc
+        holder.videoTitle.text = item.name
+        if (item.description.isNotEmpty()) {
+            holder.videoDesc.text = item.description
         } else {
             holder.videoDesc.visibility = View.GONE
         }
-        var videoImg = item.link
-        if (item.link.isNotEmpty() && item.link.contains("youtube")) {
-            val videoId: String = item.link.split("v=")[1]
+        var videoImg = item.video_url
+        if (item.video_url.isNotEmpty() && item.video_url.contains("youtube")) {
+            val videoId: String = item.video_url.split("v=")[1]
             videoImg = "http://img.youtube.com/vi/$videoId/hqdefault.jpg" //high quality thumbnail
         }
         Glide.with(context)
@@ -62,7 +64,7 @@ class VideosAdapter(
         val videoImage: ImageView = itemView.img_video
         val videoTitle: TextView = itemView.txtVideoTitle
         val videoDesc: TextView = itemView.txtVideoDesc
-        val videoLayout: ConstraintLayout = itemView.layout_item_video
+        val videoLayout: CardView = itemView.layout_Video
     }
 
 

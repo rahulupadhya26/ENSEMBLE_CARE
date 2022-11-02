@@ -49,12 +49,10 @@ class SpecialistAdapter(
         holder.doctorQualification.text = item.qualification
         holder.doctorRating.text = "DOB : " + item.dob
         holder.doctorLayout.setOnClickListener {
-            notifyDataSetChanged()
             onItemClickListener!!.onTherapistItemClickListener(item)
         }
 
         holder.doctorImage.setOnClickListener {
-            notifyDataSetChanged()
             onItemImageClickListener!!.onItemTherapistImageClickListener(item)
         }
     }

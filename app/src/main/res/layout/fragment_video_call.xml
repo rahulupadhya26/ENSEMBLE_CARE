@@ -56,8 +56,9 @@
             android:id="@+id/buttonCall"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_centerInParent="true"
             android:scaleType="centerCrop"
+            android:layout_marginEnd="15dp"
+            android:layout_centerInParent="true"
             android:src="@drawable/btn_endcall"
             tools:ignore="ContentDescription" />
 
@@ -73,14 +74,36 @@
             tools:ignore="ContentDescription" />
 
         <ImageView
+            android:id="@+id/buttonChat"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:layout_toStartOf="@id/buttonMute"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_chat"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
             android:id="@+id/buttonSwitchCamera"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_centerVertical="true"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="15dp"
             android:layout_toEndOf="@id/buttonCall"
             android:scaleType="centerCrop"
             android:src="@drawable/btn_switch_camera"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/buttonSwitchVideo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="30dp"
+            android:layout_toEndOf="@id/buttonSwitchCamera"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_video_enabled"
             tools:ignore="ContentDescription" />
 
     </RelativeLayout>
