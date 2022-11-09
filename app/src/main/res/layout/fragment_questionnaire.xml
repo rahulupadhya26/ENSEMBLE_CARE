@@ -17,13 +17,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ensemble_care_logo" />
+
             <LinearLayout
                 android:id="@+id/rl_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_below="@+id/imgLogo"
                 android:orientation="vertical">
 
                 <TextView
@@ -44,7 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
@@ -82,58 +88,100 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/_20sp" />
 
-                <LinearLayout
-                    android:id="@+id/layout_options"
+                <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@id/tv_current_question"
-                    android:orientation="vertical"
-                    android:padding="10dp">
+                    android:layout_below="@id/tv_current_question">
 
-                    <TextView
-                        android:id="@+id/tv_option_one"
+                    <LinearLayout
+                        android:id="@+id/layout_options"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_10dp"
-                        android:background="@drawable/bg_box_border_grey"
-                        android:fontFamily="@font/muli"
-                        android:textAlignment="center"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="@dimen/_18sp" />
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="10dp">
 
-                    <TextView
-                        android:id="@+id/tv_option_two"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_10dp"
-                        android:background="@drawable/bg_box_border_grey"
-                        android:fontFamily="@font/muli"
-                        android:textAlignment="center"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="16dp" />
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cv_option_one"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:cardCornerRadius="@dimen/_5dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:rippleColor="@color/primaryGreen"
+                            app:cardUseCompatPadding="true">
 
-                    <TextView
-                        android:id="@+id/tv_option_three"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_10dp"
-                        android:background="@drawable/bg_box_border_grey"
-                        android:fontFamily="@font/muli"
-                        android:textAlignment="center"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="16dp" />
+                            <TextView
+                                android:id="@+id/tv_option_one"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/muli"
+                                android:gravity="center"
+                                android:padding="@dimen/_10dp"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="@dimen/_20sp" />
+                        </com.google.android.material.card.MaterialCardView>
 
-                    <TextView
-                        android:id="@+id/tv_option_four"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_10dp"
-                        android:background="@drawable/bg_box_border_grey"
-                        android:fontFamily="@font/muli"
-                        android:textAlignment="center"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="16dp" />
-                </LinearLayout>
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cv_option_two"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:cardCornerRadius="@dimen/_5dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:rippleColor="@color/primaryGreen"
+                            app:cardUseCompatPadding="true">
+
+                            <TextView
+                                android:id="@+id/tv_option_two"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/muli"
+                                android:gravity="center"
+                                android:padding="@dimen/_10dp"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="@dimen/_20sp" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cv_option_three"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:cardCornerRadius="@dimen/_5dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:rippleColor="@color/primaryGreen"
+                            app:cardUseCompatPadding="true">
+
+                            <TextView
+                                android:id="@+id/tv_option_three"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/muli"
+                                android:gravity="center"
+                                android:padding="@dimen/_10dp"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="@dimen/_20sp" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cv_option_four"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:cardCornerRadius="@dimen/_5dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:rippleColor="@color/primaryGreen"
+                            app:cardUseCompatPadding="true">
+
+                            <TextView
+                                android:id="@+id/tv_option_four"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/muli"
+                                android:gravity="center"
+                                android:padding="@dimen/_10dp"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="@dimen/_20sp" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+                </ScrollView>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_option_list"
@@ -141,7 +189,7 @@
                     android:layout_height="match_parent"
                     android:layout_below="@id/tv_current_question"
                     android:layout_margin="5dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -175,10 +223,10 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
+                    android:visibility="gone"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="40dp"
-                    app:cardElevation="10dp"
-                    android:visibility="gone">
+                    app:cardElevation="10dp">
 
                     <ImageView
                         android:id="@+id/forward"

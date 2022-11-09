@@ -166,8 +166,20 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
+    <TextView
         android:id="@+id/ico_action_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/fontfamily"
+        android:text="Back"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:textColor="@color/primaryGreen"
+        android:textSize="@dimen/_18sp"
+        android:layout_margin="5dp"
+        android:padding="@dimen/_5dp"/>
+
+    <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="12dp"

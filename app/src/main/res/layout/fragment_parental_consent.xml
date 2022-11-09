@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".fragment.ParentalConsentFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btnParentalConsent"
+        android:layout_margin="@dimen/_10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/parental_consent"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_22sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:hint="@string/parent_name"
+                app:hintTextAppearance="@style/TextLabel">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etParentName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLength="50"
+                    android:maxLines="2"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:hint="@string/relationship"
+                app:hintTextAppearance="@style/TextLabel">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/spinnerRelationship"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:textAppearance="@style/fontfamily"
+                    android:imeOptions="actionNext"
+                    android:inputType="none"
+                    android:completionThreshold="0"
+                    android:textColor="@color/black"
+                    app:hintTextAppearance="@style/TextLabel"
+                    android:textSize="16sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/contact_number"
+                app:hintTextAppearance="@style/TextLabel"
+                android:layout_margin="@dimen/_5dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etParentContactNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:inputType="phone"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:maxLength="12"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="Sign below"
+                android:padding="@dimen/_10dp"
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_20sp"/>
+
+            <com.app.selfcare.utils.SignatureView
+                android:id="@+id/signatureView"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_margin="@dimen/_10dp"
+                android:background="@drawable/edittext_rectangle_bg" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                android:layout_marginTop="@dimen/_5dp"
+                android:layout_marginBottom="@dimen/_5dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp" />
+
+                    <TextView
+                        android:id="@+id/txtDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btn_clear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/maroon"
+                        android:text="Clear"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnParentalConsent"
+        style="@style/buttonBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/_30dp"
+        android:layout_marginTop="@dimen/_5dp"
+        android:layout_marginEnd="@dimen/_30dp"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:text="Submit" />
+
+</RelativeLayout>

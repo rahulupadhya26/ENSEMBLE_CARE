@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:layout_margin="@dimen/_20dp"
         android:padding="5dp"
-        android:text="Let us know about yourself"
+        android:text="@string/let_us_know_about_you"
         android:textAppearance="@style/fontfamily"
         android:textColor="@color/black"
         android:textSize="@dimen/_26sp"
@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5dp"
-                android:hint="First Name"
+                android:hint="@string/first_name"
                 app:hintTextAppearance="@style/TextLabel">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -73,7 +73,7 @@
                     android:maxLines="2"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:textSize="@dimen/_16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -81,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5dp"
-                android:hint="Middle Name"
+                android:hint="@string/middle_name"
                 app:hintTextAppearance="@style/TextLabel">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -94,7 +94,7 @@
                     android:maxLines="2"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:textSize="@dimen/_16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -102,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5dp"
-                android:hint="Last Name"
+                android:hint="@string/last_name"
                 app:hintTextAppearance="@style/TextLabel">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -115,7 +115,7 @@
                     android:maxLines="2"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:textSize="@dimen/_16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -123,7 +123,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5dp"
-                android:hint="SSN"
+                android:hint="@string/ssn"
                 app:hintTextAppearance="@style/TextLabel"
                 android:id="@+id/ssnTextField"
                 app:endIconMode="clear_text">
@@ -138,7 +138,7 @@
                     android:maxLines="1"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:textSize="@dimen/_16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
@@ -153,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5dp"
                     android:layout_weight="0.5"
-                    android:hint="Gender"
+                    android:hint="@string/gender"
                     app:hintTextAppearance="@style/TextLabel">
 
                     <androidx.appcompat.widget.AppCompatAutoCompleteTextView
@@ -162,11 +162,12 @@
                         android:layout_height="wrap_content"
                         android:focusable="false"
                         android:imeOptions="actionDone"
+                        android:textAppearance="@style/fontfamily"
                         android:inputType="none"
                         android:completionThreshold="0"
                         android:textColor="@color/black"
                         app:hintTextAppearance="@style/TextLabel"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/_16sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -176,7 +177,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5dp"
                     android:layout_weight="0.5"
-                    android:hint="DOB"
+                    android:hint="@string/dob"
                     app:hintTextAppearance="@style/TextLabel">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -184,12 +185,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="true"
+                        android:textAppearance="@style/fontfamily"
                         android:cursorVisible="false"
                         android:focusable="false"
+                        android:padding="16dp"
                         android:imeOptions="actionDone"
                         android:inputType="text"
                         android:maxLines="1"
-                        android:textAppearance="@style/fontfamily"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_16sp" />
                 </com.google.android.material.textfield.TextInputLayout>

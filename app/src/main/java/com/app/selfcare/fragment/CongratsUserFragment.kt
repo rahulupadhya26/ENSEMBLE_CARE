@@ -53,9 +53,9 @@ class CongratsUserFragment : BaseFragment() {
             replaceFragmentNoBackStack(RegistrationFragment(), R.id.layout_home, RegistrationFragment.TAG)
         }, 4000)
 
-        btn_thanks_continue.setOnClickListener {
+        /*btn_thanks_continue.setOnClickListener {
             replaceFragmentNoBackStack(RegistrationFragment(), R.id.layout_home, RegistrationFragment.TAG)
-        }
+        }*/
     }
 
     companion object {

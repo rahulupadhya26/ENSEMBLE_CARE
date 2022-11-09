@@ -14,7 +14,7 @@
         android:layout_margin="@dimen/_20dp"
         android:gravity="center"
         android:padding="5dp"
-        android:text="Payments"
+        android:text="Payment"
         android:textAppearance="@style/fontfamily"
         android:textColor="@color/black"
         android:textSize="@dimen/_26sp"

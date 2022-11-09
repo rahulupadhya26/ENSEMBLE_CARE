@@ -68,7 +68,11 @@ data class Login(
 
 data class DeviceId(
     val device_id: String,
-    val therapy: Int
+    val therapy: Int,
+    val consent_photo: String,
+    val parent_name: String,
+    val parent_relation: String,
+    val parent_contact_no: String
 )
 
 data class SendAnswer(

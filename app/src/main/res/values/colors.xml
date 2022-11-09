@@ -4,9 +4,11 @@
     <color name="primaryDarkGreen">#0C4B33</color>-->
     <!--<color name="primaryGreen">#fea515</color>
     <color name="primaryDarkGreen">#fea515</color>-->
-    <color name="primaryGreen">#EB1A012C</color>
-    <color name="primaryDarkGreen">#EB1A012C</color>
-    <color name="accent">#EB1A012C</color>
+    <!--<color name="primaryGreen">#EB1A012C</color>
+    <color name="primaryDarkGreen">#EB1A012C</color>-->
+    <color name="primaryGreen">#5C2E7E</color>
+    <color name="primaryDarkGreen">#5C2E7E</color>
+    <color name="accent">#5C2E7E</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>

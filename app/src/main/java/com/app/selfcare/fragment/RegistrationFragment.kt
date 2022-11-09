@@ -40,6 +40,7 @@ class RegistrationFragment : BaseFragment() {
     private var selectedGender: String? = null
     private var genderData: Array<String>? = null
     private var register: Register? = null
+    private var selectedTherapy: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +61,8 @@ class RegistrationFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
 
+        selectedTherapy = preference!![PrefKeys.PREF_SELECTED_THERAPY, ""]!!
+
         if (preference!![PrefKeys.PREF_REG, ""]!!.isNotEmpty()) {
             register = Gson().fromJson(preference!![PrefKeys.PREF_REG, ""]!!, Register::class.java)
             etSignUpFname.setText(register!!.first_name)
@@ -72,7 +75,7 @@ class RegistrationFragment : BaseFragment() {
         genderSpinner()
         setDobCalender()
 
-        onClickEvents(view)
+        onClickEvents()
 
         etSignUpFname.requestFocus()
 
@@ -167,7 +170,7 @@ class RegistrationFragment : BaseFragment() {
         }
     }
 
-    private fun onClickEvents(view: View) {
+    private fun onClickEvents() {
         btnRegister.setOnClickListener {
             if (getText(etSignUpFname).isNotEmpty()) {
                 if (getText(etSignUpLname).isNotEmpty()) {
@@ -175,20 +178,27 @@ class RegistrationFragment : BaseFragment() {
                         if (getText(etSignUpSSN).replace("-", "").length == 9) {
                             if (txt_signup_dob.text.toString().isNotEmpty()) {
                                 if (spinner_signup_gender.text.toString().isNotEmpty()) {
-                                    if (getAge(txt_signup_dob.text.toString()) > 13) {
-                                        Utils.firstName = getText(etSignUpFname)
-                                        Utils.middleName = getText(etSignUpMname)
-                                        Utils.lastName = getText(etSignUpLname)
-                                        Utils.ssn = getText(etSignUpSSN).replace("-", "")
-                                        Utils.gender = spinner_signup_gender.text.toString()
-                                        Utils.dob = txt_signup_dob.text.toString()
-                                        replaceFragment(
-                                            RegisterPartBFragment(),
-                                            R.id.layout_home,
-                                            RegisterPartBFragment.TAG
-                                        )
-                                    } else {
-                                        displayMsg("Alert", "Age must be more than 13 years.")
+                                    when (selectedTherapy) {
+                                        "Teen" -> {
+                                            if (getAge(txt_signup_dob.text.toString()) in 13..17) {
+                                                storeAndNavigateToNextScreen()
+                                            } else {
+                                                displayMsg(
+                                                    "Alert",
+                                                    "Age must be greater than 12 years and less than 18 years."
+                                                )
+                                            }
+                                        }
+                                        else -> {
+                                            if (getAge(txt_signup_dob.text.toString()) > 18) {
+                                                storeAndNavigateToNextScreen()
+                                            } else {
+                                                displayMsg(
+                                                    "Alert",
+                                                    "Age must be more than 18 years."
+                                                )
+                                            }
+                                        }
                                     }
                                 } else {
                                     displayMsg("Alert", "Select the gender")
@@ -242,6 +252,20 @@ class RegistrationFragment : BaseFragment() {
             age--
         }
         return age
+    }
+
+    private fun storeAndNavigateToNextScreen() {
+        Utils.firstName = getText(etSignUpFname)
+        Utils.middleName = getText(etSignUpMname)
+        Utils.lastName = getText(etSignUpLname)
+        Utils.ssn = getText(etSignUpSSN).replace("-", "")
+        Utils.gender = spinner_signup_gender.text.toString()
+        Utils.dob = txt_signup_dob.text.toString()
+        replaceFragment(
+            RegisterPartBFragment(),
+            R.id.layout_home,
+            RegisterPartBFragment.TAG
+        )
     }
 
     companion object {

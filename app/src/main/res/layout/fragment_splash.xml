@@ -2,54 +2,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center">
+    android:orientation="vertical">
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Welcome to Soulwise"
-        android:textColor="@color/black"
-        android:gravity="center"
-        style="@style/fontfamily"
-        android:textStyle="bold"
-        android:textSize="32sp" />
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/splash"
-        android:scaleType="centerCrop"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Boost your life,"
-        android:gravity="center"
-        style="@style/fontfamily"
-        android:textStyle="bold"
-        android:textColor="@color/divider"
-        android:textSize="@dimen/_18sp" />
+            <TextView
+                style="@style/fontfamily"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Welcome to"
+                android:textColor="@color/black"
+                android:textSize="32sp"
+                android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Enhance the world"
-        android:gravity="center"
-        style="@style/fontfamily"
-        android:textStyle="bold"
-        android:textColor="@color/divider"
-        android:textSize="@dimen/_18sp" />
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ensemble_care_logo" />
 
-    <Button
-        android:id="@+id/btnSplash"
-        style="@style/buttonBackground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_30dp"
-        android:layout_marginEnd="@dimen/_30dp"
-        android:text="Get Started" />
+            <TextView
+                style="@style/fontfamily"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Boost your life,"
+                android:textColor="@color/divider"
+                android:textSize="@dimen/_18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/fontfamily"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Enhance the world"
+                android:textColor="@color/divider"
+                android:textSize="@dimen/_18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btnSplash"
+                style="@style/buttonBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_30dp"
+                android:layout_marginEnd="@dimen/_30dp"
+                android:text="Get Started" />
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

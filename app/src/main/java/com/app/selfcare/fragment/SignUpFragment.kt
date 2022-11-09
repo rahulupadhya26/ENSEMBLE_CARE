@@ -71,6 +71,7 @@ class SignUpFragment : BaseFragment() {
         etOtp3.addTextChangedListener(GenericTextWatcher(etOtp4, etOtp2))
         etOtp4.addTextChangedListener(GenericTextWatcher(etOtp4, etOtp3))
 
+        txtName.text = "Name : " + Utils.firstName + " " + Utils.middleName + " " + Utils.lastName
         txtEmail.text = "Email : " + Utils.email
         txtPhoneNo.text = "Phone No. : " + formatNumbersAsCode(Utils.phoneNo)
 

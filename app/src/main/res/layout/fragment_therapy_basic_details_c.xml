@@ -181,7 +181,10 @@
                     android:id="@+id/imgPrescriptionPic"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:layout_margin="@dimen/_10dp"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_10dp"
                     android:background="@drawable/bg_corner_rounded_edittext"
                     android:padding="@dimen/_10dp"
                     android:src="@drawable/prescription" />

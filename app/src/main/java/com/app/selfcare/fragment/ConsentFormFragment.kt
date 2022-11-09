@@ -93,12 +93,6 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
         }
     }
 
-    fun convert(bitmap: Bitmap): String? {
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-        return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
-    }
-
     private fun createAppointmentApi(
         apptId: String,
         bookingDate: String,

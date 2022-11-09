@@ -15,7 +15,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.StrictMode
 import android.provider.MediaStore
+import android.provider.Settings
 import android.text.TextUtils
+import android.util.Base64
 import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
@@ -37,6 +39,7 @@ import com.app.selfcare.controller.IFragment
 import com.app.selfcare.crypto.DecryptionImpl
 import com.app.selfcare.data.AppointmentReq
 import com.app.selfcare.data.DataId
+import com.app.selfcare.data.DeviceId
 import com.app.selfcare.data.Login
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper
@@ -624,5 +627,116 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         this ?: return
         if (!isAdded) return // Fragment not attached to an Activity
         activity?.runOnUiThread(action)
+    }
+
+    fun convert(bitmap: Bitmap): String? {
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
+    }
+
+    fun createAnonymousUser(
+        selectedTherapy: String,
+        consentImg: String,
+        parentName: String,
+        relation: String,
+        contactNo: String
+    ) {
+        var selectedTherapyId = 1
+        when (selectedTherapy) {
+            "Individual" -> {
+                selectedTherapyId = 1
+            }
+            "Teen" -> {
+                selectedTherapyId = 2
+            }
+            "Couple" -> {
+                selectedTherapyId = 3
+            }
+            "LGBTQ" -> {
+                selectedTherapyId = 4
+            }
+        }
+        showProgress()
+        val deviceId: String =
+            Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendDeviceId(
+                        DeviceId(
+                            deviceId,
+                            selectedTherapyId,
+                            consentImg,
+                            parentName,
+                            relation,
+                            contactNo
+                        )
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            val jsonObject = JSONObject(responseBody)
+                            preference!![PrefKeys.PREF_DEVICE_ID] =
+                                jsonObject.getString("device_id")
+                            preference!![PrefKeys.PREF_SELECTED_THERAPY] = selectedTherapy
+                            preference!![PrefKeys.PREF_ID] =
+                                jsonObject.getInt("id")
+                            when (status) {
+                                "500" -> {
+                                    displayToast("Something went wrong.. Please try after sometime")
+                                }
+                                "400" -> {
+                                    displayToast("Something went wrong.. Please try after sometime")
+                                }
+                                "201" -> {
+                                    replaceFragmentNoBackStack(
+                                        QuestionnaireFragment.newInstance(selectedTherapy),
+                                        R.id.layout_home,
+                                        QuestionnaireFragment.TAG
+                                    )
+                                }
+                                "208" -> {
+                                    replaceFragmentNoBackStack(
+                                        QuestionnaireFragment.newInstance(selectedTherapy),
+                                        R.id.layout_home,
+                                        QuestionnaireFragment.TAG
+                                    )
+                                }
+                            }
+                            /*if (status == "208") {
+                                replaceFragmentNoBackStack(
+                                    RegistrationFragment(),
+                                    R.id.layout_home,
+                                    RegistrationFragment.TAG
+                                )
+                            } else {*/
+
+                            //}
+                            preference!![PrefKeys.PREF_STEP] = Utils.INTRO_SCREEN
+                            //getQuestionnaire(selectedTherapy)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 404) {
+                            displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
     }
 }

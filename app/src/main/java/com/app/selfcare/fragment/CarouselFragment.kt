@@ -7,6 +7,7 @@ import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -179,95 +180,28 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
 
     @SuppressLint("HardwareIds")
     private fun sendDeviceId(selectedTherapy: String) {
-        var selectedTherapyId = 1
-        when (selectedTherapy) {
-            "Individual" -> {
-                selectedTherapyId = 1
+        if (selectedTherapy == "Teen") {
+            val builder = AlertDialog.Builder(requireActivity())
+            builder.setTitle("Alert")
+            builder.setMessage("Is the application used by you or your parents?")
+            builder.setPositiveButton("It's me") { dialog, _ ->
+                dialog.dismiss()
+                createAnonymousUser(selectedTherapy, "", "", "", "")
             }
-            "Teen" -> {
-                selectedTherapyId = 2
+            builder.setNegativeButton("Parent") { dialog, _ ->
+                dialog.dismiss()
+                replaceFragment(
+                    ParentalConsentFragment.newInstance(selectedTherapy),
+                    R.id.layout_home,
+                    ParentalConsentFragment.TAG
+                )
             }
-            "Couple" -> {
-                selectedTherapyId = 3
-            }
-            "LGBTQ" -> {
-                selectedTherapyId = 4
-            }
+            builder.show()
+        } else {
+            createAnonymousUser(selectedTherapy, "", "", "", "")
         }
-        showProgress()
-        val deviceId: String =
-            Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
-        runnable = Runnable {
-            mCompositeDisposable.add(
-                getEncryptedRequestInterface()
-                    .sendDeviceId(DeviceId(deviceId, selectedTherapyId))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ result ->
-                        try {
-                            hideProgress()
-                            var responseBody = result.string()
-                            Log.d("Response Body", responseBody)
-                            val respBody = responseBody.split("|")
-                            val status = respBody[1]
-                            responseBody = respBody[0]
-                            val jsonObject = JSONObject(responseBody)
-                            preference!![PrefKeys.PREF_DEVICE_ID] =
-                                jsonObject.getString("device_id")
-                            preference!![PrefKeys.PREF_SELECTED_THERAPY] = selectedTherapy
-                            preference!![PrefKeys.PREF_ID] =
-                                jsonObject.getInt("id")
-                            when (status) {
-                                "500" -> {
-                                    displayToast("Something went wrong.. Please try after sometime")
-                                }
-                                "400" -> {
-                                    displayToast("Something went wrong.. Please try after sometime")
-                                }
-                                "201" -> {
-                                    replaceFragmentNoBackStack(
-                                        QuestionnaireFragment.newInstance(selectedTherapy),
-                                        R.id.layout_home,
-                                        QuestionnaireFragment.TAG
-                                    )
-                                }
-                                "208" -> {
-                                    replaceFragmentNoBackStack(
-                                        QuestionnaireFragment.newInstance(selectedTherapy),
-                                        R.id.layout_home,
-                                        QuestionnaireFragment.TAG
-                                    )
-                                }
-                            }
-                            /*if (status == "208") {
-                                replaceFragmentNoBackStack(
-                                    RegistrationFragment(),
-                                    R.id.layout_home,
-                                    RegistrationFragment.TAG
-                                )
-                            } else {*/
-
-                            //}
-                            preference!![PrefKeys.PREF_STEP] = Utils.INTRO_SCREEN
-                            //getQuestionnaire(selectedTherapy)
-                        } catch (e: Exception) {
-                            hideProgress()
-                            displayToast("Something went wrong.. Please try after sometime")
-                        }
-                    }, { error ->
-                        hideProgress()
-                        //displayToast("Error ${error.localizedMessage}")
-                        if ((error as HttpException).code() == 404) {
-                            displayErrorMsg(error)
-                        } else {
-                            displayToast("Something went wrong.. Please try after sometime")
-                        }
-                    })
-            )
-        }
-        handler.postDelayed(runnable!!, 1000)
-
     }
+
 
     private val sliderRunnable: Runnable = Runnable {
         viewPagerTherapySlider.currentItem = viewPagerTherapySlider.currentItem + 1
@@ -301,6 +235,7 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_Therapy_Select"
     }
 

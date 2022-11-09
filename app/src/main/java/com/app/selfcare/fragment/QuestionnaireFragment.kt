@@ -87,10 +87,10 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
             getAllQuestions()
         }
 
-        tv_option_one.setOnClickListener(this)
-        tv_option_two.setOnClickListener(this)
-        tv_option_three.setOnClickListener(this)
-        tv_option_four.setOnClickListener(this)
+        cv_option_one.setOnClickListener(this)
+        cv_option_two.setOnClickListener(this)
+        cv_option_three.setOnClickListener(this)
+        cv_option_four.setOnClickListener(this)
         cardViewBtnNext.setOnClickListener(this)
 
         /*val jsonString = Constants.getJson(requireActivity())
@@ -278,8 +278,8 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 layout_options.visibility = View.VISIBLE
                 tv_option_one.text = question.answers[0].answer
                 tv_option_two.text = question.answers[1].answer
-                tv_option_three.visibility = View.GONE
-                tv_option_four.visibility = View.GONE
+                cv_option_three.visibility = View.GONE
+                cv_option_four.visibility = View.GONE
             }
             3 -> {
                 rv_option_list.visibility = View.GONE
@@ -288,7 +288,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 tv_option_two.text = question.answers[1].answer
                 tv_option_three.text = question.answers[2].answer
                 tv_option_three.visibility = View.VISIBLE
-                tv_option_four.visibility = View.GONE
+                cv_option_four.visibility = View.GONE
             }
             4 -> {
                 rv_option_list.visibility = View.GONE
@@ -297,8 +297,8 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 tv_option_two.text = question.answers[1].answer
                 tv_option_three.text = question.answers[2].answer
                 tv_option_four.text = question.answers[3].answer
-                tv_option_three.visibility = View.VISIBLE
-                tv_option_four.visibility = View.VISIBLE
+                cv_option_three.visibility = View.VISIBLE
+                cv_option_four.visibility = View.VISIBLE
             }
         }
     }
@@ -362,8 +362,8 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 layout_options.visibility = View.VISIBLE
                 tv_option_one.text = question!!.answers[0].answer
                 tv_option_two.text = question!!.answers[1].answer
-                tv_option_three.visibility = View.GONE
-                tv_option_four.visibility = View.GONE
+                cv_option_three.visibility = View.GONE
+                cv_option_four.visibility = View.GONE
             }
             3 -> {
                 rv_option_list.visibility = View.GONE
@@ -372,7 +372,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 tv_option_two.text = question!!.answers[1].answer
                 tv_option_three.text = question!!.answers[2].answer
                 tv_option_three.visibility = View.VISIBLE
-                tv_option_four.visibility = View.GONE
+                cv_option_four.visibility = View.GONE
             }
             4 -> {
                 rv_option_list.visibility = View.GONE
@@ -381,8 +381,8 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 tv_option_two.text = question!!.answers[1].answer
                 tv_option_three.text = question!!.answers[2].answer
                 tv_option_four.text = question!!.answers[3].answer
-                tv_option_three.visibility = View.VISIBLE
-                tv_option_four.visibility = View.VISIBLE
+                cv_option_three.visibility = View.VISIBLE
+                cv_option_four.visibility = View.VISIBLE
             }
         }
         /*if (count == tempQuestions!!.size) {
@@ -470,8 +470,8 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
         for (option in options) {
             option.setTextColor(requireActivity().getColor(R.color.secondary_text))
             option.typeface = Typeface.DEFAULT
-            option.background =
-                ContextCompat.getDrawable(requireActivity(), R.drawable.bg_box_border_grey)
+            /*option.background =
+                ContextCompat.getDrawable(requireActivity(), R.drawable.bg_box_border_grey)*/
         }
 
     }
@@ -488,8 +488,8 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
         mAnsweredQuesitonId = answeredQuestionId
         tv.setTextColor(requireActivity().getColor(R.color.white))
         tv.setTypeface(tv.typeface, Typeface.BOLD)
-        tv.background =
-            ContextCompat.getDrawable(requireActivity(), R.drawable.bg_box_border_selected)
+        /*tv.background =
+            ContextCompat.getDrawable(requireActivity(), R.drawable.bg_box_border_selected)*/
         count += 1
         nextOptionId = selectedOptionId
         preference!![PrefKeys.PREF_NEXT_QUESTION_ID] = nextOptionId
@@ -531,7 +531,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.tv_option_one -> {
+            R.id.cv_option_one -> {
                 var nextQuestionId = ""
                 if (question!!.answers[0].option_id != null) {
                     nextQuestionId = question!!.answers[0].option_id
@@ -545,7 +545,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                     nextQuestionId
                 )
             }
-            R.id.tv_option_two -> {
+            R.id.cv_option_two -> {
                 var nextQuestionId = ""
                 if (question!!.answers[1].option_id != null) {
                     nextQuestionId = question!!.answers[1].option_id
@@ -559,7 +559,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                     nextQuestionId
                 )
             }
-            R.id.tv_option_three -> {
+            R.id.cv_option_three -> {
                 var nextQuestionId = ""
                 if (question!!.answers[2].option_id != null) {
                     nextQuestionId = question!!.answers[2].option_id
@@ -573,7 +573,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                     nextQuestionId
                 )
             }
-            R.id.tv_option_four -> {
+            R.id.cv_option_four -> {
                 var nextQuestionId = ""
                 if (question!!.answers[3].option_id != null) {
                     nextQuestionId = question!!.answers[3].option_id

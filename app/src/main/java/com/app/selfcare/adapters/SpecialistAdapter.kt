@@ -10,11 +10,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnItemTherapistImageClickListener
 import com.app.selfcare.controller.OnTherapistItemClickListener
 import com.app.selfcare.data.Therapist
+import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.fragment_therapist_detail.*
 import kotlinx.android.synthetic.main.layout_item_specialist.view.*
 
@@ -46,24 +48,25 @@ class SpecialistAdapter(
         holder.doctorName.text =
             "Dr. " + item.first_name + " " + item.middle_name + " " + item.last_name
         holder.doctorType.text = item.doctor_type
-        holder.doctorQualification.text = item.qualification
-        holder.doctorRating.text = "DOB : " + item.dob
+        holder.doctorNextAvailSlot.text = "Friday, 11 Nov"
+
         holder.doctorLayout.setOnClickListener {
+            holder.doctorLayout.strokeColor = ContextCompat.getColor(context, R.color.primaryGreen)
+            holder.doctorLayout.strokeWidth = 2
             onItemClickListener!!.onTherapistItemClickListener(item)
         }
 
-        holder.doctorImage.setOnClickListener {
+        holder.doctorLayout.setOnLongClickListener {
             onItemImageClickListener!!.onItemTherapistImageClickListener(item)
+            true
         }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val doctorImage: ImageView = itemView.imgTherapistPic
         val doctorName: TextView = itemView.txtTherapistName
         val doctorType: TextView = itemView.txtTherapistType
-        val doctorQualification: TextView = itemView.txtTherapistQualification
-        val doctorRating: TextView = itemView.txtTherapistRating
-        val doctorLayout: CardView = itemView.cardview_layout_therapist
+        val doctorNextAvailSlot: TextView = itemView.txtTherapistNextSlot
+        val doctorLayout: MaterialCardView = itemView.cardview_layout_therapist
 
     }
 }

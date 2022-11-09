@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -65,14 +66,34 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
         getSubTitle().visibility = View.GONE
 
         getTherapistList()
+
+        btnConfirmDoctor.setOnClickListener {
+            if (Utils.providerId.isNotEmpty() &&
+                Utils.providerPublicId.isNotEmpty() &&
+                Utils.providerType.isNotEmpty() &&
+                Utils.providerName.isNotEmpty()) {
+                replaceFragment(
+                    TherapySelectionFragment(),
+                    R.id.layout_home,
+                    TherapySelectionFragment.TAG
+                )
+            }
+        }
     }
 
     private fun getTherapistList() {
+        Utils.providerId = ""
+        Utils.providerPublicId = ""
+        Utils.providerType = ""
+        Utils.providerName = ""
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getTherapistList(PatientId(preference!![PrefKeys.PREF_PATIENT_ID, 0]!!), getAccessToken())
+                    .getTherapistList(
+                        PatientId(preference!![PrefKeys.PREF_PATIENT_ID, 0]!!),
+                        getAccessToken()
+                    )
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -149,7 +170,11 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
     }
 
     override fun onItemTherapistImageClickListener(therapist: Therapist) {
-        replaceFragment(TherapistDetailFragment.newInstance(therapist), R.id.layout_home, TherapistDetailFragment.TAG)
+        replaceFragment(
+            TherapistDetailFragment.newInstance(therapist),
+            R.id.layout_home,
+            TherapistDetailFragment.TAG
+        )
     }
 
     override fun onTherapistItemClickListener(therapist: Therapist) {
@@ -158,6 +183,6 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
         Utils.providerType = therapist.doctor_type
         Utils.providerName =
             therapist.first_name + " " + therapist.middle_name + " " + therapist.last_name
-        replaceFragment(TherapySelectionFragment(), R.id.layout_home, TherapySelectionFragment.TAG)
+        btnConfirmDoctor.setBackgroundColor(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
     }
 }

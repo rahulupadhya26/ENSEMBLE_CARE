@@ -200,7 +200,7 @@ class RegisterPartBFragment : BaseFragment() {
                                     RegisterPartCFragment.TAG
                                 )
                             } else {
-                                displayMsg("Alert", "Record already exist.")
+                                displayMsg("Alert", responseBody.trim())
                             }
                         } catch (e: Exception) {
                             hideProgress()

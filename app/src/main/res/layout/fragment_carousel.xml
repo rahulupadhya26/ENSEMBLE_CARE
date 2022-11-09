@@ -76,7 +76,7 @@
                         android:layout_height="80dp"
                         android:layout_centerInParent="true"
                         android:src="@drawable/self"
-                        app:tint="@color/black" />
+                        app:tint="@color/primaryGreen" />
 
                 </RelativeLayout>
 
@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5dp"
                     android:gravity="center"
-                    android:text="Individual"
+                    android:text="Self"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/localBackground"
                     android:textSize="@dimen/_18sp" />
@@ -113,7 +113,7 @@
                         android:layout_height="80dp"
                         android:layout_centerInParent="true"
                         android:src="@drawable/teen"
-                        app:tint="@color/black" />
+                        app:tint="@color/primaryGreen" />
 
                 </RelativeLayout>
 
@@ -159,7 +159,7 @@
                         android:layout_height="80dp"
                         android:layout_centerInParent="true"
                         android:src="@drawable/couple"
-                        app:tint="@color/black" />
+                        app:tint="@color/primaryGreen" />
 
                 </RelativeLayout>
 
@@ -196,7 +196,7 @@
                         android:layout_height="80dp"
                         android:layout_centerInParent="true"
                         android:src="@drawable/lgbt"
-                        app:tint="@color/black" />
+                        app:tint="@color/primaryGreen" />
 
                 </RelativeLayout>
 
@@ -205,7 +205,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5dp"
                     android:gravity="center"
-                    android:text="LGBTQ"
+                    android:text="LGBTQIA plus"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/localBackground"
                     android:textSize="@dimen/_18sp" />

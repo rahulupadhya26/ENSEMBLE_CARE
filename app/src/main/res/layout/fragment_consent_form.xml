@@ -54,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/fontfamily"
                         android:padding="5dp"
-                        android:text="I voluntarily agree to receive evaluation/consultation from the doctors/therapists/physicians booked through Selfcare App. I concur on the below information supplied while booking the appointment."
+                        android:text="I voluntarily agree to receive evaluation/consultation from the doctors/therapists/physicians booked through Ensemble Care App. I concur on the below information supplied while booking the appointment."
                         android:textColor="@color/black"
                         android:textSize="@dimen/_14sp" />
 
@@ -156,11 +156,12 @@
             style="@style/buttonBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/txt_high_conf_info"
+            android:layout_alignParentBottom="true"
             android:layout_marginStart="@dimen/_30dp"
             android:layout_marginTop="@dimen/_5dp"
             android:layout_marginEnd="@dimen/_30dp"
             android:layout_marginBottom="5dp"
-            android:layout_above="@+id/txt_high_conf_info"
             android:text="Submit" />
 
         <TextView
@@ -170,6 +171,7 @@
             android:layout_alignParentBottom="true"
             android:fontFamily="@font/avenir_heavy"
             android:gravity="center"
+            android:visibility="gone"
             android:text="Highly confidential information"
             android:textColor="@color/black"
             android:textSize="12dp" />

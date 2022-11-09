@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".fragment.TherapistListFragment">
@@ -11,16 +12,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_margin="@dimen/_20dp">
+        android:layout_margin="@dimen/_15dp"
+        android:layout_above="@+id/btnConfirmDoctor">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Choose Specialist"
+            android:text="Create an appointment"
             android:textAppearance="@style/fontfamily"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_26sp"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select your provider"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_18sp"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -30,4 +40,16 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/btnConfirmDoctor"
+        style="@style/buttonBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/_30dp"
+        android:layout_marginEnd="@dimen/_30dp"
+        app:backgroundTint="#89848C"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:text="Confirm doctor" />
+
+</RelativeLayout>
