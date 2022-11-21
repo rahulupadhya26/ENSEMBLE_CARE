@@ -1,55 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
+    android:background="@color/initial_screen_background"
     tools:context=".fragment.CongratsUserFragment">
 
-    <ImageView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/ensemble_care_logo"
-        android:layout_margin="@dimen/_10dp"
-        android:contentDescription="@string/app_name" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_36sp"
+            android:padding="@dimen/_5dp"
+            android:textStyle="bold"
+            android:text="@string/you_are_done"
+            android:gravity="center"/>
+
+        <ImageView
+            android:id="@+id/imgThankYou"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="@dimen/_20dp"
+            android:layout_marginBottom="@dimen/_20dp"
+            android:src="@drawable/thumb"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_30sp"
+            android:padding="@dimen/_5dp"
+            android:textStyle="bold"
+            android:text="@string/thank_you_for_filling_the_assessment"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16sp"
+            android:padding="@dimen/_5dp"
+            android:visibility="gone"
+            android:text="@string/appreciate_text_after_assessment"
+            android:gravity="center"/>
+
+
+    </LinearLayout>
 
     <TextView
+        android:id="@+id/txtTimer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/fontfamily"
-        android:textColor="@color/primaryGreen"
-        android:textSize="@dimen/_26sp"
-        android:padding="@dimen/_5dp"
-        android:text="@string/thank_you_for_filling_the_assessment"
-        android:gravity="center"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="@dimen/_16sp"
         android:padding="@dimen/_5dp"
-        android:text="@string/appreciate_text_after_assessment"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/_10dp"
         android:gravity="center"/>
 
-    <ImageView
-        android:id="@+id/imgThankYou"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/thankyou"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_30sp"
-        android:padding="@dimen/_5dp"
-        android:text="@string/thank_you"
-        android:layout_marginTop="@dimen/_20dp"
-        android:gravity="center"
-        android:visibility="gone"/>
-
-</LinearLayout>
+</RelativeLayout>

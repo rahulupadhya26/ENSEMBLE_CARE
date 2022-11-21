@@ -14,8 +14,8 @@ interface OnTextClickListener {
     fun onTextClickListener(timeSlot: TimeSlot)
 }
 
-interface OnTherapyTypeClickListener {
-    fun onTherapyTypeClickListener(therapyType: TherapyType)
+interface OnCoachTypeClickListener {
+    fun onCoachTypeClickListener(coachType: CoachType)
 }
 
 interface AdapterCallback {

@@ -10,13 +10,11 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.StrictMode
+import android.os.*
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.TextUtils
+import android.text.format.DateFormat
 import android.util.Base64
 import android.util.Log
 import android.util.Patterns
@@ -25,10 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -47,13 +42,14 @@ import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.services.RequestInterface
 import com.app.selfcare.utils.Utils
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.display_image.*
-import kotlinx.android.synthetic.main.display_image.view.*
+import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -63,7 +59,12 @@ import org.json.JSONObject
 import retrofit2.HttpException
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 
 abstract class BaseFragment : Fragment(), IFragment, IController {
@@ -179,12 +180,14 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         ).matches()
     }
 
-    protected fun isValidPasswordFormat(password: String): Boolean {
+    fun isValidPasswordFormat(password: String): Boolean {
         val passwordREGEX = Pattern.compile(
             "^" +
+                    "(?=.*[0-9])" +         //at least 1 digit
                     "(?=.*[a-z])" +         //at least 1 lower case letter
                     "(?=.*[A-Z])" +         //at least 1 upper case letter
                     "(?=.*[a-zA-Z])" +      //any letter
+                    "(?=.*[@#$%^&+=])" +    //at least 1 special character
                     "(?=\\S+$)" +           //no white spaces
                     ".{9,}" +               //at least 9 characters
                     "$"
@@ -255,6 +258,11 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     @RequiresApi(Build.VERSION_CODES.Q)
     protected fun captureImage(imageView: ImageView) {
         mActivity!!.captureImage(imageView)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    protected fun showImageDialog() {
+        mActivity!!.showImageDialog()
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -331,6 +339,18 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
 
     fun getBottomNavigation(): BottomNavigationView? {
         return mActivity!!.getBottomNavigation()
+    }
+
+    fun setLayoutBottomNavigation(navigationView: RelativeLayout?) {
+        mActivity!!.setLayoutBottomNavigation(navigationView)
+    }
+
+    fun getLayoutBottomNavigation(): RelativeLayout? {
+        return mActivity!!.getLayoutBottomNavigation()
+    }
+
+    fun updateStatusBarColor(colorId: Int) {
+        return mActivity!!.updateStatusBarColor(colorId)
     }
 
     override fun setBottomMenu(id: Int) {
@@ -537,7 +557,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                             bookingDate,
                             visitType,
                             status,
-                            ""
+                            "", "", "", ""
                         ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -602,6 +622,20 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         dialog.show()
     }
 
+    fun showImage(bitmapStr: String) {
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(layoutInflater.inflate(R.layout.display_image, null))
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.btnImageDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+        Glide.with(this)
+            .load(File(bitmapStr))
+            .into(dialog.imgView)
+        dialog.show()
+    }
+
     fun displayConfirmPopup() {
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle("Alert")
@@ -645,13 +679,13 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         var selectedTherapyId = 1
         when (selectedTherapy) {
             "Individual" -> {
-                selectedTherapyId = 1
+                selectedTherapyId = 3
             }
             "Teen" -> {
-                selectedTherapyId = 2
+                selectedTherapyId = 1
             }
             "Couple" -> {
-                selectedTherapyId = 3
+                selectedTherapyId = 2
             }
             "LGBTQ" -> {
                 selectedTherapyId = 4
@@ -738,5 +772,58 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
             )
         }
         handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun getAge(dobString: String): Int {
+        var date: Date? = null
+        val sdf = SimpleDateFormat("MM/dd/yyyy")
+        try {
+            date = sdf.parse(dobString)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        if (date == null) return 0
+        val dob: Calendar = Calendar.getInstance()
+        val today: Calendar = Calendar.getInstance()
+        dob.time = date
+        val year: Int = dob.get(Calendar.YEAR)
+        val month: Int = dob.get(Calendar.MONTH)
+        val day: Int = dob.get(Calendar.DAY_OF_MONTH)
+        dob.set(year, month + 1, day)
+        var age: Int = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR)
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--
+        }
+        return age
+    }
+
+    fun takeScreenshot() {
+        try {
+            showProgress()
+            val now = Date()
+            DateFormat.format("yyyy-MM-dd_hh:mm:ss", now)
+            // image naming and path  to include sd card  appending name you choose for file
+            val mPath: String =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                    .toString() + "/" + System.currentTimeMillis().toString().replace(":", ".") + ".jpg"
+
+            // create bitmap screen capture
+            val v1: View = requireActivity().window.decorView.rootView
+            v1.isDrawingCacheEnabled = true
+            v1.buildDrawingCache(true)
+            val bitmap = Bitmap.createBitmap(v1.drawingCache)
+            v1.isDrawingCacheEnabled = false
+            val imageFile = File(mPath)
+            val outputStream = FileOutputStream(imageFile)
+            val quality = 100
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+            outputStream.flush()
+            outputStream.close()
+            hideProgress()
+        } catch (e: Exception) {
+            hideProgress()
+            // Several error may come out with file handling or DOM
+            e.printStackTrace()
+        }
     }
 }

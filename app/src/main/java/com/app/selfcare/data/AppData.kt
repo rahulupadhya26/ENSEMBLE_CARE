@@ -53,12 +53,21 @@ data class Therapist(
     val middle_name: String,
     val last_name: String,
     val doctor_type: String,
+    val gender: String,
     val dob: String,
+    val photo: String,
     val qualification: String,
+    val description:String,
     val years_of_experience: String,
     val street: String,
     val city: String,
-    val state: String
+    val state: String,
+    val zipcode: String,
+    val country: String,
+    val emergency_phone: String,
+    val practice_state: String,
+    val license_number: String,
+    val user: String
 ) : Parcelable
 
 data class Login(
@@ -92,8 +101,7 @@ data class Employee(
 
 data class UserDetails(
     val email: String,
-    val phone: String,
-    val ssn: String
+    val phone: String
 )
 
 @Parcelize
@@ -105,7 +113,6 @@ data class Register(
     val first_name: String,
     val last_name: String,
     val middle_name: String,
-    val ssn: String,
     val dob: String,
     val device_id: String,
     val is_employee: Boolean,
@@ -161,6 +168,7 @@ data class CreatePersonalGoal(
     val goal_type: String,
     val start_date: String,
     val duration: Int,
+    val frequency: String,
     val patient_id: String
 )
 
@@ -179,6 +187,10 @@ data class CoachReqBody(
 
 data class CancelAppointment(
     val patient_id: Int,
+    val appointment_id: Int
+)
+
+data class GetToken(
     val appointment_id: Int
 )
 
@@ -221,7 +233,10 @@ data class AppointmentReq(
     val booking_date: String,
     val type_of_visit: String,
     val status: Int,
-    val consent_sign_image: String
+    val consent_sign_image: String,
+    val prescription_1: String,
+    val prescription_2: String,
+    val prescription_3: String
 )
 
 @Parcelize
@@ -495,4 +510,17 @@ data class ConsentRois(
     val patient_status: String,
     val doctor_status: String,
     val pdf_file_url: String,
+) : Parcelable
+
+data class CoachType(
+    val mainText: String,
+    val secondaryText: String,
+    val subText: String,
+    val image: Int
+)
+
+@Parcelize
+data class Nutrition(
+    val name: String,
+    val image: Int
 ) : Parcelable

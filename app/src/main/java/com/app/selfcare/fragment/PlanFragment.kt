@@ -17,6 +17,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_plan.*
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
+import com.app.selfcare.utils.Utils
 import org.json.JSONArray
 import kotlin.math.abs
 
@@ -53,6 +54,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
+        updateStatusBarColor(R.color.initial_screen_background)
 
         /*val planList = ArrayList<Plan>()
         planList.add(Plan("1", "Standard", "11", "15"))
@@ -176,6 +178,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                         BottomNavigationFragment.TAG
                     )
                 } else {
+                    Utils.isTherapististScreen = true
                     replaceFragmentNoBackStack(
                         TherapistListFragment.newInstance(true),
                         R.id.layout_home,

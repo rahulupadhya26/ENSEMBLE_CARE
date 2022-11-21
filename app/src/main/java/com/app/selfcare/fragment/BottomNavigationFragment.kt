@@ -2,11 +2,15 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import com.app.selfcare.R
-import com.app.selfcare.data.HealthInfo
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_bottom_navigation.*
 
@@ -39,9 +43,16 @@ class BottomNavigationFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getHeader().visibility = View.VISIBLE
+        getHeader().visibility = View.GONE
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+
+        // Define container.
+        /*val loginDialogContainer = requireActivity().supportFragmentManager.findFragmentById(R.id.main_fragment) as NavHostFragment
+        // Set nav controller.
+        val loginNavController: NavController = loginDialogContainer.navController
+
+        val appBarConfiguration = AppBarConfiguration(loginNavController.graph)*/
 
         bottomNavigationView.background = null
 
@@ -49,14 +60,125 @@ class BottomNavigationFragment : BaseFragment() {
             val navigationView = bottomNavigationView
             setBottomNavigation(navigationView as BottomNavigationView)
             navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-            fab.setOnClickListener {
-                replaceFragment(
-                    TherapistListFragment.newInstance(false),
-                    R.id.layout_home,
-                    TherapistListFragment.TAG
-                )
-            }
             getBottomNavigation()!!.selectedItemId = R.id.navigation_home
+        }
+
+        if (getLayoutBottomNavigation() == null) {
+            setLayoutBottomNavigation(layoutBottomNav)
+            layoutBottomNav.visibility = View.VISIBLE
+
+            imgDashboard.visibility = View.GONE
+            cardViewDashboard.visibility = View.VISIBLE
+
+            imgCrisis.visibility = View.VISIBLE
+            cardViewCrisis.visibility = View.GONE
+
+            imgCoaches.visibility = View.VISIBLE
+            cardViewCoaches.visibility = View.GONE
+
+            imgActivity.visibility = View.VISIBLE
+            cardViewActivity.visibility = View.GONE
+
+            replaceFragmentNoBackStack(
+                DashboardFragment(),
+                R.id.layoutContent,
+                DashboardFragment.TAG
+            )
+
+            fab.visibility = View.VISIBLE
+        }
+
+        fab.setOnClickListener {
+            replaceFragment(
+                TherapistListFragment.newInstance(false),
+                R.id.layout_home,
+                TherapistListFragment.TAG
+            )
+        }
+
+
+        layoutDashboard.setOnClickListener {
+            imgDashboard.visibility = View.GONE
+            cardViewDashboard.visibility = View.VISIBLE
+
+            imgCrisis.visibility = View.VISIBLE
+            cardViewCrisis.visibility = View.GONE
+
+            imgCoaches.visibility = View.VISIBLE
+            cardViewCoaches.visibility = View.GONE
+
+            imgActivity.visibility = View.VISIBLE
+            cardViewActivity.visibility = View.GONE
+
+            replaceFragmentNoBackStack(
+                DashboardFragment(),
+                R.id.layoutContent,
+                DashboardFragment.TAG
+            )
+            fab.visibility = View.VISIBLE
+        }
+
+        layoutActivity.setOnClickListener {
+            imgActivity.visibility = View.GONE
+            cardViewActivity.visibility = View.VISIBLE
+
+            imgDashboard.visibility = View.VISIBLE
+            cardViewDashboard.visibility = View.GONE
+
+            imgCoaches.visibility = View.VISIBLE
+            cardViewCoaches.visibility = View.GONE
+
+            imgCrisis.visibility = View.VISIBLE
+            cardViewCrisis.visibility = View.GONE
+
+            replaceFragmentNoBackStack(
+                ExploreFragment(),
+                R.id.layoutContent,
+                ExploreFragment.TAG
+            )
+            fab.visibility = View.GONE
+        }
+
+        layoutCoaches.setOnClickListener {
+            imgCoaches.visibility = View.GONE
+            cardViewCoaches.visibility = View.VISIBLE
+
+            imgActivity.visibility = View.VISIBLE
+            cardViewActivity.visibility = View.GONE
+
+            imgDashboard.visibility = View.VISIBLE
+            cardViewDashboard.visibility = View.GONE
+
+            imgCrisis.visibility = View.VISIBLE
+            cardViewCrisis.visibility = View.GONE
+
+            replaceFragmentNoBackStack(
+                CoachesFragment(),
+                R.id.layoutContent,
+                CoachesFragment.TAG
+            )
+            fab.visibility = View.GONE
+        }
+
+        layoutCrisis.setOnClickListener {
+            imgCrisis.visibility = View.GONE
+            cardViewCrisis.visibility = View.VISIBLE
+
+            imgCoaches.visibility = View.VISIBLE
+            cardViewCoaches.visibility = View.GONE
+
+            imgActivity.visibility = View.VISIBLE
+            cardViewActivity.visibility = View.GONE
+
+            imgDashboard.visibility = View.VISIBLE
+            cardViewDashboard.visibility = View.GONE
+
+            replaceFragmentNoBackStack(
+                HealthInfoFragment(),
+                R.id.layoutContent,
+                HealthInfoFragment.TAG
+            )
+            fab.visibility = View.GONE
         }
     }
 
@@ -64,33 +186,33 @@ class BottomNavigationFragment : BaseFragment() {
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    replaceFragmentNoBackStack(
+                    /*replaceFragmentNoBackStack(
                         DashboardFragment(),
                         R.id.layoutContent,
                         DashboardFragment.TAG
-                    )
+                    )*/
                     return@OnNavigationItemSelectedListener true
                 }
-                R.id.navigation_explore -> {
-                    replaceFragmentNoBackStack(
+                R.id.navigation_activity -> {
+                    /*replaceFragmentNoBackStack(
                         ExploreFragment(),
                         R.id.layoutContent,
                         ExploreFragment.TAG
-                    )
+                    )*/
                     //displayMsg("Message", "Screen under development")
                     return@OnNavigationItemSelectedListener true
                 }
-                R.id.navigation_coaches -> {
-                    replaceFragmentNoBackStack(CoachesFragment(),R.id.layoutContent,CoachesFragment.TAG)
+                R.id.navigation_personal_trainer -> {
+                    //replaceFragmentNoBackStack(CoachesFragment(),R.id.layoutContent,CoachesFragment.TAG)
                     //displayMsg("Message", "Screen under development")
                     return@OnNavigationItemSelectedListener true
                 }
-                R.id.navigation_myHealthInfo -> {
-                    replaceFragmentNoBackStack(
+                R.id.navigation_crisis -> {
+                    /*replaceFragmentNoBackStack(
                         HealthInfoFragment(),
                         R.id.layoutContent,
                         HealthInfoFragment.TAG
-                    )
+                    )*/
                     //displayMsg("Message", "Screen under development")
                     return@OnNavigationItemSelectedListener true
                 }

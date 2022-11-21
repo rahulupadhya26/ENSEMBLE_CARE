@@ -4,23 +4,17 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.app.selfcare.R
-import com.app.selfcare.data.CreateJournal
 import com.app.selfcare.data.CreatePersonalGoal
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.CalenderUtils
-import com.app.selfcare.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_create_goal.*
-import kotlinx.android.synthetic.main.fragment_create_journal.*
-import kotlinx.android.synthetic.main.fragment_registration.*
 import retrofit2.HttpException
 import java.lang.Exception
 import java.text.SimpleDateFormat
@@ -40,8 +34,10 @@ class CreateGoalFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    var selectedDuration: String = ""
-    var durationData: Array<String>? = null
+    private var selectedDuration: String = ""
+    private var durationData: Array<String>? = null
+    private var selectedGoalType: String = ""
+    private var goalTypeData: Array<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +58,7 @@ class CreateGoalFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
 
         goalDurationSpinner()
+        goalTypeSpinner()
 
         val sdf = SimpleDateFormat("MM/dd/yyyy")
         val cal = Calendar.getInstance()
@@ -94,10 +91,14 @@ class CreateGoalFragment : BaseFragment() {
         btnGoalSave.setOnClickListener {
             if (isValidText(editTextGoalTitle)) {
                 if (isValidText(editTextGoalDescription)) {
-                    if (getText(goalDuration).isNotEmpty()) {
-                        createPersonalGoal()
+                    if (selectedGoalType.isNotEmpty()) {
+                        if (selectedDuration.isNotEmpty()) {
+                            createPersonalGoal()
+                        } else {
+                            displayMsg("Alert", "Select the duration.")
+                        }
                     } else {
-                        displayMsg("Alert", "Select the duration.")
+                        displayMsg("Alert", "Select the type.")
                     }
                 } else {
                     setEditTextError(editTextGoalDescription, "Enter the Goal Description")
@@ -109,18 +110,72 @@ class CreateGoalFragment : BaseFragment() {
 
     }
 
-    private fun goalDurationSpinner() {
-        durationData = resources.getStringArray(R.array.goal_duration)
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            requireActivity(), android.R.layout.simple_spinner_dropdown_item, durationData!!
-        )
-        goalDuration.setAdapter(adapter)
+    private fun goalTypeSpinner() {
+        goalTypeData = resources.getStringArray(R.array.goal_type)
 
-        goalDuration.onItemClickListener =
+        val adapter = ArrayAdapter(
+            requireActivity(),
+            R.layout.spinner_dropdown_custom_item, goalTypeData!!
+        )
+
+        /*val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            requireActivity(), android.R.layout.simple_spinner_dropdown_item, durationData!!
+        )*/
+        spinnerGoalType.adapter = adapter
+
+        spinnerGoalType.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View, position: Int, id: Long
+            ) {
+                selectedGoalType = goalTypeData!![position]
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // write code to perform some action
+            }
+        }
+
+        /*goalDuration.onItemClickListener =
             AdapterView.OnItemClickListener { parent, arg1, position, id ->
                 //TODO: You can your own logic.
                 selectedDuration = durationData!![position]
+            }*/
+    }
+
+    private fun goalDurationSpinner() {
+        durationData = resources.getStringArray(R.array.goal_duration)
+
+        val adapter = ArrayAdapter(
+            requireActivity(),
+            R.layout.spinner_dropdown_custom_item, durationData!!
+        )
+
+        /*val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            requireActivity(), android.R.layout.simple_spinner_dropdown_item, durationData!!
+        )*/
+        goalDuration.adapter = adapter
+
+        goalDuration.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View, position: Int, id: Long
+            ) {
+                selectedDuration = durationData!![position]
             }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // write code to perform some action
+            }
+        }
+
+        /*goalDuration.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, arg1, position, id ->
+                //TODO: You can your own logic.
+                selectedDuration = durationData!![position]
+            }*/
     }
 
     private fun createPersonalGoal() {
@@ -144,6 +199,7 @@ class CreateGoalFragment : BaseFragment() {
                             "Personal",
                             getText(txtGoalStartDate),
                             durationPos,
+                            selectedGoalType,
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!
                         ), getAccessToken()
                     )

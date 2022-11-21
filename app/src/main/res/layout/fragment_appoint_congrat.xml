@@ -1,40 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/screen_background_color"
     tools:context=".fragment.AppointCongratFragment">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/congrulations" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
         android:orientation="vertical"
-        android:layout_marginTop="10dp">
+        android:gravity="center"
+        android:background="@color/screen_background_color"
+        android:layout_above="@+id/viewBtn_go_to_dashboard">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/avenir_heavy"
             android:gravity="center"
-            android:text="Congratulations!!!"
-            android:textColor="@color/white"
-            android:textSize="18dp"/>
+            android:text="You are all set!"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_36sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:src="@drawable/success"
+            android:layout_marginTop="@dimen/_20dp"
+            android:layout_marginBottom="@dimen/_20dp"/>
 
         <TextView
             android:id="@+id/text_final_fname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/avenir_heavy"
             android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="18dp" />
+            android:textAppearance="@style/fontfamily"
+            android:textColor="#8B8787"
+            android:textSize="@dimen/_20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Your appointment has\nbeen confirmed with"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_24sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewAppointment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_30dp"
+            android:layout_marginEnd="@dimen/_30dp"
+            android:layout_marginTop="@dimen/_10dp"
+            app:cardCornerRadius="@dimen/_10dp"
+            app:cardElevation="@dimen/_5dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5dp"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.25"
+                        android:src="@drawable/doctor_icon" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.75"
+                        android:orientation="vertical"
+                        android:layout_marginStart="@dimen/_5dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/txtAppointedTherapistName"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/fontfamily"
+                                    android:textColor="@color/primaryGreen"
+                                    android:textSize="@dimen/_16sp"
+                                    android:textStyle="bold"/>
+
+                                <TextView
+                                    android:id="@+id/txtAppointedTherapistType"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/fontfamily"
+                                    android:textColor="#837E7E"
+                                    android:textSize="@dimen/_12sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+
+                            <ImageView
+                                android:id="@+id/appointedMode"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginEnd="@dimen/_5dp"
+                                android:padding="@dimen/_5dp" />
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_10dp"
+                            android:background="@color/divider" />
+
+                        <TextView
+                            android:id="@+id/text_appointment_date_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_12sp"
+                            android:paddingBottom="@dimen/_10dp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
+
+    <View
+        android:id="@+id/viewBtn_go_to_dashboard"
+        android:layout_width="match_parent"
+        android:layout_height="0.8dp"
+        android:layout_above="@+id/btn_go_to_dashboard"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:background="#80000000" />
+
+    <Button
+        android:id="@+id/btn_go_to_dashboard"
+        style="@style/buttonBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:layout_alignParentBottom="true"
+        android:text="Done" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,7 +181,8 @@
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
         android:gravity="bottom"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -65,9 +205,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textAppearance="@style/fontfamily"
                     android:gravity="center"
                     android:text="Consultation has been successfully scheduled.\nPlease check your email for\nupdates on the appointment."
+                    android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sp" />
             </LinearLayout>
@@ -77,38 +217,36 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/avenir_heavy"
             android:gravity="center"
             android:text="Appointment has been scheduled for"
             android:textColor="@color/maroon"
-            android:textSize="12dp"
-            android:layout_marginTop="10dp"/>
+            android:textSize="12dp" />
 
         <TextView
-            android:id="@+id/text_appointment_date_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:fontFamily="@font/avenir_heavy"
             android:gravity="center"
             android:textColor="@color/maroon"
-            android:textSize="12dp"
-            android:layout_marginBottom="10dp"/>
+            android:textSize="12dp" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5dp"
-            android:textAppearance="@style/fontfamily"
             android:background="@drawable/button_style_blue"
             android:padding="@dimen/_5dp"
             android:text="Go to Dashboard"
+            android:textAppearance="@style/fontfamily"
             android:textColor="@color/white"
             android:textSize="@dimen/_16sp"
-            app:hintTextAppearance="@style/fontfamily"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            app:hintTextAppearance="@style/fontfamily" />
 
         <Button
-            android:id="@+id/btn_go_to_dashboard"
             style="@style/buttonBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -121,4 +259,4 @@
             android:src="@drawable/splash" />
     </LinearLayout>
 
-</FrameLayout>
+</RelativeLayout>

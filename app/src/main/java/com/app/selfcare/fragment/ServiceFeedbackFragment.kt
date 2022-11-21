@@ -101,6 +101,7 @@ class ServiceFeedbackFragment : BaseFragment() {
                             responseBody = respBody[0]
                             if (status == "201") {
                                 setBottomNavigation(null)
+                                setLayoutBottomNavigation(null)
                                 replaceFragmentNoBackStack(
                                     BottomNavigationFragment(),
                                     R.id.layout_home,

@@ -2,12 +2,13 @@ package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.text.method.ScrollingMovementMethod
 import android.view.View
-import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.data.Therapist
+import com.app.selfcare.utils.Utils
 import kotlinx.android.synthetic.main.fragment_therapist_detail.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -24,6 +25,7 @@ class TherapistDetailFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var therapist: Therapist? = null
     private var param2: String? = null
+    private var descriptionLineCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,12 +48,48 @@ class TherapistDetailFragment : BaseFragment() {
         getSubTitle().text = ""
 
         txtTherapistName.text =
-            "Dr. " + therapist!!.first_name + " " + therapist!!.middle_name + " " + therapist!!.last_name
-        txtTherapistExp.text = therapist!!.doctor_type
-        txtTherapistQualification.text = therapist!!.qualification
-        txtTherapistRating.text = "DOB : " + therapist!!.dob
+            therapist!!.first_name + " " + therapist!!.middle_name + " " + therapist!!.last_name
+        therapistType.text = therapist!!.qualification
+        txtTherapyDescription.text = therapist!!.description
         img_back.setOnClickListener {
             popBackStack()
+        }
+
+        // Invoking touch listener to detect movement of ScrollView
+        //scrollTherapyDescription.setOnTouchListener(this)
+        //scrollTherapyDescription.viewTreeObserver.addOnScrollChangedListener(this)
+
+        txtTherapyDescription.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                txtTherapyDescription.viewTreeObserver.removeOnGlobalLayoutListener(this);
+                descriptionLineCount = txtTherapyDescription.layout.lineCount
+                if (descriptionLineCount < 10) {
+                    txtReadMore.visibility = View.GONE
+                } else {
+                    txtReadMore.visibility = View.VISIBLE
+                }
+            }
+        })
+
+
+        txtReadMore.setOnClickListener {
+            txtReadMore.visibility = View.GONE
+            txtTherapyDescription.movementMethod = ScrollingMovementMethod()
+        }
+
+        btnConfirmDoctorDetail.setOnClickListener {
+            if (Utils.providerId.isNotEmpty() &&
+                Utils.providerPublicId.isNotEmpty() &&
+                Utils.providerType.isNotEmpty() &&
+                Utils.providerName.isNotEmpty()
+            ) {
+                replaceFragment(
+                    TherapySelectionFragment(),
+                    R.id.layout_home,
+                    TherapySelectionFragment.TAG
+                )
+            }
         }
     }
 

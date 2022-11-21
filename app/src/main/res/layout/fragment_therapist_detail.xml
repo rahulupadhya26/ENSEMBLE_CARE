@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1DE9B6"
     android:orientation="vertical"
     tools:context=".fragment.TherapistDetailFragment">
 
@@ -17,22 +16,41 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.35"
-            android:background="#1DE9B6">
+            android:layout_weight="0.4"
+            android:background="@drawable/bg_box_grey_top_corners">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="@dimen/_20dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/doctor_new_image" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="@dimen/_5dp"
+                android:text="Back"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/img_back"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginStart="@dimen/_5dp"
+                android:layout_marginTop="@dimen/_5dp"
+                android:layout_marginEnd="@dimen/_5dp"
+                android:layout_marginBottom="@dimen/_5dp"
                 android:background="@drawable/bg_back_background"
                 android:contentDescription="@string/app_name"
                 android:padding="10dp"
                 android:src="@drawable/ic_action_back_btn"
-                app:tint="@color/white" />
+                app:tint="@color/primaryGreen" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_layout_therapist"
@@ -43,6 +61,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="-20dp"
                 android:background="@drawable/edittext_rectangle_bg"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="10dp">
@@ -92,7 +111,6 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/txtTherapistName"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="@style/fontfamily"
@@ -153,245 +171,357 @@
 
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.65"
-            android:background="@color/white"
-            android:orientation="vertical">
+            android:layout_weight="0.6">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:orientation="horizontal"
-                android:weightSum="4">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Patients"
-                        android:textAppearance="@style/fontfamily"
-                        android:textSize="@dimen/_12sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="1523"
-                        android:textAppearance="@style/fontfamily"
-                        android:textSize="@dimen/_16sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Saved lives"
-                        android:textAppearance="@style/fontfamily"
-                        android:textSize="@dimen/_12sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="423"
-                        android:textAppearance="@style/fontfamily"
-                        android:textSize="@dimen/_16sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Helped people"
-                        android:textAppearance="@style/fontfamily"
-                        android:textSize="@dimen/_12sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="423.23k"
-                        android:textAppearance="@style/fontfamily"
-                        android:textSize="@dimen/_16sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Thanks for"
-                        android:textAppearance="@style/fontfamily"
-                        android:textSize="@dimen/_12sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="24.2k"
-                        android:textAppearance="@style/fontfamily"
-                        android:textSize="@dimen/_16sp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_10dp">
+                android:layout_height="match_parent"
+                android:layout_above="@+id/view_btn"
+                android:layout_marginStart="@dimen/_20dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginEnd="@dimen/_20dp"
+                android:background="@color/white"
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/txtTherapistName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:padding="10dp"
-                    android:text="Primary Care Services"
                     android:textAppearance="@style/fontfamily"
-                    android:textSize="@dimen/_14sp"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_20sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/therapistType"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:padding="10dp"
-                    android:text="Available visit hours"
+                    android:text="Sr. Cardiologist"
                     android:textAppearance="@style/fontfamily"
-                    android:textSize="@dimen/_14sp" />
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:orientation="horizontal"
-                android:weightSum="3">
+                    android:textColor="#837E7E"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/edittext_rectangle_bg"
-                    android:backgroundTint="@color/lightTeal"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_marginEnd="5dp">
+                    android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/email"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="5dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Send Message"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_12sp"
-                        android:layout_marginBottom="@dimen/_10dp"/>
+                        android:src="@drawable/star_new" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/star_new" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/star_new" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/star_new" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/star_new" />
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/txtTherapyDescription"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/edittext_rectangle_bg"
-                    android:backgroundTint="@color/lightBlue"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginStart="5dp">
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_10dp"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="#514F4F"
+                    android:paddingBottom="@dimen/_10dp"
+                    android:textSize="@dimen/_18sp" />
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/video"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="5dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:weightSum="4">
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Video Chat"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_12sp"
-                        android:layout_marginBottom="@dimen/_10dp"/>
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Patients"
+                            android:textAppearance="@style/fontfamily"
+                            android:textSize="@dimen/_12sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="1523"
+                            android:textAppearance="@style/fontfamily"
+                            android:textSize="@dimen/_16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Saved lives"
+                            android:textAppearance="@style/fontfamily"
+                            android:textSize="@dimen/_12sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="423"
+                            android:textAppearance="@style/fontfamily"
+                            android:textSize="@dimen/_16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Helped people"
+                            android:textAppearance="@style/fontfamily"
+                            android:textSize="@dimen/_12sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="423.23k"
+                            android:textAppearance="@style/fontfamily"
+                            android:textSize="@dimen/_16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Thanks for"
+                            android:textAppearance="@style/fontfamily"
+                            android:textSize="@dimen/_12sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="24.2k"
+                            android:textAppearance="@style/fontfamily"
+                            android:textSize="@dimen/_16sp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/edittext_rectangle_bg"
-                    android:backgroundTint="@color/DarkBlue"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_marginStart="5dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/date"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="5dp"/>
+                    android:layout_margin="@dimen/_10dp"
+                    android:visibility="gone">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Appointment"
+                        android:layout_alignParentStart="true"
+                        android:padding="10dp"
+                        android:text="Primary Care Services"
                         android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_12sp"
-                        android:layout_marginBottom="@dimen/_10dp"/>
+                        android:textSize="@dimen/_14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:padding="10dp"
+                        android:text="Available visit hours"
+                        android:textAppearance="@style/fontfamily"
+                        android:textSize="@dimen/_14sp" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:weightSum="3">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_rectangle_bg"
+                        android:backgroundTint="@color/lightTeal"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:src="@drawable/email" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_10dp"
+                            android:gravity="center"
+                            android:text="Send Message"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_rectangle_bg"
+                        android:backgroundTint="@color/lightBlue"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:src="@drawable/video" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_10dp"
+                            android:gravity="center"
+                            android:text="Video Chat"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_rectangle_bg"
+                        android:backgroundTint="@color/DarkBlue"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:src="@drawable/date" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_10dp"
+                            android:gravity="center"
+                            android:text="Appointment"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12sp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/txtReadMore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/view_btn"
+                android:background="@drawable/read_more_gradient_background"
+                android:gravity="center"
+                android:padding="@dimen/_10dp"
+                android:text="Read more"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_16sp"
+                android:textStyle="bold" />
+
+
+            <View
+                android:id="@+id/view_btn"
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:layout_above="@+id/btnConfirmDoctorDetail"
+                android:layout_marginStart="@dimen/_20dp"
+                android:layout_marginTop="@dimen/_5dp"
+                android:layout_marginEnd="@dimen/_20dp"
+                android:background="#80000000" />
+
+            <Button
+                android:id="@+id/btnConfirmDoctorDetail"
+                style="@style/buttonBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="@dimen/_30dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginEnd="@dimen/_30dp"
+                android:layout_marginBottom="@dimen/_10dp"
+                android:text="Confirm Provider" />
+        </RelativeLayout>
 
     </LinearLayout>
 

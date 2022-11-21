@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:cardCornerRadius="@dimen/_10dp"
         app:cardElevation="@dimen/_10dp"
         app:cardUseCompatPadding="true">
@@ -15,39 +17,40 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginBottom="@dimen/_10dp">
+            android:layout_marginBottom="@dimen/_10dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <TextView
-                    android:id="@+id/txtChoosePlan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
                     android:gravity="center"
+                    android:padding="5dp"
                     android:text="Plus"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_26sp"
                     android:textStyle="bold" />
+
                 <ImageView
                     android:id="@+id/imgRecommended"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:visibility="gone"
-                    android:src="@drawable/recommended"/>
+                    android:src="@drawable/recommended"
+                    android:visibility="gone" />
             </LinearLayout>
 
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:src="@drawable/therapy"
-                android:padding="@dimen/_10dp"/>
+                android:padding="@dimen/_10dp"
+                android:src="@drawable/therapy" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -63,9 +66,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
                     android:padding="5dp"
                     android:text="Evaluation, diagnosis and prescription by a medical prescriber"
+                    android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_14sp" />
 
@@ -85,9 +88,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
                     android:padding="5dp"
                     android:text="Monthly medication delivery(if prescribed)"
+                    android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_14sp" />
 
@@ -107,9 +110,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
                     android:padding="5dp"
                     android:text="Regular video sessions with an assigned care counselor"
+                    android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_14sp" />
 
@@ -129,9 +132,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
                     android:padding="5dp"
                     android:text="Evidence-based behavioral health counseling and regular progress checks"
+                    android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_14sp" />
 
@@ -140,51 +143,201 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/planPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
+                    android:gravity="center"
                     android:paddingStart="@dimen/_10dp"
+                    android:textAppearance="@style/fontfamily"
                     android:textColor="@color/accent"
-                    android:textSize="@dimen/_20sp"
-                    android:gravity="center"/>
+                    android:textSize="@dimen/_20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
+                    android:gravity="center"
                     android:paddingEnd="@dimen/_10dp"
                     android:text="/week for first month"
+                    android:textAppearance="@style/fontfamily"
                     android:textColor="@color/accent"
-                    android:textSize="@dimen/_20sp"
-                    android:gravity="center"/>
+                    android:textSize="@dimen/_20sp" />
 
             </LinearLayout>
 
             <Button
                 android:layout_width="180dp"
                 android:layout_height="60dp"
-                android:background="@drawable/button_style_blue"
                 android:layout_gravity="center"
+                android:background="@drawable/button_style_blue"
                 android:text="Start Today"
                 android:textAppearance="@style/fontfamily"
                 android:textSize="@dimen/_18sp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <Button
-                android:id="@+id/btnStartToday"
                 style="@style/buttonBackground"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Start Today" />
+                android:text="Choose" />
 
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_30dp"
+        android:layout_marginEnd="@dimen/_30dp"
+        android:elevation="@dimen/_10dp"
+        android:background="@drawable/plan_payment_bg_rounded_corner">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_30dp"
+            android:layout_marginTop="@dimen/_40dp"
+            android:layout_marginEnd="@dimen/_30dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtChoosePlan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="05 Services"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_12sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/planPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_32sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginBottom="@dimen/_10dp"
+                android:background="@color/white" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="1. Evaluation, diagnosis and prescription by a medical prescriber"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="2. Monthly medication delivery(if prescribed)"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="3. Regular video sessions with an assigned care counselor"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="4. Evidence-based behavioral health counseling and regular progress checks"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="5. Evidence-based behavioral health counseling and regular progress checks"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginBottom="@dimen/_10dp"
+                android:background="@color/white" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btnStartToday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginEnd="@dimen/_20dp"
+                android:layout_marginBottom="@dimen/_10dp"
+                app:cardBackgroundColor="@color/primaryGreen"
+                app:cardCornerRadius="@dimen/_30dp"
+                app:cardElevation="@dimen/_5dp">
+
+                <TextView
+                    android:id="@+id/txtPlanBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/_5dp"
+                    android:text="Choose Plan"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_20sp"
+                    android:textStyle="bold" />
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

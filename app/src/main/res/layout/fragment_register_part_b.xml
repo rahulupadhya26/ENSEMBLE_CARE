@@ -5,19 +5,207 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".fragment.RegisterPartBFragment">
+    tools:context=".fragment.RegisterPartBFragment"
+    android:background="@color/initial_screen_background">
 
-    <TextView
-        android:id="@+id/txtProfDetails"
+    <ImageView
+        android:id="@+id/imgRegister2Back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/app_name"
+        android:padding="10dp"
+        android:layout_marginTop="@dimen/_20dp"
+        android:layout_marginStart="@dimen/_5dp"
+        android:src="@drawable/ic_action_back_btn"
+        app:tint="@color/white" />
+
+    <LinearLayout
+        android:id="@+id/layoutRegistration2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_10dp"
-        android:padding="5dp"
-        android:text="This will help you to get started"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_26sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/_15dp"
+        android:layout_marginEnd="@dimen/_15dp"
+        android:layout_marginBottom="@dimen/_15dp">
+
+        <TextView
+            android:id="@+id/txtProfDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This will help you to get started"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Please type your ture information, this will be used later"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sp"
+            android:layout_marginTop="-5dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layoutRegistration2"
+        android:background="@drawable/bg_box_grey_top_corners">
+
+        <ScrollView
+            android:layout_above="@+id/btnRegisterB"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_20dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Email"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/etSignUpMailId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp"
+                    android:hint="Ex: John@example.com"
+                    android:textStyle="bold"
+                    android:textColorHint="#807B7B"
+                    android:background="@drawable/edittext_background_box"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Phone Number"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/etSignUpPhoneNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"
+                    android:maxLines="1"
+                    android:maxLength="12"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp"
+                    android:hint="Ex: (555) 555-1234"
+                    android:textStyle="bold"
+                    android:textColorHint="#807B7B"
+                    android:background="@drawable/edittext_background_box"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Password"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true"
+                    app:hintEnabled="false"
+                    app:hintTextAppearance="@style/fontfamily">
+
+                    <EditText
+                        android:id="@+id/etSignUpPass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:inputType="textPassword"
+                        android:imeOptions="actionNext"
+                        android:maxLines="1"
+                        android:maxLength="15"
+                        android:hint="**********"
+                        android:textColorHint="#807B7B"
+                        android:textColor="@color/black"
+                        android:background="@drawable/edittext_background_box"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm Password"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true"
+                    app:hintEnabled="false"
+                    app:hintTextAppearance="@style/fontfamily">
+
+                    <EditText
+                        android:id="@+id/etSignUpConfirmPass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:inputType="textPassword"
+                        android:imeOptions="actionDone"
+                        android:maxLines="1"
+                        android:maxLength="15"
+                        android:hint="**********"
+                        android:textColorHint="#807B7B"
+                        android:textColor="@color/black"
+                        android:background="@drawable/edittext_background_box"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btnRegisterB"
+            style="@style/buttonBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:layout_marginStart="@dimen/_30dp"
+            android:layout_marginEnd="@dimen/_30dp"
+            android:text="Continue" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,10 +219,10 @@
             android:layout_height="wrap_content"
             android:hint="Email"
             app:hintTextAppearance="@style/TextLabel"
-            android:layout_margin="@dimen/_5dp">
+            android:layout_margin="@dimen/_5dp"
+            android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSignUpMailId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/fontfamily"
@@ -52,10 +240,10 @@
             android:layout_height="wrap_content"
             android:hint="Phone Number"
             app:hintTextAppearance="@style/TextLabel"
-            android:layout_margin="@dimen/_5dp">
+            android:layout_margin="@dimen/_5dp"
+            android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSignUpPhoneNo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/fontfamily"
@@ -74,10 +262,10 @@
             android:hint="Password"
             app:hintTextAppearance="@style/TextLabel"
             app:passwordToggleEnabled="true"
-            android:layout_margin="@dimen/_5dp">
+            android:layout_margin="@dimen/_5dp"
+            android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSignUpPass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/fontfamily"
@@ -96,10 +284,10 @@
             app:passwordToggleEnabled="true"
             android:hint="Confirm Password"
             app:hintTextAppearance="@style/TextLabel"
-            android:layout_margin="@dimen/_5dp">
+            android:layout_margin="@dimen/_5dp"
+            android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSignUpConfirmPass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/fontfamily"
@@ -110,14 +298,6 @@
                 android:textColor="@color/black"
                 android:textSize="16dp"/>
         </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/btnRegisterB"
-            style="@style/buttonBackground"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_30dp"
-            android:text="Continue" />
     </LinearLayout>
 
 </LinearLayout>

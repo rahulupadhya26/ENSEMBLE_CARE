@@ -1,5 +1,6 @@
 package com.app.selfcare.fragment
 
+import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
@@ -69,7 +70,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        updateStatusBarColor(R.color.initial_screen_background)
         questions = ArrayList()
         progressBar.max = 0
 
@@ -251,12 +252,14 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setFirstQuestion(question: Question) {
         this.question = question
+        setMaxProgress(count)
+        //setCurrentProgress(count)
         progressBar.max = 2
         progressBar.progress = count
         defaultOptionsView()
         tv_current_question.text = question.question
         tv_next_question.text = ""
-        tv_start_text.text = "Let's get started.."
+        //tv_start_text.text = "Let's get started.."
         noOfAnswers = question.answers.size
         when (noOfAnswers) {
             1 -> {
@@ -313,10 +316,12 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
         }
         progressBar.max = questions.size - 1
         progressBar.progress = count
+        setMaxProgress(count)
+        //setCurrentProgress(count)
         defaultOptionsView()
         tv_current_question.text = question!!.question
         tv_next_question.text = ""
-        when (count) {
+        /*when (count) {
             1 -> {
                 tv_start_text.text = "Keep going.."
             }
@@ -335,10 +340,10 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
             else -> {
                 tv_start_text.text = "Few more.."
             }
-        }
-        if (question!!.next != null && question!!.next.isEmpty()) {
+        }*/
+        /*if (question!!.next != null && question!!.next.isEmpty()) {
             tv_start_text.text = "And we are done..."
-        }
+        }*/
         Log.i("Total count", (questions.size - 1).toString())
         Log.i("Count", count.toString())
         noOfAnswers = question!!.answers.size
@@ -468,10 +473,10 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
         options.add(3, tv_option_four)
 
         for (option in options) {
-            option.setTextColor(requireActivity().getColor(R.color.secondary_text))
+            option.setTextColor(requireActivity().getColor(R.color.primaryGreen))
             option.typeface = Typeface.DEFAULT
-            /*option.background =
-                ContextCompat.getDrawable(requireActivity(), R.drawable.bg_box_border_grey)*/
+            option.background =
+                ContextCompat.getDrawable(requireActivity(), R.drawable.edittext_background_box)
         }
 
     }
@@ -488,8 +493,9 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
         mAnsweredQuesitonId = answeredQuestionId
         tv.setTextColor(requireActivity().getColor(R.color.white))
         tv.setTypeface(tv.typeface, Typeface.BOLD)
-        /*tv.background =
-            ContextCompat.getDrawable(requireActivity(), R.drawable.bg_box_border_selected)*/
+        //tv.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+        tv.background =
+            ContextCompat.getDrawable(requireActivity(), R.drawable.selected_background_option)
         count += 1
         nextOptionId = selectedOptionId
         preference!![PrefKeys.PREF_NEXT_QUESTION_ID] = nextOptionId
@@ -503,6 +509,526 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
             setQuestion(questions!!)
         } else {
             sendAnswers()
+        }
+    }
+
+    private fun setMaxProgress(progressCount: Int) {
+        when (progressCount) {
+            1 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.GONE
+                dashProgress3.visibility = View.GONE
+                dashProgress4.visibility = View.GONE
+                dashProgress5.visibility = View.GONE
+                dashProgress6.visibility = View.GONE
+                dashProgress7.visibility = View.GONE
+                dashProgress8.visibility = View.GONE
+                dashProgress9.visibility = View.GONE
+                dashProgress10.visibility = View.GONE
+                dashProgress11.visibility = View.GONE
+                dashProgress12.visibility = View.GONE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            2 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.GONE
+                dashProgress4.visibility = View.GONE
+                dashProgress5.visibility = View.GONE
+                dashProgress6.visibility = View.GONE
+                dashProgress7.visibility = View.GONE
+                dashProgress8.visibility = View.GONE
+                dashProgress9.visibility = View.GONE
+                dashProgress10.visibility = View.GONE
+                dashProgress11.visibility = View.GONE
+                dashProgress12.visibility = View.GONE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            3 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.GONE
+                dashProgress5.visibility = View.GONE
+                dashProgress6.visibility = View.GONE
+                dashProgress7.visibility = View.GONE
+                dashProgress8.visibility = View.GONE
+                dashProgress9.visibility = View.GONE
+                dashProgress10.visibility = View.GONE
+                dashProgress11.visibility = View.GONE
+                dashProgress12.visibility = View.GONE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            4 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.GONE
+                dashProgress6.visibility = View.GONE
+                dashProgress7.visibility = View.GONE
+                dashProgress8.visibility = View.GONE
+                dashProgress9.visibility = View.GONE
+                dashProgress10.visibility = View.GONE
+                dashProgress11.visibility = View.GONE
+                dashProgress12.visibility = View.GONE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            5 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.VISIBLE
+                dashProgress6.visibility = View.GONE
+                dashProgress7.visibility = View.GONE
+                dashProgress8.visibility = View.GONE
+                dashProgress9.visibility = View.GONE
+                dashProgress10.visibility = View.GONE
+                dashProgress11.visibility = View.GONE
+                dashProgress12.visibility = View.GONE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            6 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.VISIBLE
+                dashProgress6.visibility = View.VISIBLE
+                dashProgress7.visibility = View.GONE
+                dashProgress8.visibility = View.GONE
+                dashProgress9.visibility = View.GONE
+                dashProgress10.visibility = View.GONE
+                dashProgress11.visibility = View.GONE
+                dashProgress12.visibility = View.GONE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            7 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.VISIBLE
+                dashProgress6.visibility = View.VISIBLE
+                dashProgress7.visibility = View.VISIBLE
+                dashProgress8.visibility = View.GONE
+                dashProgress9.visibility = View.GONE
+                dashProgress10.visibility = View.GONE
+                dashProgress11.visibility = View.GONE
+                dashProgress12.visibility = View.GONE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            8 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.VISIBLE
+                dashProgress6.visibility = View.VISIBLE
+                dashProgress7.visibility = View.VISIBLE
+                dashProgress8.visibility = View.VISIBLE
+                dashProgress9.visibility = View.GONE
+                dashProgress10.visibility = View.GONE
+                dashProgress11.visibility = View.GONE
+                dashProgress12.visibility = View.GONE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            9 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.VISIBLE
+                dashProgress6.visibility = View.VISIBLE
+                dashProgress7.visibility = View.VISIBLE
+                dashProgress8.visibility = View.VISIBLE
+                dashProgress9.visibility = View.VISIBLE
+                dashProgress10.visibility = View.GONE
+                dashProgress11.visibility = View.GONE
+                dashProgress12.visibility = View.GONE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            10 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.VISIBLE
+                dashProgress6.visibility = View.VISIBLE
+                dashProgress7.visibility = View.VISIBLE
+                dashProgress8.visibility = View.VISIBLE
+                dashProgress9.visibility = View.VISIBLE
+                dashProgress10.visibility = View.VISIBLE
+                dashProgress11.visibility = View.GONE
+                dashProgress12.visibility = View.GONE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            11 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.VISIBLE
+                dashProgress6.visibility = View.VISIBLE
+                dashProgress7.visibility = View.VISIBLE
+                dashProgress8.visibility = View.VISIBLE
+                dashProgress9.visibility = View.VISIBLE
+                dashProgress10.visibility = View.VISIBLE
+                dashProgress11.visibility = View.VISIBLE
+                dashProgress12.visibility = View.GONE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            12 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.VISIBLE
+                dashProgress6.visibility = View.VISIBLE
+                dashProgress7.visibility = View.VISIBLE
+                dashProgress8.visibility = View.VISIBLE
+                dashProgress9.visibility = View.VISIBLE
+                dashProgress10.visibility = View.VISIBLE
+                dashProgress11.visibility = View.VISIBLE
+                dashProgress12.visibility = View.VISIBLE
+                dashProgress13.visibility = View.GONE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            13 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.VISIBLE
+                dashProgress6.visibility = View.VISIBLE
+                dashProgress7.visibility = View.VISIBLE
+                dashProgress8.visibility = View.VISIBLE
+                dashProgress9.visibility = View.VISIBLE
+                dashProgress10.visibility = View.VISIBLE
+                dashProgress11.visibility = View.VISIBLE
+                dashProgress12.visibility = View.VISIBLE
+                dashProgress13.visibility = View.VISIBLE
+                dashProgress14.visibility = View.GONE
+                dashProgress15.visibility = View.GONE
+            }
+            14 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.VISIBLE
+                dashProgress6.visibility = View.VISIBLE
+                dashProgress7.visibility = View.VISIBLE
+                dashProgress8.visibility = View.VISIBLE
+                dashProgress9.visibility = View.VISIBLE
+                dashProgress10.visibility = View.VISIBLE
+                dashProgress11.visibility = View.VISIBLE
+                dashProgress12.visibility = View.VISIBLE
+                dashProgress13.visibility = View.VISIBLE
+                dashProgress14.visibility = View.VISIBLE
+                dashProgress15.visibility = View.GONE
+            }
+            15 -> {
+                dashProgress1.visibility = View.VISIBLE
+                dashProgress2.visibility = View.VISIBLE
+                dashProgress3.visibility = View.VISIBLE
+                dashProgress4.visibility = View.VISIBLE
+                dashProgress5.visibility = View.VISIBLE
+                dashProgress6.visibility = View.VISIBLE
+                dashProgress7.visibility = View.VISIBLE
+                dashProgress8.visibility = View.VISIBLE
+                dashProgress9.visibility = View.VISIBLE
+                dashProgress10.visibility = View.VISIBLE
+                dashProgress11.visibility = View.VISIBLE
+                dashProgress12.visibility = View.VISIBLE
+                dashProgress13.visibility = View.VISIBLE
+                dashProgress14.visibility = View.VISIBLE
+                dashProgress15.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun setCurrentProgress(progressCount: Int) {
+        when (progressCount) {
+            1 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            2 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            3 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            4 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            5 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            6 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            7 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            8 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            9 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            10 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            11 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            12 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            13 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            14 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
+            }
+            15 -> {
+                dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress3.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress4.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress5.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress6.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress7.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress8.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress9.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress10.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress11.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress12.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress13.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress14.setBackgroundResource(R.drawable.dash_white_progress_bar)
+                dashProgress15.setBackgroundResource(R.drawable.dash_white_progress_bar)
+            }
         }
     }
 

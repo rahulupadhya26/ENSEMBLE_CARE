@@ -19,11 +19,10 @@ import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -41,7 +40,6 @@ import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.NSFWDetector
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
@@ -52,7 +50,6 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : BaseActivity(), IController {
 
@@ -71,6 +68,7 @@ class MainActivity : BaseActivity(), IController {
     private var bitmapList: ArrayList<String> = ArrayList()
     private var imageView: ImageView? = null
     private var navigationView: BottomNavigationView? = null
+    private var layoutBottomNav: RelativeLayout? = null
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -319,6 +317,11 @@ class MainActivity : BaseActivity(), IController {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
+    fun showImageDialog() {
+        showPictureDialog()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun uploadPicture() {
         if (checkPermission()) choosePhotoFromGallery() else requestPermission(requestFileUpload)
     }
@@ -342,6 +345,14 @@ class MainActivity : BaseActivity(), IController {
 
     fun getBottomNavigation(): BottomNavigationView? {
         return navigationView
+    }
+
+    fun setLayoutBottomNavigation(navigationView: RelativeLayout?) {
+        this.layoutBottomNav = navigationView
+    }
+
+    fun getLayoutBottomNavigation(): RelativeLayout? {
+        return layoutBottomNav
     }
 
     override fun clearTempFormData() {
@@ -388,6 +399,14 @@ class MainActivity : BaseActivity(), IController {
         startActivityForResult(galleryIntent, requestGalleryImage)
     }
 
+    fun updateStatusBarColor(color: Int) { // Color must be in hexadecimal fromat
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val window: Window = window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = getColor(color)
+        }
+    }
+
     @Throws(IOException::class)
     private fun createFile(): File {
         // Create an image file name
@@ -409,7 +428,7 @@ class MainActivity : BaseActivity(), IController {
         val pictureDialog = AlertDialog.Builder(this)
         pictureDialog.setTitle("Select Action")
         val pictureDialogItems =
-            arrayOf("Select photo from gallery", "Capture photo from camera")
+            arrayOf("Take image from gallery", "Capture image using camera")
         pictureDialog.setItems(
             pictureDialogItems
         ) { dialog, which ->

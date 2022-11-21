@@ -76,6 +76,8 @@ dependencies {
     implementation 'android.arch.lifecycle:livedata:1.1.1'
     implementation 'android.arch.lifecycle:viewmodel:1.1.1'
     implementation 'com.google.android.gms:play-services-location:20.0.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     testImplementation 'junit:junit:4.13.2'
     //noinspection GradleCompatible
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -115,4 +117,7 @@ dependencies {
     implementation 'com.google.mlkit:linkfirebase:17.0.0'
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
     implementation(project(":agorauikit_android"))
+    implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.9'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation "com.varunbarad:highlightable-calendar-view:1.0.0"
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/screen_background_color"
     tools:context=".fragment.TherapyBasicDetailsCFragment">
 
     <TextView
@@ -20,24 +21,35 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/screen_background_color"
+        android:layout_above="@+id/viewBtnBasicDetailC">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_margin="@dimen/_20dp">
+            android:background="@color/screen_background_color"
+            android:layout_margin="@dimen/_15dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/_10dp"
-                android:paddingEnd="@dimen/_10dp"
-                android:text="How would you like to communicate?"
+                android:text="Create an appointment"
                 android:textAppearance="@style/fontfamily"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_26sp"
-                android:textStyle="bold" />
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_24sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select the mode of call"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/_10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -49,7 +61,7 @@
                     android:id="@+id/layoutPhoneCall"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_10dp"
+                    android:layout_margin="@dimen/_15dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="@dimen/_10dp"
@@ -63,11 +75,11 @@
 
                         <ImageView
                             android:id="@+id/imgPhoneCall"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="5dp"
-                            android:src="@drawable/phone_call"
+                            android:src="@drawable/telephone"
                             app:tint="@color/primaryGreen" />
 
                         <TextView
@@ -77,10 +89,11 @@
                             android:layout_marginBottom="@dimen/_5dp"
                             android:gravity="center"
                             android:padding="@dimen/_5dp"
-                            android:text="Phone Call"
+                            android:text="Audio Call"
                             android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/primaryGreen"
-                            android:textSize="@dimen/_16sp" />
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_18sp"
+                            android:textStyle="bold"/>
 
                     </LinearLayout>
 
@@ -90,7 +103,7 @@
                     android:id="@+id/layoutVideoCall"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_10dp"
+                    android:layout_margin="@dimen/_15dp"
                     android:layout_weight="1"
                     app:cardCornerRadius="@dimen/_10dp"
                     app:cardElevation="@dimen/_10dp">
@@ -105,8 +118,8 @@
 
                         <ImageView
                             android:id="@+id/imgVideoCall"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="5dp"
                             android:src="@drawable/video"
@@ -121,8 +134,9 @@
                             android:padding="@dimen/_5dp"
                             android:text="Video Call"
                             android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/primaryGreen"
-                            android:textSize="@dimen/_16sp" />
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/_18sp" />
 
                     </LinearLayout>
 
@@ -165,17 +179,27 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/_10dp"
-                android:paddingEnd="@dimen/_10dp"
-                android:text="Add a picture for therapist review (optional)"
+                android:text="Select image notes for review"
                 android:textAppearance="@style/fontfamily"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_26sp"
-                android:textStyle="bold" />
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/_10dp"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewPrescriptionImgList"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_10dp"
+                    android:visibility="gone"
+                    android:background="@drawable/bg_corner_rounded_images" />
 
                 <ImageView
                     android:id="@+id/imgPrescriptionPic"
@@ -187,7 +211,8 @@
                     android:layout_marginBottom="@dimen/_10dp"
                     android:background="@drawable/bg_corner_rounded_edittext"
                     android:padding="@dimen/_10dp"
-                    android:src="@drawable/prescription" />
+                    android:src="@drawable/prescription"
+                    android:visibility="gone"/>
 
                 <ImageView
                     android:id="@+id/imgTherapistReviewPicClear"
@@ -196,22 +221,135 @@
                     android:layout_alignParentRight="true"
                     android:layout_margin="@dimen/_10dp"
                     android:padding="@dimen/_10dp"
-                    android:src="@drawable/cancel_appointment" />
+                    android:src="@drawable/cancel_appointment"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
-
-
 
             <TextView
                 android:id="@+id/tvAddTherapyReviewPic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="@dimen/_10dp"
-                android:text="Click here to add a picture"
+                android:text="Select upto 3 images >"
                 android:textAppearance="@style/fontfamily"
-                android:textColor="@color/primaryGreen"
+                android:layout_marginStart="@dimen/_10dp"
+                android:textColor="#645C5C"
+                android:textStyle="italic|bold"
+                android:layout_marginTop="@dimen/_10dp"
                 android:textSize="@dimen/_16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Note : Images are optional"
+                android:textAppearance="@style/fontfamily"
+                android:layout_marginStart="@dimen/_10dp"
+                android:textColor="#A9A1A1"
+                android:layout_marginTop="@dimen/_10dp"
+                android:textStyle="italic|bold"
+                android:textSize="@dimen/_16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="@dimen/_10dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewPrescription1"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="#D9D9D9"
+                    app:cardCornerRadius="@dimen/_5dp"
+                    app:cardElevation="@dimen/_5dp"
+                    app:cardUseCompatPadding="true">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/imgPrescriptionPic1Clear"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_alignParentRight="true"
+                            android:padding="@dimen/_10dp"
+                            android:visibility="gone"
+                            android:src="@drawable/cancel_appointment"/>
+
+                        <ImageView
+                            android:id="@+id/imgPrescriptionPic1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/plusnew" />
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewPrescription2"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="#D9D9D9"
+                    app:cardCornerRadius="@dimen/_5dp"
+                    app:cardElevation="@dimen/_5dp"
+                    app:cardUseCompatPadding="true">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/imgPrescriptionPic2Clear"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_alignParentRight="true"
+                            android:padding="@dimen/_10dp"
+                            android:visibility="gone"
+                            android:src="@drawable/cancel_appointment"/>
+
+                        <ImageView
+                            android:id="@+id/imgPrescriptionPic2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/plusnew" />
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewPrescription3"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="#D9D9D9"
+                    app:cardCornerRadius="@dimen/_5dp"
+                    app:cardElevation="@dimen/_5dp"
+                    app:cardUseCompatPadding="true">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/imgPrescriptionPic3Clear"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_alignParentRight="true"
+                            android:padding="@dimen/_10dp"
+                            android:visibility="gone"
+                            android:src="@drawable/cancel_appointment"/>
+
+                        <ImageView
+                            android:id="@+id/imgPrescriptionPic3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/plusnew"/>
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
 
             <Button
                 android:layout_width="match_parent"
@@ -228,19 +366,30 @@
                 android:textSize="@dimen/_16sp"
                 android:visibility="gone"/>
 
-            <Button
-                android:id="@+id/btnBasicDetailC"
-                style="@style/buttonBackground"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:layout_marginEnd="@dimen/_20dp"
-                android:layout_marginBottom="5dp"
-                android:text="Continue" />
-
         </LinearLayout>
 
     </ScrollView>
 
-</LinearLayout>
+    <View
+        android:id="@+id/viewBtnBasicDetailC"
+        android:layout_width="match_parent"
+        android:layout_height="0.8dp"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:background="#80000000"
+        android:layout_above="@+id/btnBasicDetailC"/>
+
+    <Button
+        android:id="@+id/btnBasicDetailC"
+        style="@style/buttonBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:layout_alignParentBottom="true"
+        android:text="Next" />
+
+</RelativeLayout>

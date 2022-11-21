@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -30,7 +31,8 @@ class PlanViewPagerAdapter(
         val recommendImg: ImageView = itemView.findViewById(R.id.imgRecommended)
         val planText: TextView = itemView.findViewById(R.id.txtChoosePlan)
         val planPrice: TextView = itemView.findViewById(R.id.planPrice)
-        val btnStartPlan: Button = itemView.findViewById(R.id.btnStartToday)
+        val planBtn:TextView = itemView.findViewById(R.id.txtPlanBtn)
+        val btnStartPlan: CardView = itemView.findViewById(R.id.btnStartToday)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanViewHolder {
@@ -54,26 +56,26 @@ class PlanViewPagerAdapter(
         } else {
             "Plus"
         }
-        if (planObj.plan == selectedPlan) {
+        if (planObj.plan == "Plus") {
             holder.recommendImg.visibility = View.VISIBLE
         } else {
             holder.recommendImg.visibility = View.GONE
         }
 
         if (planObj.plan == selectedPlan) {
-            holder.btnStartPlan.text = "Already have"
+            holder.planBtn.text = "Already have"
         }
-        when (planObj.plan) {
+        /*when (planObj.plan) {
             "Standard" -> {
-                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.DarkBlue))
+                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.white))
             }
             "Plus" -> {
-                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.primaryGreen))
+                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.white))
             }
             "Premium" -> {
-                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.maroon))
+                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.white))
             }
-        }
+        }*/
         holder.planText.text = planObj.plan
         holder.planPrice.text = "$" + planObj.price
         holder.btnStartPlan.setOnClickListener {

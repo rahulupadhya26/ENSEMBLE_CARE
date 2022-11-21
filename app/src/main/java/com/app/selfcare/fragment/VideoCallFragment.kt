@@ -1,9 +1,11 @@
 package com.app.selfcare.fragment
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.SurfaceView
 import android.view.View
@@ -18,11 +20,11 @@ import com.app.selfcare.BuildConfig
 import com.app.selfcare.R
 import com.app.selfcare.adapters.MessageAdapter
 import com.app.selfcare.controller.OnMessageClickListener
-import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.data.Appointment
 import com.app.selfcare.data.MessageBean
 import com.app.selfcare.data.MessageListBean
 import com.app.selfcare.preference.PrefKeys
+import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.realTimeMessaging.ChatManager
 import com.app.selfcare.services.SelfCareApplication
 import com.app.selfcare.utils.MessageUtil
@@ -37,6 +39,7 @@ import io.agora.rtm.*
 import kotlinx.android.synthetic.main.dialog_online_chat.view.*
 import kotlinx.android.synthetic.main.fragment_video_call.*
 import java.text.MessageFormat
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -52,7 +55,7 @@ private const val ARG_PARAM2 = "param2"
 class VideoCallFragment : BaseFragment(), OnMessageClickListener {
     // TODO: Rename and change types of parameters
     private var appointment: Appointment? = null
-    private var param2: String? = null
+    private var TOKEN: String? = null
     private var createPostDialog: BottomSheetDialog? = null
 
     // Fill the App ID of your project generated on Agora Console.
@@ -65,7 +68,6 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
     private var CHANNEL = ""
 
     // Fill the temp token generated on Agora Console.
-    private var TOKEN = ""
     private val PERMISSION_REQUEST_ID = 7
 
     // Ask for Android device permissions at runtime.
@@ -95,11 +97,20 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
     private val mMessageBeanList: ArrayList<MessageBean> = ArrayList()
     private var mMessageAdapter: MessageAdapter? = null
 
+    // Number of seconds displayed
+    // on the stopwatch.
+    private var seconds = 0
+
+    // Is the stopwatch running?
+    private var running = false
+
+    private var wasRunning = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             appointment = it.getParcelable(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            TOKEN = it.getString(ARG_PARAM2)
         }
     }
 
@@ -107,6 +118,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         return R.layout.fragment_video_call
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
@@ -114,7 +126,15 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         getSubTitle().visibility = View.GONE
 
         CHANNEL = appointment!!.channel_name
-        TOKEN = appointment!!.rtc_token
+        //TOKEN = appointment!!.rtc_token
+
+        if (appointment!!.type_of_visit == "Video") {
+            videoCallLayout.visibility = View.VISIBLE
+            audioCallLayout.visibility = View.GONE
+        } else {
+            audioCallLayout.visibility = View.VISIBLE
+            videoCallLayout.visibility = View.GONE
+        }
 
         // If all the permissions are granted, initialize the RtcEngine object and join a channel.
         if (checkSelfPermission()) {
@@ -122,6 +142,12 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         } else {
             requestPermission(PERMISSION_REQUEST_ID)
         }
+
+        txtUserNameVideo.text =
+            preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]
+
+        txtUserNameAudio.text =
+            preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]
 
         buttonCall.setOnClickListener {
             if (mEndCall) {
@@ -221,7 +247,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
 
         override fun onJoinChannelSuccess(channel: String?, uid: Int, elapsed: Int) {
             requireActivity().runOnUiThread {
-                displayToast("Joined Channel Successfully")
+                //displayToast("Joined Channel Successfully")
             }
         }
 
@@ -304,7 +330,11 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
 
     private fun setupVideoConfig() {
         try {
-            rtcEngine.enableVideo()
+            if (appointment!!.type_of_visit == "Video") {
+                rtcEngine.enableVideo()
+            } else {
+                rtcEngine.disableVideo()
+            }
             rtcEngine.setVideoEncoderConfiguration(
                 VideoEncoderConfiguration(
                     VideoEncoderConfiguration.VD_640x360,
@@ -325,6 +355,8 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             //TOKEN = "0060583a41d1d7a40fbbed542383e62f45dIABbaILOTT/XIkPDxZxq4BIpXJUx3HLRv6Shgvu7MetK4cBbkbR857iyIgBmT/kB9+XxYgQAAQCHovBiAgCHovBiAwCHovBiBACHovBi"
             //CHANNEL ="45bae49f-f580-4730-bf85-409a5d166d25"
             rtcEngine.joinChannel(TOKEN, CHANNEL, "", 0)
+            running = true
+            runTimer()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -496,7 +528,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
                             runOnUiThread {
                                 try {
                                     openOnlineChatWindow()
-                                    displayToast("Successfully loggedIn")
+                                    //displayToast("Successfully loggedIn")
                                     init()
                                 } catch (e: Exception) {
                                     e.printStackTrace()
@@ -574,7 +606,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
                 override fun onSuccess(aVoid: Void?) {
                     // do nothing
                     runOnUiThread {
-                        showToast("Message sent successfully...")
+                        //showToast("Message sent successfully...")
                     }
                 }
 
@@ -616,7 +648,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             override fun onSuccess(responseInfo: Void?) {
                 Log.i(OnlineChatFragment.TAG, "join channel success")
                 runOnUiThread {
-                    showToast("join channel success")
+                    //showToast("join channel success")
                 }
                 getChannelMemberList()
             }
@@ -660,7 +692,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         mRtmChannel!!.sendMessage(message, object : ResultCallback<Void?> {
             override fun onSuccess(aVoid: Void?) {
                 runOnUiThread {
-                    showToast("Message sent successfully...")
+                    //showToast("Message sent successfully...")
                 }
             }
 
@@ -802,6 +834,66 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        wasRunning = running;
+        running = false;
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (wasRunning) {
+            running = true;
+        }
+    }
+
+    // Sets the NUmber of seconds on the timer.
+    // The runTimer() method uses a Handler
+    // to increment the seconds and
+    // update the text view.
+    private fun runTimer() {
+
+        // Creates a new Handler
+        val handler = Handler()
+
+        // Call the post() method,
+        // passing in a new Runnable.
+        // The post() method processes
+        // code without a delay,
+        // so the code in the Runnable
+        // will run almost immediately.
+        handler.post(object : Runnable {
+            override fun run() {
+                val hours: Int = seconds / 3600
+                val minutes: Int = seconds % 3600 / 60
+                val secs: Int = seconds % 60
+
+                // Format the seconds into hours, minutes,
+                // and seconds.
+                val time: String = String
+                    .format(
+                        Locale.getDefault(),
+                        "%02d:%02d:%02d", hours,
+                        minutes, secs
+                    )
+
+                // Set the text view text.
+                txtUserVideoTime.text = time
+                txtUserAudioTime.text = time
+
+                // If running is true, increment the
+                // seconds variable.
+                if (running) {
+                    seconds++
+                }
+
+                // Post the code again
+                // with a delay of 1 second.
+                handler.postDelayed(this, 1000)
+            }
+        })
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -813,7 +905,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: Appointment, param2: String = "") =
+        fun newInstance(param1: Appointment, param2: String) =
             VideoCallFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, param1)

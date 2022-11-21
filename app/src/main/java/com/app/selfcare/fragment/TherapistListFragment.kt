@@ -1,5 +1,6 @@
 package com.app.selfcare.fragment
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -64,6 +65,8 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
             getBackButton().visibility = View.VISIBLE
         }
         getSubTitle().visibility = View.GONE
+
+        btnConfirmDoctor.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.buttonBackground))
 
         getTherapistList()
 
@@ -170,6 +173,10 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
     }
 
     override fun onItemTherapistImageClickListener(therapist: Therapist) {
+        Utils.providerId = therapist.doctor_id
+        Utils.providerPublicId = therapist.doctor_public_id
+        Utils.providerType = therapist.doctor_type
+        Utils.providerName = therapist.first_name + " " + therapist.middle_name + " " + therapist.last_name
         replaceFragment(
             TherapistDetailFragment.newInstance(therapist),
             R.id.layout_home,
@@ -183,6 +190,6 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
         Utils.providerType = therapist.doctor_type
         Utils.providerName =
             therapist.first_name + " " + therapist.middle_name + " " + therapist.last_name
-        btnConfirmDoctor.setBackgroundColor(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+        btnConfirmDoctor.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
     }
 }

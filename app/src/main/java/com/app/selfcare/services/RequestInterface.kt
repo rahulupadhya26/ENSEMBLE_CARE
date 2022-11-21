@@ -215,4 +215,10 @@ interface RequestInterface {
     fun getConsentsList(
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
+
+    @POST("get_agora_token/")
+    fun getToken(
+        @Body list: GetToken,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
 }

@@ -48,6 +48,7 @@ class LoginFragment : BaseFragment() {
                     userLogin(getText(edit_username), getText(edit_password)) { result ->
                         preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
                         setBottomNavigation(null)
+                        setLayoutBottomNavigation(null)
                         replaceFragmentNoBackStack(
                             BottomNavigationFragment(),
                             R.id.layout_home,

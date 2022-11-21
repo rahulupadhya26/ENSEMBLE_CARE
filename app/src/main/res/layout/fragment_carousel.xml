@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/initial_screen_background"
     tools:context=".fragment.CarouselFragment">
 
     <androidx.viewpager2.widget.ViewPager2
@@ -21,21 +22,51 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/_10dp"
-        android:orientation="vertical"
-        android:layout_above="@+id/btnTherapySelect">
+        android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10dp"
-            android:layout_marginTop="@dimen/_10dp"
-            android:layout_marginEnd="@dimen/_10dp"
-            android:text="What type of support are you looking for?"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="@dimen/_28sp" />
+            android:orientation="vertical"
+            android:layout_margin="@dimen/_10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_20dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/company_logo"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:text="Ensemble Care"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/_24sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginEnd="@dimen/_10dp"
+                android:text="What type of support are you looking for?"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/_22sp" />
+
+        </LinearLayout>
 
         <TextView
             style="@style/fontfamily"
@@ -44,189 +75,393 @@
             android:layout_marginStart="@dimen/_10dp"
             android:layout_marginEnd="@dimen/_10dp"
             android:text="Pick what you need"
+            android:visibility="gone"
             android:textColor="@color/divider"
             android:textSize="@dimen/_18sp"
             android:textStyle="bold" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_marginTop="@dimen/_30dp">
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_20dp"
+            android:background="@drawable/bg_box_grey_top_corners">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:id="@+id/layoutSelf">
-
-                <RelativeLayout
-                    android:id="@+id/relativeLayoutSelf"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/bg_round_gray">
-
-                    <ImageView
-                        android:id="@+id/imgSelf"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/self"
-                        app:tint="@color/primaryGreen" />
-
-                </RelativeLayout>
-
-                <TextView
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"
+                android:layout_above="@+id/btnTherapySelect">
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5dp"
-                    android:gravity="center"
-                    android:text="Self"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/localBackground"
-                    android:textSize="@dimen/_18sp" />
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2"
+                        android:layout_margin="@dimen/_5dp">
 
-            <LinearLayout
-                android:layout_width="0dp"
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardViewSelf"
+                                android:layout_width="match_parent"
+                                android:layout_height="260dp"
+                                android:layout_margin="@dimen/_5dp"
+                                app:cardCornerRadius="@dimen/_10dp"
+                                app:cardElevation="@dimen/_5dp">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:id="@+id/imageViewCoachType"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:scaleType="centerCrop"
+                                        android:foreground="#40000000"
+                                        android:src="@drawable/self_new"
+                                        android:adjustViewBounds="true"/>
+
+                                    <TextView
+                                        android:id="@+id/txtTherapySelf"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:paddingBottom="@dimen/_10dp"
+                                        android:text="Self"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardViewCouple"
+                                android:layout_width="match_parent"
+                                android:layout_height="260dp"
+                                android:layout_marginTop="@dimen/_20dp"
+                                android:layout_marginStart="@dimen/_5dp"
+                                android:layout_marginEnd="@dimen/_5dp"
+                                android:layout_marginBottom="@dimen/_5dp"
+                                app:cardCornerRadius="@dimen/_10dp"
+                                app:cardElevation="@dimen/_5dp">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:scaleType="centerCrop"
+                                        android:foreground="#40000000"
+                                        android:src="@drawable/couple_new"
+                                        android:adjustViewBounds="true"/>
+
+                                    <TextView
+                                        android:id="@+id/txtTherapyCouple"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:paddingBottom="@dimen/_10dp"
+                                        android:text="Couple"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+                                </RelativeLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginTop="50dp">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardViewTeen"
+                                android:layout_width="match_parent"
+                                android:layout_height="260dp"
+                                android:layout_margin="@dimen/_5dp"
+                                app:cardCornerRadius="@dimen/_10dp"
+                                app:cardElevation="@dimen/_5dp">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:scaleType="centerCrop"
+                                        android:foreground="#40000000"
+                                        android:src="@drawable/teen_new"
+                                        android:adjustViewBounds="true"/>
+
+                                    <TextView
+                                        android:id="@+id/txtTherapyTeen"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:paddingBottom="@dimen/_10dp"
+                                        android:text="Teen"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardViewLgbtq"
+                                android:layout_width="match_parent"
+                                android:layout_height="260dp"
+                                android:layout_marginTop="@dimen/_20dp"
+                                android:layout_marginStart="@dimen/_5dp"
+                                android:layout_marginEnd="@dimen/_5dp"
+                                android:layout_marginBottom="@dimen/_10dp"
+                                app:cardCornerRadius="@dimen/_10dp"
+                                app:cardElevation="@dimen/_5dp">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:scaleType="centerCrop"
+                                        android:foreground="#40000000"
+                                        android:src="@drawable/lgbtq_new"
+                                        android:adjustViewBounds="true"/>
+
+                                    <TextView
+                                        android:id="@+id/txtTherapyLgbtqia"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_20sp"
+                                        android:text="LGBTQIA+"
+                                        android:textStyle="bold"
+                                        android:layout_alignParentBottom="true"
+                                        android:paddingBottom="@dimen/_10dp"
+                                        android:layout_marginStart="@dimen/_10dp"/>
+
+                                </RelativeLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_5dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:id="@+id/layoutSelf">
+
+                            <RelativeLayout
+                                android:id="@+id/relativeLayoutSelf"
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
+                                android:background="@drawable/bg_round_gray">
+
+                                <ImageView
+                                    android:id="@+id/imgSelf"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_centerInParent="true"
+                                    android:src="@drawable/self"
+                                    app:tint="@color/primaryGreen" />
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:gravity="center"
+                                android:text="Self"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/localBackground"
+                                android:textSize="@dimen/_18sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_5dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:id="@+id/layoutTeen">
+
+                            <RelativeLayout
+                                android:id="@+id/relativeLayoutTeen"
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
+                                android:background="@drawable/bg_round_gray">
+
+                                <ImageView
+                                    android:id="@+id/imgTeen"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_centerInParent="true"
+                                    android:src="@drawable/teen"
+                                    app:tint="@color/primaryGreen" />
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:gravity="center"
+                                android:text="Teen"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/localBackground"
+                                android:textSize="@dimen/_18sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2"
+                        android:visibility="gone"
+                        android:layout_marginTop="@dimen/_30dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_5dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:id="@+id/layoutCouple">
+
+                            <RelativeLayout
+                                android:id="@+id/relativeLayoutCouple"
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
+                                android:background="@drawable/bg_round_gray">
+
+                                <ImageView
+                                    android:id="@+id/imgCouple"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_centerInParent="true"
+                                    android:src="@drawable/couple"
+                                    app:tint="@color/primaryGreen" />
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:gravity="center"
+                                android:text="Couple"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/localBackground"
+                                android:textSize="@dimen/_18sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_5dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:id="@+id/layoutLgbtq">
+
+                            <RelativeLayout
+                                android:id="@+id/relativeLayoutLgbtq"
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
+                                android:background="@drawable/bg_round_gray">
+
+                                <ImageView
+                                    android:id="@+id/imgLgbtq"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_centerInParent="true"
+                                    android:src="@drawable/lgbt"
+                                    app:tint="@color/primaryGreen" />
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:gravity="center"
+                                android:text="LGBTQIA plus"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/localBackground"
+                                android:textSize="@dimen/_18sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+
+            <Button
+                android:id="@+id/btnTherapySelect"
+                style="@style/buttonBackground"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:id="@+id/layoutTeen">
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="@dimen/_30dp"
+                android:layout_marginEnd="@dimen/_30dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginBottom="@dimen/_10dp"
+                android:visibility="gone"
+                android:text="Next" />
 
-                <RelativeLayout
-                    android:id="@+id/relativeLayoutTeen"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/bg_round_gray">
-
-                    <ImageView
-                        android:id="@+id/imgTeen"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/teen"
-                        app:tint="@color/primaryGreen" />
-
-                </RelativeLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5dp"
-                    android:gravity="center"
-                    android:text="Teen"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/localBackground"
-                    android:textSize="@dimen/_18sp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_marginTop="@dimen/_30dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:id="@+id/layoutCouple">
-
-                <RelativeLayout
-                    android:id="@+id/relativeLayoutCouple"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/bg_round_gray">
-
-                    <ImageView
-                        android:id="@+id/imgCouple"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/couple"
-                        app:tint="@color/primaryGreen" />
-
-                </RelativeLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5dp"
-                    android:gravity="center"
-                    android:text="Couple"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/localBackground"
-                    android:textSize="@dimen/_18sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:id="@+id/layoutLgbtq">
-
-                <RelativeLayout
-                    android:id="@+id/relativeLayoutLgbtq"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/bg_round_gray">
-
-                    <ImageView
-                        android:id="@+id/imgLgbtq"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/lgbt"
-                        app:tint="@color/primaryGreen" />
-
-                </RelativeLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5dp"
-                    android:gravity="center"
-                    android:text="LGBTQIA plus"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/localBackground"
-                    android:textSize="@dimen/_18sp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btnTherapySelect"
-        style="@style/buttonBackground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="@dimen/_30dp"
-        android:layout_marginEnd="@dimen/_30dp"
-        android:layout_marginBottom="@dimen/_30dp"
-        android:text="Next" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -242,4 +477,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

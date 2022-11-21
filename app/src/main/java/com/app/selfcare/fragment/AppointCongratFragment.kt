@@ -1,14 +1,15 @@
 package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.app.selfcare.R
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.utils.DateUtils
 import com.app.selfcare.utils.Utils
 import kotlinx.android.synthetic.main.fragment_appoint_congrat.*
 
@@ -48,27 +49,62 @@ class AppointCongratFragment : BaseFragment() {
 
         try {
             text_final_fname.text =
-                preference!![PrefKeys.PREF_FNAME, ""]!! + " " +
-                        preference!![PrefKeys.PREF_MNAME, ""]!! + " " +
+                "Hi, " + preference!![PrefKeys.PREF_FNAME, ""]!! + " " +
                         preference!![PrefKeys.PREF_LNAME, ""]!!
-            text_appointment_date_time.text = Utils.aptScheduleDate + " " + Utils.aptScheduleTime
+
+            txtAppointedTherapistName.text = Utils.providerName
+            txtAppointedTherapistType.text = Utils.providerType
+
+            val appointmentDate = DateUtils(Utils.aptScheduleDate + " 00:00:00")
+
+            text_appointment_date_time.text = appointmentDate.getDay() + " " +
+                    appointmentDate.getFullMonthName() + " at " + Utils.aptScheduleTime.dropLast(11)
+
+            if (Utils.selectedCommunicationMode == "Video") {
+                appointedMode.setBackgroundResource(R.drawable.video)
+                appointedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+            } else {
+                appointedMode.setBackgroundResource(R.drawable.telephone)
+                appointedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+            }
+
 
             btn_go_to_dashboard.setOnClickListener {
-                setBottomNavigation(null)
-                replaceFragmentNoBackStack(
+                navigateToHomeScreen()
+                /*replaceFragmentNoBackStack(
                     BottomNavigationFragment(),
                     R.id.layout_home,
                     BottomNavigationFragment.TAG
-                )
+                )*/
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            navigateToHomeScreen()
+            /*replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )*/
+        }
+    }
+
+    private fun navigateToHomeScreen() {
+        if(Utils.isTherapististScreen){
             setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
             replaceFragmentNoBackStack(
                 BottomNavigationFragment(),
                 R.id.layout_home,
                 BottomNavigationFragment.TAG
             )
+        }else {
+            for (i in 0 until mActivity!!.supportFragmentManager.backStackEntryCount) {
+                if (mActivity!!.getCurrentFragment() !is DashboardFragment) {
+                    popBackStack()
+                } else {
+                    break
+                }
+            }
         }
     }
 

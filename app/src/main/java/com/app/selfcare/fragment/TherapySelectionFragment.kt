@@ -5,10 +5,10 @@ import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import com.app.selfcare.R
 import com.app.selfcare.adapters.TimeSlotAdapter
 import com.app.selfcare.calendar.CalendarChangesObserver
@@ -24,6 +24,9 @@ import com.app.selfcare.utils.DateUtil
 import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.varunbarad.highlightable_calendar_view.DayDecorator
+import com.varunbarad.highlightable_calendar_view.OnDateSelectListener
+import com.varunbarad.highlightable_calendar_view.OnMonthChangeListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.calendar_item.view.*
@@ -32,10 +35,13 @@ import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.util.*
 
+
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+
+/*https://github.com/VarunBarad/Highlightable-Calendar-View*/
 
 /**
  * A simple [Fragment] subclass.
@@ -73,6 +79,45 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
         layoutTimeSlotSelection.visibility = View.GONE
 
         selectedTimeSlot = ""
+
+        val c = Calendar.getInstance()
+        val currentDay = c.get(Calendar.DAY_OF_MONTH)
+
+        calendarViewNew.dayDecorators = listOf(
+            DayDecorator(
+                Calendar.getInstance().apply { set(Calendar.DAY_OF_MONTH, currentDay) },
+                ContextCompat.getColor(requireActivity(), R.color.white),
+                ContextCompat.getColor(requireActivity(), R.color.darkGreen)
+            )
+        )
+
+        calendarViewNew.onMonthChangeListener = OnMonthChangeListener { oldMonth, newMonth ->
+            val oldMonthDisplay = oldMonth.getDisplayName(
+                Calendar.MONTH,
+                Calendar.LONG,
+                Locale.getDefault()
+            )
+            val newMonthDisplay = newMonth.getDisplayName(
+                Calendar.MONTH,
+                Calendar.LONG,
+                Locale.getDefault()
+            )
+            selectedTimeSlot = ""
+            layoutTimeSlotSelection.visibility = View.GONE
+        }
+
+        calendarViewNew.onDateSelectListener = OnDateSelectListener { selDate ->
+            val date = String.format("%02d", selDate.get(Calendar.DAY_OF_MONTH))
+            val month = selDate.getDisplayName(
+                Calendar.MONTH,
+                Calendar.SHORT_FORMAT,
+                Locale.getDefault()
+            )
+            val year = selDate.get(Calendar.YEAR).toString()
+            val monthVal = selDate.get(Calendar.MONTH)
+            selectedDate = (monthVal + 1).toString() + "/" + date + "/" + year
+            getTimeSlots()
+        }
 
         calendarView.minDate = System.currentTimeMillis() - 1000
         calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
@@ -293,10 +338,12 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
         val timeSlots: ArrayList<TimeSlot> = Gson().fromJson(resp, timeSlotList)
         if (timeSlots.isNotEmpty()) {
             layoutTimeSlotSelection.visibility = View.VISIBLE
-            recyclerviewTimeSlots.layoutManager = LinearLayoutManager(
+            /*recyclerviewTimeSlots.layoutManager = LinearLayoutManager(
                 mActivity!!, RecyclerView.HORIZONTAL,
                 false
-            )
+            )*/
+            val layoutManager = GridLayoutManager(requireActivity(), 3)
+            recyclerviewTimeSlots.layoutManager = layoutManager
             recyclerviewTimeSlots.adapter = TimeSlotAdapter(mActivity!!, timeSlots, this)
         } else {
             displayMsg("Alert", "Time slots are empty for selected date!")

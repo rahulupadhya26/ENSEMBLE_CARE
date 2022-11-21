@@ -1,43 +1,288 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:background="@color/screen_background_color"
     tools:context=".fragment.FinalReviewFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/checkbox_terms_conditions"
-        android:orientation="vertical"
-        android:layout_margin="@dimen/_20dp">
+        android:layout_margin="@dimen/_15dp"
+        android:background="@color/screen_background_color"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Final Review"
             android:textAppearance="@style/fontfamily"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_26sp"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_22sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/verified"
+            android:drawablePadding="@dimen/_5dp"
+            android:text="Selected Provider"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_20sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewAppointment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_10dp"
+            app:cardElevation="@dimen/_5dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/doctor_icon" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/_10dp"
+                    android:paddingEnd="@dimen/_30dp">
+
+                    <TextView
+                        android:id="@+id/txtFinalReviewTherapistName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtFinalReviewTherapistType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="#837E7E"
+                        android:textSize="@dimen/_12sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/verified"
+            android:drawablePadding="@dimen/_5dp"
+            android:text="Selected date &amp; time"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewTimeSlot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="@dimen/_5dp">
+
+                <TextView
+                    android:id="@+id/txtFinalReviewSelectedDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/_20dp"
+                    android:paddingTop="@dimen/_10dp"
+                    android:paddingEnd="@dimen/_20dp"
+                    android:paddingBottom="@dimen/_10dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="@dimen/_5dp">
+
+                <TextView
+                    android:id="@+id/txtFinalReviewSelectedTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/_10dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5dp"
+            android:drawableRight="@drawable/verified"
+            android:drawablePadding="@dimen/_5dp"
+            android:text="Selected call type"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_20sp"
+            android:textStyle="bold" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layoutVideoCall"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10dp"
+            app:cardCornerRadius="@dimen/_10dp"
+            app:cardElevation="@dimen/_5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imgFinalReviewSelectedMode"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="10dp"
+                    app:tint="@color/primaryGreen" />
+
+                <TextView
+                    android:id="@+id/txtFinalReviewSelectedMode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:gravity="center"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5dp"
+            android:drawableRight="@drawable/verified"
+            android:drawablePadding="@dimen/_5dp"
+            android:text="Selected images notes for review"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_20dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#D9D9D9"
+                app:cardCornerRadius="@dimen/_5dp"
+                app:cardElevation="@dimen/_5dp"
+                app:cardUseCompatPadding="true">
+
+                <ImageView
+                    android:id="@+id/imgFinalReviewPrescriptionPic1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#D9D9D9"
+                app:cardCornerRadius="@dimen/_5dp"
+                app:cardElevation="@dimen/_5dp"
+                app:cardUseCompatPadding="true">
+
+                <ImageView
+                    android:id="@+id/imgFinalReviewPrescriptionPic2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#D9D9D9"
+                app:cardCornerRadius="@dimen/_5dp"
+                app:cardElevation="@dimen/_5dp"
+                app:cardUseCompatPadding="true">
+
+                <ImageView
+                    android:id="@+id/imgFinalReviewPrescriptionPic3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/fontfamily"
-            android:textSize="@dimen/_18sp"
-            android:gravity="left"
             android:layout_marginTop="@dimen/_10dp"
             android:layout_marginBottom="@dimen/_10dp"
+            android:gravity="left"
             android:text="Thank you for providing your details. Please review the information before we book your consultation."
-            android:textColor="@color/black" />
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_18sp"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewFinalReview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -46,41 +291,53 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btnFinalReview"
-        android:layout_marginLeft="@dimen/_20dp"
-        android:layout_marginTop="@dimen/_10dp"
-        android:layout_marginRight="@dimen/_20dp"
+        android:layout_marginStart="@dimen/_15dp"
+        android:layout_marginEnd="@dimen/_15dp"
         android:padding="5dp"
-        android:text="I declare that I read and understand the terms and conditions"
+        android:text="I hereby declare that I have read and understand the terms and condtion."
         android:textAppearance="@style/fontfamily"
-        android:textSize="@dimen/_16sp" />
+        android:textColor="@color/black"
+        android:textSize="@dimen/_14sp"
+        android:textStyle="bold" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/txt_copyright"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="@dimen/_5dp"
         android:layout_marginRight="20dp"
-        android:textAppearance="@style/fontfamily"
         android:background="@drawable/button_style_blue"
         android:padding="@dimen/_5dp"
         android:text="Submit"
+        android:textAppearance="@style/fontfamily"
         android:textColor="@color/white"
         android:textSize="@dimen/_16sp"
-        android:layout_above="@+id/txt_copyright"
-        app:hintTextAppearance="@style/fontfamily"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:hintTextAppearance="@style/fontfamily" />
+
+    <View
+        android:id="@+id/viewBtnFinalReview"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@+id/btnFinalReview"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:background="#80000000" />
 
     <Button
         android:id="@+id/btnFinalReview"
         style="@style/buttonBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/txt_copyright"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="@dimen/_20dp"
-        android:layout_marginTop="@dimen/_5dp"
+        android:layout_marginTop="@dimen/_10dp"
         android:layout_marginEnd="@dimen/_20dp"
-        android:layout_marginBottom="5dp"
-        android:text="Submit"
-        android:layout_above="@+id/txt_copyright"/>
+        android:layout_marginBottom="@dimen/_10dp"
+        android:text="Book Appointment" />
 
     <TextView
         android:id="@+id/txt_copyright"
@@ -91,6 +348,7 @@
         android:gravity="center"
         android:padding="5dp"
         android:text="&#169;SelfCare.All rights reserved."
-        android:textColor="@color/localBackground" />
+        android:textColor="@color/localBackground"
+        android:visibility="gone" />
 
 </RelativeLayout>

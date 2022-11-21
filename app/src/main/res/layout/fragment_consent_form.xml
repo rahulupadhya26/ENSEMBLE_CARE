@@ -3,27 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.ConsentFormFragment">
+    tools:context=".fragment.ConsentFormFragment"
+    android:background="@color/screen_background_color">
 
     <RelativeLayout
         android:id="@+id/layout_consent_letter"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/screen_background_color">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/btnConsentLetter">
+            android:layout_above="@+id/viewBtnConsentLetter"
+            android:background="@color/screen_background_color">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_margin="@dimen/_15dp"
+                android:background="@color/screen_background_color">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:src="@drawable/splash"/>
+                    android:src="@drawable/splash"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -32,7 +38,8 @@
                     android:gravity="center"
                     android:text="www.selfcare.com"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_14sp" />
+                    android:textSize="@dimen/_14sp"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -41,13 +48,46 @@
                     android:gravity="center"
                     android:text="Consent form"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_26sp" />
+                    android:textSize="@dimen/_26sp"
+                    android:visibility="gone"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Consent form"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_22sp"
+                        android:textStyle="bold"/>
+
+                    <ImageView
+                        android:layout_width="@dimen/_40dp"
+                        android:layout_height="@dimen/_40dp"
+                        android:src="@drawable/company_logo"
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentRight="true"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Consent form"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_20sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_margin="@dimen/_20dp">
+                    android:layout_margin="@dimen/_5dp">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -56,7 +96,7 @@
                         android:padding="5dp"
                         android:text="I voluntarily agree to receive evaluation/consultation from the doctors/therapists/physicians booked through Ensemble Care App. I concur on the below information supplied while booking the appointment."
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_14sp" />
+                        android:textSize="@dimen/_16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -65,15 +105,16 @@
                         android:padding="5dp"
                         android:text="I understand and agree that I will participate in my treatment/consultation plan."
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_14sp" />
+                        android:textSize="@dimen/_16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:text="Sign below"
                         android:textAppearance="@style/fontfamily"
-                        android:text="SIGN BELOW"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_20sp"/>
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_20sp"
+                        android:textStyle="bold" />
 
                     <com.app.selfcare.utils.SignatureView
                         android:id="@+id/signatureView"
@@ -151,6 +192,16 @@
             android:textSize="@dimen/_16sp"
             android:visibility="gone"/>
 
+        <View
+            android:id="@+id/viewBtnConsentLetter"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/_30dp"
+            android:layout_marginEnd="@dimen/_30dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:background="#80000000"
+            android:layout_above="@+id/btnConsentLetter"/>
+
         <Button
             android:id="@+id/btnConsentLetter"
             style="@style/buttonBackground"
@@ -159,9 +210,9 @@
             android:layout_above="@+id/txt_high_conf_info"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="@dimen/_30dp"
-            android:layout_marginTop="@dimen/_5dp"
+            android:layout_marginTop="@dimen/_10dp"
             android:layout_marginEnd="@dimen/_30dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/_10dp"
             android:text="Submit" />
 
         <TextView

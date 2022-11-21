@@ -2,31 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/home"
+        android:icon="@drawable/home_new"
         android:title="Home"/>
 
     <item
-        android:id="@+id/navigation_explore"
-        android:icon="@drawable/explore"
-        android:title="Explore"/>
+        android:id="@+id/navigation_activity"
+        android:icon="@drawable/activity"
+        android:title="Activity"/>
 
     <item
-        android:enabled="false"
-        android:id="@+id/navigation_placeholder"
-        android:title="@null" />
-
-    <item
-        android:id="@+id/navigation_coaches"
-        android:icon="@drawable/coach"
+        android:id="@+id/navigation_personal_trainer"
+        android:icon="@drawable/personal_trainer"
         android:title="Coaches"/>
 
-    <!--<item
-        android:id="@+id/navigation_assessment"
-        android:icon="@drawable/assessment"
-        android:title="My Assessments"/>-->
-
     <item
-        android:id="@+id/navigation_myHealthInfo"
-        android:icon="@drawable/health"
-        android:title="Health Info"/>
+        android:id="@+id/navigation_crisis"
+        android:icon="@drawable/crisis"
+        android:title="Crisis"/>
 </menu>

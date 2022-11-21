@@ -12,9 +12,6 @@ import android.widget.ArrayAdapter
 import com.app.selfcare.R
 import com.app.selfcare.utils.SignatureView
 import kotlinx.android.synthetic.main.fragment_parental_consent.*
-import kotlinx.android.synthetic.main.fragment_parental_consent.btn_clear
-import kotlinx.android.synthetic.main.fragment_parental_consent.signatureView
-import kotlinx.android.synthetic.main.fragment_register_part_b.*
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -55,13 +52,6 @@ class ParentalConsentFragment : BaseFragment(), SignatureView.OnSignedListener {
 
         relationshipsSpinner()
 
-        signatureView.setOnSignedListener(this)
-        signatureView.clear()
-
-        btn_clear.setOnClickListener {
-            signatureView.clear()
-        }
-
         etParentContactNo.addTextChangedListener(object : PhoneNumberFormattingTextWatcher("US") {
             private var mFormatting = false
             private var mAfter = 0
@@ -90,31 +80,38 @@ class ParentalConsentFragment : BaseFragment(), SignatureView.OnSignedListener {
         btnParentalConsent.setOnClickListener {
             if (isValidText(etParentName)) {
                 if (spinnerRelationship.text.toString().trim().isNotEmpty()) {
-                    if (isValidText(etParentContactNo)) {
-                        if (getText(etParentContactNo).replace("-", "").length == 10) {
-                            if (bSigned) {
-                                val screenshot: Bitmap =
-                                    takeScreenshotOfRootView(requireActivity().window.decorView.rootView)
-                                createAnonymousUser(
-                                    selectedTherapy!!,
-                                    "data:image/jpg;base64," + convert(screenshot),
-                                    getText(etParentName),
-                                    spinnerRelationship.text.toString().trim(),
-                                    getText(etParentContactNo)
-                                )
+                    if (isValidEmail(etParentalMailId)) {
+                        if (isValidText(etParentContactNo)) {
+                            if (getText(etParentContactNo).replace("-", "").length == 10) {
+                                if (bSigned) {
+                                    val screenshot: Bitmap =
+                                        takeScreenshotOfRootView(requireActivity().window.decorView.rootView)
+                                    createAnonymousUser(
+                                        selectedTherapy!!,
+                                        "data:image/jpg;base64," + convert(screenshot),
+                                        getText(etParentName),
+                                        spinnerRelationship.text.toString().trim(),
+                                        getText(etParentContactNo)
+                                    )
+                                } else {
+                                    displayMsg("Alert", "Please sign the consent letter")
+                                }
                             } else {
-                                displayMsg("Alert", "Please sign the consent letter")
+                                setEditTextError(
+                                    etParentContactNo,
+                                    "Enter valid phone number"
+                                )
                             }
                         } else {
                             setEditTextError(
                                 etParentContactNo,
-                                "Enter valid phone number"
+                                "Phone number cannot be blank."
                             )
                         }
                     } else {
                         setEditTextError(
-                            etParentContactNo,
-                            "Phone number cannot be blank."
+                            etParentalMailId,
+                            "Enter valid Mail Id"
                         )
                     }
                 } else {
@@ -134,7 +131,7 @@ class ParentalConsentFragment : BaseFragment(), SignatureView.OnSignedListener {
             relationshipsData = resources.getStringArray(R.array.relationship)
             val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
                 requireActivity(),
-                android.R.layout.simple_spinner_dropdown_item,
+                R.layout.spinner_dropdown_custom_item,
                 relationshipsData!!
             )
             spinnerRelationship.setAdapter(adapter)

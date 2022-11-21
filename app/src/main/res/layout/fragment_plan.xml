@@ -5,29 +5,66 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".fragment.PlanFragment">
+    tools:context=".fragment.PlanFragment"
+    android:background="@color/initial_screen_background">
 
     <TextView
         android:id="@+id/txtChoosePlan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Choose your plan"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_22sp"
         android:layout_margin="@dimen/_20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:padding="5dp"
         android:text="Choose your plan"
         android:textAppearance="@style/fontfamily"
         android:textColor="@color/black"
         android:textSize="@dimen/_26sp"
+        android:visibility="gone"
         android:textStyle="bold" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPagerPlan"
-        android:layout_below="@+id/txtChoosePlan"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtBillingPeriod"
+        android:layout_below="@+id/txtChoosePlan"
         android:layout_marginBottom="@dimen/_5dp"
         android:clipToPadding="false"
-        android:paddingStart="40dp"
-        android:paddingEnd="40dp"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal"
+        android:layout_centerInParent="true"/>
+
+
+    <TextView
+        android:id="@+id/txtBillingPeriod"
+        android:layout_above="@+id/txtRenewPlan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Billing Period"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_18sp"
+        android:gravity="center"
+        android:layout_marginBottom="-5dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtRenewPlan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Auto renews on December 21 2022"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_16sp"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/_20dp"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

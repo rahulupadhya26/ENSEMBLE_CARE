@@ -59,10 +59,11 @@ class CreateJournalFragment : BaseFragment() {
         val timeSdf = SimpleDateFormat(myTimeFormat)
         val cal = Calendar.getInstance()
         val formattedDate = sdf.format(cal.time)
+        txtJournalDate.setText(formattedDate)
         createdJournalDate = formattedDate
         val formattedTIme = timeSdf.format(cal.time)
         createdJournalTime = formattedTIme
-        val dateSetListener =
+        /*val dateSetListener =
             DatePickerDialog.OnDateSetListener { views, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
                 cal.set(Calendar.MONTH, monthOfYear)
@@ -80,7 +81,7 @@ class CreateJournalFragment : BaseFragment() {
                 cal.get(Calendar.DAY_OF_MONTH)
             )
             datePickerDialog.show()
-        }
+        }*/
 
         btnSaveJournal.setOnClickListener {
             if (getText(txtJournalDate).isNotEmpty()) {

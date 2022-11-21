@@ -1,27 +1,23 @@
 package com.app.selfcare.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
-import com.app.selfcare.adapters.PlanViewPagerAdapter
 import com.app.selfcare.data.*
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
-import com.app.selfcare.utils.ZoomOutPageTransformer
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_payment_select.*
-import kotlinx.android.synthetic.main.fragment_plan.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.lang.reflect.Type
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,12 +54,20 @@ class PaymentSelectFragment : BaseFragment() {
         return R.layout.fragment_payment_select
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.VISIBLE
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
+
+        txtPaymentPlanName.text = plan!!.plan
+        txtPaymentPlanPrice.text = "$" + plan!!.price + "/month"
+
+        imgPaymentSelection.setOnClickListener {
+            popBackStack()
+        }
 
         paymentSheet = PaymentSheet(this) { paymentSheetResult: PaymentSheetResult? ->
             onPaymentResult(paymentSheetResult!!)
@@ -145,17 +149,17 @@ class PaymentSelectFragment : BaseFragment() {
     private fun onPaymentResult(paymentSheetResult: PaymentSheetResult) {
         when (paymentSheetResult) {
             is PaymentSheetResult.Completed -> {
-                displayToast("Payment success")
+                //displayToast("Payment success")
                 Log.d("Payment - ", "Success")
                 getTransStatus(true)
             }
             is PaymentSheetResult.Failed -> {
-                displayToast("Payment failed " + (paymentSheetResult as PaymentSheetResult.Failed).error)
+                //displayToast("Payment failed " + (paymentSheetResult as PaymentSheetResult.Failed).error)
                 Log.e("App", "Got error: ", (paymentSheetResult as PaymentSheetResult.Failed).error)
                 getTransStatus(false)
             }
             else -> {
-                displayMsg("Alert", "Payment cancelled")
+                //displayMsg("Alert", "Payment cancelled")
                 Log.d("Payment - ", "Canceled")
             }
         }

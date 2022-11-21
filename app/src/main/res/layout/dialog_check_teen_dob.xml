@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/fontfamily"
+        android:text="Teen"
+        android:textSize="@dimen/_20sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:padding="@dimen/_5dp"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/fontfamily"
+        android:text="Enter DOB"
+        android:textSize="@dimen/_16sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_margin="@dimen/_5dp"
+        android:padding="@dimen/_5dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/dob"
+        android:layout_marginStart="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_10dp"
+        app:hintTextAppearance="@style/TextLabel">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txtTeenDob"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:textAppearance="@style/fontfamily"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:padding="16dp"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/_5dp"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/txtVerify"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Verify"
+            android:gravity="center"
+            android:textSize="@dimen/_18sp"
+            android:background="@drawable/button_background"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_margin="@dimen/_5dp"
+            android:padding="@dimen/_5dp"/>
+
+        <TextView
+            android:id="@+id/txtCancel"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Cancel"
+            android:gravity="center"
+            android:textSize="@dimen/_18sp"
+            android:background="@drawable/button_background"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_margin="@dimen/_5dp"
+            android:padding="@dimen/_5dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/screen_background_color"
     android:orientation="vertical"
     tools:context=".fragment.TherapistListFragment">
 
@@ -21,16 +21,17 @@
             android:text="Create an appointment"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/primaryGreen"
-            android:textSize="@dimen/_22sp"
+            android:textSize="@dimen/_24sp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select your provider"
+            android:text="Select your Provider"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/primaryGreen"
-            android:textSize="@dimen/_18sp"
+            android:textSize="@dimen/_20sp"
+            android:layout_marginTop="@dimen/_5dp"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -48,8 +49,24 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="@dimen/_30dp"
         android:layout_marginEnd="@dimen/_30dp"
-        app:backgroundTint="#89848C"
         android:layout_marginBottom="@dimen/_10dp"
-        android:text="Confirm doctor" />
+        android:text="Confirm Provider"
+        app:backgroundTint="@color/buttonBackground" />
+
+    <Button
+        android:id="@+id/btnConfirmDoctorDisabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_30dp"
+        android:layout_marginEnd="@dimen/_30dp"
+        android:layout_marginBottom="@dimen/_5dp"
+        android:textAppearance="@style/fontfamily"
+        android:layout_alignParentBottom="true"
+        android:textSize="@dimen/_18sp"
+        android:textStyle="bold"
+        android:text="Confirm doctor"
+        android:padding="@dimen/_10dp"
+        android:backgroundTint="#89848C"
+        android:visibility="gone"/>
 
 </RelativeLayout>

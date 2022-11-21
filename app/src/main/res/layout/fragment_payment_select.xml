@@ -1,130 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/initial_screen_background"
     tools:context=".fragment.PaymentSelectFragment">
 
-    <TextView
-        android:id="@+id/txtChoosePlan"
+    <LinearLayout
+        android:id="@+id/layoutPaymentTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_20dp"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="Payment"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_26sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/imgPaymentSelection"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:contentDescription="@string/app_name"
+            android:padding="10dp"
+            android:layout_marginTop="@dimen/_20dp"
+            android:layout_marginStart="@dimen/_5dp"
+            android:src="@drawable/ic_action_back_btn"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/txtProfDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Payment"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_22sp"
+            android:layout_marginStart="@dimen/_20dp"
+            android:layout_marginEnd="@dimen/_15dp"
+            android:layout_marginBottom="@dimen/_15dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtChoosePlan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_20dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Payment"
+            android:visibility="gone"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_26sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layoutPaymentTitle"
+        android:layout_above="@+id/txtPaymentBillingPeriod">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:src="@drawable/payment" />
-
-            <Button
-                android:id="@+id/cardViewInsurance"
-                style="@style/buttonBackground"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_30dp"
+                android:orientation="vertical"
+                android:background="@drawable/plan_payment_bg_rounded_corner"
+                android:layout_marginStart="@dimen/_20dp"
+                android:layout_marginEnd="@dimen/_20dp"
+                android:elevation="@dimen/_10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Plan Name"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_22sp"
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginEnd="@dimen/_15dp"
+                    android:layout_marginBottom="@dimen/_15dp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginEnd="@dimen/_15dp"
+                    android:layout_marginBottom="@dimen/_15dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtPaymentPlanName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_20sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="05 Services"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txtPaymentPlanPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:gravity="center"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_24sp" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Payment Method"
+                android:layout_marginStart="@dimen/_20dp"
                 android:layout_marginTop="@dimen/_20dp"
-                android:layout_marginEnd="@dimen/_30dp"
-                android:text="Insurance Pay" />
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_20sp" />
 
             <Button
                 android:id="@+id/cardViewSelfPay"
                 style="@style/buttonBackground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20dp"
+                android:layout_marginTop="@dimen/_20dp"
+                android:layout_marginEnd="@dimen/_20dp"
+                app:backgroundTint="#28323C"
+                android:textStyle="bold"
+                android:textSize="@dimen/_20sp"
+                android:padding="@dimen/_10dp"
+                android:text="Self Pay" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Or"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_20dp"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/_24sp" />
+
+            <Button
+                android:id="@+id/cardViewInsurance"
+                style="@style/buttonBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20dp"
+                android:layout_marginTop="@dimen/_20dp"
+                android:layout_marginEnd="@dimen/_20dp"
+                app:backgroundTint="#28323C"
+                android:textStyle="bold"
+                android:textSize="@dimen/_20sp"
+                android:padding="@dimen/_10dp"
+                android:text="Insurance" />
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:src="@drawable/payment"
+                android:visibility="gone"/>
+
+            <Button
+                style="@style/buttonBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_30dp"
                 android:layout_marginTop="@dimen/_20dp"
                 android:layout_marginEnd="@dimen/_30dp"
-                android:text="Self Pay" />
+                android:text="Insurance Pay"
+                android:visibility="gone" />
 
-
-            <androidx.cardview.widget.CardView
+            <Button
+                style="@style/buttonBackground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_20dp"
-                android:visibility="gone"
-                app:cardCornerRadius="@dimen/_10dp"
-                app:cardElevation="@dimen/_10dp"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/insurance" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="@dimen/_10dp"
-                        android:text="Insurance"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_20dp"
-                android:visibility="gone"
-                app:cardCornerRadius="@dimen/_10dp"
-                app:cardElevation="@dimen/_10dp"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/selfpay" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="@dimen/_10dp"
-                        android:text="Self Pay"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+                android:layout_marginStart="@dimen/_30dp"
+                android:layout_marginTop="@dimen/_20dp"
+                android:layout_marginEnd="@dimen/_30dp"
+                android:text="Self Pay"
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/txtPaymentBillingPeriod"
+        android:layout_above="@+id/txtPaymentRenewPlan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Billing Period"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_18sp"
+        android:gravity="center"
+        android:layout_marginBottom="-5dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtPaymentRenewPlan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Auto renews on December 21 2022"
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_16sp"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/_20dp"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

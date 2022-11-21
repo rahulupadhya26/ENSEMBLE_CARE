@@ -82,7 +82,7 @@ class TherapyBasicDetailsAFragment : BaseFragment() {
         allergies.add("Allegra")
 
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            requireActivity(), android.R.layout.simple_spinner_dropdown_item, allergies
+            requireActivity(), R.layout.spinner_dropdown_custom_item, allergies
         )
         spinnerAllergies.setAdapter(adapter)
         spinnerAllergies.onItemClickListener =
@@ -105,7 +105,7 @@ class TherapyBasicDetailsAFragment : BaseFragment() {
         symptoms.add("Loss of appetite")
 
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            requireActivity(), android.R.layout.simple_spinner_dropdown_item, symptoms
+            requireActivity(), R.layout.spinner_dropdown_custom_item, symptoms
         )
         spinnerSymptoms.setAdapter(adapter)
         spinnerSymptoms.onItemClickListener =

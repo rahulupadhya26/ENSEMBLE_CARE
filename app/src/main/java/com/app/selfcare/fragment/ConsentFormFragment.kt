@@ -1,6 +1,7 @@
 package com.app.selfcare.fragment
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_consent_form.*
 import okhttp3.MultipartBody
 import retrofit2.HttpException
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,7 +55,7 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.GONE
+        getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
         layout_consent_letter.visibility = View.VISIBLE
         layout_screenshot.visibility = View.GONE
@@ -85,7 +87,7 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
         }
 
         txt_screenshot_close.setOnClickListener {
-            replaceFragmentNoBackStack(
+            replaceFragment(
                 AppointCongratFragment(),
                 R.id.layout_home,
                 AppointCongratFragment.TAG
@@ -100,7 +102,26 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
         status: Int,
         form: Bitmap
     ) {
+        var prescription1: Bitmap? = null
+        var prescription2: Bitmap? = null
+        var prescription3: Bitmap? = null
+        when (getBitmapList().size) {
+            1 -> {
+                prescription1 = BitmapFactory.decodeFile(File(getBitmapList()[0]).absolutePath)
+            }
+            2 -> {
+                prescription1 = BitmapFactory.decodeFile(File(getBitmapList()[0]).absolutePath)
+                prescription2 = BitmapFactory.decodeFile(File(getBitmapList()[1]).absolutePath)
+            }
+            3 -> {
+                prescription1 = BitmapFactory.decodeFile(File(getBitmapList()[0]).absolutePath)
+                prescription2 = BitmapFactory.decodeFile(File(getBitmapList()[1]).absolutePath)
+                prescription3 = BitmapFactory.decodeFile(File(getBitmapList()[2]).absolutePath)
+            }
+        }
+
         txt_form_upload.text = "Uploading details to server"
+        getBackButton().visibility = View.GONE
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
@@ -114,7 +135,16 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
                             bookingDate,
                             visitType,
                             status,
-                            "data:image/jpg;base64," + convert(form)
+                            "data:image/jpg;base64," + convert(form),
+                            if (prescription1 != null) "data:image/jpg;base64," + convert(
+                                prescription1
+                            ) else "",
+                            if (prescription2 != null) "data:image/jpg;base64," + convert(
+                                prescription2
+                            ) else "",
+                            if (prescription3 != null) "data:image/jpg;base64," + convert(
+                                prescription3
+                            ) else "",
                         ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -130,7 +160,7 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
                             if (status == "202" || status == "200") {
                                 val description =
                                     "Type of Visit : " + Utils.selectedCommunicationMode + "\n" +
-                                            "Doctor Name : Dr. " + Utils.providerName + "\n" +
+                                            "Therapist Name : " + Utils.providerName + "\n" +
                                             "Time slot : " + Utils.aptScheduleTime
                                 txt_form_upload.text = "Form uploaded successfully"
                                 //val appointmentDate = DateUtils("$bookingDate 01:00:00")
@@ -144,10 +174,12 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
                                     30
                                 )
                             } else {
+                                getBackButton().visibility = View.VISIBLE
                                 txt_form_upload.text = "Failed to upload form"
                             }
                         } catch (e: Exception) {
                             hideProgress()
+                            getBackButton().visibility = View.VISIBLE
                             displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->
@@ -167,6 +199,7 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
                                 )
                             }
                         } else {
+                            getBackButton().visibility = View.VISIBLE
                             displayAfterLoginErrorMsg(error)
                         }
                     })

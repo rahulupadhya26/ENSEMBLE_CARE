@@ -1,10 +1,12 @@
 package com.app.selfcare.fragment
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -16,10 +18,12 @@ import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.CalenderUtils
 import com.app.selfcare.utils.DateUtils
 import com.app.selfcare.utils.Utils
+import com.bumptech.glide.Glide
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_final_review.*
 import retrofit2.HttpException
+import java.io.File
 import java.text.SimpleDateFormat
 
 // TODO: Rename parameter arguments, choose names that match
@@ -55,6 +59,55 @@ class FinalReviewFragment : BaseFragment() {
         getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
 
+        txtFinalReviewTherapistName.text = Utils.providerName
+        txtFinalReviewTherapistType.text = Utils.providerType
+
+        val appointmentDate = DateUtils(Utils.aptScheduleDate + " 00:00:00")
+
+        txtFinalReviewSelectedDate.text =
+            appointmentDate.getDay() + " " + appointmentDate.getFullMonthName()
+
+        txtFinalReviewSelectedTime.text = Utils.aptScheduleTime.dropLast(11)
+
+        if (Utils.selectedCommunicationMode == "Video") {
+            imgFinalReviewSelectedMode.setBackgroundResource(R.drawable.video)
+            imgFinalReviewSelectedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+            txtFinalReviewSelectedMode.text = "Video Call"
+        } else {
+            imgFinalReviewSelectedMode.setBackgroundResource(R.drawable.telephone)
+            imgFinalReviewSelectedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+            txtFinalReviewSelectedMode.text = "Audio Call"
+        }
+
+        if (getBitmapList().size > 0) {
+            when (getBitmapList().size) {
+                1 -> {
+                    Glide.with(this)
+                        .load(File(getBitmapList()[0]))
+                        .into(imgFinalReviewPrescriptionPic1)
+                }
+                2 -> {
+                    Glide.with(this)
+                        .load(File(getBitmapList()[0]))
+                        .into(imgFinalReviewPrescriptionPic1)
+                    Glide.with(this)
+                        .load(File(getBitmapList()[1]))
+                        .into(imgFinalReviewPrescriptionPic2)
+                }
+                3 -> {
+                    Glide.with(this)
+                        .load(File(getBitmapList()[0]))
+                        .into(imgFinalReviewPrescriptionPic1)
+                    Glide.with(this)
+                        .load(File(getBitmapList()[1]))
+                        .into(imgFinalReviewPrescriptionPic2)
+                    Glide.with(this)
+                        .load(File(getBitmapList()[2]))
+                        .into(imgFinalReviewPrescriptionPic3)
+                }
+            }
+        }
+
         val finalReviewList = ArrayList<String>()
         val patientName =
             preference!![PrefKeys.PREF_FNAME, ""]!! + " " +
@@ -69,7 +122,7 @@ class FinalReviewFragment : BaseFragment() {
                     Utils.selectedPostalCode + "," +
                     Utils.selectedCountry
         )*/
-        finalReviewList.add("Therapist - Dr. " + Utils.providerName)
+        finalReviewList.add("Therapist - " + Utils.providerName)
         finalReviewList.add("Would like to talk to - " + Utils.providerType)
         finalReviewList.add("Mode of communications - " + Utils.selectedCommunicationMode)
         finalReviewList.add("Tentative date of appointment - " + Utils.aptScheduleDate)
@@ -95,7 +148,7 @@ class FinalReviewFragment : BaseFragment() {
 
         btnFinalReview.setOnClickListener {
             if (checkbox_terms_conditions.isChecked) {
-                replaceFragmentNoBackStack(
+                replaceFragment(
                     ConsentFormFragment(),
                     R.id.layout_home,
                     ConsentFormFragment.TAG

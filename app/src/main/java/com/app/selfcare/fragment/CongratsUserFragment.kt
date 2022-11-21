@@ -1,17 +1,16 @@
 package com.app.selfcare.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.app.selfcare.R
-import com.app.selfcare.data.Register
-import com.app.selfcare.preference.PrefKeys
-import com.app.selfcare.preference.PreferenceHelper.get
-import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.fragment_congrats_user.*
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,6 +26,7 @@ class CongratsUserFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var counter: CountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,16 +46,39 @@ class CongratsUserFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
+        updateStatusBarColor(R.color.initial_screen_background)
 
-        Glide.with(requireActivity()).load(R.drawable.thankyouanim).into(imgThankYou);
+        //Glide.with(requireActivity()).load(R.drawable.thankyouanim).into(imgThankYou);
 
-        Handler().postDelayed({
-            replaceFragmentNoBackStack(RegistrationFragment(), R.id.layout_home, RegistrationFragment.TAG)
-        }, 4000)
+        /*Handler().postDelayed({
+
+        }, 3000)*/
 
         /*btn_thanks_continue.setOnClickListener {
             replaceFragmentNoBackStack(RegistrationFragment(), R.id.layout_home, RegistrationFragment.TAG)
         }*/
+
+        counter = object : CountDownTimer(3000, 1000) {
+            // Callback function, fired on regular interval
+            @SuppressLint("SetTextI18n")
+            override fun onTick(millisUntilFinished: Long) {
+                val f: NumberFormat = DecimalFormat("00")
+                val min = millisUntilFinished / 60000 % 60
+                val sec = millisUntilFinished / 1000 % 60
+
+                txtTimer.text = "continuing in " + f.format(sec) + " sec..."
+            }
+
+            // Callback function, fired
+            // when the time is up
+            override fun onFinish() {
+                replaceFragmentNoBackStack(
+                    RegistrationFragment(),
+                    R.id.layout_home,
+                    RegistrationFragment.TAG
+                )
+            }
+        }.start()
     }
 
     companion object {
@@ -76,6 +99,7 @@ class CongratsUserFragment : BaseFragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_Congrats_user"
     }
 }

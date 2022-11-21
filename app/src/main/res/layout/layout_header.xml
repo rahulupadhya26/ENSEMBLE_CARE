@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/screen_background_color">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_header"
@@ -167,7 +168,6 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/ico_action_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="@style/fontfamily"
@@ -180,12 +180,13 @@
         android:padding="@dimen/_5dp"/>
 
     <ImageView
+        android:id="@+id/ico_action_back"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_margin="12dp"
+        android:layout_margin="5dp"
+        android:visibility="gone"
         android:contentDescription="@string/app_name"
         android:padding="10dp"
-        android:visibility="gone"
         android:src="@drawable/ic_action_back_btn"
         app:tint="@color/primaryGreen" />
 

@@ -6,7 +6,6 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -15,10 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnTextClickListener
-import com.app.selfcare.controller.OnTherapyTypeClickListener
-import com.app.selfcare.data.TherapyType
 import com.app.selfcare.data.TimeSlot
-import kotlinx.android.synthetic.main.therapy_type_list_item.view.*
 import kotlinx.android.synthetic.main.time_slot_item.view.*
 
 class TimeSlotAdapter(
@@ -53,16 +49,18 @@ class TimeSlotAdapter(
             onTextClickListener!!.onTextClickListener(item)
         }
         if (row_index == position) {
-            holder.timeSlotLayout.setBackgroundResource(R.drawable.bg_time_slot_rounded_selected)
+            holder.cardViewTimeSlot.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primaryGreen))
+            //holder.timeSlotLayout.setBackgroundResource(R.drawable.bg_time_slot_rounded_selected)
             holder.timeSlotTxt.setTextColor(ContextCompat.getColor(context, R.color.white))
         } else {
-            holder.timeSlotLayout.setBackgroundResource(R.drawable.bg_time_slot_rounded)
-            holder.timeSlotTxt.setTextColor(ContextCompat.getColor(context, R.color.black))
+            holder.cardViewTimeSlot.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
+            holder.timeSlotTxt.setTextColor(ContextCompat.getColor(context, R.color.primaryGreen))
         }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val timeSlotTxt: TextView = itemView.txtTimeSlot
         val timeSlotLayout: LinearLayout = itemView.layoutTimeSlot
+        val cardViewTimeSlot :CardView = itemView.cardViewTimeSlot
     }
 }

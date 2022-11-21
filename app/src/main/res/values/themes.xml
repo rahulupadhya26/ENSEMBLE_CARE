@@ -37,7 +37,6 @@
         <item name="android:textSize">@dimen/_18sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
-
     </style>
 
     <style name="Dialog.App" parent="Theme.SelfCare">

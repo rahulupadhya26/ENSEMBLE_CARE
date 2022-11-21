@@ -1,5 +1,6 @@
 package com.app.selfcare.fragment
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -59,18 +60,25 @@ class InsuranceFragment : BaseFragment() {
         return R.layout.fragment_insurance
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.VISIBLE
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
+        updateStatusBarColor(R.color.initial_screen_background)
 
+        txtInsurancePlanName.text = "Plan Name: " + plan!!.plan + "($" + plan!!.price + "/month)"
         insuranceNameSpinner()
 
+        imgInsuranceBack.setOnClickListener {
+            popBackStack()
+        }
+
         btnInsuranceDetails.setOnClickListener {
-            if (getText(spinnerInsuranceCompany).isNotEmpty()) {
+            if (selectedInsuranceName.isNotEmpty()) {
                 if (getText(etPlanId).isNotEmpty()) {
                     if (getText(etMemberId).isNotEmpty()) {
                         if (getText(etGroupId).isNotEmpty()) {
@@ -110,15 +118,27 @@ class InsuranceFragment : BaseFragment() {
 
     private fun insuranceNameSpinner() {
         insuranceNameData = resources.getStringArray(R.array.insurance_name)
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            requireActivity(), android.R.layout.simple_spinner_dropdown_item, insuranceNameData!!
+        val adapter = ArrayAdapter(
+            requireActivity(),
+            R.layout.spinner_dropdown_custom_item, insuranceNameData!!
         )
-        spinnerInsuranceCompany.setAdapter(adapter)
-        spinnerInsuranceCompany.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, arg1, position, id ->
-                //TODO: You can your own logic.
+        /*val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            requireActivity(), android.R.layout.simple_spinner_dropdown_item, insuranceNameData!!
+        )*/
+        spinnerInsuranceCompany.adapter = adapter
+        spinnerInsuranceCompany.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View, position: Int, id: Long
+            ) {
                 selectedInsuranceName = insuranceNameData!![position]
             }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // write code to perform some action
+            }
+        }
     }
 
     private fun verifyInsuranceApi() {

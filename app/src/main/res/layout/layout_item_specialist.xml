@@ -109,7 +109,7 @@
                         android:textColor="#6C6767"
                         android:textSize="@dimen/_12sp"
                         android:layout_marginTop="@dimen/_5dp"
-                        android:text="Press and hold to view the doctor"/>
+                        android:text="Press and hold to view the Provider"/>
                 </LinearLayout>
 
             </LinearLayout>

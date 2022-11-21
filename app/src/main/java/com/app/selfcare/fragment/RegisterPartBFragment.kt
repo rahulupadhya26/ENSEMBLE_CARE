@@ -55,9 +55,10 @@ class RegisterPartBFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.VISIBLE
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
+        updateStatusBarColor(R.color.initial_screen_background)
 
         if (preference!![PrefKeys.PREF_REG, ""]!!.isNotEmpty()) {
             val register =
@@ -95,6 +96,10 @@ class RegisterPartBFragment : BaseFragment() {
             }
         })
 
+        imgRegister2Back.setOnClickListener {
+            popBackStack()
+        }
+
         btnRegisterB.setOnClickListener {
             if (getText(etSignUpMailId).isNotEmpty()) {
                 if (isValidEmail(etSignUpMailId)) {
@@ -122,7 +127,9 @@ class RegisterPartBFragment : BaseFragment() {
                                         } else {
                                             setEditTextError(
                                                 etSignUpPass,
-                                                "Password must be contain at least 9 characters, 1 uppercase, alphanumeric and should not contain whitespaces."
+                                                "Password must be contain at least 9 characters, " +
+                                                        "1 uppercase, 1 lowercase, alphanumeric, special characters " +
+                                                        "and should not contain whitespaces."
                                             )
                                         }
                                     } else {
@@ -161,7 +168,7 @@ class RegisterPartBFragment : BaseFragment() {
             } else {
                 setEditTextError(
                     etSignUpMailId,
-                    "Mail Id cannot be blank"
+                    "Email ID cannot be blank"
                 )
             }
         }
@@ -175,8 +182,7 @@ class RegisterPartBFragment : BaseFragment() {
                     .verifyUserDetail(
                         UserDetails(
                             getText(etSignUpMailId),
-                            getText(etSignUpPhoneNo),
-                            Utils.ssn
+                            getText(etSignUpPhoneNo)
                         )
                     )
                     .observeOn(AndroidSchedulers.mainThread())

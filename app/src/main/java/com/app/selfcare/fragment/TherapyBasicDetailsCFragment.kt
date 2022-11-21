@@ -11,8 +11,13 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.app.selfcare.R
 import com.app.selfcare.utils.Utils
+import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.fragment_final_review.*
 import kotlinx.android.synthetic.main.fragment_insurance.*
 import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.*
+import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.imgPrescriptionPic1
+import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.layoutVideoCall
+import java.io.File
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,7 +56,6 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
 
         layoutPhoneCall.setOnClickListener {
             communicationType = "Audio"
-            displayToast("Phone call")
             layoutPhoneCall.setCardBackgroundColor(
                 ContextCompat.getColor(
                     requireActivity(),
@@ -69,13 +73,22 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
                 )
             )
             imgVideoCall.imageTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
-            txtVideoCall.setTextColor(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
+                )
+            txtVideoCall.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
         }
 
         layoutVideoCall.setOnClickListener {
             communicationType = "Video"
-            displayToast("Video call")
             layoutVideoCall.setCardBackgroundColor(
                 ContextCompat.getColor(
                     requireActivity(),
@@ -93,13 +106,22 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
                 )
             )
             imgPhoneCall.imageTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
-            txtPhoneCall.setTextColor(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
+                )
+            txtPhoneCall.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
         }
 
         layoutOfficeVisit.setOnClickListener {
             communicationType = "Office visit"
-            displayToast("Office visit")
         }
 
         tvAddTherapyReviewPic.setOnClickListener {
@@ -115,12 +137,113 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             imgPrescriptionPic.setImageResource(R.drawable.prescription)
         }
 
+        cardViewPrescription1.setOnClickListener {
+            if (getBitmapList().size > 0) {
+                showImage(getBitmapList()[0])
+            } else {
+                showImageDialog()
+            }
+        }
+
+        cardViewPrescription2.setOnClickListener {
+            if (getBitmapList().size > 1) {
+                showImage(getBitmapList()[1])
+            } else {
+                showImageDialog()
+            }
+        }
+
+        cardViewPrescription3.setOnClickListener {
+            if (getBitmapList().size > 2) {
+                showImage(getBitmapList()[2])
+            } else {
+                showImageDialog()
+            }
+        }
+
+        imgPrescriptionPic1Clear.setOnClickListener {
+            if (getBitmapList().size > 0) {
+                getBitmapList().removeAt(0)
+                imgPrescriptionPic1.setImageDrawable(null)
+                imgPrescriptionPic1.setImageResource(R.drawable.plusnew)
+                onResume()
+            }
+        }
+
+        imgPrescriptionPic2Clear.setOnClickListener {
+            if (getBitmapList().size > 1) {
+                getBitmapList().removeAt(0)
+                imgPrescriptionPic2.setImageDrawable(null)
+                imgPrescriptionPic2.setImageResource(R.drawable.plusnew)
+                onResume()
+            }
+        }
+
+        imgPrescriptionPic3Clear.setOnClickListener {
+            if (getBitmapList().size > 2) {
+                getBitmapList().removeAt(0)
+                imgPrescriptionPic3.setImageDrawable(null)
+                imgPrescriptionPic3.setImageResource(R.drawable.plusnew)
+                onResume()
+            }
+        }
+
         btnBasicDetailC.setOnClickListener {
             if (communicationType != null) {
                 Utils.selectedCommunicationMode = communicationType!!
                 replaceFragment(FinalReviewFragment(), R.id.layout_home, FinalReviewFragment.TAG)
             } else {
-                displayToast("Select the communication mode")
+                displayMsg("Alert", "Select the communication mode")
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        when (getBitmapList().size) {
+            1 -> {
+                Glide.with(this)
+                    .load(File(getBitmapList()[0]))
+                    .into(imgPrescriptionPic1)
+                imgPrescriptionPic2.setImageDrawable(null)
+                imgPrescriptionPic2.setImageResource(R.drawable.plusnew)
+                imgPrescriptionPic3.setImageDrawable(null)
+                imgPrescriptionPic3.setImageResource(R.drawable.plusnew)
+                imgPrescriptionPic1Clear.visibility = View.VISIBLE
+                imgPrescriptionPic2Clear.visibility = View.GONE
+                imgPrescriptionPic3Clear.visibility = View.GONE
+            }
+            2 -> {
+                Glide.with(this)
+                    .load(File(getBitmapList()[0]))
+                    .into(imgPrescriptionPic1)
+                Glide.with(this)
+                    .load(File(getBitmapList()[1]))
+                    .into(imgPrescriptionPic2)
+                imgPrescriptionPic3.setImageDrawable(null)
+                imgPrescriptionPic3.setImageResource(R.drawable.plusnew)
+                imgPrescriptionPic1Clear.visibility = View.VISIBLE
+                imgPrescriptionPic2Clear.visibility = View.VISIBLE
+                imgPrescriptionPic3Clear.visibility = View.GONE
+            }
+            3 -> {
+                Glide.with(this)
+                    .load(File(getBitmapList()[0]))
+                    .into(imgPrescriptionPic1)
+                Glide.with(this)
+                    .load(File(getBitmapList()[1]))
+                    .into(imgPrescriptionPic2)
+                Glide.with(this)
+                    .load(File(getBitmapList()[2]))
+                    .into(imgPrescriptionPic3)
+                imgPrescriptionPic1Clear.visibility = View.VISIBLE
+                imgPrescriptionPic2Clear.visibility = View.VISIBLE
+                imgPrescriptionPic3Clear.visibility = View.VISIBLE
+            }
+            else -> {
+                imgPrescriptionPic1Clear.visibility = View.GONE
+                imgPrescriptionPic2Clear.visibility = View.GONE
+                imgPrescriptionPic3Clear.visibility = View.GONE
             }
         }
     }

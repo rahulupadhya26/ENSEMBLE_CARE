@@ -65,6 +65,7 @@ class SignUpFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
+        updateStatusBarColor(R.color.initial_screen_background)
 
         etOtp1.addTextChangedListener(GenericTextWatcher(etOtp2, etOtp1))
         etOtp2.addTextChangedListener(GenericTextWatcher(etOtp3, etOtp1))
@@ -178,7 +179,27 @@ class SignUpFragment : BaseFragment() {
                             val jsonObj = JSONObject(responseBody)
                             sid = jsonObj.getString("sid")
                             displayToast(jsonObj.getString("otp"))
-                            resendBtnTimer()
+                            when (jsonObj.getString("otp").length) {
+                                1 -> {
+                                    etOtp1.setText(jsonObj.getString("otp")[0].toString())
+                                }
+                                2 -> {
+                                    etOtp1.setText(jsonObj.getString("otp")[0].toString())
+                                    etOtp2.setText(jsonObj.getString("otp")[1].toString())
+                                }
+                                3 -> {
+                                    etOtp1.setText(jsonObj.getString("otp")[0].toString())
+                                    etOtp2.setText(jsonObj.getString("otp")[1].toString())
+                                    etOtp3.setText(jsonObj.getString("otp")[2].toString())
+                                }
+                                4 -> {
+                                    etOtp1.setText(jsonObj.getString("otp")[0].toString())
+                                    etOtp2.setText(jsonObj.getString("otp")[1].toString())
+                                    etOtp3.setText(jsonObj.getString("otp")[2].toString())
+                                    etOtp4.setText(jsonObj.getString("otp")[3].toString())
+                                }
+                            }
+                            //resendBtnTimer()
                         } catch (e: Exception) {
                             hideProgress()
                             displayToast("Something went wrong.. Please try after sometime")
@@ -243,7 +264,6 @@ class SignUpFragment : BaseFragment() {
             Utils.firstName,
             Utils.lastName,
             Utils.middleName,
-            Utils.ssn,
             Utils.dob,
             preference!![PrefKeys.PREF_DEVICE_ID, ""]!!,
             Utils.refEmp,

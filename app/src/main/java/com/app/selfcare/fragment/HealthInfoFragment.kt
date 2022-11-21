@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_health_info.*
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-enum class FitActionRequestCode {
+enum class FitActionRequestCode1 {
     SUBSCRIBE,
     READ_DATA
 }
@@ -72,10 +72,10 @@ class HealthInfoFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        checkPermissionsAndRun(FitActionRequestCode.SUBSCRIBE)
+        checkPermissionsAndRun(FitActionRequestCode1.SUBSCRIBE)
     }
 
-    private fun checkPermissionsAndRun(fitActionRequestCode: FitActionRequestCode) {
+    private fun checkPermissionsAndRun(fitActionRequestCode: FitActionRequestCode1) {
         if (permissionApproved()) {
             fitSignIn(fitActionRequestCode)
         } else {
@@ -89,7 +89,7 @@ class HealthInfoFragment : BaseFragment() {
      *
      * @param requestCode The request code corresponding to the action to perform after sign in.
      */
-    private fun fitSignIn(requestCode: FitActionRequestCode) {
+    private fun fitSignIn(requestCode: FitActionRequestCode1) {
         if (oAuthPermissionsApproved()) {
             performActionForRequestCode(requestCode)
         } else {
@@ -111,7 +111,7 @@ class HealthInfoFragment : BaseFragment() {
 
         when (resultCode) {
             AppCompatActivity.RESULT_OK -> {
-                val postSignInAction = FitActionRequestCode.values()[requestCode]
+                val postSignInAction = FitActionRequestCode1.values()[requestCode]
                 postSignInAction.let {
                     performActionForRequestCode(postSignInAction)
                 }
@@ -127,10 +127,10 @@ class HealthInfoFragment : BaseFragment() {
      *
      * @param requestCode The code corresponding to the action to perform.
      */
-    private fun performActionForRequestCode(requestCode: FitActionRequestCode) =
+    private fun performActionForRequestCode(requestCode: FitActionRequestCode1) =
         when (requestCode) {
-            FitActionRequestCode.READ_DATA -> readData()
-            FitActionRequestCode.SUBSCRIBE -> subscribe()
+            FitActionRequestCode1.READ_DATA -> readData()
+            FitActionRequestCode1.SUBSCRIBE -> subscribe()
         }
 
     private fun oAuthErrorMsg(requestCode: Int, resultCode: Int) {
@@ -164,7 +164,7 @@ class HealthInfoFragment : BaseFragment() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.i(TAG, "Successfully subscribed!")
-                    fitSignIn(FitActionRequestCode.READ_DATA)
+                    fitSignIn(FitActionRequestCode1.READ_DATA)
                 } else {
                     Log.w(TAG, "There was a problem subscribing.", task.exception)
                 }
@@ -252,7 +252,7 @@ class HealthInfoFragment : BaseFragment() {
         return approved
     }
 
-    private fun requestRuntimePermissions(requestCode: FitActionRequestCode) {
+    private fun requestRuntimePermissions(requestCode: FitActionRequestCode1) {
         val shouldProvideRationale =
             ActivityCompat.shouldShowRequestPermissionRationale(
                 requireActivity(),
@@ -305,7 +305,7 @@ class HealthInfoFragment : BaseFragment() {
             }
             grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
                 // Permission was granted.
-                val fitActionRequestCode = FitActionRequestCode.values()[requestCode]
+                val fitActionRequestCode = FitActionRequestCode1.values()[requestCode]
                 fitActionRequestCode.let {
                     fitSignIn(fitActionRequestCode)
                 }

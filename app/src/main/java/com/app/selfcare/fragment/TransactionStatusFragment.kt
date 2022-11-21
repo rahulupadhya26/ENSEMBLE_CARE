@@ -49,7 +49,7 @@ class TransactionStatusFragment : BaseFragment() {
         preference!![PrefKeys.PREF_STEP] = Utils.PLAN_PAY
 
         if (paymentSts) {
-            imgTransaction.setImageResource(R.drawable.checked)
+            imgTransaction.setImageResource(R.drawable.success)
             txtTransStatus.text = "Transaction successful."
             txtTransStatus.setTextColor(
                 ContextCompat.getColor(
@@ -68,12 +68,14 @@ class TransactionStatusFragment : BaseFragment() {
             val severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
             preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
             if(severityRating in 0..14) {
+                Utils.isTherapististScreen = false
                 replaceFragmentNoBackStack(
                     BottomNavigationFragment(),
                     R.id.layout_home,
                     BottomNavigationFragment.TAG
                 )
             } else {
+                Utils.isTherapististScreen = true
                 replaceFragmentNoBackStack(
                     TherapistListFragment.newInstance(true),
                     R.id.layout_home,
@@ -82,11 +84,10 @@ class TransactionStatusFragment : BaseFragment() {
             }
         }
 
-            /*replaceFragmentNoBackStack(
-                DashboardFragment(),
-                R.id.layout_home,
-                DashboardFragment.TAG
-            )*/
+        layoutScreenshot.setOnClickListener {
+            takeScreenshot()
+            displayToast("Saved screenshot.")
+        }
     }
 
     companion object {

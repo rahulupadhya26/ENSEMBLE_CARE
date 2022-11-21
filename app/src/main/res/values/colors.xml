@@ -25,6 +25,11 @@
     <color name="colorTransparent">#00000000</color>
     <color name="colorLightBlue">#B3BDC8</color>
     <color name="veryLightGrey">#f0f0f0</color>
+    <color name="buttonBackground">#89848C</color>
+    <color name="pie_chart_color">#D1CED2</color>
+    <color name="screen_background_color">#FBFAFA</color>
+    <color name="calSelectedBackColor">#707070</color>
+    <color name="initial_screen_background">#38A387</color>
 
     <color name="editTextBackground">#f6f8f9</color>
     <color name="imgCardBackground">#f0f3f5</color>

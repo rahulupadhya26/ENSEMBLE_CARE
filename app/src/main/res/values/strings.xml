@@ -50,22 +50,31 @@
     <string name="parent_name">Parent Name</string>
     <string name="relationship">Relationship</string>
     <string name="contact_number">Contact Number</string>
-    <string name="thank_you_for_filling_the_assessment">Thank you for filling the assessment!</string>
+    <string name="thank_you_for_filling_the_assessment">Thank you for filling\nthe questionnaire</string>
     <string name="appreciate_text_after_assessment">I really appreciate your effort and the time you devoted to filling the assessment. Your answers will help us improve our services for you.</string>
     <string name="thank_you">Thank you.</string>
-    <string name="let_us_know_about_you">Let us know about you</string>
+    <string name="let_us_know_about_you">Tell us about you</string>
     <string name="first_name">First Name</string>
     <string name="middle_name">Middle Name</string>
     <string name="last_name">Last Name</string>
     <string name="ssn">SSN</string>
     <string name="gender">Gender</string>
     <string name="dob">DOB</string>
+    <string name="you_are_done">You are done!</string>
+    <string name="resend_the_code"><u>Resend the code</u></string>
 
     <string-array name="gender">
+        <item>Select...</item>
         <item>Prefer not to say</item>
         <item>Male</item>
         <item>Female</item>
         <item>Other</item>
+    </string-array>
+
+    <string-array name="employer_type">
+        <item>SelfPay</item>
+        <item>Employer Assisted Program</item>
+        <item>I have Health Insurance Coverage</item>
     </string-array>
 
     <string-array name="relationship">
@@ -95,6 +104,11 @@
         <item>Every week</item>
         <item>Every month</item>
         <item>Every year</item>
+    </string-array>
+
+    <string-array name="goal_type">
+        <item>One-time</item>
+        <item>Recurring</item>
     </string-array>
 
     <string-array name="insurance_name">

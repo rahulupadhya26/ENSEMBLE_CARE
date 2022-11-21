@@ -1,36 +1,20 @@
 package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
-import android.provider.Settings
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.viewpager2.widget.CompositePageTransformer
-import androidx.viewpager2.widget.MarginPageTransformer
-import androidx.viewpager2.widget.ViewPager2
 import com.app.selfcare.R
-import com.app.selfcare.adapters.TherapyTypeListAdapter
-import com.app.selfcare.controller.OnTherapyTypeClickListener
-import com.app.selfcare.data.DeviceId
-import com.app.selfcare.data.TherapyType
-import com.app.selfcare.preference.PrefKeys
-import com.app.selfcare.preference.PreferenceHelper.set
-import com.app.selfcare.utils.Utils
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.android.synthetic.main.dialog_check_teen_dob.view.*
 import kotlinx.android.synthetic.main.fragment_carousel.*
-import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.*
-import org.json.JSONObject
-import retrofit2.HttpException
-import kotlin.math.abs
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -43,7 +27,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CarouselFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
+class CarouselFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -69,8 +53,9 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
+        updateStatusBarColor(R.color.initial_screen_background)
 
-        layoutSelf.setOnClickListener {
+        cardViewSelf.setOnClickListener {
             relativeLayoutSelf.setBackgroundResource(R.drawable.bg_round_primary)
             relativeLayoutTeen.setBackgroundResource(R.drawable.bg_round_gray)
             relativeLayoutCouple.setBackgroundResource(R.drawable.bg_round_gray)
@@ -84,9 +69,10 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
             imgLgbtq.imageTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
             therapySel = "Individual"
+            getConfirmation(therapySel, txtTherapySelf.text.toString())
         }
 
-        layoutTeen.setOnClickListener {
+        cardViewTeen.setOnClickListener {
             relativeLayoutSelf.setBackgroundResource(R.drawable.bg_round_gray)
             relativeLayoutTeen.setBackgroundResource(R.drawable.bg_round_primary)
             relativeLayoutCouple.setBackgroundResource(R.drawable.bg_round_gray)
@@ -100,9 +86,10 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
             imgLgbtq.imageTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
             therapySel = "Teen"
+            getConfirmation(therapySel, txtTherapyTeen.text.toString())
         }
 
-        layoutCouple.setOnClickListener {
+        cardViewCouple.setOnClickListener {
             relativeLayoutSelf.setBackgroundResource(R.drawable.bg_round_gray)
             relativeLayoutTeen.setBackgroundResource(R.drawable.bg_round_gray)
             relativeLayoutCouple.setBackgroundResource(R.drawable.bg_round_primary)
@@ -116,9 +103,10 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
             imgLgbtq.imageTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.black))
             therapySel = "Couple"
+            getConfirmation(therapySel, txtTherapyCouple.text.toString())
         }
 
-        layoutLgbtq.setOnClickListener {
+        cardViewLgbtq.setOnClickListener {
             relativeLayoutSelf.setBackgroundResource(R.drawable.bg_round_gray)
             relativeLayoutTeen.setBackgroundResource(R.drawable.bg_round_gray)
             relativeLayoutCouple.setBackgroundResource(R.drawable.bg_round_gray)
@@ -132,11 +120,12 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
             imgLgbtq.imageTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
             therapySel = "LGBTQ"
+            getConfirmation(therapySel, txtTherapyLgbtqia.text.toString())
         }
 
         btnTherapySelect.setOnClickListener {
             if (therapySel.isNotEmpty()) {
-                sendDeviceId(therapySel)
+                getConfirmation(therapySel,"")
             }
         }
 
@@ -179,29 +168,77 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
     }
 
     @SuppressLint("HardwareIds")
-    private fun sendDeviceId(selectedTherapy: String) {
-        if (selectedTherapy == "Teen") {
-            val builder = AlertDialog.Builder(requireActivity())
-            builder.setTitle("Alert")
-            builder.setMessage("Is the application used by you or your parents?")
-            builder.setPositiveButton("It's me") { dialog, _ ->
-                dialog.dismiss()
-                createAnonymousUser(selectedTherapy, "", "", "", "")
-            }
-            builder.setNegativeButton("Parent") { dialog, _ ->
-                dialog.dismiss()
-                replaceFragment(
-                    ParentalConsentFragment.newInstance(selectedTherapy),
-                    R.id.layout_home,
-                    ParentalConsentFragment.TAG
-                )
-            }
-            builder.show()
-        } else {
-            createAnonymousUser(selectedTherapy, "", "", "", "")
-        }
+    private fun sendDeviceId(selectedTherapy: String, actualTherapyTxt:String) {
+        /*if (selectedTherapy == "Teen") {
+            checkTeenDob(selectedTherapy)
+        } else {*/
+        //createAnonymousUser(selectedTherapy, "", "", "", "")
+        //}
     }
 
+    private fun checkTeenDob(selectedTherapy: String) {
+        val createPostDialog = BottomSheetDialog(mContext!!)
+        val checkTeenDob = requireActivity().layoutInflater.inflate(
+            R.layout.dialog_check_teen_dob, null
+        )
+        //onlineChatView!!.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        createPostDialog.setContentView(checkTeenDob!!)
+        createPostDialog.setCanceledOnTouchOutside(false)
+
+        checkTeenDob.txtVerify.setOnClickListener {
+            if (getAge(checkTeenDob.txtTeenDob.text.toString()) in 13..17) {
+                createPostDialog.dismiss()
+                //checkApplicationUser(selectedTherapy)
+            } else {
+                displayMsg(
+                    "Alert",
+                    "Age must be greater than 12 years and less than 18 years."
+                )
+            }
+        }
+
+        checkTeenDob.txtCancel.setOnClickListener {
+            createPostDialog.dismiss()
+        }
+        val cal = Calendar.getInstance()
+        //cal.add(Calendar.YEAR, -13)
+        val dateSetListener =
+            DatePickerDialog.OnDateSetListener { views, year, monthOfYear, dayOfMonth ->
+                cal.set(Calendar.YEAR, year)
+                cal.set(Calendar.MONTH, monthOfYear)
+                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                val myFormat = "MM/dd/yyyy" // mention the format you need
+                val sdf = SimpleDateFormat(myFormat)
+                checkTeenDob.txtTeenDob.setText(sdf.format(cal.time))
+            }
+
+        checkTeenDob.txtTeenDob.setOnClickListener {
+            val datePickerDialog = DatePickerDialog(
+                mActivity!!, dateSetListener,
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)
+            )
+            //datePickerDialog.datePicker.maxDate = cal.timeInMillis
+            datePickerDialog.show()
+        }
+        createPostDialog.show()
+    }
+
+    private fun getConfirmation(selectedTherapy: String, actualTherapyTxt:String) {
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle("Confirmation")
+        builder.setMessage("Selected therapy is $actualTherapyTxt")
+        builder.setPositiveButton("Confirm") { dialog, _ ->
+            dialog.dismiss()
+            createAnonymousUser(selectedTherapy, "", "", "", "")
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
 
     private val sliderRunnable: Runnable = Runnable {
         viewPagerTherapySlider.currentItem = viewPagerTherapySlider.currentItem + 1
@@ -237,9 +274,5 @@ class CarouselFragment : BaseFragment(), OnTherapyTypeClickListener {
             }
 
         const val TAG = "Screen_Therapy_Select"
-    }
-
-    override fun onTherapyTypeClickListener(therapyType: TherapyType) {
-        sendDeviceId(therapyType.text)
     }
 }

@@ -1,19 +1,314 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:id="@+id/layoutBottomNav"
+    tools:context=".MainActivity"
+    android:visibility="gone">
 
     <FrameLayout
-        android:id="@+id/layoutContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:id="@+id/layoutContent"
+        android:layout_above="@+id/cardViewBottomNav"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewBottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="@dimen/_10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@drawable/ripple_effect"
+                android:animateLayoutChanges="true"
+                android:id="@+id/layoutDashboard">
+
+                <ImageView
+                    android:id="@+id/imgDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/_20dp"
+                    android:src="@drawable/home_new"/>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    app:cardBackgroundColor="#38A387"
+                    app:cardCornerRadius="@dimen/_10dp"
+                    app:cardElevation="@dimen/_5dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_5dp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_10dp"
+                            android:layout_height="10dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="@dimen/_5dp"
+                            android:layout_marginEnd="@dimen/_2dp"
+                            android:src="@drawable/white_circle" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Home"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_18sp" />
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ripple_effect"
+                android:animateLayoutChanges="true"
+                android:id="@+id/layoutActivity">
+
+                <ImageView
+                    android:id="@+id/imgActivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/_20dp"
+                    android:src="@drawable/activity" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewActivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    app:cardBackgroundColor="#38A387"
+                    app:cardCornerRadius="@dimen/_10dp"
+                    app:cardElevation="@dimen/_5dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_5dp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_10dp"
+                            android:layout_height="10dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="@dimen/_5dp"
+                            android:layout_marginEnd="@dimen/_2dp"
+                            android:src="@drawable/white_circle" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Activity"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_18sp" />
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ripple_effect"
+                android:animateLayoutChanges="true"
+                android:id="@+id/layoutCoaches">
+
+                <ImageView
+                    android:id="@+id/imgCoaches"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/_20dp"
+                    android:src="@drawable/personal_trainer"/>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewCoaches"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    app:cardBackgroundColor="#38A387"
+                    app:cardCornerRadius="@dimen/_10dp"
+                    app:cardElevation="@dimen/_5dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_5dp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_10dp"
+                            android:layout_height="10dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="@dimen/_5dp"
+                            android:layout_marginEnd="@dimen/_2dp"
+                            android:src="@drawable/white_circle" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Coach"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_18sp" />
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ripple_effect"
+                android:animateLayoutChanges="true"
+                android:id="@+id/layoutCrisis">
+
+                <ImageView
+                    android:id="@+id/imgCrisis"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/_20dp"
+                    android:src="@drawable/crisis"/>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewCrisis"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    app:cardBackgroundColor="#38A387"
+                    app:cardCornerRadius="@dimen/_10dp"
+                    app:cardElevation="@dimen/_5dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_5dp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_10dp"
+                            android:layout_height="10dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="@dimen/_5dp"
+                            android:layout_marginEnd="@dimen/_2dp"
+                            android:src="@drawable/white_circle" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Crisis"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_18sp" />
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/main_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph='@navigation/nav_graph' />
+
+    <me.ibrahimsn.lib.SmoothBottomBar
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        app:backgroundColor="@color/primaryGreen"
+        app:iconSize="24dp"
+        app:iconTint="#C8FFFFFF"
+        app:iconTintActive="#FFFFFF"
+        app:itemPadding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/navigation"
+        app:sideMargins="10dp"
+        app:textColor="@color/white"
+        app:textSize="14sp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/_10dp"
+        android:layout_marginBottom="80dp"
+        android:backgroundTint="@color/primaryGreen"
+        android:contentDescription="@string/app_name"
+        app:maxImageSize="30dp"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@color/white" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -22,34 +317,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:fabCradleMargin="10dp"
-            app:fabCradleRoundedCornerRadius="10dp"
-            app:fabCradleVerticalOffset="10dp">
+            android:visibility="gone">
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNavigationView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="16dp"
-                android:background="@android:color/transparent"
-                app:menu="@menu/navigation"
                 app:itemIconTint="@drawable/selector_bottombar"
-                app:itemTextColor="@drawable/selector_bottombar"/>
+                app:itemTextColor="@drawable/selector_bottombar"
+                app:menu="@menu/navigation" />
 
         </com.google.android.material.bottomappbar.BottomAppBar>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            app:backgroundTint="@android:color/transparent"
-            app:maxImageSize="@dimen/design_fab_size_normal"
-            app:elevation="0dp"
-            app:layout_anchor="@id/bottomAppBar"
-            app:srcCompat="@drawable/plus"
-            app:tint="@color/primaryGreen"/>
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

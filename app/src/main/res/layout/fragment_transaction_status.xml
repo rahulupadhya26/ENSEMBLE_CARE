@@ -1,58 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     tools:context=".fragment.TransactionStatusFragment">
 
     <ImageView
-        android:id="@+id/imgTransaction"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginBottom="@dimen/_20dp"
-        android:padding="@dimen/_20dp" />
+        android:id="@+id/layoutScreenshot"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/screenshot"
+        app:tint="@color/primaryGreen"
+        android:layout_marginTop="@dimen/_20dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:layout_alignParentRight="true"
+        android:scaleX="-1"/>
 
-    <TextView
-        android:id="@+id/txtTransStatus"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:gravity="center"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/primaryGreen"
-        android:textSize="@dimen/_26sp"
-        android:padding="@dimen/_10dp"/>
+        android:layout_below="@+id/layoutScreenshot"
+        android:layout_above="@+id/btnTransStsContinue">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Transaction Id"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_16sp"
-        android:paddingTop="@dimen/_10dp"/>
+        <TextView
+            android:id="@+id/txtTransStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_26sp"
+            android:textStyle="bold"
+            android:padding="@dimen/_10dp"/>
 
-    <TextView
-        android:id="@+id/txtTransId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_16sp"
-        android:paddingBottom="@dimen/_10dp" />
+        <ImageView
+            android:id="@+id/imgTransaction"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginBottom="@dimen/_20dp"
+            android:padding="@dimen/_20dp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Save this information for future reference"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_18sp"
-        android:paddingBottom="@dimen/_10dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Thank you for subscribing to Ensemble Care"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_26sp"
+            android:textStyle="bold"
+            android:padding="@dimen/_5dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Transaction ID"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="#8B8B8B"
+            android:textSize="@dimen/_18sp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/txtTransId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="-5dp"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="#8B8B8B"
+            android:textSize="@dimen/_16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="-5dp"
+            android:text="Save this information for future reference"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="#A09494"
+            android:textSize="@dimen/_18sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="gone"
+            android:background="@drawable/button_background"
+            android:padding="@dimen/_10dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/screenshot"
+                app:tint="@color/primaryGreen" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Take a screenshot"
+                android:layout_marginStart="@dimen/_10dp"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_18sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <Button
         android:layout_width="match_parent"
@@ -73,9 +134,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/_20dp"
+        android:layout_marginTop="@dimen/_10dp"
         android:layout_marginStart="@dimen/_30dp"
         android:layout_marginEnd="@dimen/_30dp"
+        android:layout_marginBottom="@dimen/_20dp"
         android:text="Continue" />
 
-</LinearLayout>
+</RelativeLayout>

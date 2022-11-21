@@ -13,6 +13,7 @@ import com.app.selfcare.controller.OnAppointmentItemClickListener
 import com.app.selfcare.data.Appointment
 import com.app.selfcare.data.AppointmentPatientId
 import com.app.selfcare.data.CancelAppointment
+import com.app.selfcare.data.GetToken
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -231,17 +232,65 @@ class AppointmentsFragment : BaseFragment(), OnAppointmentItemClickListener {
         const val TAG = "Screen_Appointments"
     }
 
+    private fun getToken(appointment: Appointment) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getToken(
+                        GetToken(appointment.appointment_id),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            //Start video call
+                            replaceFragment(
+                                VideoCallFragment.newInstance(appointment, responseBody),
+                                R.id.layout_home,
+                                VideoCallFragment.TAG
+                            )
+                        } catch (e: Exception) {
+                            hideProgress()
+                            //displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                getToken(appointment)
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
     override fun onAppointmentItemClickListener(
         appointment: Appointment,
         isStartAppointment: Boolean
     ) {
         if (isStartAppointment) {
+            getToken(appointment)
             //Start video call
-            replaceFragment(
+            /*replaceFragment(
                 VideoCallFragment.newInstance(appointment),
                 R.id.layout_home,
                 VideoCallFragment.TAG
-            )
+            )*/
         } else {
             val builder = AlertDialog.Builder(requireActivity())
             builder.setTitle("Alert")

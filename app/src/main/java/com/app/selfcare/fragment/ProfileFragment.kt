@@ -436,7 +436,7 @@ class ProfileFragment : BaseFragment() {
         }
         genderData = resources.getStringArray(R.array.gender)
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            requireActivity(), android.R.layout.simple_spinner_dropdown_item, genderData!!
+            requireActivity(), R.layout.spinner_dropdown_custom_item, genderData!!
         )
         spinnerProfileGender.setAdapter(adapter)
         spinnerProfileGender.onItemClickListener =
@@ -458,7 +458,7 @@ class ProfileFragment : BaseFragment() {
         }
         martialStatusData = resources.getStringArray(R.array.martialStatus)
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            requireActivity(), android.R.layout.simple_spinner_dropdown_item, martialStatusData!!
+            requireActivity(), R.layout.spinner_dropdown_custom_item, martialStatusData!!
         )
         spinnerMartialStatus.setAdapter(adapter)
         spinnerMartialStatus.onItemClickListener =

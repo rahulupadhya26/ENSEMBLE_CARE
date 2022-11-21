@@ -100,7 +100,7 @@ class FacilityGoalFragment : BaseFragment(), OnGoalItemClickListener {
                                 getRecommendedData()
                             }
                         } else {
-                            displayAfterLoginErrorMsg(error)
+                            //displayAfterLoginErrorMsg(error)
                             recycler_view_providerGoalsList.visibility = View.GONE
                             txtNoProviderGoals.visibility = View.VISIBLE
                         }

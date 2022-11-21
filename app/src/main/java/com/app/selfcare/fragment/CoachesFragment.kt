@@ -5,7 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.RadioButton
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.app.selfcare.R
+import com.app.selfcare.adapters.CoachTypesAdapter
+import com.app.selfcare.controller.OnCoachTypeClickListener
+import com.app.selfcare.data.CoachType
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_coaches.*
 
@@ -19,7 +24,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CoachesFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CoachesFragment : BaseFragment() {
+class CoachesFragment : BaseFragment(), OnCoachTypeClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -47,8 +52,68 @@ class CoachesFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.VISIBLE
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+
+        cardViewExercise.setOnClickListener {
+            replaceFragment(
+                ExerciseFragment(),
+                R.id.layout_home,
+                ExerciseFragment.TAG
+            )
+        }
+
+        cardViewNutrition.setOnClickListener {
+            replaceFragment(
+                NutritionFragment(),
+                R.id.layout_home,
+                NutritionFragment.TAG
+            )
+        }
+
+        cardViewMindfulness.setOnClickListener {
+            replaceFragment(
+                MindfullnessFragment(),
+                R.id.layout_home,
+                MindfullnessFragment.TAG
+            )
+        }
+
+        cardViewYoga.setOnClickListener {
+            replaceFragment(
+                YogaCoachFragment(),
+                R.id.layout_home,
+                YogaCoachFragment.TAG
+            )
+        }
+
+        cardViewMusic.setOnClickListener {
+            replaceFragment(
+                MusicCoachFragment(),
+                R.id.layout_home,
+                MusicCoachFragment.TAG
+            )
+        }
+
+        cardViewInspiration.setOnClickListener {
+
+        }
+
+        val coachTypeList: ArrayList<CoachType> = ArrayList()
+        coachTypeList.add(CoachType("Exercise","Last Workout","59 mins", R.drawable.exercise_img))
+        coachTypeList.add(CoachType("Nutrition", "New Recipe","Fruit Salad Bowl", R.drawable.nutrition_img))
+        coachTypeList.add(CoachType("Mindfulness", "Recommended","45 mins", R.drawable.mindfulness_img))
+        coachTypeList.add(CoachType("Yoga", "Recommended","49 mins", R.drawable.yoga_img))
+        coachTypeList.add(CoachType("Music", "Session 2","15 mins", R.drawable.music_img))
+        coachTypeList.add(CoachType("Inspiration", "Last Workout","59 mins", R.drawable.inspiration_img))
+
+        val staggeredGridLayoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+        recyclerViewCoachTypes.layoutManager = staggeredGridLayoutManager
+        //recyclerViewCoachTypes.setHasFixedSize(true)
+        recyclerViewCoachTypes.adapter =
+            CoachTypesAdapter(mActivity!!, coachTypeList, this)
 
         // Get radio group selected item using on checked change listener
         coaches_radio_group.setOnCheckedChangeListener { group, checkedId ->
@@ -251,5 +316,9 @@ class CoachesFragment : BaseFragment() {
             }
 
         const val TAG = "Screen_Coaches"
+    }
+
+    override fun onCoachTypeClickListener(coachType: CoachType) {
+
     }
 }

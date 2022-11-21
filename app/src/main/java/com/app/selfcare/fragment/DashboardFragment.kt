@@ -1,16 +1,31 @@
 package com.app.selfcare.fragment
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.BitmapDrawable
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.app.selfcare.BuildConfig
 import com.app.selfcare.R
 import com.app.selfcare.adapters.*
 import com.app.selfcare.controller.*
@@ -20,13 +35,22 @@ import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.AudioStream
 import com.app.selfcare.utils.DateUtils
 import com.app.selfcare.utils.Utils
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.utils.MPPointF
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.fitness.Fitness
+import com.google.android.gms.fitness.FitnessOptions
+import com.google.android.gms.fitness.data.DataType
+import com.google.android.gms.fitness.data.Field
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.koushikdutta.async.Util
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_dashboard.*
-import kotlinx.android.synthetic.main.fragment_login.*
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.HttpException
@@ -39,6 +63,11 @@ import java.util.*
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
+enum class FitActionRequestCode {
+    SUBSCRIBE,
+    READ_DATA
+}
+
 /**
  * A simple [Fragment] subclass.
  * Use the [DashboardFragment.newInstance] factory method to
@@ -50,8 +79,20 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private val isDebug: Boolean = true
     private var mediaPlayer: MediaPlayer? = null
+
+    private val fitnessOptions = FitnessOptions.builder()
+        .addDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)
+        .addDataType(DataType.TYPE_STEP_COUNT_DELTA)
+        .addDataType(DataType.TYPE_DISTANCE_DELTA)
+        .addDataType(DataType.TYPE_HEART_RATE_BPM)
+        .addDataType(DataType.TYPE_CALORIES_EXPENDED)
+        .build()
+
+    private var GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 1
+
+    private val runningQOrLater =
+        android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,13 +109,21 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getHeader().visibility = View.VISIBLE
+        getHeader().visibility = View.GONE
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         mActivity!!.setUserDetails()
 
+        checkPermissionsAndRun(FitActionRequestCode.SUBSCRIBE)
+
+        //Show Good morning, afternoon, evening or night message to user.
+        showMessageToUser()
+
+        txtUserName.text = preference!![PrefKeys.PREF_FNAME, ""] + " " +
+                preference!![PrefKeys.PREF_LNAME, ""]
+
         //Appointments
-        displayAppointments(true)
+        displayAppointments()
 
         handleViewMoreEvents()
 
@@ -86,30 +135,21 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
             )
         }
 
-        layoutGroupAppointments.setOnClickListener {
+        layoutUserName.setOnClickListener {
             replaceFragment(
-                GroupAppointmentsFragment(),
+                ProfileFragment(),
                 R.id.layout_home,
-                GroupAppointmentsFragment.TAG
+                ProfileFragment.TAG
             )
         }
 
-        layoutArticles.setOnClickListener {
+        layoutAppointments.setOnClickListener {
             replaceFragment(
-                NewsListFragment(),
+                AppointmentsFragment(),
                 R.id.layout_home,
-                NewsListFragment.TAG
+                AppointmentsFragment.TAG
             )
         }
-
-        /*layoutCoaches.setOnClickListener {
-            //displayMsg("Message", "Screen under construction!")
-            replaceFragment(
-                CoachesFragment(),
-                R.id.layout_home,
-                CoachesFragment.TAG
-            )
-        }*/
 
         layoutAssessments.setOnClickListener {
             replaceFragment(
@@ -127,7 +167,16 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
             )
         }
 
+        layoutJournals.setOnClickListener {
+            replaceFragment(
+                JournalFragment(),
+                R.id.layout_home,
+                JournalFragment.TAG
+            )
+        }
+
         fabCreateAppointmentBtn.setOnClickListener {
+            Utils.isTherapististScreen = false
             replaceFragment(
                 TherapistListFragment.newInstance(false),
                 R.id.layout_home,
@@ -136,9 +185,103 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         }
 
         itemsSwipeToRefresh.setOnRefreshListener {
-            displayAppointments(true)
+            displayAppointments()
         }
 
+        pieChart.setUsePercentValues(true)
+        pieChart.description.isEnabled = false
+        pieChart.setExtraOffsets(2f, 2f, 2f, 2f)
+        // on below line we are setting drag for our pie chart
+        pieChart.dragDecelerationFrictionCoef = 0.95f
+        // on below line we are setting hole
+        // and hole color for pie chart
+        pieChart.isDrawHoleEnabled = true
+        pieChart.setHoleColor(Color.WHITE)
+        // on below line we are setting circle color and alpha
+        pieChart.setTransparentCircleColor(Color.WHITE)
+        pieChart.setTransparentCircleAlpha(110)
+        // on  below line we are setting hole radius
+        pieChart.holeRadius = 60f
+        pieChart.transparentCircleRadius = 63f
+        // on below line we are setting center text
+        pieChart.setDrawCenterText(true)
+        // on below line we are setting
+        // rotation for our pie chart
+        pieChart.rotationAngle = 0f
+        // enable rotation of the pieChart by touch
+        pieChart.isRotationEnabled = true
+        pieChart.isHighlightPerTapEnabled = true
+        // on below line we are setting animation for our pie chart
+        pieChart.animateY(1400, Easing.EaseInOutQuad)
+        // on below line we are disabling our legend for pie chart
+        pieChart.legend.isEnabled = false
+        pieChart.setEntryLabelColor(Color.WHITE)
+        pieChart.setEntryLabelTextSize(0f)
+        // on below line we are creating array list and
+        // adding data to it to display in pie chart
+        val entries: ArrayList<PieEntry> = ArrayList()
+        entries.add(PieEntry(70f))
+        entries.add(PieEntry(30f))
+        // on below line we are setting pie data set
+        val dataSet = PieDataSet(entries, "")
+        // on below line we are setting icons.
+        dataSet.setDrawIcons(false)
+        // on below line we are setting slice for pie
+        dataSet.sliceSpace = 0f
+        dataSet.iconsOffset = MPPointF(0f, 40f)
+        dataSet.selectionShift = 5f
+        // add a lot of colors to list
+        val colors: ArrayList<Int> = ArrayList()
+        colors.add(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+        colors.add(ContextCompat.getColor(requireActivity(), R.color.pie_chart_color))
+
+        // on below line we are setting colors.
+        dataSet.colors = colors
+
+        // on below line we are setting pie data set
+        val data = PieData(dataSet)
+        data.setValueTextSize(0f)
+        data.setValueTypeface(Typeface.DEFAULT_BOLD)
+        data.setValueTextColor(Color.WHITE)
+        pieChart.data = data
+
+        // undo all highlights
+        pieChart.highlightValues(null)
+
+        // loading chart
+        pieChart.invalidate()
+    }
+
+    private fun showMessageToUser() {
+        val c = Calendar.getInstance()
+        val timeOfDay = c[Calendar.HOUR_OF_DAY]
+        if (timeOfDay in 0..11) {
+            txtShowMessageToUser.text = "Good Morning,"
+        } else if (timeOfDay in 12..15) {
+            txtShowMessageToUser.text = "Good Afternoon,"
+        } else if (timeOfDay in 16..19) {
+            txtShowMessageToUser.text = "Good Evening,"
+        } else if (timeOfDay in 20..23) {
+            txtShowMessageToUser.text = "Good Night,"
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        try {
+            val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
+            if (photo.isNotEmpty()) {
+                val base64Image = photo.split(",")[1]
+                val decodedString: ByteArray = Base64.decode(base64Image, Base64.DEFAULT)
+                val decodedByte =
+                    BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+                img_user_pic.setImageBitmap(decodedByte)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        //Appointments
+        displayAppointments()
     }
 
     private fun handleViewMoreEvents() {
@@ -227,7 +370,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         handler.postDelayed(runnable!!, 1000)
     }
 
-    private fun displayAppointments(refresh: Boolean) {
+    private fun displayAppointments() {
         itemsSwipeToRefresh.isRefreshing = false
         /*if (isDebug) {
             appointmentLists.add(
@@ -302,8 +445,48 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
             }
             if (appointmentLists.isNotEmpty()) {
                 recyclerViewAppointments.visibility = View.VISIBLE
+                cardViewAppointment.visibility = View.VISIBLE
                 txtNoAppointments.visibility = View.GONE
-                txtViewAllAppointments.visibility = View.VISIBLE
+                txtViewAllAppointments.visibility = View.GONE
+
+                txtAppointTherapistName.text = appointmentLists[0].first_name + " " +
+                        appointmentLists[0].middle_name + " " +
+                        appointmentLists[0].last_name
+                txtAppointTherapistType.text = appointmentLists[0].doctor_type
+
+                val appointmentDate = DateUtils(appointmentLists[0].booking_date + " 00:00:00")
+
+                txtAppointmentDateTime.text =
+                    appointmentDate.getCurrentDay() + ", " +
+                            appointmentDate.getDay() + " " +
+                            appointmentDate.getMonth() + " at " +
+                            appointmentLists[0].starting_time.dropLast(3) + " - " +
+                            appointmentLists[0].ending_time.dropLast(3)
+
+                if (appointmentLists[0].type_of_visit == "Video") {
+                    appointmentCall.setImageResource(R.drawable.video)
+                    appointmentCall.imageTintList =
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                requireActivity(),
+                                R.color.primaryGreen
+                            )
+                        )
+                } else {
+                    appointmentCall.setImageResource(R.drawable.telephone)
+                    appointmentCall.imageTintList =
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                requireActivity(),
+                                R.color.primaryGreen
+                            )
+                        )
+                }
+
+                appointmentCall.setOnClickListener {
+                    getToken(appointmentLists[0])
+                }
+
                 recyclerViewAppointments.apply {
                     layoutManager = LinearLayoutManager(mActivity!!, RecyclerView.HORIZONTAL, false)
                     adapter = DashboardAppointmentAdapter(
@@ -373,11 +556,59 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
             } else {
                 txtTimeSlots.text = ""
                 recyclerViewAppointments.visibility = View.GONE
+                cardViewAppointment.visibility = View.GONE
                 txtNoAppointments.visibility = View.VISIBLE
-                txtViewAllAppointments.visibility = View.VISIBLE
+                //txtViewAllAppointments.visibility = View.VISIBLE
             }
-            getRecommendedData()
+            //getRecommendedData()
         }
+    }
+
+    private fun getToken(appointment: Appointment) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getToken(
+                        GetToken(appointment.appointment_id),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            //Start video call
+                            replaceFragment(
+                                VideoCallFragment.newInstance(appointment, responseBody),
+                                R.id.layout_home,
+                                VideoCallFragment.TAG
+                            )
+                        } catch (e: Exception) {
+                            hideProgress()
+                            //displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                getToken(appointment)
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
     }
 
     private fun displayVideoList() {
@@ -500,7 +731,6 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                         } catch (e: Exception) {
                             hideProgress()
                             //displayToast("Something went wrong.. Please try after sometime")
-                            displayVideoList()
                         }
                     }, { error ->
                         hideProgress()
@@ -509,11 +739,10 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                                 preference!![PrefKeys.PREF_EMAIL]!!,
                                 preference!![PrefKeys.PREF_PASS]!!
                             ) { result ->
-                                displayAppointments(true)
+                                displayAppointments()
                             }
                         } else {
                             displayAfterLoginErrorMsg(error)
-                            displayVideoList()
                         }
                     })
             )
@@ -542,7 +771,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            displayAppointments(false)
+                            displayAppointments()
                         } catch (e: Exception) {
                             hideProgress()
                             displayToast("Something went wrong.. Please try after sometime")
@@ -692,6 +921,292 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         }
     }
 
+    private fun checkPermissionsAndRun(fitActionRequestCode: FitActionRequestCode) {
+        if (permissionApproved()) {
+            fitSignIn(fitActionRequestCode)
+        } else {
+            requestRuntimePermissions(fitActionRequestCode)
+        }
+    }
+
+    /**
+     * Checks that the user is signed in, and if so, executes the specified function. If the user is
+     * not signed in, initiates the sign in flow, specifying the post-sign in function to execute.
+     *
+     * @param requestCode The request code corresponding to the action to perform after sign in.
+     */
+    private fun fitSignIn(requestCode: FitActionRequestCode) {
+        try {
+            if (oAuthPermissionsApproved()) {
+                performActionForRequestCode(requestCode)
+            } else {
+                requestCode.let {
+                    GoogleSignIn.requestPermissions(
+                        this,
+                        GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+                        getGoogleAccount(), fitnessOptions
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * Handles the callback from the OAuth sign in flow, executing the post sign in function
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (resultCode) {
+            AppCompatActivity.RESULT_OK -> {
+                val postSignInAction = FitActionRequestCode.values()[requestCode]
+                postSignInAction.let {
+                    performActionForRequestCode(postSignInAction)
+                }
+            }
+            else -> oAuthErrorMsg(requestCode, resultCode)
+        }
+    }
+
+    /**
+     * Runs the desired method, based on the specified request code. The request code is typically
+     * passed to the Fit sign-in flow, and returned with the success callback. This allows the
+     * caller to specify which method, post-sign-in, should be called.
+     *
+     * @param requestCode The code corresponding to the action to perform.
+     */
+    private fun performActionForRequestCode(requestCode: FitActionRequestCode) =
+        when (requestCode) {
+            FitActionRequestCode.READ_DATA -> readData()
+            FitActionRequestCode.SUBSCRIBE -> subscribe()
+        }
+
+    private fun oAuthErrorMsg(requestCode: Int, resultCode: Int) {
+        val message = """
+            There was an error signing into Fit. Check the troubleshooting section of the README
+            for potential issues.
+            Request code was: $requestCode
+            Result code was: $resultCode
+        """.trimIndent()
+        Log.e(TAG, message)
+    }
+
+    private fun oAuthPermissionsApproved() =
+        GoogleSignIn.hasPermissions(getGoogleAccount(), fitnessOptions)
+
+    /**
+     * Gets a Google account for use in creating the Fitness client. This is achieved by either
+     * using the last signed-in account, or if necessary, prompting the user to sign in.
+     * `getAccountForExtension` is recommended over `getLastSignedInAccount` as the latter can
+     * return `null` if there has been no sign in before.
+     */
+    private fun getGoogleAccount() =
+        GoogleSignIn.getAccountForExtension(requireActivity(), fitnessOptions)
+
+    /** Records step data by requesting a subscription to background step data.  */
+    private fun subscribe() {
+        // To create a subscription, invoke the Recording API. As soon as the subscription is
+        // active, fitness data will start recording.
+        Fitness.getRecordingClient(requireActivity(), getGoogleAccount())
+            .subscribe(DataType.TYPE_STEP_COUNT_CUMULATIVE)
+            //.listSubscriptions()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.i(TAG, "Successfully subscribed!")
+                    fitSignIn(FitActionRequestCode.READ_DATA)
+                } else {
+                    Log.w(TAG, "There was a problem subscribing.", task.exception)
+                }
+            }
+    }
+
+    private fun convertMeterToKilometer(meter: Float): Float {
+        return (meter * 0.001).toFloat()
+    }
+
+    /**
+     * Reads the current daily step total, computed from midnight of the current day on the device's
+     * current timezone.
+     */
+    private fun readData() {
+        Fitness.getHistoryClient(requireActivity(), getGoogleAccount())
+            .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
+            .addOnSuccessListener { dataSet ->
+                val total = when {
+                    dataSet.isEmpty -> 0
+                    else -> dataSet.dataPoints.first().getValue(Field.FIELD_STEPS).asInt()
+                }
+                Log.i(TAG, "Total steps: $total")
+                txtStepsValue.text = total.toString()
+
+                txtStepsValue.text = "1537"
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "There was a problem getting the step count.", e)
+            }
+
+        Fitness.getHistoryClient(requireActivity(), getGoogleAccount())
+            .readDailyTotal(DataType.TYPE_DISTANCE_DELTA)
+            .addOnSuccessListener { dataSet ->
+                val total = when {
+                    dataSet.isEmpty -> 0
+                    else -> dataSet.dataPoints.first().getValue(Field.FIELD_DISTANCE).asFloat()
+                }
+                Log.i(TAG, "Total distance: $total")
+                txtDistanceValue.text =
+                    String.format("%.2f", convertMeterToKilometer(total.toFloat())) + " KM"
+
+                txtDistanceValue.text = "1.10 KM"
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "There was a problem getting the step count.", e)
+            }
+
+        Fitness.getHistoryClient(requireActivity(), getGoogleAccount())
+            .readDailyTotal(DataType.TYPE_HEART_RATE_BPM)
+            .addOnSuccessListener { dataSet ->
+                val total = when {
+                    dataSet.isEmpty -> 0
+                    else -> dataSet.dataPoints.first().getValue(Field.FIELD_AVERAGE)
+                }
+                Log.i(TAG, "Total BPM: $total")
+                //txt_heart_rate.text = "$total"
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "There was a problem getting the step count.", e)
+            }
+        Fitness.getHistoryClient(requireActivity(), getGoogleAccount())
+            .readDailyTotal(DataType.TYPE_CALORIES_EXPENDED)
+            .addOnSuccessListener { dataSet ->
+                var total = when {
+                    dataSet.isEmpty -> 0
+                    else -> dataSet.dataPoints.first().getValue(Field.FIELD_CALORIES)
+                }
+                if (total == null) {
+                    total = ""
+                }
+                Log.i(TAG, "Total Calories: $total")
+                txtCaloriesValue.text = "$total KCAL"
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "There was a problem getting the step count.", e)
+            }
+
+        val sdf = SimpleDateFormat("MM/dd/yyyy' 'HH:mm:ss")
+        val currentDate = sdf.format(Date())
+        val currentDateTime = DateUtils(currentDate)
+
+        txtViewUpdatedAt.text = "Updated today at " + currentDateTime.getTimeWithFormat()
+    }
+
+    private fun permissionApproved(): Boolean {
+        val approved = if (runningQOrLater) {
+            PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACTIVITY_RECOGNITION
+            )
+        } else {
+            true
+        }
+        return approved
+    }
+
+    private fun requestRuntimePermissions(requestCode: FitActionRequestCode) {
+        val shouldProvideRationale =
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACTIVITY_RECOGNITION
+            )
+
+        // Provide an additional rationale to the user. This would happen if the user denied the
+        // request previously, but didn't check the "Don't ask again" checkbox.
+        requestCode.let {
+            if (shouldProvideRationale) {
+                Log.i(TAG, "Displaying permission rationale to provide additional context.")
+                Snackbar.make(
+                    dashboardLayout,
+                    "Permission Rationale",
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .setAction("OK") {
+                        // Request permission
+                        ActivityCompat.requestPermissions(
+                            requireActivity(),
+                            arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
+                            1001
+                        )
+                    }
+                    .show()
+            } else {
+                Log.i(TAG, "Requesting permission")
+                // Request permission. It's possible this can be auto answered if device policy
+                // sets the permission in a given state or the user denied the permission
+                // previously and checked "Never ask again".
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
+                    requestCode.ordinal
+                )
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when {
+            grantResults.isEmpty() -> {
+                // If user interaction was interrupted, the permission request
+                // is cancelled and you receive empty arrays.
+                Log.i(TAG, "User interaction was cancelled.")
+            }
+            grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
+                // Permission was granted.
+                val fitActionRequestCode = FitActionRequestCode.values()[requestCode]
+                fitActionRequestCode.let {
+                    fitSignIn(fitActionRequestCode)
+                }
+            }
+            else -> {
+                // Permission denied.
+
+                // In this Activity we've chosen to notify the user that they
+                // have rejected a core permission for the app since it makes the Activity useless.
+                // We're communicating this message in a Snackbar since this is a sample app, but
+                // core permissions would typically be best requested during a welcome-screen flow.
+
+                // Additionally, it is important to remember that a permission might have been
+                // rejected without asking the user for permission (device policy or "Never ask
+                // again" prompts). Therefore, a user interface affordance is typically implemented
+                // when permissions are denied. Otherwise, your app could appear unresponsive to
+                // touches or interactions which have required permissions.
+
+                Snackbar.make(
+                    dashboardLayout,
+                    "Permission Denied",
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .setAction(R.string.settings) {
+                        // Build intent that displays the App settings screen.
+                        val intent = Intent()
+                        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                        val uri = Uri.fromParts(
+                            "package",
+                            BuildConfig.APPLICATION_ID, null
+                        )
+                        intent.data = uri
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                    }
+                    .show()
+            }
+        }
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -748,11 +1263,11 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
     ) {
         if (isStartAppointment) {
             //Start video call
-            replaceFragment(
+            /*replaceFragment(
                 VideoCallFragment.newInstance(appointment),
                 R.id.layout_home,
                 VideoCallFragment.TAG
-            )
+            )*/
         } else {
             val builder = AlertDialog.Builder(requireActivity())
             builder.setTitle("Alert")

@@ -135,6 +135,7 @@ object Utils {
     var appointmentId = ""
     var timeSlotId = ""
     var apptPcId = ""
+    var isTherapististScreen = false
 
     const val NAVIGATE_FROM_DASHBOARD = "fromDashboard"
     const val QUICK_BOOK = "quick_book"

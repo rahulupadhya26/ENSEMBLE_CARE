@@ -27,7 +27,7 @@ class SpecialistAdapter(
     private val onItemClickListener: OnTherapistItemClickListener?
 ) :
     RecyclerView.Adapter<SpecialistAdapter.ViewHolder>() {
-
+    var row_index: Int = -1
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -51,9 +51,15 @@ class SpecialistAdapter(
         holder.doctorNextAvailSlot.text = "Friday, 11 Nov"
 
         holder.doctorLayout.setOnClickListener {
-            holder.doctorLayout.strokeColor = ContextCompat.getColor(context, R.color.primaryGreen)
-            holder.doctorLayout.strokeWidth = 2
+            row_index = position
+            notifyDataSetChanged()
             onItemClickListener!!.onTherapistItemClickListener(item)
+        }
+        holder.doctorLayout.strokeColor = ContextCompat.getColor(context, R.color.primaryGreen)
+        if (row_index == position) {
+            holder.doctorLayout.strokeWidth = 4
+        } else {
+            holder.doctorLayout.strokeWidth = 0
         }
 
         holder.doctorLayout.setOnLongClickListener {

@@ -75,6 +75,27 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Email"
+                app:hintTextAppearance="@style/TextLabel"
+                android:layout_margin="@dimen/_5dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etParentalMailId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:inputType="textEmailAddress"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:cursorVisible="true"
+                    android:textSize="@dimen/_16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:hint="@string/contact_number"
                 app:hintTextAppearance="@style/TextLabel"
                 android:layout_margin="@dimen/_5dp">
@@ -96,65 +117,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/fontfamily"
-                android:text="Sign below"
+                android:textSize="@dimen/_18sp"
+                android:textColor="@color/black"
+                android:text="Note : We will be sending link to your mail id. Please click on link and sign the consent."
                 android:padding="@dimen/_10dp"
-                android:textColor="@color/primaryGreen"
-                android:textSize="@dimen/_20sp"/>
-
-            <com.app.selfcare.utils.SignatureView
-                android:id="@+id/signatureView"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_margin="@dimen/_10dp"
-                android:background="@drawable/edittext_rectangle_bg" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1"
-                android:layout_marginTop="@dimen/_5dp"
-                android:layout_marginBottom="@dimen/_5dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txtName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_14sp" />
-
-                    <TextView
-                        android:id="@+id/txtDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.3"
-                    android:gravity="center">
-
-                    <Button
-                        android:id="@+id/btn_clear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/maroon"
-                        android:text="Clear"
-                        android:textColor="@color/white" />
-                </LinearLayout>
-
-            </LinearLayout>
+                android:layout_margin="@dimen/_5dp"/>
 
         </LinearLayout>
     </ScrollView>

@@ -60,6 +60,7 @@ class RegistrationFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
+        updateStatusBarColor(R.color.initial_screen_background)
 
         selectedTherapy = preference!![PrefKeys.PREF_SELECTED_THERAPY, ""]!!
 
@@ -68,8 +69,8 @@ class RegistrationFragment : BaseFragment() {
             etSignUpFname.setText(register!!.first_name)
             etSignUpMname.setText(register!!.middle_name)
             etSignUpLname.setText(register!!.last_name)
-            etSignUpSSN.setText(register!!.ssn)
-            txt_signup_dob.setText(register!!.dob)
+            //etSignUpSSN.setText(register!!.ssn)
+            txt_signup_dob.text = register!!.dob
         }
 
         genderSpinner()
@@ -118,22 +119,31 @@ class RegistrationFragment : BaseFragment() {
 
     private fun genderSpinner() {
         try {
+            genderData = resources.getStringArray(R.array.gender)
+            val adapter = ArrayAdapter(
+                requireActivity(),
+                R.layout.spinner_dropdown_custom_item, genderData!!
+            )
+            spinner_signup_gender.adapter = adapter
             if (Utils.gender.isNotEmpty()) {
                 Handler().postDelayed({
                     if (spinner_signup_gender != null)
-                        spinner_signup_gender.setText(Utils.gender, false)
+                        spinner_signup_gender.setSelection(genderData!!.indexOf(Utils.gender))
                 }, 300)
             }
-            genderData = resources.getStringArray(R.array.gender)
-            val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-                requireActivity(), android.R.layout.simple_spinner_dropdown_item, genderData!!
-            )
-            spinner_signup_gender.setAdapter(adapter)
-            spinner_signup_gender.onItemClickListener =
-                AdapterView.OnItemClickListener { parent, arg1, position, id ->
-                    //TODO: You can your own logic.
+            spinner_signup_gender.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View, position: Int, id: Long
+                ) {
                     selectedGender = genderData!![position]
                 }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // write code to perform some action
+                }
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -174,48 +184,48 @@ class RegistrationFragment : BaseFragment() {
         btnRegister.setOnClickListener {
             if (getText(etSignUpFname).isNotEmpty()) {
                 if (getText(etSignUpLname).isNotEmpty()) {
-                    if (getText(etSignUpSSN).isNotEmpty()) {
-                        if (getText(etSignUpSSN).replace("-", "").length == 9) {
-                            if (txt_signup_dob.text.toString().isNotEmpty()) {
-                                if (spinner_signup_gender.text.toString().isNotEmpty()) {
-                                    when (selectedTherapy) {
-                                        "Teen" -> {
-                                            if (getAge(txt_signup_dob.text.toString()) in 13..17) {
-                                                storeAndNavigateToNextScreen()
-                                            } else {
-                                                displayMsg(
-                                                    "Alert",
-                                                    "Age must be greater than 12 years and less than 18 years."
-                                                )
-                                            }
-                                        }
-                                        else -> {
-                                            if (getAge(txt_signup_dob.text.toString()) > 18) {
-                                                storeAndNavigateToNextScreen()
-                                            } else {
-                                                displayMsg(
-                                                    "Alert",
-                                                    "Age must be more than 18 years."
-                                                )
-                                            }
-                                        }
+                    //if (getText(etSignUpSSN).isNotEmpty()) {
+                    //if (getText(etSignUpSSN).replace("-", "").length == 9) {
+                    if (txt_signup_dob.text.toString().isNotEmpty()) {
+                        if (selectedGender!! != "Select...") {
+                            when (selectedTherapy) {
+                                "Teen" -> {
+                                    if (getAge(txt_signup_dob.text.toString()) in 13..17) {
+                                        storeAndNavigateToNextScreen()
+                                    } else {
+                                        displayMsg(
+                                            "Alert",
+                                            "Age must be greater than 12 years and less than 18 years."
+                                        )
                                     }
-                                } else {
-                                    displayMsg("Alert", "Select the gender")
                                 }
-                            } else {
-                                displayMsg("Alert", "DOB cannot be blank")
+                                else -> {
+                                    if (getAge(txt_signup_dob.text.toString()) > 18) {
+                                        storeAndNavigateToNextScreen()
+                                    } else {
+                                        displayMsg(
+                                            "Alert",
+                                            "Age must be more than 18 years."
+                                        )
+                                    }
+                                }
                             }
                         } else {
-                            setEditTextError(
-                                etSignUpSSN, "Enter valid SSN."
-                            )
+                            displayMsg("Alert", "Select the gender")
                         }
                     } else {
+                        displayMsg("Alert", "DOB cannot be blank")
+                    }
+                    /*} else {
+                        setEditTextError(
+                            etSignUpSSN, "Enter valid SSN."
+                        )
+                    }*/
+                    /*} else {
                         setEditTextError(
                             etSignUpSSN, "SSN cannot be blank"
                         )
-                    }
+                    }*/
                 } else {
                     setEditTextError(
                         etSignUpLname,
@@ -231,35 +241,12 @@ class RegistrationFragment : BaseFragment() {
         }
     }
 
-    private fun getAge(dobString: String): Int {
-        var date: Date? = null
-        val sdf = SimpleDateFormat("MM/dd/yyyy")
-        try {
-            date = sdf.parse(dobString)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
-        if (date == null) return 0
-        val dob: Calendar = Calendar.getInstance()
-        val today: Calendar = Calendar.getInstance()
-        dob.time = date
-        val year: Int = dob.get(Calendar.YEAR)
-        val month: Int = dob.get(Calendar.MONTH)
-        val day: Int = dob.get(Calendar.DAY_OF_MONTH)
-        dob.set(year, month + 1, day)
-        var age: Int = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR)
-        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
-            age--
-        }
-        return age
-    }
-
     private fun storeAndNavigateToNextScreen() {
         Utils.firstName = getText(etSignUpFname)
         Utils.middleName = getText(etSignUpMname)
         Utils.lastName = getText(etSignUpLname)
         Utils.ssn = getText(etSignUpSSN).replace("-", "")
-        Utils.gender = spinner_signup_gender.text.toString()
+        Utils.gender = selectedGender!!
         Utils.dob = txt_signup_dob.text.toString()
         replaceFragment(
             RegisterPartBFragment(),
