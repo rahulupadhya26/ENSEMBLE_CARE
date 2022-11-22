@@ -253,10 +253,6 @@
             android:layout_marginTop="@dimen/_5dp"
             android:text="Go to Dashboard" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:src="@drawable/splash" />
     </LinearLayout>
 
 </RelativeLayout>

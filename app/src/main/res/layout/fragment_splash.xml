@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,7 +55,6 @@
                 android:visibility="gone" />
 
             <Button
-                android:id="@+id/btnSplash"
                 style="@style/buttonBackground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,5 +63,71 @@
                 android:text="Get Started" />
         </LinearLayout>
     </ScrollView>
+
+    <VideoView
+        android:id="@+id/imgSplashBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/company_logo"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Ensemble Care"
+            android:textSize="@dimen/_32sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Bring Health Together"
+            android:textSize="@dimen/_26sp"
+            android:gravity="center"
+            android:layout_marginTop="-10dp"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnSplash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="@dimen/_30dp"
+        app:cardElevation="@dimen/_5dp"
+        android:layout_marginStart="@dimen/_30dp"
+        android:layout_marginEnd="@dimen/_30dp"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Let's get started"
+            android:textSize="@dimen/_24sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="@color/primaryGreen"
+            android:padding="@dimen/_10dp"/>
+
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

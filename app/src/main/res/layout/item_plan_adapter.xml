@@ -328,7 +328,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="@dimen/_5dp"
-                    android:text="Choose Plan"
+                    android:text="Select"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_20sp"

@@ -64,7 +64,7 @@ class CreateGoalFragment : BaseFragment() {
         val cal = Calendar.getInstance()
         //cal.add(Calendar.DAY_OF_YEAR, 1)
         val formattedDate = sdf.format(cal.time)
-        txtGoalStartDate.setText(formattedDate)
+        txtGoalStartDate.text = formattedDate
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { views, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
@@ -73,7 +73,7 @@ class CreateGoalFragment : BaseFragment() {
 
                 val myFormat = "MM/dd/yyyy" // mention the format you need
                 val sdf = SimpleDateFormat(myFormat)
-                txtGoalStartDate.setText(sdf.format(cal.time))
+                txtGoalStartDate.text = sdf.format(cal.time)
             }
 
         txtGoalStartDate.setOnClickListener {
@@ -130,6 +130,13 @@ class CreateGoalFragment : BaseFragment() {
                 view: View, position: Int, id: Long
             ) {
                 selectedGoalType = goalTypeData!![position]
+                if(selectedGoalType == goalTypeData!![0]){
+                    layoutSelectDuration.visibility = View.VISIBLE
+                    layoutGoalDate.visibility = View.GONE
+                } else {
+                    layoutSelectDuration.visibility = View.GONE
+                    layoutGoalDate.visibility = View.VISIBLE
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -197,7 +204,7 @@ class CreateGoalFragment : BaseFragment() {
                             getText(editTextGoalTitle),
                             getText(editTextGoalDescription),
                             "Personal",
-                            getText(txtGoalStartDate),
+                            txtGoalStartDate.text.toString(),
                             durationPos,
                             selectedGoalType,
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!
@@ -216,7 +223,7 @@ class CreateGoalFragment : BaseFragment() {
                             if (status == "201") {
                                 CalenderUtils.addEvent(
                                     requireActivity(),
-                                    getText(txtGoalStartDate) + " 00:00:00",
+                                    txtGoalStartDate.text.toString() + " 00:00:00",
                                     getText(editTextGoalTitle),
                                     getText(editTextGoalDescription),
                                     selectedDuration, "30", "9", 5

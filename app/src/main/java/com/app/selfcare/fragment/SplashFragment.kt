@@ -1,10 +1,11 @@
 package com.app.selfcare.fragment
 
 
+import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
+import android.util.DisplayMetrics
 import android.view.View
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.preference.PrefKeys
@@ -42,6 +43,18 @@ class SplashFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
+        val rawId = resources.getIdentifier("splash_video", "raw", requireActivity().packageName)
+        val video: Uri =
+            Uri.parse("android.resource://" + requireActivity().packageName + "/" + rawId)
+
+        imgSplashBackground.setVideoURI(video)
+        imgSplashBackground.setOnPreparedListener { mp ->
+            mp.isLooping = true
+            imgSplashBackground.start()
+        }
+        /*Glide.with(requireActivity())
+            .load("https://drive.google.com/file/d/16paRRS2WNT8jdMLFlCGrsJLbz_fguYri/view?usp=share_link")
+            .into(imgSplashBackground)*/
         btnSplash.setOnClickListener {
             when (preference!![PrefKeys.PREF_STEP, 0]) {
                 0 -> {

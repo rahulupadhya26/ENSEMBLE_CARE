@@ -143,11 +143,41 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             requestPermission(PERMISSION_REQUEST_ID)
         }
 
-        txtUserNameVideo.text =
-            preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]
+        txtUserNameVideo.text = appointment!!.first_name + " " + appointment!!.last_name
+        /*preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]*/
 
-        txtUserNameAudio.text =
-            preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]
+        txtUserNameAudio.text = appointment!!.first_name + " " + appointment!!.last_name
+        /*preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]*/
+
+        buttonAudioCall.setOnClickListener {
+            if (mEndCall) {
+                startCall()
+                mEndCall = false
+                buttonAudioCall.setImageResource(R.drawable.btn_endcall)
+                buttonAudioMute.visibility = View.VISIBLE
+            } else {
+                endVideoCall()
+            }
+        }
+
+        buttonAudioMute.setOnClickListener {
+            mMuted = !mMuted
+            rtcEngine.muteLocalAudioStream(mMuted)
+            val res: Int = if (mMuted) {
+                R.drawable.btn_mute
+            } else {
+                R.drawable.btn_unmute
+            }
+            buttonAudioMute.setImageResource(res)
+        }
+
+        buttonAudioChat.setOnClickListener {
+            if (createPostDialog != null) {
+                createPostDialog!!.show()
+            } else {
+                displayMsg("Alert", "Cannot open chat screen.")
+            }
+        }
 
         buttonCall.setOnClickListener {
             if (mEndCall) {
@@ -221,7 +251,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
                 Utils.APPOINTMENT_COMPLETED
             ) { response ->
                 if (response == "Success") {
-                    replaceFragmentNoBackStack(
+                    replaceFragment(
                         TherapistFeedbackFragment.newInstance(appointment!!.appointment_id.toString()),
                         R.id.layout_home,
                         TherapistFeedbackFragment.TAG
@@ -483,7 +513,8 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         )
         //onlineChatView!!.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         createPostDialog!!.setContentView(onlineChatView!!)
-        createPostDialog!!.behavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
+        createPostDialog!!.behavior.peekHeight =
+            Resources.getSystem().displayMetrics.heightPixels / 2
         createPostDialog!!.setCanceledOnTouchOutside(false)
         onlineChatView!!.relativeLayoutSend.setOnClickListener {
             val msg: String = getText(onlineChatView!!.editTextMessage)
@@ -878,8 +909,12 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
                     )
 
                 // Set the text view text.
-                txtUserVideoTime.text = time
-                txtUserAudioTime.text = time
+                if (txtUserVideoTime != null) {
+                    txtUserVideoTime.text = time
+                }
+                if (txtUserAudioTime != null) {
+                    txtUserAudioTime.text = time
+                }
 
                 // If running is true, increment the
                 // seconds variable.

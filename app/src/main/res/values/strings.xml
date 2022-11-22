@@ -107,8 +107,8 @@
     </string-array>
 
     <string-array name="goal_type">
-        <item>One-time</item>
         <item>Recurring</item>
+        <item>One-time</item>
     </string-array>
 
     <string-array name="insurance_name">

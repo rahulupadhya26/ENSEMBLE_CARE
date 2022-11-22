@@ -46,7 +46,7 @@ class SpecialistAdapter(
     override fun onBindViewHolder(holder: SpecialistAdapter.ViewHolder, position: Int) {
         val item = list[position]
         holder.doctorName.text =
-            "Dr. " + item.first_name + " " + item.middle_name + " " + item.last_name
+            item.first_name + " " + item.middle_name + " " + item.last_name
         holder.doctorType.text = item.doctor_type
         holder.doctorNextAvailSlot.text = "Friday, 11 Nov"
 

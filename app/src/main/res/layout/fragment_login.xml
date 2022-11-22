@@ -29,8 +29,7 @@
                 android:layout_height="200dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/app_name"
-                android:src="@drawable/splash"
-                android:scaleType="centerCrop"
+                android:src="@drawable/company_logo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -95,6 +95,7 @@
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_detail_goal.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_detail_journal.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_exercise.xml" value="0.25" />
+        <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_exercise_setup.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_explore.xml" value="0.2359375" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_facility_goal.xml" value="0.2359375" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_final_review.xml" value="0.25" />
@@ -113,6 +114,7 @@
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_news_detail.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_news_list.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_nutrition.xml" value="0.2359375" />
+        <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_nutrition_setup.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_online_chat.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_parental_consent.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_password.xml" value="0.25" />

@@ -65,9 +65,9 @@ class CoachesFragment : BaseFragment(), OnCoachTypeClickListener {
 
         cardViewNutrition.setOnClickListener {
             replaceFragment(
-                NutritionFragment(),
+                NutritionSetupFragment(),
                 R.id.layout_home,
-                NutritionFragment.TAG
+                NutritionSetupFragment.TAG
             )
         }
 

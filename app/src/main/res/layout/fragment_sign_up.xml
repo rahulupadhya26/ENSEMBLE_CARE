@@ -335,11 +335,11 @@
             style="@style/buttonBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10dp"
-            android:layout_marginBottom="@dimen/_10dp"
-            android:layout_marginStart="@dimen/_30dp"
-            android:layout_marginEnd="@dimen/_30dp"
             android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/_30dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_30dp"
+            android:layout_marginBottom="@dimen/_10dp"
             android:text="Verify and Create account" />
 
     </RelativeLayout>

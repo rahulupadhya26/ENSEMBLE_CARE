@@ -63,7 +63,7 @@ class PlanViewPagerAdapter(
         }
 
         if (planObj.plan == selectedPlan) {
-            holder.planBtn.text = "Already have"
+            holder.planBtn.text = "Selected"
         }
         /*when (planObj.plan) {
             "Standard" -> {

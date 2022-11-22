@@ -51,7 +51,7 @@ class TherapistFeedbackFragment : BaseFragment() {
         btnTherapistFeedback.setOnClickListener {
             if (therapistFeedbackRating != null) {
                 if (getText(editTxtTherapistFeedback).isNotEmpty()) {
-                    replaceFragmentNoBackStack(
+                    replaceFragment(
                         ServiceFeedbackFragment.newInstance(
                             therapistFeedbackRating!!,
                             getText(editTxtTherapistFeedback),

@@ -370,6 +370,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         handler.postDelayed(runnable!!, 1000)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun displayAppointments() {
         itemsSwipeToRefresh.isRefreshing = false
         /*if (isDebug) {
@@ -460,8 +461,8 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                     appointmentDate.getCurrentDay() + ", " +
                             appointmentDate.getDay() + " " +
                             appointmentDate.getMonth() + " at " +
-                            appointmentLists[0].starting_time.dropLast(3) + " - " +
-                            appointmentLists[0].ending_time.dropLast(3)
+                            appointmentLists[0].starting_time + " - " +
+                            appointmentLists[0].ending_time
 
                 if (appointmentLists[0].type_of_visit == "Video") {
                     appointmentCall.setImageResource(R.drawable.video)
@@ -483,7 +484,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                         )
                 }
 
-                appointmentCall.setOnClickListener {
+                cardViewAppointment.setOnClickListener {
                     getToken(appointmentLists[0])
                 }
 
@@ -556,8 +557,8 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
             } else {
                 txtTimeSlots.text = ""
                 recyclerViewAppointments.visibility = View.GONE
-                cardViewAppointment.visibility = View.GONE
-                txtNoAppointments.visibility = View.VISIBLE
+                cardViewAppointment.visibility = View.VISIBLE
+                txtNoAppointments.visibility = View.GONE
                 //txtViewAllAppointments.visibility = View.VISIBLE
             }
             //getRecommendedData()
