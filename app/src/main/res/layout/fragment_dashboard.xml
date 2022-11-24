@@ -17,8 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/_5dp"
-            android:orientation="vertical"
-            android:background="@color/screen_background_color">
+            android:background="@color/screen_background_color"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -28,19 +28,19 @@
                     android:id="@+id/cardViewUserPic"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    app:cardCornerRadius="25dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/_5dp"
                     android:layout_marginTop="@dimen/_5dp"
                     android:layout_marginEnd="@dimen/_5dp"
                     android:layout_marginBottom="@dimen/_5dp"
-                    android:layout_centerVertical="true">
+                    app:cardCornerRadius="25dp">
 
                     <ImageView
                         android:id="@+id/img_user_pic"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/user_pic"/>
+                        android:src="@drawable/user_pic" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -119,8 +119,8 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:background="#BF19C963">
+                                android:background="#BF19C963"
+                                android:orientation="vertical">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -643,17 +643,25 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/txtNoAppointments"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="8dp"
-                    android:text="Currently there are no appointments."
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/maroon"
-                    android:textSize="@dimen/_16sp"
-                    android:visibility="gone" />
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    app:cardCornerRadius="@dimen/_10dp"
+                    app:cardElevation="@dimen/_5dp"
+                    app:cardUseCompatPadding="true"
+                    android:visibility="gone">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Currently there are no appointments."
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/maroon"
+                        android:textSize="@dimen/_16sp" />
+
+                </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -820,8 +828,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_15dp"
-                        android:orientation="horizontal"
                         android:background="@drawable/goal_tracker_border"
+                        android:orientation="horizontal"
                         android:weightSum="1">
 
                         <LinearLayout
@@ -833,58 +841,58 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="@style/fontfamily"
                                 android:text="Calories"
-                                android:textSize="@dimen/_16sp"
-                                android:textColor="@color/primaryGreen" />
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/primaryGreen"
+                                android:textSize="@dimen/_16sp" />
 
                             <TextView
                                 android:id="@+id/txtCaloriesValue"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="@style/fontfamily"
                                 android:text="0 KCAL"
-                                android:textSize="@dimen/_14sp"
+                                android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/black"
-                                android:textStyle="bold"/>
+                                android:textSize="@dimen/_14sp"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="@style/fontfamily"
-                                android:text="Steps"
-                                android:textSize="@dimen/_16sp"
                                 android:layout_marginTop="@dimen/_5dp"
-                                android:textColor="@color/primaryGreen" />
+                                android:text="Steps"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/primaryGreen"
+                                android:textSize="@dimen/_16sp" />
 
                             <TextView
                                 android:id="@+id/txtStepsValue"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="@style/fontfamily"
                                 android:text="0"
-                                android:textSize="@dimen/_14sp"
+                                android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/black"
-                                android:textStyle="bold"/>
+                                android:textSize="@dimen/_14sp"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="@style/fontfamily"
-                                android:text="Distance"
-                                android:textSize="@dimen/_16sp"
                                 android:layout_marginTop="@dimen/_5dp"
-                                android:textColor="@color/primaryGreen" />
+                                android:text="Distance"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/primaryGreen"
+                                android:textSize="@dimen/_16sp" />
 
                             <TextView
                                 android:id="@+id/txtDistanceValue"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="@style/fontfamily"
                                 android:text="0.00 KM"
-                                android:textSize="@dimen/_14sp"
+                                android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/black"
-                                android:textStyle="bold"/>
+                                android:textSize="@dimen/_14sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 

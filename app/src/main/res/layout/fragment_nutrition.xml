@@ -281,9 +281,9 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="200dp"
-                            android:src="@drawable/nutrition_img1"
                             android:foreground="#80000000"
-                            android:scaleType="centerCrop"/>
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/nutrition_img1" />
 
                         <RelativeLayout
                             android:layout_width="match_parent"

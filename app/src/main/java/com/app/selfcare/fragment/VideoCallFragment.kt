@@ -21,6 +21,7 @@ import com.app.selfcare.R
 import com.app.selfcare.adapters.MessageAdapter
 import com.app.selfcare.controller.OnMessageClickListener
 import com.app.selfcare.data.Appointment
+import com.app.selfcare.data.GetAppointment
 import com.app.selfcare.data.MessageBean
 import com.app.selfcare.data.MessageListBean
 import com.app.selfcare.preference.PrefKeys
@@ -54,7 +55,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class VideoCallFragment : BaseFragment(), OnMessageClickListener {
     // TODO: Rename and change types of parameters
-    private var appointment: Appointment? = null
+    private var appointment: GetAppointment? = null
     private var TOKEN: String? = null
     private var createPostDialog: BottomSheetDialog? = null
 
@@ -128,7 +129,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         CHANNEL = appointment!!.channel_name
         //TOKEN = appointment!!.rtc_token
 
-        if (appointment!!.type_of_visit == "Video") {
+        if (appointment!!.appointment.type_of_visit == "Video") {
             videoCallLayout.visibility = View.VISIBLE
             audioCallLayout.visibility = View.GONE
         } else {
@@ -143,10 +144,10 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             requestPermission(PERMISSION_REQUEST_ID)
         }
 
-        txtUserNameVideo.text = appointment!!.first_name + " " + appointment!!.last_name
+        txtUserNameVideo.text = appointment!!.doctor_first_name + " " + appointment!!.doctor_last_name
         /*preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]*/
 
-        txtUserNameAudio.text = appointment!!.first_name + " " + appointment!!.last_name
+        txtUserNameAudio.text = appointment!!.doctor_first_name + " " + appointment!!.doctor_last_name
         /*preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]*/
 
         buttonAudioCall.setOnClickListener {
@@ -245,14 +246,14 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             endCall()
             Utils.rtmLoggedIn = false
             callAppointmentApi(
-                appointment!!.appointment_id.toString(),
-                appointment!!.booking_date,
-                appointment!!.type_of_visit,
+                appointment!!.appointment.appointment_id.toString(),
+                appointment!!.appointment.booking_date,
+                appointment!!.appointment.type_of_visit,
                 Utils.APPOINTMENT_COMPLETED
             ) { response ->
                 if (response == "Success") {
                     replaceFragment(
-                        TherapistFeedbackFragment.newInstance(appointment!!.appointment_id.toString()),
+                        TherapistFeedbackFragment.newInstance(appointment!!.appointment.appointment_id.toString()),
                         R.id.layout_home,
                         TherapistFeedbackFragment.TAG
                     )
@@ -360,7 +361,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
 
     private fun setupVideoConfig() {
         try {
-            if (appointment!!.type_of_visit == "Video") {
+            if (appointment!!.appointment.type_of_visit == "Video") {
                 rtcEngine.enableVideo()
             } else {
                 rtcEngine.disableVideo()
@@ -548,9 +549,9 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
      */
     private fun doLogin() {
         try {
-            if (appointment!!.rtm_token.isNotEmpty()) {
+            if (appointment!!.rtc_token.isNotEmpty()) {
                 mRtmClient!!.login(
-                    appointment!!.rtm_token,
+                    appointment!!.rtc_token,
                     preference!![PrefKeys.PREF_EMAIL, ""],
                     object : ResultCallback<Void?> {
                         override fun onSuccess(responseInfo: Void?) {
@@ -587,7 +588,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         mChatManager!!.registerListener(mClientListener)
         mIsPeerToPeerMode = false
         val targetName =
-            appointment!!.first_name + " " + appointment!!.middle_name + " " + appointment!!.last_name
+            appointment!!.doctor_first_name + " " + appointment!!.doctor_last_name
         if (mIsPeerToPeerMode) {
             mPeerId = targetName
             onlineChatView!!.txtTherapistChatName.text = mPeerId
@@ -602,7 +603,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             // Then clear cached offline messages from message pool
             // since they are already consumed.
             val peerName =
-                appointment!!.first_name.take(1) + "" + appointment!!.last_name.take(1)
+                appointment!!.doctor_first_name.take(1) + "" + appointment!!.doctor_last_name.take(1)
             val offlineMessageBean = MessageListBean(peerName, mChatManager!!)
             mMessageBeanList.addAll(offlineMessageBean.getMessageBeanList()!!)
             mChatManager!!.removeAllOfflineMessages(mPeerId)
@@ -800,7 +801,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         override fun onMessageReceived(message: RtmMessage, fromMember: RtmChannelMember) {
             runOnUiThread {
                 val targetName =
-                    appointment!!.first_name.take(1) + "" + appointment!!.last_name.take(1)
+                    appointment!!.doctor_first_name.take(1) + "" + appointment!!.doctor_last_name.take(1)
                 val account = fromMember.userId
                 Log.i(OnlineChatFragment.TAG, "onMessageReceived account = $account msg = $message")
                 val messageBean = MessageBean(targetName, message, false)
@@ -940,7 +941,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: Appointment, param2: String) =
+        fun newInstance(param1: GetAppointment, param2: String) =
             VideoCallFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, param1)

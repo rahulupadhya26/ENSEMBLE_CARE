@@ -100,13 +100,13 @@ class ServiceFeedbackFragment : BaseFragment() {
                             val status = respBody[1]
                             responseBody = respBody[0]
                             if (status == "201") {
-                                setBottomNavigation(null)
-                                setLayoutBottomNavigation(null)
-                                replaceFragmentNoBackStack(
-                                    BottomNavigationFragment(),
-                                    R.id.layout_home,
-                                    BottomNavigationFragment.TAG
-                                )
+                                for (i in 0 until mActivity!!.supportFragmentManager.backStackEntryCount) {
+                                    if (mActivity!!.getCurrentFragment() !is DashboardFragment) {
+                                        popBackStack()
+                                    } else {
+                                        break
+                                    }
+                                }
                             }
                         } catch (e: Exception) {
                             hideProgress()

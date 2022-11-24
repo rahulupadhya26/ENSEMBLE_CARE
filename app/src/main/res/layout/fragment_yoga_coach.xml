@@ -257,10 +257,10 @@
                                     <ImageView
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:src="@drawable/weight_loss"
-                                        android:scaleType="centerCrop"
                                         android:foreground="#80000000"
-                                        android:paddingTop="@dimen/_20dp"/>
+                                        android:paddingTop="@dimen/_20dp"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/weight_loss" />
 
                                     <TextView
                                         android:layout_width="wrap_content"

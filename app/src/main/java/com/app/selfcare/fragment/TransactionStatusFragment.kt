@@ -50,7 +50,7 @@ class TransactionStatusFragment : BaseFragment() {
 
         if (paymentSts) {
             imgTransaction.setImageResource(R.drawable.success)
-            txtTransStatus.text = "Transaction successful."
+            txtTransStatus.text = "Transaction successful"
             txtTransStatus.setTextColor(
                 ContextCompat.getColor(
                     requireActivity(),
@@ -59,7 +59,7 @@ class TransactionStatusFragment : BaseFragment() {
             )
         } else {
             imgTransaction.setImageResource(R.drawable.cancel)
-            txtTransStatus.text = "Transaction failed."
+            txtTransStatus.text = "Transaction failed"
             txtTransStatus.setTextColor(ContextCompat.getColor(requireActivity(), R.color.red))
         }
         txtTransId.text = transSts!!.transaction_id

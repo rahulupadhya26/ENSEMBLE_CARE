@@ -43,7 +43,7 @@ interface OnGoalItemClickListener {
 }
 
 interface OnAppointmentItemClickListener {
-    fun onAppointmentItemClickListener(appointment: Appointment, isStartAppointment: Boolean)
+    fun onAppointmentItemClickListener(appointment: GetAppointment, isStartAppointment: Boolean)
 }
 
 interface OnGroupAppointmentItemClickListener {

@@ -10,18 +10,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.adapters.AppointmentsAdapter
 import com.app.selfcare.controller.OnAppointmentItemClickListener
-import com.app.selfcare.data.Appointment
-import com.app.selfcare.data.AppointmentPatientId
-import com.app.selfcare.data.CancelAppointment
-import com.app.selfcare.data.GetToken
+import com.app.selfcare.data.*
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_appointments.*
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import org.json.JSONArray
 import retrofit2.HttpException
+import java.lang.reflect.Type
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -66,9 +66,13 @@ class AppointmentsFragment : BaseFragment(), OnAppointmentItemClickListener {
     }
 
     private fun displayAppointments() {
-        val appointmentLists: ArrayList<Appointment> = arrayListOf()
+        var appointmentLists: ArrayList<GetAppointment> = arrayListOf()
         getAppointmentList { response ->
-            val jsonArr = JSONArray(response)
+
+            val appointmentList: Type = object : TypeToken<ArrayList<GetAppointment?>?>() {}.type
+            appointmentLists = Gson().fromJson(response, appointmentList)
+
+            /*val jsonArr = JSONArray(response)
             if (jsonArr.length() != 0) {
                 for (i in 0 until jsonArr.length()) {
                     val appointmentObj = jsonArr.getJSONObject(i)
@@ -106,7 +110,7 @@ class AppointmentsFragment : BaseFragment(), OnAppointmentItemClickListener {
                     )
                     appointmentLists.add(appointment)
                 }
-            }
+            }*/
             if (appointmentLists.isNotEmpty()) {
                 recyclerViewAppointmentList.visibility = View.VISIBLE
                 txtNoAppointmentList.visibility = View.GONE
@@ -166,7 +170,7 @@ class AppointmentsFragment : BaseFragment(), OnAppointmentItemClickListener {
         handler.postDelayed(runnable!!, 1000)
     }
 
-    private fun cancelAppointment(appointment: Appointment) {
+    private fun cancelAppointment(appointment: GetAppointment) {
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
@@ -174,7 +178,7 @@ class AppointmentsFragment : BaseFragment(), OnAppointmentItemClickListener {
                     .cancelAppointment(
                         CancelAppointment(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
-                            appointment.appointment_id
+                            appointment.appointment.appointment_id
                         ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -232,13 +236,13 @@ class AppointmentsFragment : BaseFragment(), OnAppointmentItemClickListener {
         const val TAG = "Screen_Appointments"
     }
 
-    private fun getToken(appointment: Appointment) {
+    private fun getToken(appointment: GetAppointment) {
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
                     .getToken(
-                        GetToken(appointment.appointment_id),
+                        GetToken(appointment.appointment.appointment_id),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -280,7 +284,7 @@ class AppointmentsFragment : BaseFragment(), OnAppointmentItemClickListener {
     }
 
     override fun onAppointmentItemClickListener(
-        appointment: Appointment,
+        appointment: GetAppointment,
         isStartAppointment: Boolean
     ) {
         if (isStartAppointment) {

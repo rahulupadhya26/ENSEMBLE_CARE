@@ -14,6 +14,7 @@ import com.app.selfcare.R
 import com.app.selfcare.adapters.MessageAdapter
 import com.app.selfcare.controller.OnMessageClickListener
 import com.app.selfcare.data.Appointment
+import com.app.selfcare.data.GetAppointment
 import com.app.selfcare.data.MessageBean
 import com.app.selfcare.data.MessageListBean
 import com.app.selfcare.realTimeMessaging.ChatManager
@@ -36,7 +37,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
     // TODO: Rename and change types of parameters
-    private var appointment: Appointment? = null
+    private var appointment: GetAppointment? = null
     private var targetName: String? = null
 
     private var mChatManager: ChatManager? = null
@@ -75,7 +76,7 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
             if (msg != "") {
                 val message = mRtmClient!!.createMessage()
                 message.text = msg
-                val messageBean = MessageBean(appointment!!.patient, message, true)
+                val messageBean = MessageBean(appointment!!.appointment.patient.toString(), message, true)
                 mMessageBeanList.add(messageBean)
                 mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
                 chatMessageList.scrollToPosition(mMessageBeanList.size - 1)
@@ -379,10 +380,10 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
      */
     private fun doLogin() {
         try {
-            if (appointment!!.rtm_token.isNotEmpty()) {
+            if (appointment!!.rtc_token.isNotEmpty()) {
                 mRtmClient!!.login(
-                    appointment!!.rtm_token,
-                    appointment!!.patient,
+                    appointment!!.rtc_token,
+                    appointment!!.appointment.patient.toString(),
                     object : ResultCallback<Void?> {
                         override fun onSuccess(responseInfo: Void?) {
                             Utils.rtmLoggedIn = true

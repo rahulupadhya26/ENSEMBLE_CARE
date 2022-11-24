@@ -15,8 +15,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/btnTimeSlotContinue"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/_15dp"
             android:background="@color/screen_background_color"
             android:orientation="vertical">

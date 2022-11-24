@@ -161,9 +161,9 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
 
         layoutGoals.setOnClickListener {
             replaceFragment(
-                GoalsFragment(),
+                ActivityCarePlanFragment(),
                 R.id.layout_home,
-                GoalsFragment.TAG
+                ActivityCarePlanFragment.TAG
             )
         }
 
@@ -393,7 +393,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                 )
             )
         }*/
-        val appointmentLists: ArrayList<Appointment> = arrayListOf()
+        var appointmentLists: ArrayList<GetAppointment> = arrayListOf()
         val timeSlots: ArrayList<String> = arrayListOf()
         val sdf = SimpleDateFormat("MM/dd/yyyy' 'HH:mm:ss")
         val currentDate = sdf.format(Date())
@@ -401,7 +401,11 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         txtMonth.text = currentDateTime.getFullMonthName()
         txtCurrentDate.text = currentDateTime.getDay()
         getAppointmentList { response ->
-            val jsonArr = JSONArray(response)
+
+            val appointmentList: Type = object : TypeToken<ArrayList<GetAppointment?>?>() {}.type
+            appointmentLists = Gson().fromJson(response, appointmentList)
+
+            /*val jsonArr = JSONArray(response)
             if (jsonArr.length() != 0) {
                 for (i in 0 until jsonArr.length()) {
                     val appointmentObj = jsonArr.getJSONObject(i)
@@ -443,28 +447,27 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                             .dropLast(3)
                     )
                 }
-            }
+            }*/
             if (appointmentLists.isNotEmpty()) {
-                recyclerViewAppointments.visibility = View.VISIBLE
+                recyclerViewAppointments.visibility = View.GONE
                 cardViewAppointment.visibility = View.VISIBLE
                 txtNoAppointments.visibility = View.GONE
                 txtViewAllAppointments.visibility = View.GONE
 
-                txtAppointTherapistName.text = appointmentLists[0].first_name + " " +
-                        appointmentLists[0].middle_name + " " +
-                        appointmentLists[0].last_name
-                txtAppointTherapistType.text = appointmentLists[0].doctor_type
+                txtAppointTherapistName.text = appointmentLists[0].doctor_first_name + " " +
+                        appointmentLists[0].doctor_last_name
+                txtAppointTherapistType.text = appointmentLists[0].doctor_designation
 
-                val appointmentDate = DateUtils(appointmentLists[0].booking_date + " 00:00:00")
+                val appointmentDate =
+                    DateUtils(appointmentLists[0].appointment.booking_date + " 00:00:00")
 
                 txtAppointmentDateTime.text =
                     appointmentDate.getCurrentDay() + ", " +
                             appointmentDate.getDay() + " " +
                             appointmentDate.getMonth() + " at " +
-                            appointmentLists[0].starting_time + " - " +
-                            appointmentLists[0].ending_time
+                            "11:00 AM" + " - " + "11:30 AM"
 
-                if (appointmentLists[0].type_of_visit == "Video") {
+                if (appointmentLists[0].appointment.type_of_visit == "Video") {
                     appointmentCall.setImageResource(R.drawable.video)
                     appointmentCall.imageTintList =
                         ColorStateList.valueOf(
@@ -496,7 +499,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                         this@DashboardFragment
                     )
                 }
-                if (timeSlots.isNotEmpty()) {
+                /*if (timeSlots.isNotEmpty()) {
                     txtTimeSlots.text = timeSlots[0]
                 }
                 previousItem.setOnClickListener {
@@ -527,7 +530,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                     if (timeSlots.size != currentPosition + 1) {
                         txtTimeSlots.text = timeSlots[currentPosition + 1]
                     }
-                }
+                }*/
 
                 recyclerViewAppointments.addOnScrollListener(object :
                     RecyclerView.OnScrollListener() {
@@ -557,21 +560,21 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
             } else {
                 txtTimeSlots.text = ""
                 recyclerViewAppointments.visibility = View.GONE
-                cardViewAppointment.visibility = View.VISIBLE
-                txtNoAppointments.visibility = View.GONE
+                cardViewAppointment.visibility = View.GONE
+                txtNoAppointments.visibility = View.VISIBLE
                 //txtViewAllAppointments.visibility = View.VISIBLE
             }
             //getRecommendedData()
         }
     }
 
-    private fun getToken(appointment: Appointment) {
+    private fun getToken(appointment: GetAppointment) {
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
                     .getToken(
-                        GetToken(appointment.appointment_id),
+                        GetToken(appointment.appointment.appointment_id),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -584,12 +587,17 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            //Start video call
-                            replaceFragment(
-                                VideoCallFragment.newInstance(appointment, responseBody),
-                                R.id.layout_home,
-                                VideoCallFragment.TAG
-                            )
+                            if(appointment.is_group_appointment){
+
+                            } else{
+                                //Start video call
+                                replaceFragment(
+                                    VideoCallFragment.newInstance(appointment, responseBody),
+                                    R.id.layout_home,
+                                    VideoCallFragment.TAG
+                                )
+                            }
+
                         } catch (e: Exception) {
                             hideProgress()
                             //displayToast("Something went wrong.. Please try after sometime")
@@ -751,7 +759,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         handler.postDelayed(runnable!!, 1000)
     }
 
-    private fun cancelAppointment(appointment: Appointment) {
+    private fun cancelAppointment(appointment: GetAppointment) {
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
@@ -759,7 +767,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                     .cancelAppointment(
                         CancelAppointment(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
-                            appointment.appointment_id
+                            appointment.appointment.appointment_id
                         ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -1259,7 +1267,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
     }
 
     override fun onAppointmentItemClickListener(
-        appointment: Appointment,
+        appointment: GetAppointment,
         isStartAppointment: Boolean
     ) {
         if (isStartAppointment) {

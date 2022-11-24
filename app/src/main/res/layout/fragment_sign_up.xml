@@ -44,27 +44,27 @@
             android:layout_marginTop="10dp"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/white"
-            android:textSize="@dimen/_20sp"
+            android:textSize="@dimen/_16sp"
             android:layout_marginStart="@dimen/_10dp" />
 
         <TextView
             android:id="@+id/txtEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="-5dp"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/white"
-            android:textSize="@dimen/_20sp"
+            android:textSize="@dimen/_16sp"
             android:layout_marginStart="@dimen/_10dp"/>
 
         <TextView
             android:id="@+id/txtPhoneNo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="-5dp"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/white"
-            android:textSize="@dimen/_20sp"
+            android:textSize="@dimen/_16sp"
             android:layout_marginStart="@dimen/_10dp" />
 
     </LinearLayout>

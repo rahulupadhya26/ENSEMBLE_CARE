@@ -326,37 +326,35 @@ data class Goal(
 ) : Parcelable
 
 @Parcelize
-data class Appointment(
-    val appointment_id: Int,
-    val date: String,
-    val is_book: Boolean,
-    val type_of_visit: String,
-    val booking_date: String,
-    val doctor_id: String,
-    val ssn: String,
-    val first_name: String,
-    val middle_name: String,
-    val last_name: String,
-    val doctor_type: String,
-    val dob: String,
-    val qualification: String,
-    val years_of_experiance: String,
-    val gender: String,
-    val practice_state: String,
-    val time_slot_id: String,
-    val starting_time: String,
-    val ending_time: String,
-    val meeting_id: String,
-    val appointment: String,
-    val doctor: String,
-    val patient: String,
+data class GetAppointment(
+    val doctor_first_name: String,
+    val doctor_last_name: String,
+    val doctor_designation: String,
+    val doctor_photo: String,
+    val appointment: Appointment,
     val meeting_title: String,
     val channel_name: String,
     val rtc_token: String,
-    val rtm_token: String,
-    val rtm_token_doctor: String,
     val meeting_date: String,
-    val duration: String
+    val is_group_appointment: Boolean
+) : Parcelable
+
+@Parcelize
+data class Appointment(
+    val appointment_id: Int,
+    val appointment_uid: String,
+    val status: Int,
+    val date: String,
+    val is_book: String,
+    val type_of_visit: String,
+    val booking_date: String,
+    val consent_sign_image: String,
+    val prescription_1: String,
+    val prescription_2: String,
+    val prescription_3: String,
+    val doctor: Int,
+    val patient: Int,
+    val time_slot: String,
 ) : Parcelable
 
 data class TimeSlot(

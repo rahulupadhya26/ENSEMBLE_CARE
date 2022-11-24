@@ -132,9 +132,9 @@ class BottomNavigationFragment : BaseFragment() {
             cardViewCrisis.visibility = View.GONE
 
             replaceFragmentNoBackStack(
-                ExploreFragment(),
+                ActivityCarePlanFragment(),
                 R.id.layoutContent,
-                ExploreFragment.TAG
+                ActivityCarePlanFragment.TAG
             )
             fab.visibility = View.GONE
         }

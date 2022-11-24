@@ -74,7 +74,7 @@ class SignUpFragment : BaseFragment() {
 
         txtName.text = "Name : " + Utils.firstName + " " + Utils.middleName + " " + Utils.lastName
         txtEmail.text = "Email : " + Utils.email
-        txtPhoneNo.text = "Phone No. : " + formatNumbersAsCode(Utils.phoneNo)
+        txtPhoneNo.text = "Phone : " + formatNumbersAsCode(Utils.phoneNo)
 
         resendBtnTimer.text = "00:45"
 

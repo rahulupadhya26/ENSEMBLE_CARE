@@ -37,16 +37,19 @@
             android:id="@+id/fab_add_goals"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:src="@mipmap/ic_action_add_circle"
-            app:tint="@color/white"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            android:backgroundTint="@color/primaryGreen"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/primaryGreen"
+            android:clickable="true"
             android:focusable="true"
-            app:elevation="8dp" />
+            android:src="@mipmap/ic_action_add_circle"
+            app:elevation="8dp"
+            app:tint="@color/white" />
 
     </RelativeLayout>
 

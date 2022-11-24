@@ -12,11 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnAppointmentItemClickListener
 import com.app.selfcare.data.Appointment
+import com.app.selfcare.data.GetAppointment
 import kotlinx.android.synthetic.main.layout_item_dashboard_appointment.view.*
 
 class DashboardAppointmentAdapter(
     val context: Context,
-    val list: List<Appointment>,
+    val list: List<GetAppointment>,
     private val adapterItemClickListener: OnAppointmentItemClickListener?
 ) :
     RecyclerView.Adapter<DashboardAppointmentAdapter.ViewHolder>() {
@@ -37,9 +38,9 @@ class DashboardAppointmentAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: DashboardAppointmentAdapter.ViewHolder, position: Int) {
         val item = list[position]
-        holder.therapistName.text = item.first_name + " " + item.last_name
-        holder.therapyType.text = item.doctor_type + ", 5 yrs"
-        holder.therapyDateTime.text = item.booking_date + " " + item.starting_time.dropLast(3)
+        holder.therapistName.text = item.doctor_first_name + " " + item.doctor_last_name
+        holder.therapyType.text = item.doctor_designation + ", 5 yrs"
+        holder.therapyDateTime.text = item.appointment.booking_date + " " + "11:00 AM"
         holder.startAppointment.setOnClickListener {
             adapterItemClickListener!!.onAppointmentItemClickListener(item, true)
         }

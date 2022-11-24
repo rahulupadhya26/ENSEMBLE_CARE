@@ -78,10 +78,18 @@
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/dialog_stream_audio.xml" value="0.264" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/display_image.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/exo_playback_control_view.xml" value="0.25" />
+        <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_activity_care_plan.xml" value="0.25" />
+        <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_activity_create_goal.xml" value="0.25" />
+        <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_activity_dashboard.xml" value="0.25" />
+        <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_activity_goal_detail.xml" value="0.25" />
+        <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_activity_show_all.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_appoint_congrat.xml" value="0.2359375" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_appointments.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_assessment_data.xml" value="0.2359375" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_bottom_navigation.xml" value="0.23732718894009217" />
+        <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_care_plan_dasboard.xml" value="0.2359375" />
+        <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_care_plan_dashboard.xml" value="0.25" />
+        <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_care_plan_show_all.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_carousel.xml" value="0.264" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_coaches.xml" value="0.25" />
         <entry key="..\:/Projects/SelfCare/app/src/main/res/layout/fragment_coaches_list.xml" value="0.25" />
