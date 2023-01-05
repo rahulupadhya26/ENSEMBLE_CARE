@@ -2,44 +2,35 @@ package com.app.selfcare.fragment
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.drawable.BitmapDrawable
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Base64
 import android.util.Log
 import android.view.View
-import android.widget.AbsListView
-import androidx.annotation.NonNull
+import android.view.Window
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.app.selfcare.BaseActivity
 import com.app.selfcare.BuildConfig
+import com.app.selfcare.GroupVideoCall
 import com.app.selfcare.R
 import com.app.selfcare.adapters.*
 import com.app.selfcare.controller.*
 import com.app.selfcare.data.*
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
-import com.app.selfcare.utils.AudioStream
 import com.app.selfcare.utils.DateUtils
 import com.app.selfcare.utils.Utils
-import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.utils.MPPointF
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
@@ -50,6 +41,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.dialog_appointment_cancelled_alert.*
+import kotlinx.android.synthetic.main.dialog_plan_subscription_alert.*
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -57,6 +50,7 @@ import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -73,13 +67,10 @@ enum class FitActionRequestCode {
  * Use the [DashboardFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcastItemClickListener,
-    OnJournalItemClickListener, OnAppointmentItemClickListener, OnVideoItemClickListener,
-    OnRecommendedItemClickListener {
+class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var mediaPlayer: MediaPlayer? = null
 
     private val fitnessOptions = FitnessOptions.builder()
         .addDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)
@@ -93,6 +84,9 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
 
     private val runningQOrLater =
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
+
+    private var subscriptionStatusDialog: Dialog? = null
+    private var apptCancelledAlertDialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,7 +107,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         mActivity!!.setUserDetails()
-
+        updateStatusBarColor(R.color.screen_background_color)
         checkPermissionsAndRun(FitActionRequestCode.SUBSCRIBE)
 
         //Show Good morning, afternoon, evening or night message to user.
@@ -122,134 +116,148 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         txtUserName.text = preference!![PrefKeys.PREF_FNAME, ""] + " " +
                 preference!![PrefKeys.PREF_LNAME, ""]
 
-        //Appointments
+        onClickEvents()
+
         displayAppointments()
 
-        handleViewMoreEvents()
-
-        img_user_pic.setOnClickListener {
-            replaceFragment(
-                ProfileFragment(),
-                R.id.layout_home,
-                ProfileFragment.TAG
-            )
-        }
-
-        layoutUserName.setOnClickListener {
-            replaceFragment(
-                ProfileFragment(),
-                R.id.layout_home,
-                ProfileFragment.TAG
-            )
-        }
-
-        layoutAppointments.setOnClickListener {
-            replaceFragment(
-                AppointmentsFragment(),
-                R.id.layout_home,
-                AppointmentsFragment.TAG
-            )
-        }
-
-        layoutAssessments.setOnClickListener {
-            replaceFragment(
-                MyAssessmentsFragment(),
-                R.id.layout_home,
-                MyAssessmentsFragment.TAG
-            )
-        }
-
-        layoutGoals.setOnClickListener {
-            replaceFragment(
-                ActivityCarePlanFragment(),
-                R.id.layout_home,
-                ActivityCarePlanFragment.TAG
-            )
-        }
-
-        layoutJournals.setOnClickListener {
-            replaceFragment(
-                JournalFragment(),
-                R.id.layout_home,
-                JournalFragment.TAG
-            )
-        }
-
-        fabCreateAppointmentBtn.setOnClickListener {
-            Utils.isTherapististScreen = false
-            replaceFragment(
-                TherapistListFragment.newInstance(false),
-                R.id.layout_home,
-                TherapistListFragment.TAG
-            )
-        }
+        displayDashboardNotifications()
 
         itemsSwipeToRefresh.setOnRefreshListener {
-            displayAppointments()
+            try {
+                displayAppointments()
+                displayDashboardNotifications()
+                val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
+                if (photo != "null" && photo.isNotEmpty()) {
+                    Glide.with(requireActivity())
+                        .load(BaseActivity.baseURL.dropLast(5) + photo)
+                        .placeholder(R.drawable.user_pic)
+                        .transform(CenterCrop(), RoundedCorners(5))
+                        .into(img_user_pic)
+                } else {
+                    img_user_pic.setImageResource(R.drawable.user_pic)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun displayAppointmentCancelledAlert(jsonObj: JSONObject) {
+        val cancelAppointmentNotifyType: Type =
+            object : TypeToken<CancelledAppointmentNotify?>() {}.type
+        val cancelAppointmentNotify: CancelledAppointmentNotify =
+            Gson().fromJson(jsonObj.toString(), cancelAppointmentNotifyType)
+        updateNotificationStatus(cancelAppointmentNotify.id)
+        apptCancelledAlertDialog = Dialog(requireActivity())
+        apptCancelledAlertDialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        apptCancelledAlertDialog!!.setCancelable(false)
+        apptCancelledAlertDialog!!.setCanceledOnTouchOutside(false)
+        apptCancelledAlertDialog!!.setContentView(R.layout.dialog_appointment_cancelled_alert)
+
+        val appointmentDate =
+            DateUtils(cancelAppointmentNotify.extra_data.prev_appt_details.booking_date + " 00:00:00")
+
+        apptCancelledAlertDialog!!.txtCancelledAppointTherapistName.text =
+            cancelAppointmentNotify.extra_data.prev_appt_details.doctor.name
+
+        apptCancelledAlertDialog!!.txtCancelledAppointTherapistType.text =
+            cancelAppointmentNotify.extra_data.prev_appt_details.doctor.designation
+
+        apptCancelledAlertDialog!!.txtCancelledAppointmentDateTime.text =
+            appointmentDate.getCurrentDay() + ", " +
+                    appointmentDate.getDay() + " " +
+                    appointmentDate.getMonth() + " at " +
+                    cancelAppointmentNotify.extra_data.prev_appt_details.time_slot.starting_time.dropLast(
+                        3
+                    ) + " - " +
+                    cancelAppointmentNotify.extra_data.prev_appt_details.time_slot.ending_time.dropLast(
+                        3
+                    )
+
+        if (cancelAppointmentNotify.extra_data.prev_appt_details.type_of_visit == "Video") {
+            apptCancelledAlertDialog!!.cancelledAppointmentCall.setImageResource(R.drawable.video)
+            apptCancelledAlertDialog!!.cancelledAppointmentCall.imageTintList =
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
+                )
+        } else {
+            apptCancelledAlertDialog!!.cancelledAppointmentCall.setImageResource(R.drawable.telephone)
+            apptCancelledAlertDialog!!.cancelledAppointmentCall.imageTintList =
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
+                )
         }
 
-        pieChart.setUsePercentValues(true)
-        pieChart.description.isEnabled = false
-        pieChart.setExtraOffsets(2f, 2f, 2f, 2f)
-        // on below line we are setting drag for our pie chart
-        pieChart.dragDecelerationFrictionCoef = 0.95f
-        // on below line we are setting hole
-        // and hole color for pie chart
-        pieChart.isDrawHoleEnabled = true
-        pieChart.setHoleColor(Color.WHITE)
-        // on below line we are setting circle color and alpha
-        pieChart.setTransparentCircleColor(Color.WHITE)
-        pieChart.setTransparentCircleAlpha(110)
-        // on  below line we are setting hole radius
-        pieChart.holeRadius = 60f
-        pieChart.transparentCircleRadius = 63f
-        // on below line we are setting center text
-        pieChart.setDrawCenterText(true)
-        // on below line we are setting
-        // rotation for our pie chart
-        pieChart.rotationAngle = 0f
-        // enable rotation of the pieChart by touch
-        pieChart.isRotationEnabled = true
-        pieChart.isHighlightPerTapEnabled = true
-        // on below line we are setting animation for our pie chart
-        pieChart.animateY(1400, Easing.EaseInOutQuad)
-        // on below line we are disabling our legend for pie chart
-        pieChart.legend.isEnabled = false
-        pieChart.setEntryLabelColor(Color.WHITE)
-        pieChart.setEntryLabelTextSize(0f)
-        // on below line we are creating array list and
-        // adding data to it to display in pie chart
-        val entries: ArrayList<PieEntry> = ArrayList()
-        entries.add(PieEntry(70f))
-        entries.add(PieEntry(30f))
-        // on below line we are setting pie data set
-        val dataSet = PieDataSet(entries, "")
-        // on below line we are setting icons.
-        dataSet.setDrawIcons(false)
-        // on below line we are setting slice for pie
-        dataSet.sliceSpace = 0f
-        dataSet.iconsOffset = MPPointF(0f, 40f)
-        dataSet.selectionShift = 5f
-        // add a lot of colors to list
-        val colors: ArrayList<Int> = ArrayList()
-        colors.add(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
-        colors.add(ContextCompat.getColor(requireActivity(), R.color.pie_chart_color))
+        apptCancelledAlertDialog!!.cancelledAppointImgUser.visibility = View.VISIBLE
+        apptCancelledAlertDialog!!.cancelledAppointGroupImg.visibility = View.GONE
+        Glide.with(requireActivity())
+            .load(BaseActivity.baseURL.dropLast(5) + cancelAppointmentNotify.extra_data.prev_appt_details.doctor.photo)
+            .placeholder(R.drawable.doctor_img)
+            .transform(CenterCrop(), RoundedCorners(5))
+            .into(apptCancelledAlertDialog!!.cancelledAppointImgUser)
 
-        // on below line we are setting colors.
-        dataSet.colors = colors
+        apptCancelledAlertDialog!!.cardViewApptCancelledReschedule.setOnClickListener {
+            apptCancelledAlertDialog!!.dismiss()
+            Utils.providerId = cancelAppointmentNotify.extra_data.next_appt_detials.doctor.id.toString()
+            Utils.providerType = cancelAppointmentNotify.extra_data.next_appt_detials.doctor.designation
+            Utils.providerName = cancelAppointmentNotify.extra_data.next_appt_detials.doctor.name
+            Utils.aptScheduleDate = cancelAppointmentNotify.extra_data.next_appt_detials.date
+            Utils.aptScheduleTime = cancelAppointmentNotify.extra_data.next_appt_detials.time_slot.starting_time
+            Utils.appointmentId = cancelAppointmentNotify.extra_data.next_appt_detials.appointment_id.toString()
+            replaceFragment(
+                TherapyBasicDetailsCFragment(),
+                R.id.layout_home,
+                TherapyBasicDetailsCFragment.TAG
+            )
+        }
 
-        // on below line we are setting pie data set
-        val data = PieData(dataSet)
-        data.setValueTextSize(0f)
-        data.setValueTypeface(Typeface.DEFAULT_BOLD)
-        data.setValueTextColor(Color.WHITE)
-        pieChart.data = data
+        apptCancelledAlertDialog!!.cardViewTryDiffProvider.setOnClickListener {
+            apptCancelledAlertDialog!!.dismiss()
+            Utils.isTherapististScreen = false
+            clearTempFormData()
+            replaceFragment(
+                ClientAvailabilityFragment.newInstance(false),
+                R.id.layout_home,
+                ClientAvailabilityFragment.TAG
+            )
+        }
+        if (apptCancelledAlertDialog!!.isShowing) {
+            apptCancelledAlertDialog!!.dismiss()
+        }
+        apptCancelledAlertDialog!!.show()
+    }
 
-        // undo all highlights
-        pieChart.highlightValues(null)
-
-        // loading chart
-        pieChart.invalidate()
+    @SuppressLint("SetTextI18n")
+    private fun displayPlanSubscriptionAlert(jsonObj: JSONObject) {
+        val subscriptionStatusNotifyType: Type =
+            object : TypeToken<SubscriptionStatus?>() {}.type
+        val subscriptionStatusNotify: SubscriptionStatus =
+            Gson().fromJson(jsonObj.toString(), subscriptionStatusNotifyType)
+        if (!subscriptionStatusNotify.extra_data.is_active) {
+            subscriptionStatusDialog = Dialog(requireActivity())
+            subscriptionStatusDialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            subscriptionStatusDialog!!.setCancelable(false)
+            subscriptionStatusDialog!!.setCanceledOnTouchOutside(false)
+            subscriptionStatusDialog!!.setContentView(R.layout.dialog_plan_subscription_alert)
+            subscriptionStatusDialog!!.cardViewRenewSubscription.setOnClickListener {
+                replaceFragmentNoBackStack(
+                    RegisterPartCFragment(),
+                    R.id.layout_home,
+                    RegisterPartCFragment.TAG
+                )
+            }
+            if (subscriptionStatusDialog!!.isShowing) {
+                subscriptionStatusDialog!!.dismiss()
+            }
+            subscriptionStatusDialog!!.show()
+        }
     }
 
     private fun showMessageToUser() {
@@ -269,213 +277,162 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
     override fun onResume() {
         super.onResume()
         try {
+            displayAppointments()
             val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
-            if (photo.isNotEmpty()) {
-                val base64Image = photo.split(",")[1]
-                val decodedString: ByteArray = Base64.decode(base64Image, Base64.DEFAULT)
-                val decodedByte =
-                    BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-                img_user_pic.setImageBitmap(decodedByte)
+            if (photo != "null" && photo.isNotEmpty()) {
+                Glide.with(requireActivity())
+                    .load(BaseActivity.baseURL.dropLast(5) + photo)
+                    .placeholder(R.drawable.user_pic)
+                    .transform(CenterCrop(), RoundedCorners(5))
+                    .into(img_user_pic)
+            } else {
+                img_user_pic.setImageResource(R.drawable.user_pic)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        //Appointments
-        displayAppointments()
     }
 
-    private fun handleViewMoreEvents() {
-        txtViewAllArticles.setOnClickListener {
-            replaceFragment(NewsListFragment(), R.id.layout_home, NewsListFragment.TAG)
-        }
-
-        txtViewAllPodcast.setOnClickListener {
-            replaceFragment(PodcastFragment(), R.id.layout_home, PodcastFragment.TAG)
-        }
-
-        txtViewAllVideos.setOnClickListener {
-            replaceFragment(VideosListFragment(), R.id.layout_home, VideosListFragment.TAG)
-        }
-
-        txtViewAllAppointments.setOnClickListener {
-            replaceFragment(AppointmentsFragment(), R.id.layout_home, AppointmentsFragment.TAG)
-        }
-
-        txtViewAllRecommendedForYou.setOnClickListener {
+    private fun onClickEvents() {
+        img_user_pic.setOnClickListener {
             replaceFragment(
-                RecommendedDataFragment(),
+                SettingsFragment(),
                 R.id.layout_home,
-                RecommendedDataFragment.TAG
+                SettingsFragment.TAG
             )
         }
-    }
 
-    private fun getData(tableId: String, myCallback: (result: String?) -> Unit) {
-        runnable = Runnable {
-            mCompositeDisposable.add(
-                getEncryptedRequestInterface()
-                    .getData(tableId, getAccessToken())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ result ->
-                        try {
-                            hideProgress()
-                            var responseBody = result.string()
-                            Log.d("Response Body", responseBody)
-                            val respBody = responseBody.split("|")
-                            val status = respBody[1]
-                            responseBody = respBody[0]
-                            if (status == "401") {
-                                userLogin(
-                                    preference!![PrefKeys.PREF_EMAIL]!!,
-                                    preference!![PrefKeys.PREF_PASS]!!
-                                ) { result ->
-                                    when (tableId) {
-                                        "PI0014" -> displayVideoList()
-                                        "PI0020" -> displayPodcastList()
-                                        "PI0011" -> displayArticleList()
-                                    }
-                                }
-                            } else {
-                                myCallback.invoke(responseBody)
-                            }
-                        } catch (e: Exception) {
-                            hideProgress()
-                            //displayToast("Something went wrong.. Please try after sometime")
-                            when (tableId) {
-                                "PI0020" -> displayPodcastList()
-                                "PI0011" -> displayArticleList()
-                            }
-                        }
-                    }, { error ->
-                        hideProgress()
-                        //displayToast("Error ${error.localizedMessage}")
-                        if ((error as HttpException).code() == 401) {
-                            userLogin(
-                                preference!![PrefKeys.PREF_EMAIL]!!,
-                                preference!![PrefKeys.PREF_PASS]!!
-                            ) { result ->
-                                when (tableId) {
-                                    "PI0014" -> displayVideoList()
-                                    "PI0020" -> displayPodcastList()
-                                    "PI0011" -> displayArticleList()
-                                }
-                            }
-                        } else {
-                            displayAfterLoginErrorMsg(error)
-                        }
-                    })
+        layoutUserName.setOnClickListener {
+            replaceFragment(
+                SettingsFragment(),
+                R.id.layout_home,
+                SettingsFragment.TAG
             )
         }
-        handler.postDelayed(runnable!!, 1000)
+
+        layoutAppointments.setOnClickListener {
+            replaceFragment(
+                AppointmentsFragment(),
+                R.id.layout_home,
+                AppointmentsFragment.TAG
+            )
+        }
+
+        layoutResource.setOnClickListener {
+            replaceFragment(
+                ResourcesFragment(),
+                R.id.layout_home,
+                ResourcesFragment.TAG
+            )
+        }
+
+        layoutDocuments.setOnClickListener {
+            replaceFragment(
+                DocumentFragment(),
+                R.id.layout_home,
+                DocumentFragment.TAG
+            )
+        }
+
+        layoutGoals.setOnClickListener {
+            replaceFragment(
+                ToDoFragment(),
+                R.id.layout_home,
+                ToDoFragment.TAG
+            )
+        }
+
+        layoutJournals.setOnClickListener {
+            replaceFragment(
+                JournalFragment(),
+                R.id.layout_home,
+                JournalFragment.TAG
+            )
+        }
+
+        fabCreateAppointmentBtn.setOnClickListener {
+            Utils.isTherapististScreen = false
+            clearTempFormData()
+            replaceFragment(
+                ClientAvailabilityFragment.newInstance(false),
+                R.id.layout_home,
+                ClientAvailabilityFragment.TAG
+            )
+        }
     }
 
     @SuppressLint("SetTextI18n")
     private fun displayAppointments() {
         itemsSwipeToRefresh.isRefreshing = false
-        /*if (isDebug) {
-            appointmentLists.add(
-                Appointment(
-                    "10", "", "1", "1",
-                    "1", "1", "Teen Therapy", "",
-                    "06-07-2022", "10:00", "true", "10:30",
-                    "00:30", "", "Dr. Mike", "S",
-                    "963258741", "Teen", "mike@gmail.com"
-                )
-            )
-            appointmentLists.add(
-                Appointment(
-                    "20", "", "1", "1",
-                    "1", "1", "Child Therapy", "",
-                    "06-07-2022", "11:00", "true", "11:30",
-                    "00:30", "", "Dr. Denial", "Rich",
-                    "963258741", "Child", "denial@gmail.com"
-                )
-            )
-        }*/
-        var appointmentLists: ArrayList<GetAppointment> = arrayListOf()
-        val timeSlots: ArrayList<String> = arrayListOf()
-        val sdf = SimpleDateFormat("MM/dd/yyyy' 'HH:mm:ss")
-        val currentDate = sdf.format(Date())
-        val currentDateTime = DateUtils(currentDate)
-        txtMonth.text = currentDateTime.getFullMonthName()
-        txtCurrentDate.text = currentDateTime.getDay()
         getAppointmentList { response ->
-
-            val appointmentList: Type = object : TypeToken<ArrayList<GetAppointment?>?>() {}.type
-            appointmentLists = Gson().fromJson(response, appointmentList)
-
-            /*val jsonArr = JSONArray(response)
-            if (jsonArr.length() != 0) {
-                for (i in 0 until jsonArr.length()) {
-                    val appointmentObj = jsonArr.getJSONObject(i)
-                    val appointment = Appointment(
-                        appointmentObj.getInt("appointment_id"),
-                        appointmentObj.getString("date"),
-                        appointmentObj.getBoolean("is_book"),
-                        appointmentObj.getString("type_of_visit"),
-                        appointmentObj.getString("booking_date"),
-                        appointmentObj.getJSONObject("doctor").getString("doctor_id"),
-                        appointmentObj.getJSONObject("doctor").getString("ssn"),
-                        appointmentObj.getJSONObject("doctor").getString("first_name"),
-                        appointmentObj.getJSONObject("doctor").getString("middle_name"),
-                        appointmentObj.getJSONObject("doctor").getString("last_name"),
-                        appointmentObj.getJSONObject("doctor").getString("doctor_type"),
-                        appointmentObj.getJSONObject("doctor").getString("dob"),
-                        appointmentObj.getJSONObject("doctor").getString("qualification"),
-                        appointmentObj.getJSONObject("doctor").getString("years_of_experiance"),
-                        appointmentObj.getJSONObject("doctor").getString("gender"),
-                        appointmentObj.getJSONObject("doctor").getString("practice_state"),
-                        appointmentObj.getJSONObject("time_slot").getString("time_slot_id"),
-                        appointmentObj.getJSONObject("time_slot").getString("starting_time"),
-                        appointmentObj.getJSONObject("time_slot").getString("ending_time"),
-                        appointmentObj.getJSONObject("meeting").getString("meeting_id"),
-                        appointmentObj.getJSONObject("meeting").getString("appointment"),
-                        appointmentObj.getJSONObject("meeting").getString("doctor"),
-                        appointmentObj.getJSONObject("meeting").getString("patient"),
-                        appointmentObj.getJSONObject("meeting").getString("meeting_title"),
-                        appointmentObj.getJSONObject("meeting").getString("channel_name"),
-                        appointmentObj.getJSONObject("meeting").getString("rtc_token"),
-                        appointmentObj.getJSONObject("meeting").getString("rtm_token"),
-                        appointmentObj.getJSONObject("meeting").getString("rtm_token_doctor"),
-                        appointmentObj.getJSONObject("meeting").getString("meeting_date"),
-                        appointmentObj.getJSONObject("meeting").getString("duration")
-                    )
-                    appointmentLists.add(appointment)
-                    timeSlots.add(
-                        appointmentObj.getJSONObject("time_slot").getString("starting_time")
-                            .dropLast(3)
-                    )
-                }
-            }*/
-            if (appointmentLists.isNotEmpty()) {
-                recyclerViewAppointments.visibility = View.GONE
+            val appointmentType: Type =
+                object : TypeToken<GetAppointmentList?>() {}.type
+            val appointmentLists: GetAppointmentList =
+                Gson().fromJson(response, appointmentType)
+            if (appointmentLists.today.isNotEmpty()) {
                 cardViewAppointment.visibility = View.VISIBLE
                 txtNoAppointments.visibility = View.GONE
                 txtViewAllAppointments.visibility = View.GONE
 
-                txtAppointTherapistName.text = appointmentLists[0].doctor_first_name + " " +
-                        appointmentLists[0].doctor_last_name
-                txtAppointTherapistType.text = appointmentLists[0].doctor_designation
+                if (appointmentLists.today[0].is_group_appointment) {
+                    txtAppointTherapistName.text =
+                        if (appointmentLists.today[0].meeting_title == null) "Group Appointment" else appointmentLists.today[0].meeting_title
+                    txtAppointTherapistType.text =
+                        appointmentLists.today[0].doctor_first_name + " " +
+                                appointmentLists.today[0].doctor_last_name
+                } else {
+                    txtAppointTherapistName.text =
+                        appointmentLists.today[0].doctor_first_name + " " +
+                                appointmentLists.today[0].doctor_last_name
+                    txtAppointTherapistType.text = appointmentLists.today[0].doctor_designation
+                }
 
-                val appointmentDate =
-                    DateUtils(appointmentLists[0].appointment.booking_date + " 00:00:00")
+                if (appointmentLists.today[0].is_group_appointment) {
+                    val appointmentDate =
+                        DateUtils(appointmentLists.today[0].group_appointment.date + " 00:00:00")
 
-                txtAppointmentDateTime.text =
-                    appointmentDate.getCurrentDay() + ", " +
-                            appointmentDate.getDay() + " " +
-                            appointmentDate.getMonth() + " at " +
-                            "11:00 AM" + " - " + "11:30 AM"
+                    txtAppointmentDateTime.text =
+                        appointmentDate.getCurrentDay() + ", " +
+                                appointmentDate.getDay() + " " +
+                                appointmentDate.getMonth() + " at " +
+                                appointmentLists.today[0].group_appointment.time + " " +
+                                appointmentLists.today[0].group_appointment.select_am_or_pm
+                } else {
+                    val appointmentDate =
+                        DateUtils(appointmentLists.today[0].appointment.booking_date + " 00:00:00")
 
-                if (appointmentLists[0].appointment.type_of_visit == "Video") {
-                    appointmentCall.setImageResource(R.drawable.video)
-                    appointmentCall.imageTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                requireActivity(),
-                                R.color.primaryGreen
+                    txtAppointmentDateTime.text =
+                        appointmentDate.getCurrentDay() + ", " +
+                                appointmentDate.getDay() + " " +
+                                appointmentDate.getMonth() + " at " +
+                                appointmentLists.today[0].appointment.time_slot.starting_time.dropLast(
+                                    3
+                                ) + " - " +
+                                appointmentLists.today[0].appointment.time_slot.ending_time.dropLast(
+                                    3
+                                )
+                }
+
+                if (!appointmentLists.today[0].is_group_appointment) {
+                    if (appointmentLists.today[0].appointment.type_of_visit == "Video") {
+                        appointmentCall.setImageResource(R.drawable.video)
+                        appointmentCall.imageTintList =
+                            ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    requireActivity(),
+                                    R.color.primaryGreen
+                                )
                             )
-                        )
+                    } else {
+                        appointmentCall.setImageResource(R.drawable.telephone)
+                        appointmentCall.imageTintList =
+                            ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    requireActivity(),
+                                    R.color.primaryGreen
+                                )
+                            )
+                    }
                 } else {
                     appointmentCall.setImageResource(R.drawable.telephone)
                     appointmentCall.imageTintList =
@@ -487,94 +444,97 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                         )
                 }
 
+                if (appointmentLists.today[0].is_group_appointment) {
+                    dashboardAppointImgUser.visibility = View.GONE
+                    dashboardAppointGroupImg.visibility = View.VISIBLE
+                } else {
+                    dashboardAppointImgUser.visibility = View.VISIBLE
+                    dashboardAppointGroupImg.visibility = View.GONE
+                    Glide.with(requireActivity())
+                        .load(BaseActivity.baseURL.dropLast(5) + appointmentLists.today[0].doctor_photo)
+                        .placeholder(R.drawable.doctor_img)
+                        .transform(CenterCrop(), RoundedCorners(5))
+                        .into(dashboardAppointImgUser)
+                }
+
                 cardViewAppointment.setOnClickListener {
-                    getToken(appointmentLists[0])
-                }
-
-                recyclerViewAppointments.apply {
-                    layoutManager = LinearLayoutManager(mActivity!!, RecyclerView.HORIZONTAL, false)
-                    adapter = DashboardAppointmentAdapter(
-                        mActivity!!,
-                        appointmentLists,
-                        this@DashboardFragment
-                    )
-                }
-                /*if (timeSlots.isNotEmpty()) {
-                    txtTimeSlots.text = timeSlots[0]
-                }
-                previousItem.setOnClickListener {
-                    val layoutManager: RecyclerView.LayoutManager? =
-                        recyclerViewAppointments.layoutManager
-                    var currentPosition = 0
-                    if (layoutManager is LinearLayoutManager) {
-                        currentPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-                    }
-                    if ((currentPosition - 1) != -1) {
-                        recyclerViewAppointments.smoothScrollToPosition(currentPosition - 1)
-                    }
-                    if ((currentPosition - 1) != -1) {
-                        txtTimeSlots.text = timeSlots[currentPosition - 1]
+                    if (appointmentLists.today[0].is_group_appointment) {
+                        val intent = Intent(requireActivity(), GroupVideoCall::class.java)
+                        intent.putExtra("token", appointmentLists.today[0].rtc_token)
+                        intent.putExtra("channelName", appointmentLists.today[0].channel_name)
+                        startActivity(intent)
+                        requireActivity().overridePendingTransition(0, 0)
+                    } else {
+                        getToken(appointmentLists.today[0])
                     }
                 }
-
-                nextItem.setOnClickListener {
-                    val layoutManager: RecyclerView.LayoutManager? =
-                        recyclerViewAppointments.layoutManager
-                    var currentPosition = 0
-                    if (layoutManager is LinearLayoutManager) {
-                        currentPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-                    }
-                    if (appointmentLists.size != (currentPosition + 1)) {
-                        recyclerViewAppointments.smoothScrollToPosition(currentPosition + 1)
-                    }
-                    if (timeSlots.size != currentPosition + 1) {
-                        txtTimeSlots.text = timeSlots[currentPosition + 1]
-                    }
-                }*/
-
-                recyclerViewAppointments.addOnScrollListener(object :
-                    RecyclerView.OnScrollListener() {
-                    override fun onScrollStateChanged(
-                        @NonNull recyclerView: RecyclerView,
-                        newState: Int
-                    ) {
-                        super.onScrollStateChanged(recyclerView, newState)
-                        when (newState) {
-                            AbsListView.OnScrollListener.SCROLL_STATE_IDLE -> {
-                                try {
-                                    val layoutManager: RecyclerView.LayoutManager? =
-                                        recyclerViewAppointments.layoutManager
-                                    if (layoutManager is LinearLayoutManager) {
-                                        val pos: Int =
-                                            layoutManager.findFirstCompletelyVisibleItemPosition()
-                                        txtTimeSlots.text = timeSlots[pos]
-                                    }
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-                            }
-                        }
-
-                    }
-                })
             } else {
-                txtTimeSlots.text = ""
-                recyclerViewAppointments.visibility = View.GONE
                 cardViewAppointment.visibility = View.GONE
                 txtNoAppointments.visibility = View.VISIBLE
-                //txtViewAllAppointments.visibility = View.VISIBLE
             }
-            //getRecommendedData()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun displayDashboardNotifications() {
+        itemsSwipeToRefresh.isRefreshing = false
+        var consentRoisCount = 0
+        getDashboardNotifications { response ->
+            try {
+                val jsonArr = JSONArray(response)
+                val consentRoisFormsNotifyList :ArrayList<ConsentRoisFormsNotify> = arrayListOf()
+                for (i in 0 until jsonArr.length()) {
+                    val jsonObj = jsonArr.getJSONObject(i)
+                    if (jsonObj.getString("title").contains("Appointment", ignoreCase = true)) {
+                        displayAppointmentCancelledAlert(jsonObj)
+                    } else if (jsonObj.getString("title").contains("Consent", ignoreCase = true)) {
+                        consentRoisCount += 1
+                        val consentRoisNotifyType: Type = object : TypeToken<ConsentRoisFormsNotify?>() {}.type
+                        val consentRoisNotify: ConsentRoisFormsNotify =
+                            Gson().fromJson(jsonObj.toString(), consentRoisNotifyType)
+                        consentRoisFormsNotifyList.add(consentRoisNotify)
+                    } else if (jsonObj.getString("title").contains("ROI", ignoreCase = true)) {
+                        consentRoisCount += 1
+                        val consentRoisNotifyType: Type = object : TypeToken<ConsentRoisFormsNotify?>() {}.type
+                        val consentRoisNotify: ConsentRoisFormsNotify =
+                            Gson().fromJson(jsonObj.toString(), consentRoisNotifyType)
+                        consentRoisFormsNotifyList.add(consentRoisNotify)
+                    } else if (jsonObj.getString("title").contains("Plan", ignoreCase = true)) {
+                        displayPlanSubscriptionAlert(jsonObj)
+                    }
+                }
+                if (consentRoisCount > 0) {
+                    cardViewConsentsRoisNotify.visibility = View.VISIBLE
+                    consentsRoisNotify.text =
+                        "Consents and Rois - $consentRoisCount pending forms."
+                    cardViewConsentsRoisNotify.setOnClickListener {
+                        replaceFragment(
+                            ConsentsListFragment.newInstance(consentRoisFormsNotifyList),
+                            R.id.layout_home,
+                            ConsentsListFragment.TAG
+                        )
+                    }
+                } else {
+                    cardViewConsentsRoisNotify.visibility = View.GONE
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
     private fun getToken(appointment: GetAppointment) {
         showProgress()
+        val id = if (appointment.is_group_appointment) {
+            appointment.group_appointment.id
+        } else {
+            appointment.appointment.appointment_id
+        }
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
                     .getToken(
-                        GetToken(appointment.appointment.appointment_id),
+                        GetToken(id),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -587,12 +547,25 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            if(appointment.is_group_appointment){
-
-                            } else{
+                            val jsonObj = JSONObject(responseBody)
+                            val rtcToken = jsonObj.getString("rtc_token")
+                            val rtmToken = jsonObj.getString("rtm_token")
+                            val channelName = jsonObj.getString("channel_name")
+                            if (appointment.is_group_appointment) {
+                                val intent = Intent(requireActivity(), GroupVideoCall::class.java)
+                                intent.putExtra("token", rtcToken)
+                                intent.putExtra("channelName", channelName)
+                                startActivity(intent)
+                                requireActivity().overridePendingTransition(0, 0)
+                            } else {
                                 //Start video call
                                 replaceFragment(
-                                    VideoCallFragment.newInstance(appointment, responseBody),
+                                    VideoCallFragment.newInstance(
+                                        appointment,
+                                        rtcToken,
+                                        rtmToken,
+                                        channelName
+                                    ),
                                     R.id.layout_home,
                                     VideoCallFragment.TAG
                                 )
@@ -620,104 +593,6 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         handler.postDelayed(runnable!!, 1000)
     }
 
-    private fun displayVideoList() {
-        /*if (isDebug) {
-            videoLists.add(Video("Video 1", "", "Artist 1", "", "", ""))
-            videoLists.add(Video("Video 2", "", "Artist 2", "", "", ""))
-            videoLists.add(Video("Video 3", "", "Artist 3", "", "", ""))
-        }*/
-        getData("PI0014") { response ->
-            var videoLists: ArrayList<Video> = arrayListOf()
-            val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
-            videoLists = Gson().fromJson(response, videoList)
-
-            if (videoLists.isNotEmpty()) {
-                recyclerviewVideos.visibility = View.VISIBLE
-                txtNoVideosData.visibility = View.GONE
-                recyclerviewVideos.apply {
-                    layoutManager = LinearLayoutManager(mActivity!!, RecyclerView.HORIZONTAL, false)
-                    adapter =
-                        DashboardVideosAdapter(mActivity!!, videoLists, this@DashboardFragment)
-                }
-            } else {
-                recyclerviewVideos.visibility = View.GONE
-                txtNoVideosData.visibility = View.VISIBLE
-            }
-            displayPodcastList()
-        }
-    }
-
-    private fun displayPodcastList() {
-        /*if (isDebug) {
-            podcastLists.add(Podcast("Podcast 1", "", "Artist 1", ""))
-            podcastLists.add(Podcast("Podcast 2", "", "Artist 2", ""))
-            podcastLists.add(Podcast("Podcast 3", "", "Artist 3", ""))
-        }*/
-        getData("PI0020") { response ->
-            val podcastLists: ArrayList<Podcast>
-            val podcastList: Type = object : TypeToken<ArrayList<Podcast?>?>() {}.type
-            podcastLists = Gson().fromJson(response, podcastList)
-
-            if (podcastLists.isNotEmpty()) {
-                recyclerViewPodcast.visibility = View.VISIBLE
-                txtNoPodcastData.visibility = View.GONE
-                recyclerViewPodcast.apply {
-                    layoutManager = LinearLayoutManager(mActivity!!, RecyclerView.HORIZONTAL, false)
-                    adapter =
-                        DashboardPodcastAdapter(mActivity!!, podcastLists, this@DashboardFragment)
-                }
-            } else {
-                recyclerViewPodcast.visibility = View.GONE
-                txtNoPodcastData.visibility = View.VISIBLE
-            }
-            displayArticleList()
-        }
-    }
-
-    private fun displayArticleList() {
-        /*if (isDebug) {
-            articlesLists.add(
-                Articles(
-                    "Ayurvedic practitioner shares herbs that will help manage diabetes",
-                    "https://indianexpress.com/article/lifestyle/health/ayurveda-herbs-spices-manage-diabetes-immunity-blood-sugar-8009363/",
-                    "06-07-2022 12:02"
-                )
-            )
-            articlesLists.add(
-                Articles(
-                    "Listeria Outbreak Affects 23, What to Know",
-                    "https://www.healthline.com/health-news/listeria-outbreak-affects-23-what-to-know",
-                    "06-07-2022 13:02"
-                )
-            )
-            articlesLists.add(
-                Articles(
-                    "Universal Flu Vaccine Gets Closer to Reality As Phase 1 Testing Starts",
-                    "https://www.healthline.com/health-news/universal-flu-vaccine-gets-closer-to-reality-as-phase-1-testing-starts",
-                    "06-07-2022 13:52"
-                )
-            )
-        }*/
-        getData("PI0011") { response ->
-            var articlesLists: ArrayList<Articles> = arrayListOf()
-            val articleList: Type = object : TypeToken<ArrayList<Articles?>?>() {}.type
-            articlesLists = Gson().fromJson(response, articleList)
-
-            if (articlesLists.isNotEmpty()) {
-                recyclerViewArticles.visibility = View.VISIBLE
-                txtNoArticlesData.visibility = View.GONE
-                recyclerViewArticles.apply {
-                    layoutManager = LinearLayoutManager(mActivity!!, RecyclerView.HORIZONTAL, false)
-                    adapter =
-                        DashboardArticlesAdapter(mActivity!!, articlesLists, this@DashboardFragment)
-                }
-            } else {
-                recyclerViewArticles.visibility = View.GONE
-                txtNoArticlesData.visibility = View.VISIBLE
-            }
-        }
-    }
-
     private fun getAppointmentList(myCallback: (result: String?) -> Unit) {
         runnable = Runnable {
             mCompositeDisposable.add(
@@ -739,6 +614,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                             myCallback.invoke(responseBody)
                         } catch (e: Exception) {
                             hideProgress()
+                            e.printStackTrace()
                             //displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->
@@ -804,11 +680,11 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         handler.postDelayed(runnable!!, 1000)
     }
 
-    private fun getRecommendedData() {
+    private fun getDashboardNotifications(myCallback: (result: String?) -> Unit) {
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getRecommendedData(getAccessToken())
+                    .getDashboardNotification(getAccessToken())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -819,88 +695,10 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-
-                            val recommendData: ArrayList<RecommendedData> = ArrayList()
-                            val jsonObj = JSONObject(responseBody)
-
-                            val videoArr = jsonObj.getJSONArray("videos")
-                            for (i in 0 until videoArr.length()) {
-                                val recommendedData = RecommendedData()
-                                recommendedData.type = 0
-                                recommendedData.id =
-                                    videoArr.getJSONObject(i).getString("id").toInt()
-                                recommendedData.name = videoArr.getJSONObject(i).getString("name")
-                                recommendedData.description =
-                                    videoArr.getJSONObject(i).getString("description")
-                                recommendedData.video_url =
-                                    videoArr.getJSONObject(i).getString("video_url")
-                                recommendData.add(recommendedData)
-                            }
-
-                            val podcastArr = jsonObj.getJSONArray("podcasts")
-                            for (i in 0 until podcastArr.length()) {
-                                val recommendedData = RecommendedData()
-                                recommendedData.type = 1
-                                recommendedData.id =
-                                    podcastArr.getJSONObject(i).getString("id").toInt()
-                                recommendedData.name = podcastArr.getJSONObject(i).getString("name")
-                                recommendedData.description =
-                                    podcastArr.getJSONObject(i).getString("description")
-                                recommendedData.podcast_image =
-                                    podcastArr.getJSONObject(i).getString("podcast_image")
-                                recommendedData.artist =
-                                    podcastArr.getJSONObject(i).getString("artist")
-                                recommendedData.podcast_url =
-                                    podcastArr.getJSONObject(i).getString("podcast_url")
-                                recommendData.add(recommendedData)
-                            }
-
-                            val articlesArr = jsonObj.getJSONArray("articles")
-                            for (i in 0 until articlesArr.length()) {
-                                val recommendedData = RecommendedData()
-                                recommendedData.type = 2
-                                recommendedData.id =
-                                    articlesArr.getJSONObject(i).getString("id").toInt()
-                                recommendedData.name =
-                                    articlesArr.getJSONObject(i).getString("name")
-                                recommendedData.description =
-                                    articlesArr.getJSONObject(i).getString("description")
-                                recommendedData.banner_image =
-                                    articlesArr.getJSONObject(i).getString("banner_image")
-                                recommendedData.published_date =
-                                    articlesArr.getJSONObject(i).getString("published_date")
-                                recommendedData.article_url =
-                                    articlesArr.getJSONObject(i).getString("article_url")
-                                recommendData.add(recommendedData)
-                            }
-
-                            if (recommendData.isNotEmpty()) {
-                                recyclerviewRecommendedForYou.visibility = View.VISIBLE
-                                txtNoRecommendedForYouData.visibility = View.GONE
-                                recyclerviewRecommendedForYou.apply {
-                                    layoutManager =
-                                        LinearLayoutManager(
-                                            mActivity!!,
-                                            RecyclerView.HORIZONTAL,
-                                            false
-                                        )
-                                    adapter =
-                                        DashboardRecommendedAdapter(
-                                            mActivity!!,
-                                            recommendData,
-                                            this@DashboardFragment
-                                        )
-                                }
-                            } else {
-                                recyclerviewRecommendedForYou.visibility = View.GONE
-                                txtNoRecommendedForYouData.visibility = View.VISIBLE
-                            }
-
-                            displayVideoList()
+                            myCallback.invoke(responseBody)
                         } catch (e: Exception) {
                             hideProgress()
-                            //displayToast("Something went wrong.. Please try after sometime")
-                            displayVideoList()
+                            e.printStackTrace()
                         }
                     }, { error ->
                         hideProgress()
@@ -909,25 +707,15 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                                 preference!![PrefKeys.PREF_EMAIL]!!,
                                 preference!![PrefKeys.PREF_PASS]!!
                             ) { result ->
-                                getRecommendedData()
+                                displayDashboardNotifications()
                             }
                         } else {
                             displayAfterLoginErrorMsg(error)
-                            txtNoRecommendedForYouData.visibility = View.VISIBLE
-                            displayVideoList()
                         }
                     })
             )
         }
         handler.postDelayed(runnable!!, 1000)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (mediaPlayer != null) {
-            mediaPlayer?.stop()
-            mediaPlayer?.reset()
-        }
     }
 
     private fun checkPermissionsAndRun(fitActionRequestCode: FitActionRequestCode) {
@@ -971,9 +759,7 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         when (resultCode) {
             AppCompatActivity.RESULT_OK -> {
                 val postSignInAction = FitActionRequestCode.values()[requestCode]
-                postSignInAction.let {
-                    performActionForRequestCode(postSignInAction)
-                }
+                performActionForRequestCode(postSignInAction)
             }
             else -> oAuthErrorMsg(requestCode, resultCode)
         }
@@ -1048,9 +834,10 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                     else -> dataSet.dataPoints.first().getValue(Field.FIELD_STEPS).asInt()
                 }
                 Log.i(TAG, "Total steps: $total")
-                txtStepsValue.text = total.toString()
+                if (txtStepsValue != null) {
+                    txtStepsValue.text = total.toString()
+                }
 
-                txtStepsValue.text = "1537"
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "There was a problem getting the step count.", e)
@@ -1064,10 +851,10 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                     else -> dataSet.dataPoints.first().getValue(Field.FIELD_DISTANCE).asFloat()
                 }
                 Log.i(TAG, "Total distance: $total")
-                txtDistanceValue.text =
-                    String.format("%.2f", convertMeterToKilometer(total.toFloat())) + " KM"
+                if (txtDistanceValue != null)
+                    txtDistanceValue.text =
+                        String.format("%.2f", convertMeterToKilometer(total.toFloat())) + " KM"
 
-                txtDistanceValue.text = "1.10 KM"
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "There was a problem getting the step count.", e)
@@ -1097,7 +884,8 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
                     total = ""
                 }
                 Log.i(TAG, "Total Calories: $total")
-                txtCaloriesValue.text = "$total KCAL"
+                if (txtCaloriesValue != null)
+                    txtCaloriesValue.text = "$total KCAL"
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "There was a problem getting the step count.", e)
@@ -1108,6 +896,8 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         val currentDateTime = DateUtils(currentDate)
 
         txtViewUpdatedAt.text = "Updated today at " + currentDateTime.getTimeWithFormat()
+
+        goalTrackerProgress.setProgress(74.0, 100.0)
     }
 
     private fun permissionApproved(): Boolean {
@@ -1238,34 +1028,6 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
         const val TAG = "Screen_dashboard"
     }
 
-    override fun onNewsItemClicked(articles: Articles) {
-        //Navigate to News detail screen
-        replaceFragment(
-            NewsDetailFragment.newInstance(articles),
-            R.id.layout_home,
-            NewsDetailFragment.TAG
-        )
-    }
-
-    override fun onPodcastItemClicked(podcast: Podcast) {
-        //Play podcast
-        mediaPlayer = MediaPlayer()
-        AudioStream(requireActivity(), podcast, mediaPlayer!!).streamAudio()
-    }
-
-    override fun onJournalItemClicked(journal: Journal, isDelete: Boolean) {
-        if (isDelete) {
-            //Delete Journal
-        } else {
-            //Navigate to Journal detail screen
-            replaceFragment(
-                DetailJournalFragment.newInstance(journal),
-                R.id.layout_home,
-                DetailJournalFragment.TAG
-            )
-        }
-    }
-
     override fun onAppointmentItemClickListener(
         appointment: GetAppointment,
         isStartAppointment: Boolean
@@ -1293,64 +1055,6 @@ open class DashboardFragment : BaseFragment(), OnNewsItemClickListener, OnPodcas
             val alert = builder.create()
             alert.setCancelable(false)
             alert.show()
-        }
-    }
-
-    override fun onVideoItemClickListener(video: Video) {
-        replaceFragment(
-            VideoDetailFragment.newInstance(video),
-            R.id.layout_home,
-            VideoDetailFragment.TAG
-        )
-    }
-
-    override fun onRecommendedItemClickListener(recommendedData: RecommendedData) {
-        when (recommendedData.type) {
-            Utils.RECOMMENDED_VIDEOS -> {
-                val video = Video(
-                    recommendedData.id,
-                    recommendedData.name,
-                    recommendedData.description,
-                    recommendedData.video_url,
-                    "",
-                    "",
-                    ""
-                )
-                replaceFragment(
-                    VideoDetailFragment.newInstance(video),
-                    R.id.layout_home,
-                    VideoDetailFragment.TAG
-                )
-            }
-            Utils.RECOMMENDED_PODCAST -> {
-                val podcast = Podcast(
-                    recommendedData.id,
-                    recommendedData.name,
-                    recommendedData.description,
-                    recommendedData.podcast_image,
-                    recommendedData.artist,
-                    recommendedData.podcast_url
-                )
-                //Play podcast
-                mediaPlayer = MediaPlayer()
-                AudioStream(requireActivity(), podcast, mediaPlayer!!).streamAudio()
-            }
-            Utils.RECOMMENDED_ARTICLES -> {
-                val article = Articles(
-                    recommendedData.id,
-                    recommendedData.name,
-                    recommendedData.description,
-                    "",
-                    recommendedData.article_url,
-                    recommendedData.published_date
-                )
-                //Navigate to News detail screen
-                replaceFragment(
-                    NewsDetailFragment.newInstance(article),
-                    R.id.layout_home,
-                    NewsDetailFragment.TAG
-                )
-            }
         }
     }
 }

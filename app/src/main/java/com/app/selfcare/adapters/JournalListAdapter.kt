@@ -1,10 +1,12 @@
 package com.app.selfcare.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +18,7 @@ import kotlinx.android.synthetic.main.layout_item_journal_list.view.*
 
 class JournalListAdapter(
     val context: Context,
-    val list: List<Journal>, private val adapterItemClickListener: OnJournalItemClickListener?,
+    var list: List<Journal>, private val adapterItemClickListener: OnJournalItemClickListener?,
 ) :
     RecyclerView.Adapter<JournalListAdapter.ViewHolder>() {
 
@@ -41,10 +43,18 @@ class JournalListAdapter(
             holder.journalMonth.text = ""
             holder.journalTime.text = ""
         } else {
-            val journalDate = DateUtils(item.journal_date + " 01:00:00")
+            val journalDate = DateUtils(item.journal_date + " " + item.journal_time)
             holder.journalDate.text = journalDate.getDay()
             holder.journalMonth.text = journalDate.getMonth()
             holder.journalTime.text = journalDate.getTime()
+        }
+
+        if (position % 3 == 0) {
+            holder.journalLayout.setCardBackgroundColor(Color.parseColor("#5C2E7E"))
+        } else if (position % 3 == 1) {
+            holder.journalLayout.setCardBackgroundColor(Color.parseColor("#3CAACC"))
+        } else if (position % 3 == 2) {
+            holder.journalLayout.setCardBackgroundColor(Color.parseColor("#301934"))
         }
 
         holder.journalTitle.text = item.name
@@ -65,5 +75,17 @@ class JournalListAdapter(
         val journalDesc: TextView = itemView.journal_desc
         val journalDelete: ImageView = itemView.imgDeletejournal
         val journalLayout: CardView = itemView.cardview_journal
+    }
+
+    fun filterList(filteredNames: ArrayList<Journal>) {
+        this.list = filteredNames
+        notifyDataSetChanged()
+    }
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 }

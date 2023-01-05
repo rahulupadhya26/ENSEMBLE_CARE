@@ -22,9 +22,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/video_call_img"
                 android:foreground="#80000000"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user_pic"
                 tools:ignore="ContentDescription" />
 
             <androidx.cardview.widget.CardView
@@ -41,7 +41,7 @@
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/video_call_img"
+                    android:src="@drawable/user_pic"
                     tools:ignore="ContentDescription" />
 
             </androidx.cardview.widget.CardView>
@@ -130,15 +130,14 @@
         <RelativeLayout
             android:id="@+id/remoteVideoView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/remoteBackground">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_centerInParent="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/video_call_img"
-
+                android:src="@drawable/user_pic"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>
 
@@ -162,13 +161,13 @@
                 android:id="@+id/txtUserVideoTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/fontfamily"
-                android:textSize="@dimen/_20sp"
-                android:textStyle="bold"
-                android:padding="@dimen/_20dp"
-                android:layout_centerInParent="true"
                 android:layout_alignParentEnd="true"
-                android:textColor="@color/white"/>
+                android:layout_centerInParent="true"
+                android:padding="@dimen/_20dp"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_20sp"
+                android:textStyle="bold" />
 
         </RelativeLayout>
 
@@ -183,19 +182,20 @@
             app:cardElevation="@dimen/_5dp"
             app:cardCornerRadius="@dimen/_10dp">
 
-            <FrameLayout
+            <RelativeLayout
                 android:id="@+id/localVideoView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/localBackground">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/remote_img"
+                    android:src="@drawable/user_pic"
                     tools:ignore="ContentDescription" />
-            </FrameLayout>
+            </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
 
@@ -204,17 +204,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:paddingBottom="@dimen/_20dp"
+            android:background="@drawable/video_audio_call_btn_background"
             android:paddingTop="@dimen/_20dp"
-            android:background="@drawable/video_audio_call_btn_background">
+            android:paddingBottom="@dimen/_20dp">
 
             <ImageView
                 android:id="@+id/buttonCall"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:scaleType="centerCrop"
-                android:layout_marginEnd="15dp"
                 android:layout_centerInParent="true"
+                android:layout_marginEnd="15dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/btn_endcall"
                 tools:ignore="ContentDescription" />
 

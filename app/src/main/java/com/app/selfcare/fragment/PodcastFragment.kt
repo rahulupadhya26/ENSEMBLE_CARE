@@ -11,15 +11,19 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.app.selfcare.R
 import com.app.selfcare.adapters.PodcastListAdapter
 import com.app.selfcare.controller.OnPodcastItemClickListener
+import com.app.selfcare.data.Articles
 import com.app.selfcare.data.Podcast
+import com.app.selfcare.data.Video
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.AudioStream
+import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_podcast.*
+import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
 
@@ -27,6 +31,8 @@ import java.lang.reflect.Type
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param3"
+private const val ARG_PARAM4 = "param4"
 
 /**
  * A simple [Fragment] subclass.
@@ -36,14 +42,18 @@ private const val ARG_PARAM2 = "param2"
 class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
     // TODO: Rename and change types of parameters
     private var podcasts: ArrayList<Podcast>? = null
-    private var param2: String? = null
+    private var wellnessType: String? = null
     private var mediaPlayer: MediaPlayer? = null
+    private var isFavourite: Boolean = false
+    private var category: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             podcasts = it.getParcelableArrayList(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            wellnessType = it.getString(ARG_PARAM2)
+            isFavourite = it.getBoolean(ARG_PARAM3)
+            category = it.getString(ARG_PARAM4)
         }
     }
 
@@ -54,9 +64,14 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.VISIBLE
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+        updateStatusBarColor(R.color.white)
         mediaPlayer = MediaPlayer()
+
+        podcastsBack.setOnClickListener {
+            popBackStack()
+        }
 
         /*val podcastLists: ArrayList<Podcast> = arrayListOf()
         podcastLists.add(Podcast("Sample 1", "", "Artist 1", ""))
@@ -65,7 +80,57 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
         if (podcasts != null && podcasts!!.isNotEmpty()) {
             displayPodcasts(podcasts!!)
         } else {
-            getPodcastList()
+            when (wellnessType!!) {
+                Utils.WELLNESS_EXERCISE -> {
+                    if (isFavourite) {
+                        getFavDetailPodcastData()
+                    } else {
+                        getDetailPodcastData("exercise_data/")
+                    }
+                }
+                Utils.WELLNESS_NUTRITION -> {
+                    if (isFavourite) {
+                        getFavDetailPodcastData()
+                    } else {
+                        getDetailPodcastData("nutrition_data/")
+                    }
+                }
+                Utils.WELLNESS_MINDFULNESS -> {
+                    if (isFavourite) {
+                        getFavDetailPodcastData()
+                    } else {
+                        getDetailPodcastData("mindfulness_data/")
+                    }
+                }
+                Utils.WELLNESS_YOGA -> {
+                    if (isFavourite) {
+                        getFavDetailPodcastData()
+                    } else {
+                        getDetailPodcastData("yoga_data/")
+                    }
+                }
+                else -> {
+                    getPodcastList()
+                }
+            }
+        }
+    }
+
+    private fun getFavDetailPodcastData() {
+        getFavoriteData(wellnessType!!) { response ->
+            val jsonObj = JSONObject(response!!)
+            val podcastList: Type = object : TypeToken<ArrayList<Podcast?>?>() {}.type
+            val podcastLists: ArrayList<Podcast> = Gson().fromJson(jsonObj.getString("podcasts"), podcastList)
+            displayPodcasts(podcastLists)
+        }
+    }
+
+    private fun getDetailPodcastData(type: String) {
+        getDetailData(type, category!!) { response ->
+            val jsonObj = JSONObject(response!!)
+            val podcastList: Type = object : TypeToken<ArrayList<Podcast?>?>() {}.type
+            val podcastLists: ArrayList<Podcast> = Gson().fromJson(jsonObj.getString("podcasts"), podcastList)
+            displayPodcasts(podcastLists)
         }
     }
 
@@ -74,7 +139,7 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getData("PI0020", getAccessToken())
+                    .getResourceDashboardData("Dashboard", getAccessToken())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -85,10 +150,10 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            val podcastLists: ArrayList<Podcast>
-                            val podcastList: Type =
-                                object : TypeToken<ArrayList<Podcast?>?>() {}.type
-                            podcastLists = Gson().fromJson(responseBody, podcastList)
+                            val jsonObj = JSONObject(responseBody)
+                            //Podcast
+                            val podcastList: Type = object : TypeToken<ArrayList<Podcast?>?>() {}.type
+                            val podcastLists: ArrayList<Podcast> = Gson().fromJson(jsonObj.getString("podcasts"), podcastList)
                             displayPodcasts(podcastLists)
                         } catch (e: Exception) {
                             hideProgress()
@@ -96,7 +161,6 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
                         }
                     }, { error ->
                         hideProgress()
-                        //displayToast("Error ${error.localizedMessage}")
                         if ((error as HttpException).code() == 401) {
                             userLogin(
                                 preference!![PrefKeys.PREF_EMAIL]!!,
@@ -117,10 +181,11 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
         if (podcasts.isNotEmpty()) {
             txtNoPodcasts.visibility = View.GONE
             recyclerViewPodcastList.visibility = View.VISIBLE
+            val noOfColumns = calculateNoOfColumns(requireActivity(), 120F)
             recyclerViewPodcastList.apply {
                 layoutManager = GridLayoutManager(
                     mActivity!!,
-                    2
+                    noOfColumns
                 )
                 adapter = PodcastListAdapter(
                     mActivity!!,
@@ -152,11 +217,13 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: ArrayList<Podcast>, param2: String) =
+        fun newInstance(param1: ArrayList<Podcast>, param2: String, param3: Boolean, param4: String) =
             PodcastFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
+                    putBoolean(ARG_PARAM3, param3)
+                    putString(ARG_PARAM4, param4)
                 }
             }
 
@@ -164,6 +231,10 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
     }
 
     override fun onPodcastItemClicked(podcast: Podcast) {
-        AudioStream(requireActivity(), podcast, mediaPlayer!!).streamAudio()
+        replaceFragment(
+            PodcastDetailFragment.newInstance(podcast, wellnessType!!),
+            R.id.layout_home,
+            PodcastDetailFragment.TAG
+        )
     }
 }

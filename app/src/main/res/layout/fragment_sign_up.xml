@@ -15,6 +15,15 @@
         android:layout_alignParentTop="true"
         android:layout_margin="@dimen/_15dp">
 
+        <ImageView
+            android:id="@+id/imgVerifyBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="@string/app_name"
+            android:padding="@dimen/_5dp"
+            android:src="@drawable/journal_resource_back"
+            app:tint="@color/white" />
+
         <TextView
             android:id="@+id/txtProfDetails"
             android:layout_width="match_parent"
@@ -23,9 +32,10 @@
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/white"
             android:textSize="@dimen/_22sp"
-            android:layout_marginTop="@dimen/_10dp"
             android:layout_marginStart="@dimen/_10dp"
-            android:textStyle="bold" />
+            android:layout_marginEnd="@dimen/_10dp"
+            android:textStyle="bold"
+            android:layout_marginBottom="30dp"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -35,27 +45,30 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_18sp"
             android:layout_marginStart="@dimen/_10dp"
-            android:layout_marginTop="-5dp"/>
+            android:layout_marginTop="-5dp"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/txtName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/_20dp"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/white"
             android:textSize="@dimen/_16sp"
+            android:text="James Oliver"
+            android:visibility="gone"
             android:layout_marginStart="@dimen/_10dp" />
 
         <TextView
-            android:id="@+id/txtEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-5dp"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/white"
             android:textSize="@dimen/_16sp"
-            android:layout_marginStart="@dimen/_10dp"/>
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_20dp"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/txtPhoneNo"
@@ -65,7 +78,8 @@
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/white"
             android:textSize="@dimen/_16sp"
-            android:layout_marginStart="@dimen/_10dp" />
+            android:layout_marginStart="@dimen/_10dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
@@ -83,16 +97,26 @@
             android:layout_margin="@dimen/_10dp">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginEnd="@dimen/_10dp"
+                android:text="We have sent you the verification code to your email. Please check your inbox or spam folder"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="#666666"
+                android:textSize="@dimen/_18sp" />
+
+            <TextView
+                android:id="@+id/txtEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Code will be active for 10 minutes."
                 android:textAppearance="@style/fontfamily"
                 android:textColor="@color/black"
-                android:gravity="center"
-                android:textStyle="bold"
+                android:textSize="@dimen/_18sp"
+                android:layout_marginTop="@dimen/_5dp"
                 android:layout_marginStart="@dimen/_10dp"
-                android:layout_marginEnd="@dimen/_10dp"
-                android:textSize="@dimen/_18sp"/>
+                android:layout_marginEnd="@dimen/_10dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -109,9 +133,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginEnd="10dp"
                 android:orientation="horizontal"
                 android:weightSum="4">
 
@@ -126,7 +150,7 @@
                     <EditText
                         android:id="@+id/etOtp1"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="70dp"
                         android:textAppearance="@style/fontfamily"
                         android:gravity="center"
                         android:imeOptions="actionNext"
@@ -151,7 +175,7 @@
                     <EditText
                         android:id="@+id/etOtp2"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="70dp"
                         android:textAppearance="@style/fontfamily"
                         android:gravity="center"
                         android:imeOptions="actionNext"
@@ -176,7 +200,7 @@
                     <EditText
                         android:id="@+id/etOtp3"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="70dp"
                         android:textAppearance="@style/fontfamily"
                         android:gravity="center"
                         android:imeOptions="actionNext"
@@ -201,7 +225,7 @@
                     <EditText
                         android:id="@+id/etOtp4"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="70dp"
                         android:textAppearance="@style/fontfamily"
                         android:gravity="center"
                         android:imeOptions="actionNext"
@@ -261,6 +285,20 @@
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Code will be active for 10 mins"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginStart="@dimen/_10dp"
+                android:layout_marginEnd="@dimen/_10dp"
+                android:textSize="@dimen/_18sp"/>
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -291,7 +329,6 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/resendBtnTimer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_5dp"
@@ -309,7 +346,7 @@
             android:id="@+id/txtReceiveCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/resend"
+            android:layout_above="@+id/layoutResendBtn"
             android:gravity="center"
             android:text="Didn't receive the code?"
             android:textAppearance="@style/fontfamily"
@@ -317,18 +354,36 @@
             android:textSize="@dimen/_18sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/resend"
+        <LinearLayout
+            android:id="@+id/layoutResendBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/btn_verify_continue"
-            android:gravity="center"
-            android:paddingBottom="@dimen/_10dp"
-            android:text="@string/resend_the_code"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="#830CDB"
-            android:textSize="@dimen/_20sp"
-            android:textStyle="bold" />
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/resend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="@dimen/_10dp"
+                android:text="@string/resend_the_code"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="#830CDB"
+                android:textSize="@dimen/_20sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/resendBtnTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:paddingBottom="@dimen/_10dp"
+                android:textSize="@dimen/_18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btn_verify_continue"
@@ -336,11 +391,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="@dimen/_30dp"
+            android:layout_marginStart="@dimen/_20dp"
             android:layout_marginTop="@dimen/_10dp"
-            android:layout_marginEnd="@dimen/_30dp"
+            android:layout_marginEnd="@dimen/_20dp"
             android:layout_marginBottom="@dimen/_10dp"
-            android:text="Verify and Create account" />
+            android:text="Verify and Create Account" />
 
     </RelativeLayout>
 

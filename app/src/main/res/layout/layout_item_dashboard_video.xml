@@ -71,7 +71,6 @@
                 android:layout_marginEnd="@dimen/_10dp"
                 android:layout_marginBottom="@dimen/_10dp"
                 android:ellipsize="end"
-                android:fontFamily="@font/muli"
                 android:maxLines="1"
                 android:textColor="@color/primaryGreen"
                 android:textSize="10sp" />

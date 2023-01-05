@@ -118,8 +118,7 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:foreground="#40000000"
-                                            android:scaleType="centerCrop"
-                                            android:src="@drawable/weight_loss_img" />
+                                            android:scaleType="centerCrop" />
 
                                         <TextView
                                             android:layout_width="match_parent"
@@ -165,8 +164,7 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:foreground="#40000000"
-                                            android:scaleType="centerCrop"
-                                            android:src="@drawable/gain_weight" />
+                                            android:scaleType="centerCrop" />
 
                                         <TextView
                                             android:layout_width="match_parent"
@@ -219,8 +217,7 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:foreground="#40000000"
-                                            android:scaleType="centerCrop"
-                                            android:src="@drawable/build_muscle" />
+                                            android:scaleType="centerCrop" />
 
                                         <TextView
                                             android:layout_width="match_parent"
@@ -266,8 +263,7 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:foreground="#40000000"
-                                            android:scaleType="centerCrop"
-                                            android:src="@drawable/eat_healthy" />
+                                            android:scaleType="centerCrop" />
 
                                         <TextView
                                             android:layout_width="match_parent"

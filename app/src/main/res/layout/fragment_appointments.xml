@@ -11,53 +11,84 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/_10dp"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/appointmentsBack"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/_8dp"
+                android:src="@drawable/journal_resource_back"
+                app:tint="@color/black" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Appointments"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:layout_centerInParent="true"
+                android:textSize="@dimen/_24sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/refreshAppointment"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/_10dp"
+                android:src="@drawable/ic_refresh"
+                app:tint="@color/primaryGreen" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:text="Appointments"
-                android:layout_toLeftOf="@+id/refresh"
                 android:textAppearance="@style/fontfamily"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_26sp"
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/refresh"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:padding="@dimen/_10dp"
                 android:src="@drawable/ic_refresh"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 app:tint="@color/primaryGreen" />
         </RelativeLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewAppointmentList"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutAppointmentList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            app:tabIndicatorColor="@color/primaryGreen"
+            app:tabIndicatorHeight="@dimen/_5dp"
+            app:tabIndicatorFullWidth="false"
+            app:tabSelectedTextColor="@color/primaryGreen"
+            app:tabTextColor="#908A94"/>
 
-        <TextView
-            android:id="@+id/txtNoAppointmentList"
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPagerAppointmentList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/_10dp"
-            android:gravity="center"
-            android:padding="@dimen/_10dp"
-            android:text="Currently you don't have any appointments."
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/localBackground"
-            android:textSize="@dimen/_22sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
+            android:background="#F1F5FC"/>
 
     </LinearLayout>
 

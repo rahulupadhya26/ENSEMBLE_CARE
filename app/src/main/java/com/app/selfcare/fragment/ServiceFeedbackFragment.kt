@@ -55,10 +55,10 @@ class ServiceFeedbackFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        ratingBarServiceRating.onRatingBarChangeListener =
+        /*ratingBarServiceRating.onRatingBarChangeListener =
             RatingBar.OnRatingBarChangeListener { p0, p1, p2 ->
                 serviceFeedbackRating = p1.toString()
-            }
+            }*/
 
         btnServiceFeedback.setOnClickListener {
             if (serviceFeedbackRating != null) {

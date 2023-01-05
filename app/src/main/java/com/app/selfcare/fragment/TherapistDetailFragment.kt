@@ -46,14 +46,17 @@ class TherapistDetailFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
+        updateStatusBarColor(R.color.white)
 
         txtTherapistName.text =
             therapist!!.first_name + " " + therapist!!.middle_name + " " + therapist!!.last_name
-        therapistType.text = therapist!!.qualification
+        therapistType.text = therapist!!.doctor_type
         txtTherapyDescription.text = therapist!!.description
         img_back.setOnClickListener {
             popBackStack()
         }
+
+        displayRating(therapist!!.ratings)
 
         // Invoking touch listener to detect movement of ScrollView
         //scrollTherapyDescription.setOnTouchListener(this)
@@ -80,15 +83,84 @@ class TherapistDetailFragment : BaseFragment() {
 
         btnConfirmDoctorDetail.setOnClickListener {
             if (Utils.providerId.isNotEmpty() &&
-                Utils.providerPublicId.isNotEmpty() &&
                 Utils.providerType.isNotEmpty() &&
                 Utils.providerName.isNotEmpty()
             ) {
                 replaceFragment(
-                    TherapySelectionFragment(),
+                    TherapyBasicDetailsCFragment(),
                     R.id.layout_home,
-                    TherapySelectionFragment.TAG
+                    TherapyBasicDetailsCFragment.TAG
                 )
+            }
+        }
+    }
+
+    private fun displayRating(rating: String) {
+        when (rating) {
+            "1" -> {
+                detailFilledStar1.visibility = View.VISIBLE
+                detailEmptyStar1.visibility = View.VISIBLE
+                detailEmptyStar2.visibility = View.VISIBLE
+                detailEmptyStar3.visibility = View.VISIBLE
+                detailEmptyStar4.visibility = View.VISIBLE
+
+                detailFilledStar2.visibility = View.GONE
+                detailFilledStar3.visibility = View.GONE
+                detailFilledStar4.visibility = View.GONE
+                detailFilledStar5.visibility = View.GONE
+                detailEmptyStar5.visibility = View.GONE
+            }
+            "2" -> {
+                detailFilledStar1.visibility = View.VISIBLE
+                detailFilledStar2.visibility = View.VISIBLE
+                detailEmptyStar1.visibility = View.VISIBLE
+                detailEmptyStar2.visibility = View.VISIBLE
+                detailEmptyStar3.visibility = View.VISIBLE
+
+                detailFilledStar3.visibility = View.GONE
+                detailFilledStar4.visibility = View.GONE
+                detailFilledStar5.visibility = View.GONE
+                detailEmptyStar4.visibility = View.GONE
+                detailEmptyStar5.visibility = View.GONE
+            }
+            "3" -> {
+                detailFilledStar1.visibility = View.VISIBLE
+                detailFilledStar2.visibility = View.VISIBLE
+                detailFilledStar3.visibility = View.VISIBLE
+                detailEmptyStar1.visibility = View.VISIBLE
+                detailEmptyStar2.visibility = View.VISIBLE
+
+                detailFilledStar4.visibility = View.GONE
+                detailFilledStar5.visibility = View.GONE
+                detailEmptyStar3.visibility = View.GONE
+                detailEmptyStar4.visibility = View.GONE
+                detailEmptyStar5.visibility = View.GONE
+            }
+            "4" -> {
+                detailFilledStar1.visibility = View.VISIBLE
+                detailFilledStar2.visibility = View.VISIBLE
+                detailFilledStar3.visibility = View.VISIBLE
+                detailFilledStar4.visibility = View.VISIBLE
+                detailEmptyStar1.visibility = View.VISIBLE
+
+                detailFilledStar5.visibility = View.GONE
+                detailEmptyStar2.visibility = View.GONE
+                detailEmptyStar3.visibility = View.GONE
+                detailEmptyStar4.visibility = View.GONE
+                detailEmptyStar5.visibility = View.GONE
+            }
+            "5" -> {
+                detailFilledStar1.visibility = View.VISIBLE
+                detailFilledStar2.visibility = View.VISIBLE
+                detailFilledStar3.visibility = View.VISIBLE
+                detailFilledStar4.visibility = View.VISIBLE
+                detailFilledStar5.visibility = View.VISIBLE
+
+                detailEmptyStar1.visibility = View.GONE
+                detailEmptyStar2.visibility = View.GONE
+                detailEmptyStar3.visibility = View.GONE
+                detailEmptyStar4.visibility = View.GONE
+                detailEmptyStar5.visibility = View.GONE
             }
         }
     }

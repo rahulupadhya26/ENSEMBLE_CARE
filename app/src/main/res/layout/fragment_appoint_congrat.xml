@@ -7,14 +7,25 @@
     android:background="@color/screen_background_color"
     tools:context=".fragment.AppointCongratFragment">
 
+    <ImageView
+        android:id="@+id/layoutAppointCongratsScreenshot"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/screenshot"
+        app:tint="@color/primaryGreen"
+        android:layout_marginTop="@dimen/_20dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:layout_alignParentEnd="true"
+        android:scaleX="-1"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:gravity="center"
+        android:layout_above="@+id/viewBtn_go_to_dashboard"
+        android:layout_below="@+id/layoutAppointCongratsScreenshot"
         android:background="@color/screen_background_color"
-        android:layout_above="@+id/viewBtn_go_to_dashboard">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
@@ -29,9 +40,9 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:src="@drawable/success"
             android:layout_marginTop="@dimen/_20dp"
-            android:layout_marginBottom="@dimen/_20dp"/>
+            android:layout_marginBottom="@dimen/_20dp"
+            android:src="@drawable/success" />
 
         <TextView
             android:id="@+id/text_final_fname"
@@ -57,8 +68,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_30dp"
-            android:layout_marginEnd="@dimen/_30dp"
             android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_30dp"
             app:cardCornerRadius="@dimen/_10dp"
             app:cardElevation="@dimen/_5dp"
             app:cardUseCompatPadding="true">
@@ -85,9 +96,9 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_5dp"
                         android:layout_weight="0.75"
-                        android:orientation="vertical"
-                        android:layout_marginStart="@dimen/_5dp">
+                        android:orientation="vertical">
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -105,7 +116,7 @@
                                     android:textAppearance="@style/fontfamily"
                                     android:textColor="@color/primaryGreen"
                                     android:textSize="@dimen/_16sp"
-                                    android:textStyle="bold"/>
+                                    android:textStyle="bold" />
 
                                 <TextView
                                     android:id="@+id/txtAppointedTherapistType"
@@ -123,6 +134,7 @@
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
                                 android:layout_alignParentRight="true"
+                                android:layout_centerInParent="true"
                                 android:layout_marginEnd="@dimen/_5dp"
                                 android:padding="@dimen/_5dp" />
                         </RelativeLayout>
@@ -138,10 +150,10 @@
                             android:id="@+id/text_appointment_date_time"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingBottom="@dimen/_10dp"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/primaryGreen"
                             android:textSize="@dimen/_12sp"
-                            android:paddingBottom="@dimen/_10dp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -174,85 +186,5 @@
         android:layout_marginBottom="@dimen/_10dp"
         android:layout_alignParentBottom="true"
         android:text="Done" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="60dp"
-        android:layout_marginRight="60dp"
-        android:gravity="bottom"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="5dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="20dp"
-                    android:src="@drawable/decorate" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="Consultation has been successfully scheduled.\nPlease check your email for\nupdates on the appointment."
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_12sp" />
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/avenir_heavy"
-            android:gravity="center"
-            android:text="Appointment has been scheduled for"
-            android:textColor="@color/maroon"
-            android:textSize="12dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:fontFamily="@font/avenir_heavy"
-            android:gravity="center"
-            android:textColor="@color/maroon"
-            android:textSize="12dp" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5dp"
-            android:background="@drawable/button_style_blue"
-            android:padding="@dimen/_5dp"
-            android:text="Go to Dashboard"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_16sp"
-            android:visibility="gone"
-            app:hintTextAppearance="@style/fontfamily" />
-
-        <Button
-            style="@style/buttonBackground"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5dp"
-            android:text="Go to Dashboard" />
-
-    </LinearLayout>
 
 </RelativeLayout>

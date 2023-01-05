@@ -40,7 +40,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [RecommendedDataFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class RecommendedDataFragment : BaseFragment(), OnVideoItemClickListener,
+class RecommendedDataFragment : BaseFragment(),
     OnPodcastItemClickListener, OnNewsItemClickListener, OnGoalItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -69,7 +69,7 @@ class RecommendedDataFragment : BaseFragment(), OnVideoItemClickListener,
         getRecommendedData()
 
         txtViewAllRecommendedVideos.setOnClickListener {
-            if (recommended.videos.isNotEmpty()) {
+            /*if (recommended.videos.isNotEmpty()) {
                 replaceFragment(
                     VideosListFragment.newInstance(recommended.videos, ""),
                     R.id.layout_home,
@@ -77,31 +77,7 @@ class RecommendedDataFragment : BaseFragment(), OnVideoItemClickListener,
                 )
             } else {
                 displayToast("Currently there are no recommended videos.")
-            }
-        }
-
-        txtViewAllRecommendedPodcasts.setOnClickListener {
-            if (recommended.podcasts.isNotEmpty()) {
-                replaceFragment(
-                    PodcastFragment.newInstance(recommended.podcasts, ""),
-                    R.id.layout_home,
-                    PodcastFragment.TAG
-                )
-            } else {
-                displayToast("Currently there are no recommended podcasts.")
-            }
-        }
-
-        txtViewAllRecommendedArticles.setOnClickListener {
-            if (recommended.articles.isNotEmpty()) {
-                replaceFragment(
-                    NewsListFragment.newInstance(recommended.articles, ""),
-                    R.id.layout_home,
-                    NewsListFragment.TAG
-                )
-            } else {
-                displayToast("Currently there are no recommended podcasts.")
-            }
+            }*/
         }
 
         txtViewAllRecommendedProviderGoals.setOnClickListener {
@@ -136,7 +112,7 @@ class RecommendedDataFragment : BaseFragment(), OnVideoItemClickListener,
                             val recommend: Type = object : TypeToken<Recommended?>() {}.type
                             recommended = Gson().fromJson(responseBody, recommend)
 
-                            displayVideos(recommended)
+                            //displayVideos(recommended)
                             displayPodcasts(recommended)
                             displayArticles(recommended)
                             displayProviderGoals(recommended)
@@ -166,7 +142,7 @@ class RecommendedDataFragment : BaseFragment(), OnVideoItemClickListener,
         handler.postDelayed(runnable!!, 1000)
     }
 
-    private fun displayVideos(recommended: Recommended) {
+    /*private fun displayVideos(recommended: Recommended) {
         if (recommended.videos.isNotEmpty()) {
             recyclerViewRecommendedVideos.visibility = View.VISIBLE
             txtNoRecommendedVideos.visibility = View.GONE
@@ -188,7 +164,7 @@ class RecommendedDataFragment : BaseFragment(), OnVideoItemClickListener,
             recyclerViewRecommendedVideos.visibility = View.GONE
             txtNoRecommendedVideos.visibility = View.VISIBLE
         }
-    }
+    }*/
 
     private fun displayPodcasts(recommended: Recommended) {
         if (recommended.podcasts.isNotEmpty()) {
@@ -205,7 +181,7 @@ class RecommendedDataFragment : BaseFragment(), OnVideoItemClickListener,
                     DashboardPodcastAdapter(
                         mActivity!!,
                         recommended.podcasts,
-                        this@RecommendedDataFragment
+                        this@RecommendedDataFragment, ""
                     )
             }
         } else {
@@ -292,13 +268,6 @@ class RecommendedDataFragment : BaseFragment(), OnVideoItemClickListener,
         const val TAG = "Screen_recommended_data"
     }
 
-    override fun onVideoItemClickListener(video: Video) {
-        replaceFragment(
-            VideoDetailFragment.newInstance(video),
-            R.id.layout_home,
-            VideoDetailFragment.TAG
-        )
-    }
 
     override fun onPodcastItemClicked(podcast: Podcast) {
         //Play podcast
@@ -309,7 +278,7 @@ class RecommendedDataFragment : BaseFragment(), OnVideoItemClickListener,
     override fun onNewsItemClicked(articles: Articles) {
         //Navigate to News detail screen
         replaceFragment(
-            NewsDetailFragment.newInstance(articles),
+            NewsDetailFragment.newInstance(articles, ""),
             R.id.layout_home,
             NewsDetailFragment.TAG
         )

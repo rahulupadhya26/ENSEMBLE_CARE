@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnPodcastItemClickListener
 import com.app.selfcare.data.Podcast
@@ -37,22 +38,19 @@ class PodcastListAdapter(
 
     override fun onBindViewHolder(holder: PodcastListAdapter.ViewHolder, position: Int) {
         val item = list[position]
+        holder.podcastListTitle.text = item.name
         Glide.with(context)
-            .load(item.podcast_image)
-            .placeholder(R.drawable.sample_img)
+            .load(BaseActivity.baseURL.dropLast(5) + item.podcast_image)
             .transform(CenterCrop(), RoundedCorners(5))
             .into(holder.podcastImage)
-        holder.podcastTitle.text = item.name
-        holder.podcastArtist.text = item.artist
         holder.podcastLayout.setOnClickListener {
             adapterItemClickListener!!.onPodcastItemClicked(item)
         }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val podcastImage: ImageView = itemView.imgPodcast
-        val podcastTitle: TextView = itemView.txtPodcastTitle
-        val podcastArtist: TextView = itemView.txtPodcastArtist
-        val podcastLayout: CardView = itemView.cardview_podcast
+        val podcastImage: ImageView = itemView.img_podcast
+        val podcastListTitle: TextView = itemView.podcastListTitle
+        val podcastLayout: CardView = itemView.cardviewPodcast
     }
 }

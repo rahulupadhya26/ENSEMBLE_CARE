@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/layoutMindfulnessCompletedTask"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="@dimen/_5dp"
+                    app:cardBackgroundColor="@color/mindfulness_select_color"
+                    app:cardCornerRadius="30dp"
+                    app:cardElevation="5dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="15dp"
+                        android:src="@drawable/done" />
+
+                </androidx.cardview.widget.CardView>
+
+                <com.skydoves.progressview.ProgressView
+                    android:id="@+id/progressMindfulnessCompletedTask"
+                    android:layout_width="10dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    app:progressView_autoAnimate="true"
+                    app:progressView_colorBackground="#D9D9D9"
+                    app:progressView_colorProgress="@color/primaryGreen"
+                    app:progressView_max="100"
+                    app:progressView_orientation="vertical"
+                    app:progressView_padding="1dp"
+                    app:progressView_radius="@dimen/_10dp"
+                    android:layout_marginTop="-20dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10dp"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                android:layout_marginTop="@dimen/_5dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="0.7"
+                    android:gravity="top"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtMindfulnessCompletedTaskTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_20sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-5dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txtMindfulnessCompletedTaskSubTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_14sp" />
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center"
+                            android:padding="@dimen/_5dp"
+                            android:src="@drawable/more_than" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Completed"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="#926969"
+                        android:textSize="@dimen/_14sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutMindfulnessPendingTask"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="@dimen/_5dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="30dp"
+                    app:cardElevation="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="10dp"
+                            android:src="@drawable/circle_dot" />
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="15dp"
+                            android:src="@drawable/pending_done" />
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <com.skydoves.progressview.ProgressView
+                    android:id="@+id/progressMindfulnessPendingTask"
+                    android:layout_width="10dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    app:progressView_autoAnimate="true"
+                    app:progressView_colorBackground="#D9D9D9"
+                    app:progressView_colorProgress="@color/primaryGreen"
+                    app:progressView_max="100"
+                    app:progressView_orientation="vertical"
+                    app:progressView_padding="1dp"
+                    app:progressView_radius="@dimen/_10dp"
+                    android:layout_marginTop="-20dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                android:layout_marginTop="@dimen/_5dp"
+                android:background="@color/white">
+
+                <RelativeLayout
+                    android:id="@+id/layoutMindfulnessPendingTaskBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/edittext_background_box"
+                    android:padding="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toStartOf="@+id/imgMindfulnessPendingTaskMore">
+
+                        <TextView
+                            android:id="@+id/txtMindfulnessPendingTaskTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_18sp" />
+
+                        <TextView
+                            android:id="@+id/txtMindfulnessPendingTaskSubTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#766B6B"
+                            android:textSize="@dimen/_14sp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/imgMindfulnessPendingTaskMore"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/_5dp"
+                        android:src="@drawable/more_than" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutMindfulnessPendingLaterTask"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="@dimen/_5dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="30dp"
+                    app:cardElevation="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="10dp"
+                            android:src="@drawable/pending_circle_dash" />
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="15dp"
+                            android:src="@drawable/pending_later_done" />
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <com.skydoves.progressview.ProgressView
+                    android:id="@+id/progressMindfulnessPendingLaterTask"
+                    android:layout_width="10dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    app:progressView_autoAnimate="true"
+                    app:progressView_colorBackground="#D9D9D9"
+                    app:progressView_colorProgress="@color/primaryGreen"
+                    app:progressView_max="100"
+                    app:progressView_orientation="vertical"
+                    app:progressView_padding="1dp"
+                    app:progressView_radius="@dimen/_10dp"
+                    android:layout_marginTop="-20dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                android:layout_marginTop="@dimen/_5dp"
+                android:background="@color/white">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/plan_settings_box"
+                    android:padding="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toStartOf="@+id/imgMindfulnessTaskLaterMore">
+
+                        <TextView
+                            android:id="@+id/txtMindfulnessPendingLaterTaskTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#AEA0A0"
+                            android:textSize="@dimen/_18sp" />
+
+                        <TextView
+                            android:id="@+id/txtMindfulnessPendingLaterTaskSubTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#AEA0A0"
+                            android:textSize="@dimen/_14sp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/imgMindfulnessTaskLaterMore"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/_5dp"
+                        android:src="@drawable/more_than" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

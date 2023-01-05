@@ -26,16 +26,17 @@
                 android:id="@+id/mindfulnessBack"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
                 android:padding="@dimen/_8dp"
-                android:src="@drawable/back_black_icon" />
+                android:src="@drawable/journal_resource_back"
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/exerciseOption"
-                android:layout_toRightOf="@+id/mindfulnessBack"
+                android:layout_toStartOf="@+id/mindfulnessFav"
+                android:layout_toEndOf="@+id/mindfulnessBack"
                 android:gravity="center"
                 android:text="Mindfulness"
                 android:textAppearance="@style/fontfamily"
@@ -44,13 +45,13 @@
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/exerciseOption"
+                android:id="@+id/mindfulnessFav"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
-                android:padding="@dimen/_5dp"
-                android:src="@drawable/option" />
+                android:padding="@dimen/_10dp"
+                android:src="@drawable/favorite" />
         </RelativeLayout>
 
         <ScrollView
@@ -63,31 +64,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:text="Top picks for you"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_28sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:text="Here are a few picks you might like"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/white"
-                    android:layout_marginTop="-5dp"
-                    android:textSize="@dimen/_16sp" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:weightSum="1">
 
                     <LinearLayout
@@ -153,8 +134,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_15dp"
-                            android:text="Relax"
                             android:layout_marginTop="-5dp"
+                            android:text="Relax"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="#DBD4D4"
                             android:textSize="@dimen/_14sp" />
@@ -224,8 +205,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_15dp"
-                            android:text="Nature"
                             android:layout_marginTop="-5dp"
+                            android:text="Nature"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="#DBD4D4"
                             android:textSize="@dimen/_14sp" />
@@ -234,17 +215,172 @@
 
                 </LinearLayout>
 
-                <RelativeLayout
+                <LinearLayout
+                    android:id="@+id/layoutTopPicksForYou"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_15dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_10dp"
-                        android:layout_toLeftOf="@+id/txtViewAll"
-                        android:text="Popular"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:text="Top picks for you"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_28sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginTop="-5dp"
+                        android:text="Here are a few picks you might like"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <LinearLayout
+                            android:id="@+id/layoutMindfulness1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="120dp"
+                                app:cardCornerRadius="@dimen/_10dp"
+                                app:cardElevation="@dimen/_5dp"
+                                app:cardUseCompatPadding="true">
+
+                                <ImageView
+                                    android:id="@+id/imgMindfulnessBackground1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/relaxation"
+                                    android:scaleType="centerCrop"
+                                    android:foreground="#40000000" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:src="@drawable/play_button" />
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:id="@+id/txtMindfulnessName1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_15dp"
+                                android:layout_marginTop="-10dp"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_15dp"
+                                android:layout_marginTop="-5dp"
+                                android:text="Relax"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutMindfulness2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="120dp"
+                                app:cardCornerRadius="@dimen/_10dp"
+                                app:cardElevation="@dimen/_5dp"
+                                app:cardUseCompatPadding="true">
+
+                                <ImageView
+                                    android:id="@+id/imgMindfulnessBackground2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop"
+                                    android:foreground="#40000000" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:src="@drawable/play_button" />
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:id="@+id/txtMindfulnessName2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_15dp"
+                                android:layout_marginTop="-10dp"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_15dp"
+                                android:layout_marginTop="-5dp"
+                                android:text="Anxiety"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_toStartOf="@+id/txtViewAll"
+                        android:text="Category"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_28sp"
@@ -254,13 +390,14 @@
                         android:id="@+id/txtViewAll"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
                         android:padding="@dimen/_10dp"
                         android:text="See all >"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/_14sp" />
+                        android:textSize="@dimen/_14sp"
+                        android:visibility="gone" />
                 </RelativeLayout>
 
                 <LinearLayout
@@ -270,6 +407,7 @@
                     android:weightSum="1">
 
                     <LinearLayout
+                        android:id="@+id/layoutSpiritual"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
@@ -277,46 +415,36 @@
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            app:cardCornerRadius="@dimen/_20dp"
+                            android:layout_height="120dp"
+                            app:cardCornerRadius="@dimen/_10dp"
                             app:cardElevation="@dimen/_5dp"
                             app:cardUseCompatPadding="true">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/relaxation">
+                                android:layout_height="match_parent">
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="#40000000">
+                                    android:layout_height="wrap_content">
 
                                     <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:src="@drawable/play_button"
-                                        android:layout_centerInParent="true"/>
-
-                                    <TextView
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:textAppearance="@style/fontfamily"
-                                        android:textColor="#BFFFFFFF"
-                                        android:gravity="center"
-                                        android:text="Stress Day"
-                                        android:textSize="@dimen/_36sp"
-                                        android:textStyle="bold"
-                                        android:visibility="invisible"/>
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/spiritual" />
 
                                     <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentRight="true"
-                                        android:layout_centerInParent="true"
+                                        android:id="@+id/txtSpiritual"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Spiritual"
                                         android:textAppearance="@style/fontfamily"
-                                        android:textColor="#635D5D"
-                                        android:textSize="@dimen/_12sp"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_20sp"
                                         android:textStyle="bold" />
 
                                 </RelativeLayout>
@@ -324,30 +452,11 @@
                             </LinearLayout>
 
                         </androidx.cardview.widget.CardView>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_15dp"
-                            android:text="Evening Relaxation"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/black"
-                            android:textStyle="bold"
-                            android:textSize="@dimen/_16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_15dp"
-                            android:text="Relax"
-                            android:layout_marginTop="-5dp"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/_14sp" />
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/layoutMovement"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
@@ -355,46 +464,36 @@
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            app:cardCornerRadius="@dimen/_20dp"
+                            android:layout_height="120dp"
+                            app:cardCornerRadius="@dimen/_10dp"
                             app:cardElevation="@dimen/_5dp"
                             app:cardUseCompatPadding="true">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/anxiety">
+                                android:layout_height="match_parent">
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="#40000000">
+                                    android:layout_height="wrap_content">
 
                                     <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:src="@drawable/play_button"
-                                        android:layout_centerInParent="true"/>
-
-                                    <TextView
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:textAppearance="@style/fontfamily"
-                                        android:textColor="#BFFFFFFF"
-                                        android:gravity="center"
-                                        android:text="Stress Day"
-                                        android:textSize="@dimen/_36sp"
-                                        android:textStyle="bold"
-                                        android:visibility="invisible"/>
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/movement" />
 
                                     <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentRight="true"
-                                        android:layout_centerInParent="true"
+                                        android:id="@+id/txtMovement"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Movement"
                                         android:textAppearance="@style/fontfamily"
-                                        android:textColor="#635D5D"
-                                        android:textSize="@dimen/_12sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="@dimen/_20sp"
                                         android:textStyle="bold" />
 
                                 </RelativeLayout>
@@ -403,34 +502,329 @@
 
                         </androidx.cardview.widget.CardView>
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_15dp"
-                            android:text="Release of Anxiety"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/black"
-                            android:textStyle="bold"
-                            android:textSize="@dimen/_16sp" />
+                    </LinearLayout>
+                </LinearLayout>
 
-                        <TextView
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:id="@+id/layoutFocused"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_15dp"
-                            android:text="Anxiety"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/black"
-                            android:layout_marginTop="-5dp"
-                            android:textSize="@dimen/_14sp" />
+                            android:layout_height="120dp"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/focused" />
+
+                                    <TextView
+                                        android:id="@+id/txtFocused"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Focused"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/layoutProgressive"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/progressive" />
+
+                                    <TextView
+                                        android:id="@+id/txtProgressive"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Progressive"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:id="@+id/layoutMantra"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/mantra" />
+
+                                    <TextView
+                                        android:id="@+id/txtMantra"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Mantra"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutTranscendental"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/transcendental" />
+
+                                    <TextView
+                                        android:id="@+id/txtTranscendental"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Transcendental"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:id="@+id/layoutVisualization"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/visualization" />
+
+                                    <TextView
+                                        android:id="@+id/txtVisualization"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Visualization"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutNature"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/nature" />
+
+                                    <TextView
+                                        android:id="@+id/txtNature"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Nature"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
                 </LinearLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_15dp">
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -460,6 +854,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:weightSum="1">
 
                     <LinearLayout
@@ -488,19 +883,19 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:src="@drawable/play_button"
-                                        android:layout_centerInParent="true"/>
+                                        android:layout_centerInParent="true"
+                                        android:src="@drawable/play_button" />
 
                                     <TextView
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:textAppearance="@style/fontfamily"
-                                        android:textColor="#BFFFFFFF"
                                         android:gravity="center"
                                         android:text="Stress Day"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="#BFFFFFFF"
                                         android:textSize="@dimen/_36sp"
                                         android:textStyle="bold"
-                                        android:visibility="invisible"/>
+                                        android:visibility="invisible" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -525,15 +920,15 @@
                             android:text="Evening Relaxation"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
-                            android:textStyle="bold"
-                            android:textSize="@dimen/_16sp" />
+                            android:textSize="@dimen/_16sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_15dp"
-                            android:text="Relax"
                             android:layout_marginTop="-5dp"
+                            android:text="Relax"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_14sp" />
@@ -555,8 +950,7 @@
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/anxiety">
+                                android:layout_height="match_parent">
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"
@@ -566,19 +960,19 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:src="@drawable/play_button"
-                                        android:layout_centerInParent="true"/>
+                                        android:layout_centerInParent="true"
+                                        android:src="@drawable/play_button" />
 
                                     <TextView
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:textAppearance="@style/fontfamily"
-                                        android:textColor="#BFFFFFFF"
                                         android:gravity="center"
                                         android:text="Stress Day"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="#BFFFFFFF"
                                         android:textSize="@dimen/_36sp"
                                         android:textStyle="bold"
-                                        android:visibility="invisible"/>
+                                        android:visibility="invisible" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -603,15 +997,15 @@
                             android:text="Release of Anxiety"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
-                            android:textStyle="bold"
-                            android:textSize="@dimen/_16sp" />
+                            android:textSize="@dimen/_16sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_15dp"
-                            android:text="Anxiety"
                             android:layout_marginTop="-5dp"
+                            android:text="Anxiety"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_14sp" />

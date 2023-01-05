@@ -17,7 +17,6 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:adjustViewBounds="true"
-            android:src="@drawable/user"
             android:contentDescription="@string/app_name"
             android:padding="5dp" />
 

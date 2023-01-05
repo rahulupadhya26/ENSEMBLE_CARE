@@ -1,5 +1,6 @@
 package com.app.selfcare.fragment
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,6 +15,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_create_journal.*
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.utils.DateUtil
+import com.app.selfcare.utils.DateUtils
+import com.app.selfcare.utils.Utils
 import retrofit2.HttpException
 import java.lang.Exception
 
@@ -47,11 +51,13 @@ class CreateJournalFragment : BaseFragment() {
         return R.layout.fragment_create_journal
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.VISIBLE
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+        updateStatusBarColor(R.color.journal_background)
 
         val myFormat = "MM/dd/yyyy" // mention the format you need
         val sdf = SimpleDateFormat(myFormat)
@@ -63,6 +69,12 @@ class CreateJournalFragment : BaseFragment() {
         createdJournalDate = formattedDate
         val formattedTIme = timeSdf.format(cal.time)
         createdJournalTime = formattedTIme
+        val journalCurrentDateTime = DateUtils("$formattedDate $formattedTIme")
+        currentJournalDateTime.text =
+            journalCurrentDateTime.getDay() + " " +
+                    journalCurrentDateTime.getFullMonthName() + " " +
+                    journalCurrentDateTime.getYear() + " at " +
+                    journalCurrentDateTime.getTimeWithFormat().uppercase()
         /*val dateSetListener =
             DatePickerDialog.OnDateSetListener { views, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
@@ -83,20 +95,22 @@ class CreateJournalFragment : BaseFragment() {
             datePickerDialog.show()
         }*/
 
-        btnSaveJournal.setOnClickListener {
-            if (getText(txtJournalDate).isNotEmpty()) {
-                if (getText(edit_txt_journal_title).isNotEmpty()) {
-                    if (getText(edit_txt_journal).isNotEmpty()) {
-                        //Call create journal api
-                        createJournal()
-                    } else {
-                        setEditTextError(edit_txt_journal, "Description cannot be empty!")
-                    }
+        /*createJournalBack.setOnClickListener {
+            popBackStack()
+        }*/
+
+        createJournalBack.setOnClickListener {
+            if (getText(edit_txt_journal_title).isNotEmpty()) {
+                if (getText(edit_txt_journal).isNotEmpty()) {
+                    //Call create journal api
+                    createJournal()
                 } else {
-                    setEditTextError(edit_txt_journal_title, "Title cannot be empty!")
+                    //setEditTextError(edit_txt_journal, "Description cannot be empty!")
+                    popBackStack()
                 }
             } else {
-                setEditTextError(txtJournalDate, "Date cannot be empty!")
+                //setEditTextError(edit_txt_journal_title, "Title cannot be empty!")
+                popBackStack()
             }
         }
     }
@@ -111,7 +125,7 @@ class CreateJournalFragment : BaseFragment() {
                         CreateJournal(
                             getText(edit_txt_journal_title),
                             getText(edit_txt_journal),
-                            preference!![PrefKeys.PREF_PATIENT_ID,""]!!,
+                            preference!![PrefKeys.PREF_PATIENT_ID, ""]!!,
                             getText(txtJournalDate),
                             createdJournalTime!!
                         ), getAccessToken()
@@ -126,14 +140,7 @@ class CreateJournalFragment : BaseFragment() {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            //if (status == "200") {
                             popBackStack()
-                            /*} else {
-                                displayMsg(
-                                    "Alert",
-                                    "Something went wrong.. Please try after sometime"
-                                )
-                            }*/
                         } catch (e: Exception) {
                             hideProgress()
                             displayToast("Something went wrong.. Please try after sometime")

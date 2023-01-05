@@ -90,9 +90,9 @@ class BottomNavigationFragment : BaseFragment() {
 
         fab.setOnClickListener {
             replaceFragment(
-                TherapistListFragment.newInstance(false),
+                ClientAvailabilityFragment.newInstance(false),
                 R.id.layout_home,
-                TherapistListFragment.TAG
+                ClientAvailabilityFragment.TAG
             )
         }
 
@@ -132,9 +132,9 @@ class BottomNavigationFragment : BaseFragment() {
             cardViewCrisis.visibility = View.GONE
 
             replaceFragmentNoBackStack(
-                ActivityCarePlanFragment(),
+                CarePlanDashboardFragment(),
                 R.id.layoutContent,
-                ActivityCarePlanFragment.TAG
+                CarePlanDashboardFragment.TAG
             )
             fab.visibility = View.GONE
         }

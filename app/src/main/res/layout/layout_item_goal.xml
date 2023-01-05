@@ -16,7 +16,6 @@
             android:id="@+id/layout_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/theme_bottom_bg"
             android:gravity="center"
             android:padding="@dimen/_5dp">
 

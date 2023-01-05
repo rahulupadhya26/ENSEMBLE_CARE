@@ -14,6 +14,7 @@ import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.fragment_final_review.*
 import kotlinx.android.synthetic.main.fragment_insurance.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.*
 import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.imgPrescriptionPic1
 import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.layoutVideoCall
@@ -51,8 +52,13 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.VISIBLE
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+        updateStatusBarColor(R.color.screen_background_color)
+
+        callModeBack.setOnClickListener {
+            popBackStack()
+        }
 
         layoutPhoneCall.setOnClickListener {
             communicationType = "Audio"
@@ -120,28 +126,12 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             )
         }
 
-        layoutOfficeVisit.setOnClickListener {
-            communicationType = "Office visit"
-        }
-
-        tvAddTherapyReviewPic.setOnClickListener {
-            captureImage(imgPrescriptionPic)
-        }
-
-        imgPrescriptionPic.setOnClickListener {
-            showImage(imgPrescriptionPic)
-        }
-
-        imgTherapistReviewPicClear.setOnClickListener {
-            imgPrescriptionPic.setImageDrawable(null)
-            imgPrescriptionPic.setImageResource(R.drawable.prescription)
-        }
-
         cardViewPrescription1.setOnClickListener {
             if (getBitmapList().size > 0) {
                 showImage(getBitmapList()[0])
             } else {
-                showImageDialog()
+                captureImage(null, "Prescription")
+                //showImageDialog()
             }
         }
 
@@ -149,7 +139,8 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             if (getBitmapList().size > 1) {
                 showImage(getBitmapList()[1])
             } else {
-                showImageDialog()
+                //showImageDialog()
+                captureImage(null, "Prescription")
             }
         }
 
@@ -157,7 +148,8 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             if (getBitmapList().size > 2) {
                 showImage(getBitmapList()[2])
             } else {
-                showImageDialog()
+                //showImageDialog()
+                captureImage(null, "Prescription")
             }
         }
 
@@ -172,7 +164,7 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
 
         imgPrescriptionPic2Clear.setOnClickListener {
             if (getBitmapList().size > 1) {
-                getBitmapList().removeAt(0)
+                getBitmapList().removeAt(1)
                 imgPrescriptionPic2.setImageDrawable(null)
                 imgPrescriptionPic2.setImageResource(R.drawable.plusnew)
                 onResume()
@@ -181,7 +173,7 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
 
         imgPrescriptionPic3Clear.setOnClickListener {
             if (getBitmapList().size > 2) {
-                getBitmapList().removeAt(0)
+                getBitmapList().removeAt(2)
                 imgPrescriptionPic3.setImageDrawable(null)
                 imgPrescriptionPic3.setImageResource(R.drawable.plusnew)
                 onResume()

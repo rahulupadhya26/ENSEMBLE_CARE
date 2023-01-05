@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutDayWiseNumber"
+    android:layout_width="60dp"
+    android:layout_height="70dp"
+    android:background="@drawable/calendar_item_background"
+    android:backgroundTint="@color/white"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txtDayTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textAppearance="@style/fontfamily"
+        android:gravity="center"
+        android:text="Day"
+        android:textColor="@color/carePlanDayNumber"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/txtDayNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textAppearance="@style/fontfamily"
+        android:text="01"
+        android:textColor="@color/carePlanDayNumber"
+        android:textSize="16sp"/>
+
+</LinearLayout>

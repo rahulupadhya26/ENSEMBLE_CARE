@@ -39,6 +39,8 @@ class RegistrationFragment : BaseFragment() {
     private var param2: String? = null
     private var selectedGender: String? = null
     private var genderData: Array<String>? = null
+    private var selectedPrefLang: String? = null
+    private var prefLangData: Array<String>? = null
     private var register: Register? = null
     private var selectedTherapy: String? = null
 
@@ -74,6 +76,7 @@ class RegistrationFragment : BaseFragment() {
         }
 
         genderSpinner()
+        preferredLangSpinner()
         setDobCalender()
 
         onClickEvents()
@@ -149,9 +152,42 @@ class RegistrationFragment : BaseFragment() {
         }
     }
 
+    private fun preferredLangSpinner() {
+        try {
+            prefLangData = resources.getStringArray(R.array.preferred_language)
+            val adapter = ArrayAdapter(
+                requireActivity(),
+                R.layout.spinner_dropdown_custom_item, prefLangData!!
+            )
+            txtSignupPreferredLang.adapter = adapter
+            if (Utils.prefLang.isNotEmpty()) {
+                Handler().postDelayed({
+                    if (txtSignupPreferredLang != null)
+                        txtSignupPreferredLang.setSelection(prefLangData!!.indexOf(Utils.prefLang))
+                }, 300)
+            }
+            txtSignupPreferredLang.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View, position: Int, id: Long
+                ) {
+                    selectedPrefLang = prefLangData!![position]
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // write code to perform some action
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         genderSpinner()
+        preferredLangSpinner()
     }
 
     private fun setDobCalender() {
@@ -247,6 +283,7 @@ class RegistrationFragment : BaseFragment() {
         Utils.lastName = getText(etSignUpLname)
         Utils.ssn = getText(etSignUpSSN).replace("-", "")
         Utils.gender = selectedGender!!
+        Utils.prefLang = selectedPrefLang!!
         Utils.dob = txt_signup_dob.text.toString()
         replaceFragment(
             RegisterPartBFragment(),

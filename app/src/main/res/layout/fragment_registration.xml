@@ -104,8 +104,9 @@
                     android:layout_marginBottom="@dimen/_5dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_16sp"
-                    android:hint="Ex: John"
+                    android:hint="First Name"
                     android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:textColorHint="#807B7B"
                     android:background="@drawable/edittext_background_box"/>
 
@@ -129,9 +130,10 @@
                     android:maxLength="50"
                     android:maxLines="2"
                     android:layout_marginBottom="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_16sp"
-                    android:hint="Ex: Murial"
+                    android:hint="Middle Name"
                     android:textStyle="bold"
                     android:textColorHint="#807B7B"
                     android:background="@drawable/edittext_background_box"/>
@@ -156,9 +158,10 @@
                     android:maxLength="50"
                     android:maxLines="2"
                     android:layout_marginBottom="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_16sp"
-                    android:hint="Ex: Stephen"
+                    android:hint="Last Name"
                     android:textStyle="bold"
                     android:textColorHint="#807B7B"
                     android:background="@drawable/edittext_background_box"/>
@@ -207,11 +210,13 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edittext_background_box"
                     android:padding="@dimen/_5dp"
-                    android:layout_marginBottom="@dimen/_5dp">
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp">
+
                     <Spinner
                         android:id="@+id/spinner_signup_gender"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp" />
+                        android:layout_height="45dp" />
                 </RelativeLayout>
 
                 <TextView
@@ -232,11 +237,35 @@
                     android:maxLines="1"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_16sp"
-                    android:hint="Select..."
-                    android:layout_marginBottom="@dimen/_30dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:hint="Date of Birth"
                     android:textStyle="bold"
                     android:textColorHint="#807B7B"
                     android:background="@drawable/edittext_background_box"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Preferred Language"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_background_box"
+                    android:padding="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp">
+
+                    <Spinner
+                        android:id="@+id/txtSignupPreferredLang"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp" />
+                </RelativeLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -389,11 +418,11 @@
             style="@style/buttonBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10dp"
-            android:layout_marginBottom="@dimen/_10dp"
-            android:layout_marginStart="@dimen/_30dp"
-            android:layout_marginEnd="@dimen/_30dp"
             android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/_20dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_20dp"
+            android:layout_marginBottom="@dimen/_10dp"
             android:text="Next" />
 
     </RelativeLayout>

@@ -37,17 +37,7 @@ class GroupAppointmentsAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: GroupAppointmentsAdapter.ViewHolder, position: Int) {
         val item = list[position]
-        val dateTime = DateUtils(item.meeting_date.replace("-", " "))
-        holder.appointmentDateTime.text =
-            dateTime.getDay() + " " +
-                    dateTime.getMonthYear() + "  " +
-                    item.group_appointment.time + " " +
-                    item.group_appointment.select_am_or_pm
-        holder.therapistName.text = item.doctor_first_name + " " + item.doctor_last_name
-        holder.therapyType.text = "Therapist"
-        holder.startAppointment.setOnClickListener {
-            adapterItemClickListener!!.onGroupAppointmentItemClickListener(item)
-        }
+
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

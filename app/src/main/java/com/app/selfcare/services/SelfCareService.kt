@@ -345,7 +345,7 @@ class SelfCareService : Service() {
         val channelId = getString(R.string.app_name)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.bell)
+            .setSmallIcon(R.drawable.notification_icon)
             .setColor(ContextCompat.getColor(applicationContext, R.color.red))
             .setContentTitle(messageTitle)
             .setContentText(messageBody)

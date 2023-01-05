@@ -11,11 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnConsentRoisItemClickListener
 import com.app.selfcare.data.ConsentRois
-import com.app.selfcare.utils.DateUtils
 import kotlinx.android.synthetic.main.layout_item_consents_rois.view.*
 
 class ConsentRoisListAdapter(
-    val list: List<ConsentRois>,
+    val list: ArrayList<ConsentRois>,
     private val adapterItemClickListener: OnConsentRoisItemClickListener?
 ) :
     RecyclerView.Adapter<ConsentRoisListAdapter.ViewHolder>() {
@@ -45,7 +44,9 @@ class ConsentRoisListAdapter(
             holder.consentRoisStatus.text = "Incomplete"
         }
         holder.consentRoisLayout.setOnClickListener {
-            adapterItemClickListener!!.onConsentRoisItemClickListener(item)
+            if (!item.isCompleted) {
+                adapterItemClickListener!!.onConsentRoisItemClickListener(list)
+            }
         }
     }
 

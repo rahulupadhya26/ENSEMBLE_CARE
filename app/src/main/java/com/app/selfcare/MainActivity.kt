@@ -11,16 +11,14 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.DisplayMetrics
-import android.view.MenuItem
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -32,6 +30,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.loader.content.CursorLoader
 import com.app.selfcare.controller.IController
+import com.app.selfcare.controller.IOnBackPressed
 import com.app.selfcare.fragment.*
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper
@@ -41,8 +40,13 @@ import com.app.selfcare.utils.NSFWDetector
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_picture_option.view.*
+import kotlinx.android.synthetic.main.fragment_insurance.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.layout_header.*
 import kotlinx.android.synthetic.main.layout_header_drawer.*
 import kotlinx.android.synthetic.main.layout_header_drawer.view.*
@@ -69,14 +73,17 @@ class MainActivity : BaseActivity(), IController {
     private var imageView: ImageView? = null
     private var navigationView: BottomNavigationView? = null
     private var layoutBottomNav: RelativeLayout? = null
+    private var createPictureDialog: BottomSheetDialog? = null
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adjustFontScale(resources.configuration, 1.0f)
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         //window.statusBarColor = Color.WHITE
         setContentView(R.layout.activity_main)
         preference = PreferenceHelper.defaultPrefs(this)
+        FirebaseApp.initializeApp(this)
         drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         ic_menu.setOnClickListener { handleClick(it) }
         imgUserPic.setOnClickListener {
@@ -96,22 +103,18 @@ class MainActivity : BaseActivity(), IController {
             requestPermission(permissionCode)
         }
 
-        if (preference!![PrefKeys.PREF_USER_ID, ""]!!.isNotEmpty()) {
-            if (preference!![PrefKeys.PREF_IS_LOGGEDIN, false]!!) {
-                replaceFragmentNoBackStack(
-                    BottomNavigationFragment(),
-                    R.id.layout_home,
-                    BottomNavigationFragment.TAG
-                )
-            } else {
-                replaceFragmentNoBackStack(SplashFragment(), R.id.layout_home, SplashFragment.TAG)
-            }
-        } else {
-            replaceFragmentNoBackStack(SplashFragment(), R.id.layout_home, SplashFragment.TAG)
-        }
-
         getBackButton().setOnClickListener {
             popBackStack()
+        }
+
+        replaceFragmentNoBackStack(SplashFragment(), R.id.layout_home, SplashFragment.TAG)
+    }
+
+    override fun onBackPressed() {
+        val fragment =
+            this.supportFragmentManager.findFragmentById(R.id.layout_home)
+        (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
+            super.onBackPressed()
         }
     }
 
@@ -311,6 +314,12 @@ class MainActivity : BaseActivity(), IController {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
+    fun captureImage(imageView: ImageView?, type: String) {
+        this.imageView = imageView
+        displayPictureDialog(type)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun captureImage(imageView: ImageView) {
         this.imageView = imageView
         showPictureDialog()
@@ -395,7 +404,7 @@ class MainActivity : BaseActivity(), IController {
             Intent.ACTION_PICK,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         )
-        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
         startActivityForResult(galleryIntent, requestGalleryImage)
     }
 
@@ -421,6 +430,47 @@ class MainActivity : BaseActivity(), IController {
             // Save a file: path for use with ACTION_VIEW intents
             mCurrentPhotoPath = absolutePath
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun displayPictureDialog(type: String) {
+        createPictureDialog = BottomSheetDialog(this, R.style.SheetDialog)
+        val pictureDialog: View = layoutInflater.inflate(R.layout.dialog_picture_option, null)
+        createPictureDialog!!.setContentView(pictureDialog)
+        createPictureDialog!!.setCanceledOnTouchOutside(true)
+
+        pictureDialog.pictureDialogCamera.setOnClickListener {
+            createPictureDialog!!.dismiss()
+            selectedOption = 1
+            captureImage()
+        }
+
+        pictureDialog.pictureDialogGallery.setOnClickListener {
+            createPictureDialog!!.dismiss()
+            selectedOption = 0
+            uploadPicture()
+        }
+
+        if (type == "Prescription") {
+            pictureDialog.pictureDialogRemove.visibility = View.GONE
+        } else {
+            pictureDialog.pictureDialogRemove.visibility = View.VISIBLE
+        }
+
+        pictureDialog.pictureDialogRemove.setOnClickListener {
+            createPictureDialog!!.dismiss()
+            when (type) {
+                "Profile" -> {
+                    imageView!!.setImageDrawable(null)
+                    imageView!!.setImageResource(R.drawable.user_pic)
+                }
+                "Insurance" -> {
+                    imageView!!.setImageDrawable(null)
+                    imageView!!.setImageResource(R.drawable.health_insurance)
+                }
+            }
+        }
+        createPictureDialog!!.show()
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -465,26 +515,23 @@ class MainActivity : BaseActivity(), IController {
 
     private fun loadBitmap(fileName: String) {
         if (imageView != null) {
+            bitmapList.add(fileName)
             if (BitmapFactory.decodeFile(fileName) != null) {
                 NSFWDetector.isNSFW(
                     BitmapFactory.decodeFile(fileName),
                     Utils.NSFW_CONFIDENCE_THRESHOLD.toFloat()
                 ) { isNSFW, label, confidence, image ->
-                    when (label) {
-                        Utils.LABEL_SFW -> {
-                            Toast.makeText(this, "This is an obscene image", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        Utils.LABEL_NSFW -> {
-                            Glide.with(this)
-                                .load(File(fileName))
-                                .into(imageView!!)
-                            //Toast.makeText(this, "SFW with confidence: $confidence", Toast.LENGTH_SHORT).show()
-                        }
-                        else -> {
-                            Toast.makeText(this, "Error while loading image", Toast.LENGTH_SHORT)
-                                .show()
-                        }
+                    if (isNSFW) {
+                        Glide.with(this)
+                            .load(File(fileName))
+                            .into(imageView!!)
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "This is an obscene image - $confidence",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
                     }
                 }
             } else {
@@ -582,5 +629,21 @@ class MainActivity : BaseActivity(), IController {
         getHeader().visibility = View.GONE
         swipeSliderEnable(false)
         replaceFragmentNoBackStack(LoginFragment(), R.id.layout_home, LoginFragment.TAG)
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 }

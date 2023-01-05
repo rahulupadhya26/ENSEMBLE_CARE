@@ -7,6 +7,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.Gravity
 import android.view.SurfaceView
 import android.view.View
 import android.widget.Toast
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.app.selfcare.BaseActivity
 import com.app.selfcare.BuildConfig
 import com.app.selfcare.R
 import com.app.selfcare.adapters.MessageAdapter
@@ -28,8 +30,11 @@ import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.realTimeMessaging.ChatManager
 import com.app.selfcare.services.SelfCareApplication
-import com.app.selfcare.utils.MessageUtil
-import com.app.selfcare.utils.Utils
+import com.app.selfcare.utils.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
@@ -38,8 +43,10 @@ import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtm.*
 import kotlinx.android.synthetic.main.dialog_online_chat.view.*
+import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.fragment_video_call.*
 import java.text.MessageFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -47,6 +54,8 @@ import java.util.*
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param3"
+private const val ARG_PARAM4 = "param4"
 
 /**
  * A simple [Fragment] subclass.
@@ -56,8 +65,13 @@ private const val ARG_PARAM2 = "param2"
 class VideoCallFragment : BaseFragment(), OnMessageClickListener {
     // TODO: Rename and change types of parameters
     private var appointment: GetAppointment? = null
-    private var TOKEN: String? = null
+    private var RTC_TOKEN: String? = null
+    private var RTM_TOKEN: String? = null
+    private var CHANNEL_NAME: String? = null
     private var createPostDialog: BottomSheetDialog? = null
+    private var actualStartTime: String? = null
+    private var actualEndTime: String? = null
+    private var duration: String? = null
 
     // Fill the App ID of your project generated on Agora Console.
     //Gourav
@@ -111,7 +125,9 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         super.onCreate(savedInstanceState)
         arguments?.let {
             appointment = it.getParcelable(ARG_PARAM1)
-            TOKEN = it.getString(ARG_PARAM2)
+            RTC_TOKEN = it.getString(ARG_PARAM2)
+            RTM_TOKEN = it.getString(ARG_PARAM3)
+            CHANNEL_NAME = it.getString(ARG_PARAM4)
         }
     }
 
@@ -135,6 +151,23 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         } else {
             audioCallLayout.visibility = View.VISIBLE
             videoCallLayout.visibility = View.GONE
+            try {
+                val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
+                if (photo.isNotEmpty()) {
+                    Glide.with(requireActivity())
+                        .load(BaseActivity.baseURL.dropLast(5) + photo)
+                        .placeholder(R.drawable.user_pic)
+                        .transform(CenterCrop(), RoundedCorners(5))
+                        .into(imgUserLargeImage)
+                    Glide.with(requireActivity())
+                        .load(BaseActivity.baseURL.dropLast(5) + photo)
+                        .placeholder(R.drawable.user_pic)
+                        .transform(CenterCrop(), RoundedCorners(5))
+                        .into(imgUserSmallImage)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
         // If all the permissions are granted, initialize the RtcEngine object and join a channel.
@@ -144,10 +177,12 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             requestPermission(PERMISSION_REQUEST_ID)
         }
 
-        txtUserNameVideo.text = appointment!!.doctor_first_name + " " + appointment!!.doctor_last_name
+        txtUserNameVideo.text =
+            appointment!!.doctor_first_name + " " + appointment!!.doctor_last_name
         /*preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]*/
 
-        txtUserNameAudio.text = appointment!!.doctor_first_name + " " + appointment!!.doctor_last_name
+        txtUserNameAudio.text =
+            appointment!!.doctor_first_name + " " + appointment!!.doctor_last_name
         /*preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]*/
 
         buttonAudioCall.setOnClickListener {
@@ -243,22 +278,31 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         builder.setTitle("Confirmation")
         builder.setMessage("Do you wish to end the call?")
         builder.setPositiveButton("Yes") { dialog, which ->
+            val date: Calendar = Calendar.getInstance()
+            val nextMonthDate = SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(date.time)
+            val endTime = DateUtils(nextMonthDate)
+            actualEndTime = endTime.getTime()
+            duration = txtUserAudioTime.text.toString()
             endCall()
             Utils.rtmLoggedIn = false
-            callAppointmentApi(
+            sendApptStatus(appointment!!.appointment.appointment_id.toString(),
+            actualStartTime!!, actualEndTime!!, duration!!){
+                replaceFragment(
+                    TherapistFeedbackFragment.newInstance(appointment!!.appointment.appointment_id.toString()),
+                    R.id.layout_home,
+                    TherapistFeedbackFragment.TAG
+                )
+            }
+            /*callAppointmentApi(
                 appointment!!.appointment.appointment_id.toString(),
                 appointment!!.appointment.booking_date,
                 appointment!!.appointment.type_of_visit,
                 Utils.APPOINTMENT_COMPLETED
             ) { response ->
                 if (response == "Success") {
-                    replaceFragment(
-                        TherapistFeedbackFragment.newInstance(appointment!!.appointment.appointment_id.toString()),
-                        R.id.layout_home,
-                        TherapistFeedbackFragment.TAG
-                    )
+
                 }
-            }
+            }*/
         }
         builder.setNegativeButton("No") { dialog, which ->
             dialog.dismiss()
@@ -338,7 +382,6 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             localView = RtcEngine.CreateRendererView(requireActivity())
             localView!!.setZOrderMediaOverlay(true)
             localVideoView.addView(localView)
-
             // Set the local video view.
             rtcEngine.setupLocalVideo(VideoCanvas(localView, VideoCanvas.RENDER_MODE_HIDDEN, 0))
         } catch (e: Exception) {
@@ -366,6 +409,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             } else {
                 rtcEngine.disableVideo()
             }
+            //rtcEngine.enableVideo()
             rtcEngine.setVideoEncoderConfiguration(
                 VideoEncoderConfiguration(
                     VideoEncoderConfiguration.VD_640x360,
@@ -385,8 +429,12 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             // Join a channel with a token.
             //TOKEN = "0060583a41d1d7a40fbbed542383e62f45dIABbaILOTT/XIkPDxZxq4BIpXJUx3HLRv6Shgvu7MetK4cBbkbR857iyIgBmT/kB9+XxYgQAAQCHovBiAgCHovBiAwCHovBiBACHovBi"
             //CHANNEL ="45bae49f-f580-4730-bf85-409a5d166d25"
-            rtcEngine.joinChannel(TOKEN, CHANNEL, "", 0)
+            rtcEngine.joinChannel(RTC_TOKEN, CHANNEL_NAME, "", 0)
             running = true
+            val date: Calendar = Calendar.getInstance()
+            val nextMonthDate = SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(date.time)
+            val startTime = DateUtils(nextMonthDate)
+            actualStartTime = startTime.getTime()
             runTimer()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -515,7 +563,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         //onlineChatView!!.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         createPostDialog!!.setContentView(onlineChatView!!)
         createPostDialog!!.behavior.peekHeight =
-            Resources.getSystem().displayMetrics.heightPixels / 2
+            Resources.getSystem().displayMetrics.heightPixels
         createPostDialog!!.setCanceledOnTouchOutside(false)
         onlineChatView!!.relativeLayoutSend.setOnClickListener {
             val msg: String = getText(onlineChatView!!.editTextMessage)
@@ -549,9 +597,9 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
      */
     private fun doLogin() {
         try {
-            if (appointment!!.rtc_token.isNotEmpty()) {
+            if (RTM_TOKEN!!.isNotEmpty()) {
                 mRtmClient!!.login(
-                    appointment!!.rtc_token,
+                    RTM_TOKEN!!,
                     preference!![PrefKeys.PREF_EMAIL, ""],
                     object : ResultCallback<Void?> {
                         override fun onSuccess(responseInfo: Void?) {
@@ -569,7 +617,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
                         }
 
                         override fun onFailure(errorInfo: ErrorInfo) {
-                            Log.i(VideoCallFragment.TAG, "login failed: " + errorInfo.errorCode)
+                            Log.i(TAG, "login failed: " + errorInfo.errorDescription)
                             runOnUiThread {
                                 displayToast(getString(R.string.login_failed))
                             }
@@ -667,7 +715,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
      */
     private fun createAndJoinChannel() {
         // step 1: create a channel instance
-        mRtmChannel = mRtmClient!!.createChannel(appointment!!.channel_name, myChannelListener)
+        mRtmChannel = mRtmClient!!.createChannel(CHANNEL_NAME, myChannelListener)
         if (mRtmChannel == null) {
             showToast(getString(R.string.join_channel_failed))
             popBackStack()
@@ -801,7 +849,9 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         override fun onMessageReceived(message: RtmMessage, fromMember: RtmChannelMember) {
             runOnUiThread {
                 val targetName =
-                    appointment!!.doctor_first_name.take(1) + "" + appointment!!.doctor_last_name.take(1)
+                    appointment!!.doctor_first_name.take(1) + "" + appointment!!.doctor_last_name.take(
+                        1
+                    )
                 val account = fromMember.userId
                 Log.i(OnlineChatFragment.TAG, "onMessageReceived account = $account msg = $message")
                 val messageBean = MessageBean(targetName, message, false)
@@ -941,11 +991,13 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: GetAppointment, param2: String) =
+        fun newInstance(param1: GetAppointment, param2: String, param3: String, param4: String) =
             VideoCallFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM3, param3)
+                    putString(ARG_PARAM4, param4)
                 }
             }
 

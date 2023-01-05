@@ -1,121 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:id="@+id/cardview_layout_therapist">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardview_layout_therapist"
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewRecommendedTherapist"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true"
-        app:cardCornerRadius="@dimen/_10dp"
-        app:cardElevation="@dimen/_5dp">
+        android:layout_alignParentEnd="true"
+        app:cardBackgroundColor="@color/primaryGreen"
+        app:cardCornerRadius="@dimen/_2dp">
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/white"
+            android:text="Recommended"
+            android:padding="@dimen/_5dp"
+            android:textSize="@dimen/_10sp"
+            android:textStyle="bold"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardUseCompatPadding="true"
+            app:cardCornerRadius="@dimen/_10dp"
+            app:cardElevation="@dimen/_5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1"
-                android:layout_margin="@dimen/_5dp">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:cardUseCompatPadding="true"
-                    app:cardCornerRadius="@dimen/_40dp"
-                    android:layout_weight="0.3">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/imgTherapistPic"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:src="@drawable/doctor_img" />
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.7"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txtTherapistName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/primaryGreen"
-                        android:textSize="@dimen/_18sp"
-                        android:textStyle="bold"/>
-
-                    <TextView
-                        android:id="@+id/txtTherapistType"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="#837E7E"
-                        android:textSize="@dimen/_12sp"
-                        android:textStyle="bold"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider"
-                        android:layout_marginTop="@dimen/_5dp"
-                        android:layout_marginBottom="@dimen/_5dp"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1"
+                    android:layout_margin="@dimen/_5dp">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_weight="0.3">
 
-                        <TextView
+                        <androidx.cardview.widget.CardView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="#635D5D"
-                            android:textSize="@dimen/_12sp"
-                            android:textStyle="italic|bold"
-                            android:text="Next available slot : "/>
+                            app:cardCornerRadius="@dimen/_40dp"
+                            app:cardElevation="0dp"
+                            android:layout_margin="@dimen/_10dp">
+
+                            <LinearLayout
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/imgTherapistPic"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/doctor_img" />
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.7"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/txtTherapistNextSlot"
+                            android:id="@+id/txtTherapistName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/primaryGreen"
-                            android:textSize="@dimen/_12sp"
-                            android:textStyle="italic|bold"/>
+                            android:textSize="@dimen/_18sp"
+                            android:textStyle="bold"/>
 
+                        <TextView
+                            android:id="@+id/txtTherapistType"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#837E7E"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/divider"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#635D5D"
+                                android:textSize="@dimen/_12sp"
+                                android:textStyle="italic|bold"
+                                android:visibility="gone"
+                                android:text="Next available slot : "/>
+
+                            <TextView
+                                android:id="@+id/txtTherapistNextSlot"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/primaryGreen"
+                                android:textSize="@dimen/_12sp"
+                                android:visibility="gone"
+                                android:textStyle="italic|bold"/>
+
+                            <ImageView
+                                android:id="@+id/filledStar1"
+                                android:layout_width="@dimen/_20dp"
+                                android:layout_height="@dimen/_20dp"
+                                android:src="@drawable/filled_star"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/filledStar2"
+                                android:layout_width="@dimen/_20dp"
+                                android:layout_height="@dimen/_20dp"
+                                android:src="@drawable/filled_star"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/filledStar3"
+                                android:layout_width="@dimen/_20dp"
+                                android:layout_height="@dimen/_20dp"
+                                android:src="@drawable/filled_star"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/filledStar4"
+                                android:layout_width="@dimen/_20dp"
+                                android:layout_height="@dimen/_20dp"
+                                android:src="@drawable/filled_star"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/filledStar5"
+                                android:layout_width="@dimen/_20dp"
+                                android:layout_height="@dimen/_20dp"
+                                android:src="@drawable/filled_star"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/emptyStar1"
+                                android:layout_width="@dimen/_20dp"
+                                android:layout_height="@dimen/_20dp"
+                                android:src="@drawable/empty_star"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/emptyStar2"
+                                android:layout_width="@dimen/_20dp"
+                                android:layout_height="@dimen/_20dp"
+                                android:src="@drawable/empty_star"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/emptyStar3"
+                                android:layout_width="@dimen/_20dp"
+                                android:layout_height="@dimen/_20dp"
+                                android:src="@drawable/empty_star"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/emptyStar4"
+                                android:layout_width="@dimen/_20dp"
+                                android:layout_height="@dimen/_20dp"
+                                android:src="@drawable/empty_star"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/emptyStar5"
+                                android:layout_width="@dimen/_20dp"
+                                android:layout_height="@dimen/_20dp"
+                                android:src="@drawable/empty_star"
+                                android:visibility="gone"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#6C6767"
+                            android:textSize="@dimen/_12sp"
+                            android:layout_marginTop="5dp"
+                            android:text="Click to view the provider"/>
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="#6C6767"
-                        android:textSize="@dimen/_12sp"
-                        android:layout_marginTop="@dimen/_5dp"
-                        android:text="Press and hold to view the Provider"/>
                 </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-    </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>

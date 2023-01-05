@@ -1,12 +1,17 @@
 package com.app.selfcare.fragment
 
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.WindowManager
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import com.app.selfcare.MainActivity
 import com.app.selfcare.R
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
@@ -43,73 +48,34 @@ class SplashFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        val rawId = resources.getIdentifier("splash_video", "raw", requireActivity().packageName)
-        val video: Uri =
-            Uri.parse("android.resource://" + requireActivity().packageName + "/" + rawId)
 
-        imgSplashBackground.setVideoURI(video)
-        imgSplashBackground.setOnPreparedListener { mp ->
-            mp.isLooping = true
-            imgSplashBackground.start()
-        }
-        /*Glide.with(requireActivity())
-            .load("https://drive.google.com/file/d/16paRRS2WNT8jdMLFlCGrsJLbz_fguYri/view?usp=share_link")
-            .into(imgSplashBackground)*/
-        btnSplash.setOnClickListener {
-            when (preference!![PrefKeys.PREF_STEP, 0]) {
-                0 -> {
-                    replaceFragmentNoBackStack(
-                        CarouselFragment(),
-                        R.id.layout_home,
-                        CarouselFragment.TAG
-                    )
-                }
-                Utils.INTRO_SCREEN -> {
-                    replaceFragmentNoBackStack(
-                        QuestionnaireFragment(),
-                        R.id.layout_home,
-                        QuestionnaireFragment.TAG
-                    )
-                }
-                Utils.QUESTIONNAIRE -> {
-                    replaceFragmentNoBackStack(
-                        RegistrationFragment(),
-                        R.id.layout_home,
-                        RegistrationFragment.TAG
-                    )
-                }
-                Utils.REGISTER -> {
-                    replaceFragmentNoBackStack(
-                        PlanFragment(),
-                        R.id.layout_home,
-                        PlanFragment.TAG
-                    )
-                }
-                else -> {
-                    if (preference!![PrefKeys.PREF_USER_ID, ""]!!.isNotEmpty()) {
-                        if (preference!![PrefKeys.PREF_IS_LOGGEDIN, false]!!) {
-                            replaceFragmentNoBackStack(
-                                BottomNavigationFragment(),
-                                R.id.layout_home,
-                                BottomNavigationFragment.TAG
-                            )
-                        } else {
-                            replaceFragmentNoBackStack(
-                                LoginFragment(),
-                                R.id.layout_home,
-                                LoginFragment.TAG
-                            )
-                        }
-                    } else {
+        Handler().postDelayed(Runnable { // This method will be executed once the timer is over
+            if (preference!![PrefKeys.PREF_USER_ID, ""]!!.isNotEmpty()) {
+                if (preference!![PrefKeys.PREF_IS_LOGGEDIN, false]!!) {
+                    /*if (preference!![PrefKeys.PREF_STEP, 0]!! == Utils.REGISTER) {
                         replaceFragmentNoBackStack(
-                            LoginFragment(),
+                            RegisterPartCFragment(),
                             R.id.layout_home,
-                            LoginFragment.TAG
+                            RegisterPartCFragment.TAG
                         )
-                    }
+                    } else {*/
+                    replaceFragmentNoBackStack(
+                        BottomNavigationFragment(),
+                        R.id.layout_home,
+                        BottomNavigationFragment.TAG
+                    )
+                    //}
+                } else {
+                    replaceFragmentNoBackStack(
+                        WelcomeFragment(),
+                        R.id.layout_home,
+                        WelcomeFragment.TAG
+                    )
                 }
+            } else {
+                replaceFragmentNoBackStack(WelcomeFragment(), R.id.layout_home, WelcomeFragment.TAG)
             }
-        }
+        }, 1000)
     }
 
     companion object {

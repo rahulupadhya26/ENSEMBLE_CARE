@@ -1,14 +1,19 @@
 package com.app.selfcare.fragment
 
+import android.content.Context
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.app.selfcare.MainActivity
 import com.app.selfcare.R
+import com.app.selfcare.controller.IOnBackPressed
 import com.app.selfcare.data.Video
 import com.app.selfcare.utils.ExpoPlayerUtils
 import kotlinx.android.synthetic.main.fragment_video_detail.*
-import kotlinx.android.synthetic.main.layout_item_video.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,7 +26,7 @@ private const val ARG_PARAM3 = "param3"
  * Use the [VideoDetailFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class VideoDetailFragment : BaseFragment() {
+class VideoDetailFragment : BaseFragment(), IOnBackPressed {
     // TODO: Rename and change types of parameters
     private var videoDetail: Video? = null
     private var param2: String? = null
@@ -42,7 +47,7 @@ class VideoDetailFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.VISIBLE
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
         if (videoDetail != null)
@@ -55,9 +60,6 @@ class VideoDetailFragment : BaseFragment() {
         txtVideoTitle.maxLines = 10
         txtVideoDesc.text = videoDetail!!.description
         txtVideoDesc.maxLines = 1000
-        layout_video.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-        )
         img_video.visibility = View.GONE
         videosPlayer.visibility = View.VISIBLE
         expoPlayerUtils = ExpoPlayerUtils()
@@ -72,6 +74,11 @@ class VideoDetailFragment : BaseFragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     }
 
     companion object {
@@ -94,5 +101,10 @@ class VideoDetailFragment : BaseFragment() {
             }
 
         const val TAG = "Screen_Video_Details"
+    }
+
+    override fun onBackPressed(): Boolean {
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        return false
     }
 }

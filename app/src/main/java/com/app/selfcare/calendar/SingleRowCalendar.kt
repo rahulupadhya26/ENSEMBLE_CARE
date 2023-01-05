@@ -143,6 +143,15 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                     previousWeek = DateUtil.getNumberOfWeek(dateList[scrollPosition])
                 }
             })
+
+            val cal = Calendar.getInstance()
+            if (DateUtil.getMonthNumber(dateList[0]).toInt() == (cal[Calendar.MONTH] + 1)) {
+                calendarViewManager.setCalendarViewResourceId(
+                    0,
+                    dateList[0],
+                    true
+                )
+            }
         }
     }
 
@@ -224,15 +233,6 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             disableLongPress()
 
         selectionTracker.addObserver(selectionObserver)
-
-        /*val cal = Calendar.getInstance()
-        if (DateUtil.getMonthNumber(dateList[0]).toInt() == (cal[Calendar.MONTH] + 1)) {
-            calendarViewManager.setCalendarViewResourceId(
-                0,
-                dateList[0],
-                true
-            )
-        }*/
 
     }
 

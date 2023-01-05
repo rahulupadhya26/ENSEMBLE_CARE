@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.app.selfcare.R
 import com.app.selfcare.preference.PrefKeys
+import com.app.selfcare.preference.PreferenceHelper.get
 import kotlinx.android.synthetic.main.fragment_login.*
 import com.app.selfcare.preference.PreferenceHelper.set
 
@@ -42,11 +43,33 @@ class LoginFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
 
+        if (preference!![PrefKeys.PREF_IS_REMEMBER_ME, false]!!) {
+            checkBoxKeepMeSignedIn.isChecked = true
+            edit_username.setText(preference!![PrefKeys.PREF_EMAIL, ""]!!)
+            edit_password.setText(preference!![PrefKeys.PREF_PASS, ""]!!)
+        }
+
+        loginBack.setOnClickListener {
+            replaceFragmentNoBackStack(
+                WelcomeFragment(),
+                R.id.layout_home,
+                WelcomeFragment.TAG
+            )
+        }
+
+        loginForgotPassword.setOnClickListener {
+            replaceFragment(
+                ResetPasswordFragment(),
+                R.id.layout_home,
+                ResetPasswordFragment.TAG
+            )
+        }
+
         btn_login.setOnClickListener {
             if (getText(edit_username).isNotEmpty()) {
                 if (getText(edit_password).isNotEmpty()) {
                     userLogin(getText(edit_username), getText(edit_password)) { result ->
-                        preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
+                        preference!![PrefKeys.PREF_IS_REMEMBER_ME] = checkBoxKeepMeSignedIn.isChecked
                         setBottomNavigation(null)
                         setLayoutBottomNavigation(null)
                         replaceFragmentNoBackStack(
@@ -56,15 +79,15 @@ class LoginFragment : BaseFragment() {
                         )
                     }
                 } else {
-                    setEditTextError(edit_password,"Password cannot be blank.")
+                    setEditTextError(edit_password, "Password cannot be blank.")
                 }
             } else {
-                setEditTextError(edit_username,"Email Id cannot be blank.")
+                setEditTextError(edit_username, "Email Id cannot be blank.")
             }
         }
 
-        txt_signup.setOnClickListener {
-            replaceFragment(QuestionnaireFragment(), R.id.layout_home, QuestionnaireFragment.TAG)
+        layoutLoginBottom.setOnClickListener {
+            replaceFragment(CarouselFragment(), R.id.layout_home, CarouselFragment.TAG)
         }
     }
 

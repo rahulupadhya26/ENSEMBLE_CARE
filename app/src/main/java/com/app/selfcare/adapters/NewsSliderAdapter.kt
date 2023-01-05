@@ -13,7 +13,6 @@ import com.app.selfcare.R
 import com.app.selfcare.controller.OnNewsItemClickListener
 import com.app.selfcare.data.Articles
 import kotlinx.android.synthetic.main.layout_item_news_slider.view.*
-import kotlinx.android.synthetic.main.slide_item_container.view.newsSlide
 
 class NewsSliderAdapter(
     val context: Context,

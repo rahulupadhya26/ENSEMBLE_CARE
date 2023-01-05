@@ -1,12 +1,25 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
+import com.app.selfcare.adapters.CarePlanDayAdapter
+import com.app.selfcare.controller.OnCarePlanDayWiseItemClickListener
+import com.app.selfcare.data.CareDay
+import com.app.selfcare.data.CarePlans
+import com.app.selfcare.preference.PrefKeys
+import com.app.selfcare.preference.PreferenceHelper.get
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_care_plan_dashboard.*
+import retrofit2.HttpException
+import java.lang.reflect.Type
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,7 +31,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CarePlanDashboardFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CarePlanDashboardFragment : BaseFragment() {
+class CarePlanDashboardFragment : BaseFragment(), OnCarePlanDayWiseItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -41,17 +54,66 @@ class CarePlanDashboardFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        taskProgress.setProgress(64.0,100.0)
-        caloriesProgress.setProgress(24.0,100.0)
-        exerciseProgress.setProgress(43.0,100.0)
+        runOnUiThread {
+            getCarePlanDayData()
+        }
+    }
 
-        txtCarePlanTasksShowAll.setOnClickListener {
-            replaceFragment(
-                CarePlanShowAllFragment(),
-                R.id.layoutContent,
-                CarePlanShowAllFragment.TAG
+    private fun getCarePlanDayData() {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getCarePlanData(getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            val carePlanType: Type =
+                                object : TypeToken<CarePlans?>() {}.type
+                            val carePlanList: CarePlans =
+                                Gson().fromJson(responseBody, carePlanType)
+                            recyclerViewCarePlanDashboard.visibility = View.VISIBLE
+                            txtNoCarePlanAssigned.visibility = View.GONE
+                            recyclerViewCarePlanDashboard.apply {
+                                layoutManager = LinearLayoutManager(
+                                    requireActivity(), RecyclerView.VERTICAL, false
+                                )
+                                adapter = CarePlanDayAdapter(
+                                    mActivity!!,
+                                    carePlanList, this@CarePlanDashboardFragment
+                                )
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                getCarePlanDayData()
+                            }
+                        } else {
+                            recyclerViewCarePlanDashboard.visibility = View.GONE
+                            txtNoCarePlanAssigned.visibility = View.VISIBLE
+                            //displayAfterLoginErrorMsg(error)
+                        }
+                    })
             )
         }
+        handler.postDelayed(runnable!!, 1000)
     }
 
     companion object {
@@ -72,6 +134,15 @@ class CarePlanDashboardFragment : BaseFragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_care_plan_dashboard"
+    }
+
+    override fun onCarePlanDayWiseItemClickListener(carePlans: CarePlans, careDay: CareDay) {
+        replaceFragment(
+            CarePlanFragment.newInstance(carePlans, careDay),
+            R.id.layout_home,
+            CarePlanFragment.TAG
+        )
     }
 }

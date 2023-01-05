@@ -4,16 +4,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/screen_background_color"
+    android:background="@color/therapist_list_background"
     android:orientation="vertical"
     tools:context=".fragment.TherapistListFragment">
+
+    <ImageView
+        android:id="@+id/therapistListBack"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:padding="@dimen/_5dp"
+        android:src="@drawable/journal_resource_back"
+        app:tint="@color/primaryGreen" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_margin="@dimen/_15dp"
-        android:layout_above="@+id/btnConfirmDoctor">
+        android:layout_marginStart="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_10dp"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:layout_above="@+id/btnConfirmDoctor"
+        android:layout_below="@+id/therapistListBack">
 
         <TextView
             android:layout_width="match_parent"
@@ -27,10 +39,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select your Provider"
+            android:text="Select your provider"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/primaryGreen"
-            android:textSize="@dimen/_20sp"
+            android:textSize="@dimen/_18sp"
             android:layout_marginTop="@dimen/_5dp"
             android:textStyle="bold" />
 
@@ -51,6 +63,7 @@
         android:layout_marginEnd="@dimen/_30dp"
         android:layout_marginBottom="@dimen/_10dp"
         android:text="Confirm Provider"
+        android:visibility="gone"
         app:backgroundTint="@color/buttonBackground" />
 
     <Button

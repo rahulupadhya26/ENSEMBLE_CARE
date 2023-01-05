@@ -44,7 +44,7 @@ private const val ARG_PARAM2 = "param2"
 class InsuranceFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var plan: Plan? = null
-    private var param2: String? = null
+    private var addOn: Int = 0
     private var selectedInsuranceName: String = ""
     private var insuranceNameData: Array<String>? = null
 
@@ -52,7 +52,7 @@ class InsuranceFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             plan = it.getParcelable(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            addOn = it.getInt(ARG_PARAM2)
         }
     }
 
@@ -70,7 +70,13 @@ class InsuranceFragment : BaseFragment() {
         getSubTitle().text = ""
         updateStatusBarColor(R.color.initial_screen_background)
 
-        txtInsurancePlanName.text = "Plan Name: " + plan!!.plan + "($" + plan!!.price + "/month)"
+        if (addOn == 0) {
+            txtInsurancePlanName.text =
+                "Plan Name: " + plan!!.therapy.name + "($" + plan!!.price + "/month)"
+        } else {
+            txtInsurancePlanName.text =
+                "Plan Name: " + plan!!.therapy.name + "($" + addOn + "/month)"
+        }
         insuranceNameSpinner()
 
         imgInsuranceBack.setOnClickListener {
@@ -107,13 +113,14 @@ class InsuranceFragment : BaseFragment() {
         }
 
         tvAddInsuranceCardPic.setOnClickListener {
-            captureImage(imgInsurancePic)
+            //captureImage(imgInsurancePic)
+            captureImage(imgInsurancePic, "Insurance")
         }
 
-        imgInsurancePicClear.setOnClickListener {
+        /*imgInsurancePicClear.setOnClickListener {
             imgInsurancePic.setImageDrawable(null)
             imgInsurancePic.setImageResource(R.drawable.health_insurance)
-        }
+        }*/
     }
 
     private fun insuranceNameSpinner() {
@@ -153,7 +160,8 @@ class InsuranceFragment : BaseFragment() {
                             getText(etPlanId),
                             getText(etMemberId),
                             getText(etGroupId),
-                            getText(etMemberName)
+                            getText(etMemberName),
+                            "Primary"
                         ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -184,6 +192,7 @@ class InsuranceFragment : BaseFragment() {
                             }
                         } catch (e: Exception) {
                             hideProgress()
+                            e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->
@@ -216,11 +225,11 @@ class InsuranceFragment : BaseFragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: Plan, param2: String = "") =
+        fun newInstance(param1: Plan, param2: Int) =
             InsuranceFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putInt(ARG_PARAM2, param2)
                 }
             }
 

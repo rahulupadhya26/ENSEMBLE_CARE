@@ -67,13 +67,17 @@ class SignUpFragment : BaseFragment() {
         getSubTitle().text = ""
         updateStatusBarColor(R.color.initial_screen_background)
 
+        imgVerifyBack.setOnClickListener {
+            popBackStack()
+        }
+
         etOtp1.addTextChangedListener(GenericTextWatcher(etOtp2, etOtp1))
         etOtp2.addTextChangedListener(GenericTextWatcher(etOtp3, etOtp1))
         etOtp3.addTextChangedListener(GenericTextWatcher(etOtp4, etOtp2))
         etOtp4.addTextChangedListener(GenericTextWatcher(etOtp4, etOtp3))
 
-        txtName.text = "Name : " + Utils.firstName + " " + Utils.middleName + " " + Utils.lastName
-        txtEmail.text = "Email : " + Utils.email
+        txtName.text = Utils.firstName + " " + Utils.lastName
+        txtEmail.text = Utils.email
         txtPhoneNo.text = "Phone : " + formatNumbersAsCode(Utils.phoneNo)
 
         resendBtnTimer.text = "00:45"
@@ -121,8 +125,7 @@ class SignUpFragment : BaseFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun resendBtnTimer() {
-        resend.isEnabled = false
-        resend.setTextColor(ContextCompat.getColor(requireActivity(), R.color.gray))
+        resend.visibility = View.GONE
         counter = object : CountDownTimer(45000, 1000) {
             // Callback function, fired on regular interval
             @SuppressLint("SetTextI18n")
@@ -137,13 +140,7 @@ class SignUpFragment : BaseFragment() {
             // Callback function, fired
             // when the time is up
             override fun onFinish() {
-                resend.isEnabled = true
-                resend.setTextColor(
-                    ContextCompat.getColor(
-                        requireActivity(),
-                        R.color.primaryGreen
-                    )
-                );
+                resend.visibility = View.VISIBLE
                 resendBtnTimer.text = ""
             }
         }.start()
@@ -199,7 +196,7 @@ class SignUpFragment : BaseFragment() {
                                     etOtp4.setText(jsonObj.getString("otp")[3].toString())
                                 }
                             }
-                            //resendBtnTimer()
+                            resendBtnTimer()
                         } catch (e: Exception) {
                             hideProgress()
                             displayToast("Something went wrong.. Please try after sometime")
@@ -269,10 +266,12 @@ class SignUpFragment : BaseFragment() {
             Utils.refEmp,
             Utils.employer,
             Utils.employeeId,
-            Utils.gender
+            Utils.gender,
+            Utils.prefLang
         )
         preference!![PrefKeys.PREF_REG] = registerData
         preference!![PrefKeys.PREF_GENDER] = Utils.gender
+        preference!![PrefKeys.PREF_PREFERRED_LANG] = Utils.prefLang
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
@@ -288,26 +287,17 @@ class SignUpFragment : BaseFragment() {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            //val jsonObj = JSONObject(responseBody)
-                            /*preference!![PrefKeys.PREF_EMAIL] = jsonObj.getString("email")
-                            preference!![PrefKeys.PREF_PHONE_NO] = jsonObj.getString("phone_0")
-                            preference!![PrefKeys.PREF_FNAME] = jsonObj.getString("first_name")
-                            preference!![PrefKeys.PREF_MNAME] = jsonObj.getString("middle_name")
-                            preference!![PrefKeys.PREF_LNAME] = jsonObj.getString("last_name")
-                            preference!![PrefKeys.PREF_DOB] = jsonObj.getString("dob")
-                            preference!![PrefKeys.PREF_SSN] = jsonObj.getString("ssn")
-                            preference!![PrefKeys.PREF_USER_TYPE] = "Patient"
-                            preference!![PrefKeys.PREF_PASS] = Utils.pass*/
                             preference!![PrefKeys.PREF_REG] = ""
                             userLogin(
                                 Utils.email,
                                 Utils.pass
                             ) { result ->
                                 preference!![PrefKeys.PREF_STEP] = Utils.REGISTER
-                                replaceFragment(
-                                    PlanFragment(),
+                                preference!![PrefKeys.PREF_REG] = null
+                                replaceFragmentNoBackStack(
+                                    RegisterPartCFragment(),
                                     R.id.layout_home,
-                                    PlanFragment.TAG
+                                    RegisterPartCFragment.TAG
                                 )
                             }
                         } catch (e: Exception) {

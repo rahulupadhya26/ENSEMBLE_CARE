@@ -4,12 +4,18 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnNewsItemClickListener
 import com.app.selfcare.data.Articles
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import kotlinx.android.synthetic.main.layout_item_news_list.view.*
 
 class NewsListAdapter(
@@ -34,18 +40,19 @@ class NewsListAdapter(
     override fun onBindViewHolder(holder: NewsListAdapter.ViewHolder, position: Int) {
 
         val item = list[position]
-        holder.newsTitle.text = item.name
-        holder.newsDate.text = item.published_date
-        holder.newsLink.text = item.article_url
+        holder.articleListTitle.text = item.name
+        Glide.with(context)
+            .load(BaseActivity.baseURL.dropLast(5) + item.banner_image)
+            .transform(CenterCrop(), RoundedCorners(20))
+            .into(holder.articleImg)
         holder.layoutNewsPane.setOnClickListener {
             adapterItemClickListener!!.onNewsItemClicked(item)
         }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val newsTitle: TextView = itemView.txtNewsTitle
-        val newsDate: TextView = itemView.txtNewsDate
-        val newsLink: TextView = itemView.txtNewsLink
-        val layoutNewsPane: CardView = itemView.layoutNewsPane
+        val articleImg: ImageView = itemView.imgArticle
+        val articleListTitle: TextView = itemView.articleListTitle
+        val layoutNewsPane: LinearLayout = itemView.layoutNewsPane
     }
 }

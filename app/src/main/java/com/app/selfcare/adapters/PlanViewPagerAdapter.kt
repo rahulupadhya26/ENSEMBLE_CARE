@@ -28,7 +28,6 @@ class PlanViewPagerAdapter(
     class PlanViewHolder(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
-        val recommendImg: ImageView = itemView.findViewById(R.id.imgRecommended)
         val planText: TextView = itemView.findViewById(R.id.txtChoosePlan)
         val planPrice: TextView = itemView.findViewById(R.id.planPrice)
         val planBtn:TextView = itemView.findViewById(R.id.txtPlanBtn)
@@ -46,40 +45,42 @@ class PlanViewPagerAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: PlanViewHolder, position: Int) {
         val planObj: Plan = planList[position]
-        planName = if (selectedPlan.isNotEmpty()) {
-            when (selectedPlan) {
-                "Standard" -> "Plus"
-                "Plus" -> "Premium"
-                "Premium" -> "Premium"
-                else -> "Plus"
+        if(!planObj.therapy.has_addon){
+            planName = if (selectedPlan.isNotEmpty()) {
+                when (selectedPlan) {
+                    "Standard" -> "Plus"
+                    "Plus" -> "Premium"
+                    "Premium" -> "Premium"
+                    else -> "Plus"
+                }
+            } else {
+                "Plus"
             }
-        } else {
-            "Plus"
-        }
-        if (planObj.plan == "Plus") {
-            holder.recommendImg.visibility = View.VISIBLE
-        } else {
-            holder.recommendImg.visibility = View.GONE
-        }
+            /*if (planObj.therapy.name == "Plus") {
+                holder.recommendImg.visibility = View.VISIBLE
+            } else {
+                holder.recommendImg.visibility = View.GONE
+            }*/
 
-        if (planObj.plan == selectedPlan) {
-            holder.planBtn.text = "Selected"
-        }
-        /*when (planObj.plan) {
-            "Standard" -> {
-                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.white))
+            if (planObj.therapy.name == selectedPlan) {
+                holder.planBtn.text = "Selected"
             }
-            "Plus" -> {
-                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.white))
+            /*when (planObj.plan) {
+                "Standard" -> {
+                    holder.planText.setTextColor(ContextCompat.getColor(context, R.color.white))
+                }
+                "Plus" -> {
+                    holder.planText.setTextColor(ContextCompat.getColor(context, R.color.white))
+                }
+                "Premium" -> {
+                    holder.planText.setTextColor(ContextCompat.getColor(context, R.color.white))
+                }
+            }*/
+            holder.planText.text = planObj.therapy.name
+            holder.planPrice.text = "$" + planObj.price
+            holder.btnStartPlan.setOnClickListener {
+                onClickBack.onItemClicked(planObj);
             }
-            "Premium" -> {
-                holder.planText.setTextColor(ContextCompat.getColor(context, R.color.white))
-            }
-        }*/
-        holder.planText.text = planObj.plan
-        holder.planPrice.text = "$" + planObj.price
-        holder.btnStartPlan.setOnClickListener {
-            onClickBack.onItemClicked(planObj);
         }
     }
 

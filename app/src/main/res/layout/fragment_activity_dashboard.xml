@@ -387,7 +387,8 @@
                                 app:progressCap="round"
                                 app:progressColor="#B01BE4"
                                 app:progressStrokeWidth="@dimen/_10dp"
-                                app:textSize="0sp" />
+                                app:textSize="0sp"
+                                app:direction="clockwise"/>
 
                             <ImageView
                                 android:layout_width="50dp"
@@ -447,10 +448,11 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/primaryGreen"
+        android:backgroundTint="#830CDB"
         android:contentDescription="@string/app_name"
         app:maxImageSize="30dp"
         app:srcCompat="@android:drawable/ic_input_add"
-        app:tint="@color/white" />
+        app:tint="@color/white"
+        android:visibility="gone"/>
 
 </RelativeLayout>

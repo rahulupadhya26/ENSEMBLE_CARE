@@ -79,43 +79,39 @@ class ParentalConsentFragment : BaseFragment(), SignatureView.OnSignedListener {
 
         btnParentalConsent.setOnClickListener {
             if (isValidText(etParentName)) {
-                if (spinnerRelationship.text.toString().trim().isNotEmpty()) {
-                    if (isValidEmail(etParentalMailId)) {
-                        if (isValidText(etParentContactNo)) {
-                            if (getText(etParentContactNo).replace("-", "").length == 10) {
-                                if (bSigned) {
-                                    val screenshot: Bitmap =
-                                        takeScreenshotOfRootView(requireActivity().window.decorView.rootView)
-                                    createAnonymousUser(
-                                        selectedTherapy!!,
-                                        "data:image/jpg;base64," + convert(screenshot),
-                                        getText(etParentName),
-                                        spinnerRelationship.text.toString().trim(),
-                                        getText(etParentContactNo)
-                                    )
-                                } else {
-                                    displayMsg("Alert", "Please sign the consent letter")
-                                }
-                            } else {
-                                setEditTextError(
-                                    etParentContactNo,
-                                    "Enter valid phone number"
+                if (isValidEmail(etParentalMailId)) {
+                    if (isValidText(etParentContactNo)) {
+                        if (getText(etParentContactNo).replace("-", "").length == 10) {
+                            if (bSigned) {
+                                val screenshot: Bitmap =
+                                    takeScreenshotOfRootView(requireActivity().window.decorView.rootView)
+                                createAnonymousUser(
+                                    selectedTherapy!!,
+                                    "data:image/jpg;base64," + convert(screenshot),
+                                    getText(etParentName),
+                                    selectedRelationship!!,
+                                    getText(etParentContactNo)
                                 )
+                            } else {
+                                displayMsg("Alert", "Please sign the consent letter")
                             }
                         } else {
                             setEditTextError(
                                 etParentContactNo,
-                                "Phone number cannot be blank."
+                                "Enter valid phone number"
                             )
                         }
                     } else {
                         setEditTextError(
-                            etParentalMailId,
-                            "Enter valid Mail Id"
+                            etParentContactNo,
+                            "Phone number cannot be blank."
                         )
                     }
                 } else {
-                    displayMsg("Alert", "Select the relationship")
+                    setEditTextError(
+                        etParentalMailId,
+                        "Enter valid Mail Id"
+                    )
                 }
             } else {
                 setEditTextError(

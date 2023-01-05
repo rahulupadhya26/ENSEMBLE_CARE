@@ -1,63 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/resource_background"
+    android:orientation="vertical"
     tools:context=".fragment.JournalFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5dp">
+
+        <ImageView
+            android:id="@+id/journalListBack"
+            android:layout_width="@dimen/_40dp"
+            android:layout_height="@dimen/_40dp"
+            android:layout_alignParentStart="true"
+            android:padding="@dimen/_5dp"
+            android:src="@drawable/journal_resource_back" />
 
         <TextView
             android:id="@+id/txtJournals"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Journals"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginTop="-5dp"
+            android:text="Journal"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/black"
-            android:textSize="@dimen/_26sp"
-            android:textStyle="bold"
-            android:layout_margin="@dimen/_20dp"/>
+            android:textSize="30dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_5dp">
+
+        <LinearLayout
+            android:id="@+id/layoutJournalData"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/recyclerViewJournalList"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/txtJournals"
-            android:layout_margin="@dimen/_10dp"/>
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10dp"
+                android:layout_marginTop="@dimen/_5dp"
+                android:layout_marginEnd="@dimen/_10dp"
+                android:layout_marginBottom="@dimen/_5dp"
+                android:background="@drawable/bg_corner_rounded_edittext"
+                android:backgroundTint="@color/white"
+                android:hint="Search"
+                android:paddingStart="@dimen/_10dp"
+                android:paddingTop="@dimen/_5dp"
+                android:paddingEnd="@dimen/_10dp"
+                android:paddingBottom="@dimen/_5dp"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:textColorHint="#5F6368"
+                android:textSize="@dimen/_18sp" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_search">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <RelativeLayout
+                        android:id="@+id/ll_previous_7_days"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_5dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:text="Previous 7 Days"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp" />
+
+                        <ImageView
+                            android:id="@+id/iv_compress"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:padding="@dimen/_5dp"
+                            android:src="@drawable/dropdown" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_expanded_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ll_previous_7_days">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewJournalList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:layout_marginEnd="@dimen/_10dp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/ll_previous_months"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/rl_expanded_list"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_5dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:text="Last week"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp" />
+
+                        <ImageView
+                            android:id="@+id/iv_compress_one"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:padding="@dimen/_5dp"
+                            android:src="@drawable/dropdown" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_expanded_list_last_week"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ll_previous_months"
+                        android:visibility="gone">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewJournalList_last_week"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:layout_marginEnd="@dimen/_10dp" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </ScrollView>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/txt_no_journal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Currently you haven't create any journals."
-            android:textAppearance="@style/fontfamily"
-            android:textSize="@dimen/_22sp"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/txtJournals"
+            android:layout_centerInParent="true"
+            android:layout_margin="@dimen/_10dp"
             android:gravity="center"
             android:padding="@dimen/_10dp"
-            android:layout_margin="@dimen/_10dp"
-            android:layout_centerInParent="true"
+            android:text="Currently you haven't create any journals."
+            android:textAppearance="@style/fontfamily"
             android:textColor="@color/localBackground"
+            android:textSize="@dimen/_22sp"
             android:textStyle="bold"
-            android:visibility="gone"/>
-
+            android:visibility="gone" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabCreateJournalBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/primaryGreen"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="@dimen/_15dp"
-            android:src="@mipmap/ic_action_add_circle"
-            app:elevation="@dimen/_10dp"
-            app:tint="@color/white" />
+            android:layout_marginEnd="@dimen/_20dp"
+            android:layout_marginBottom="@dimen/_20dp"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/app_name"
+            app:borderWidth="0dp"
+            app:maxImageSize="30dp"
+            app:srcCompat="@android:drawable/ic_input_add"
+            app:tint="@color/primaryGreen" />
+
     </RelativeLayout>
 
-</FrameLayout>
+</LinearLayout>

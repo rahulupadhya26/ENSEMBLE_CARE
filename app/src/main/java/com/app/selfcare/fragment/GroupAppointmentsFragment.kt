@@ -153,11 +153,11 @@ class GroupAppointmentsFragment : BaseFragment(), OnGroupAppointmentItemClickLis
         // Create AgoraVideoViewer instance
         //displayMsg("Alert","Functionality under development")
 
-        val intent = Intent(requireActivity(), GroupVideoCall::class.java)
+        /*val intent = Intent(requireActivity(), GroupVideoCall::class.java)
         intent.putExtra("token", groupAppointment.rtc_token)
         intent.putExtra("channelName", groupAppointment.channel_name)
         startActivity(intent)
-        requireActivity().overridePendingTransition(0, 0)
+        requireActivity().overridePendingTransition(0, 0)*/
         /*replaceFragment(
             GroupVideoCallFragment.newInstance(
                 groupAppointment.rtc_token,

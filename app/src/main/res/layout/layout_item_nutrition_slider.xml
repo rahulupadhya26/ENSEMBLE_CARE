@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:adjustViewBounds="true"
+    android:id="@+id/layoutNutritionSliderPane"
     android:layout_marginBottom="10dp">
 
     <androidx.cardview.widget.CardView
@@ -22,8 +23,8 @@
                 android:id="@+id/imgNutrition"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:foreground="#40000000"/>
+                android:foreground="#40000000"
+                android:scaleType="centerCrop" />
 
             <TextView
                 android:id="@+id/textNutrition"

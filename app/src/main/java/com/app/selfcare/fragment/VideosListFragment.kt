@@ -4,21 +4,26 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.adapters.VideosAdapter
 import com.app.selfcare.controller.OnVideoItemClickListener
+import com.app.selfcare.data.Articles
 import com.app.selfcare.data.Podcast
 import com.app.selfcare.data.Video
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_news_detail.*
+import kotlinx.android.synthetic.main.fragment_resources.*
 import kotlinx.android.synthetic.main.fragment_videos_list.*
+import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
 
@@ -26,6 +31,8 @@ import java.lang.reflect.Type
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param3"
+private const val ARG_PARAM4 = "param4"
 
 /**
  * A simple [Fragment] subclass.
@@ -35,13 +42,17 @@ private const val ARG_PARAM2 = "param2"
 class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
     // TODO: Rename and change types of parameters
     private var videos: ArrayList<Video>? = null
-    private var param2: String? = null
+    private var wellnessType: String? = null
+    private var isFavourite: Boolean = false
+    private var category: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             videos = it.getParcelableArrayList(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            wellnessType = it.getString(ARG_PARAM2)
+            isFavourite = it.getBoolean(ARG_PARAM3)
+            category = it.getString(ARG_PARAM4)
         }
     }
 
@@ -52,13 +63,68 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.VISIBLE
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+        updateStatusBarColor(R.color.white)
+
+        videosBack.setOnClickListener {
+            popBackStack()
+        }
 
         if (videos != null && videos!!.isNotEmpty()) {
             displayVideos(videos!!)
         } else {
-            getVideosList()
+            when (wellnessType!!) {
+                Utils.WELLNESS_EXERCISE -> {
+                    if (isFavourite) {
+                        getFavDetailVideoData()
+                    } else {
+                        getDetailVideoData("exercise_data/")
+                    }
+                }
+                Utils.WELLNESS_NUTRITION -> {
+                    if (isFavourite) {
+                        getFavDetailVideoData()
+                    } else {
+                        getDetailVideoData("nutrition_data/")
+                    }
+                }
+                Utils.WELLNESS_MINDFULNESS -> {
+                    if (isFavourite) {
+                        getFavDetailVideoData()
+                    } else {
+                        getDetailVideoData("mindfulness_data/")
+                    }
+                }
+                Utils.WELLNESS_YOGA -> {
+                    if (isFavourite) {
+                        getFavDetailVideoData()
+                    } else {
+                        getDetailVideoData("yoga_data/")
+                    }
+                }
+                else -> {
+                    getVideosList()
+                }
+            }
+        }
+    }
+
+    private fun getFavDetailVideoData() {
+        getFavoriteData(wellnessType!!) { response ->
+            val jsonObj = JSONObject(response!!)
+            val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
+            videos = Gson().fromJson(jsonObj.getString("videos"), videoList)
+            displayVideos(videos!!)
+        }
+    }
+
+    private fun getDetailVideoData(type: String) {
+        getDetailData(type, category!!) { response ->
+            val jsonObj = JSONObject(response!!)
+            val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
+            videos = Gson().fromJson(jsonObj.getString("videos"), videoList)
+            displayVideos(videos!!)
         }
     }
 
@@ -67,7 +133,7 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getData("PI0014", getAccessToken())
+                    .getResourceDashboardData("Dashboard", getAccessToken())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -78,9 +144,11 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            var videoLists: ArrayList<Video> = arrayListOf()
+                            val jsonObj = JSONObject(responseBody)
+                            //Videos
                             val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
-                            videoLists = Gson().fromJson(responseBody, videoList)
+                            val videoLists: ArrayList<Video> =
+                                Gson().fromJson(jsonObj.getString("videos"), videoList)
                             displayVideos(videoLists)
                         } catch (e: Exception) {
                             hideProgress()
@@ -88,7 +156,6 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
                         }
                     }, { error ->
                         hideProgress()
-                        //displayToast("Error ${error.localizedMessage}")
                         if ((error as HttpException).code() == 401) {
                             userLogin(
                                 preference!![PrefKeys.PREF_EMAIL]!!,
@@ -109,10 +176,11 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
         if (videos.isNotEmpty()) {
             recyclerViewVideosList.apply {
                 layoutManager =
-                    LinearLayoutManager(mContext, RecyclerView.VERTICAL, false)
+                    LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false)
                 adapter = VideosAdapter(
                     mContext!!,
                     videos,
+                    wellnessType!!.isEmpty(),
                     this@VideosListFragment
                 )
                 txt_no_videos.visibility = View.GONE
@@ -133,22 +201,36 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: ArrayList<Video>, param2: String) =
+        fun newInstance(param1: ArrayList<Video>, param2: String, param3: Boolean, param4: String) =
             VideosListFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
+                    putBoolean(ARG_PARAM3, param3)
+                    putString(ARG_PARAM4, param4)
                 }
             }
 
         const val TAG = "Screen_videos_list"
     }
 
-    override fun onVideoItemClickListener(video: Video) {
-        replaceFragment(
-            VideoDetailFragment.newInstance(video),
-            R.id.layout_home,
-            VideoDetailFragment.TAG
-        )
+    override fun onVideoItemClickListener(video: Video, isFav: Boolean, isWellness: Boolean) {
+        if (isFav) {
+            if (isWellness) {
+                sendResourceFavoriteData(video.id, "Video", !video.is_favourite) {
+                    getVideosList()
+                }
+            } else {
+                sendFavoriteData(video.id, "Video", !video.is_favourite, "") {
+                    getVideosList()
+                }
+            }
+        } else {
+            replaceFragment(
+                VideoDetailFragment.newInstance(video),
+                R.id.layout_home,
+                VideoDetailFragment.TAG
+            )
+        }
     }
 }

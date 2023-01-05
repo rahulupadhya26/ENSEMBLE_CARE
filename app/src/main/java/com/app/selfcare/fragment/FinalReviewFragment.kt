@@ -1,5 +1,6 @@
 package com.app.selfcare.fragment
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
@@ -53,11 +54,17 @@ class FinalReviewFragment : BaseFragment() {
         return R.layout.fragment_final_review
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.VISIBLE
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+        updateStatusBarColor(R.color.screen_background_color)
+
+        finalReviewBack.setOnClickListener {
+            popBackStack()
+        }
 
         txtFinalReviewTherapistName.text = Utils.providerName
         txtFinalReviewTherapistType.text = Utils.providerType
@@ -67,19 +74,30 @@ class FinalReviewFragment : BaseFragment() {
         txtFinalReviewSelectedDate.text =
             appointmentDate.getDay() + " " + appointmentDate.getFullMonthName()
 
-        txtFinalReviewSelectedTime.text = Utils.aptScheduleTime.dropLast(11)
+        txtFinalReviewSelectedTime.text = Utils.aptScheduleTime.dropLast(3)
 
         if (Utils.selectedCommunicationMode == "Video") {
             imgFinalReviewSelectedMode.setBackgroundResource(R.drawable.video)
-            imgFinalReviewSelectedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+            imgFinalReviewSelectedMode.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
             txtFinalReviewSelectedMode.text = "Video Call"
         } else {
             imgFinalReviewSelectedMode.setBackgroundResource(R.drawable.telephone)
-            imgFinalReviewSelectedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+            imgFinalReviewSelectedMode.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
             txtFinalReviewSelectedMode.text = "Audio Call"
         }
 
         if (getBitmapList().size > 0) {
+            layoutSelectedImageForReview.visibility = View.VISIBLE
             when (getBitmapList().size) {
                 1 -> {
                     Glide.with(this)
@@ -106,6 +124,8 @@ class FinalReviewFragment : BaseFragment() {
                         .into(imgFinalReviewPrescriptionPic3)
                 }
             }
+        } else {
+            layoutSelectedImageForReview.visibility = View.GONE
         }
 
         val finalReviewList = ArrayList<String>()
@@ -154,14 +174,7 @@ class FinalReviewFragment : BaseFragment() {
                     ConsentFormFragment.TAG
                 )
             } else {
-                val builder = AlertDialog.Builder(mActivity!!)
-                builder.setTitle("Message")
-                builder.setMessage("Please select terms and conditions for further procedure")
-                builder.setPositiveButton("OK") { dialog, which ->
-                    dialog.dismiss()
-                }
-                builder.setCancelable(false)
-                builder.show()
+                displayMsg("Message","Please select terms and conditions for further procedure")
             }
         }
     }

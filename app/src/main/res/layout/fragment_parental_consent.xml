@@ -1,141 +1,254 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="@color/initial_screen_background"
     tools:context=".fragment.ParentalConsentFragment">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/btnParentalConsent"
-        android:layout_margin="@dimen/_10dp">
+    <ImageView
+        android:id="@+id/imgRegister3Back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/app_name"
+        android:padding="@dimen/_10dp"
+        android:layout_marginTop="@dimen/_20dp"
+        android:layout_marginStart="@dimen/_5dp"
+        android:src="@drawable/journal_resource_back"
+        app:tint="@color/white" />
 
-        <LinearLayout
+    <LinearLayout
+        android:id="@+id/layoutRegistration2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginEnd="@dimen/_15dp"
+        android:layout_marginBottom="@dimen/_15dp"
+        android:orientation="vertical">
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="@string/parental_consent"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_22sp"
+            android:textStyle="bold" />
 
-            <TextView
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="We will send a link to your parent for them to sign."
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sp"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_box_grey_top_corners"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/_10dp">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btnParentalConsent"
+            android:layout_margin="@dimen/_10dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/parental_consent"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="@color/primaryGreen"
-                android:textSize="@dimen/_22sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginStart="@dimen/_15dp"
+                android:layout_marginEnd="@dimen/_15dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:hint="@string/parent_name"
-                app:hintTextAppearance="@style/TextLabel">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/parent_name"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
 
-                <com.google.android.material.textfield.TextInputEditText
+                <EditText
                     android:id="@+id/etParentName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_background_box"
+                    android:hint="@string/parent_name"
                     android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:maxLength="50"
-                    android:maxLines="2"
+                    android:maxLines="1"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_16sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:textColorHint="#807B7B"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:hint="@string/relationship"
-                app:hintTextAppearance="@style/TextLabel">
-
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/spinnerRelationship"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:focusable="false"
+                    android:text="@string/relationship"
                     android:textAppearance="@style/fontfamily"
-                    android:imeOptions="actionNext"
-                    android:inputType="none"
-                    android:completionThreshold="0"
-                    android:textColor="@color/black"
-                    app:hintTextAppearance="@style/TextLabel"
-                    android:textSize="16sp" />
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_background_box"
+                    android:padding="@dimen/_5dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Email"
-                app:hintTextAppearance="@style/TextLabel"
-                android:layout_margin="@dimen/_5dp">
+                    <Spinner
+                        android:id="@+id/spinnerRelationship"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp" />
+                </RelativeLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Email"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <EditText
                     android:id="@+id/etParentalMailId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:inputType="textEmailAddress"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_background_box"
+                    android:hint="Email"
                     android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
                     android:maxLines="1"
+                    android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
-                    android:cursorVisible="true"
-                    android:textSize="@dimen/_16sp"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:textColorHint="#807B7B"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/contact_number"
-                app:hintTextAppearance="@style/TextLabel"
-                android:layout_margin="@dimen/_5dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etParentContactNo"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:inputType="phone"
-                    android:imeOptions="actionNext"
-                    android:maxLines="1"
-                    android:maxLength="12"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_16sp"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_margin="@dimen/_5dp"
+                    android:hint="@string/parent_name"
+                    app:hintTextAppearance="@style/TextLabel"
+                    android:visibility="gone">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/fontfamily"
-                android:textSize="@dimen/_18sp"
-                android:textColor="@color/black"
-                android:text="Note : We will be sending link to your mail id. Please click on link and sign the consent."
-                android:padding="@dimen/_10dp"
-                android:layout_margin="@dimen/_5dp"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLength="50"
+                        android:maxLines="2"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-        </LinearLayout>
-    </ScrollView>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5dp"
+                    android:hint="@string/relationship"
+                    app:hintTextAppearance="@style/TextLabel"
+                    android:visibility="gone">
 
-    <Button
-        android:id="@+id/btnParentalConsent"
-        style="@style/buttonBackground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="@dimen/_30dp"
-        android:layout_marginTop="@dimen/_5dp"
-        android:layout_marginEnd="@dimen/_30dp"
-        android:layout_marginBottom="@dimen/_10dp"
-        android:text="Submit" />
+                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:textAppearance="@style/fontfamily"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:completionThreshold="0"
+                        android:textColor="@color/black"
+                        app:hintTextAppearance="@style/TextLabel"
+                        android:textSize="16sp" />
 
-</RelativeLayout>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    app:hintTextAppearance="@style/TextLabel"
+                    android:layout_margin="@dimen/_5dp"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:inputType="textEmailAddress"
+                        android:imeOptions="actionNext"
+                        android:maxLines="1"
+                        android:textColor="@color/black"
+                        android:cursorVisible="true"
+                        android:textSize="@dimen/_16sp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/contact_number"
+                    app:hintTextAppearance="@style/TextLabel"
+                    android:layout_margin="@dimen/_5dp"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etParentContactNo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:inputType="phone"
+                        android:imeOptions="actionNext"
+                        android:maxLines="1"
+                        android:maxLength="12"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btnParentalConsent"
+            style="@style/buttonBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/_20dp"
+            android:layout_marginTop="@dimen/_5dp"
+            android:layout_marginEnd="@dimen/_20dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:text="Continue" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.UpcomingAppointmentFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewUpcomingAppointmentList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_5dp"/>
+
+    <TextView
+        android:id="@+id/txtNoUpcomingAppointmentList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10dp"
+        android:gravity="center"
+        android:padding="@dimen/_10dp"
+        android:text="You don't have any upcoming appointments."
+        android:textAppearance="@style/fontfamily"
+        android:textColor="@color/localBackground"
+        android:textSize="@dimen/_16sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+</FrameLayout>

@@ -11,6 +11,10 @@ class DateUtils(date: String?) {
         mDate = SimpleDateFormat("MM/dd/yyyy' 'HH:mm:ss", Locale.getDefault()).parse(date!!)
     }
 
+    fun getSimpleFormattedDate():String{
+        return SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(mDate!!.time)
+    }
+
     fun getFormattedDate(): String {
         return SimpleDateFormat("dd MMM, yyyy", Locale.getDefault()).format(mDate!!.time)
     }
@@ -57,5 +61,16 @@ class DateUtils(date: String?) {
 
     fun getMinutes(): String {
         return SimpleDateFormat("mm", Locale.getDefault()).format(mDate!!.time)
+    }
+
+    fun getDayNumberSuffix(day: Int): String? {
+        return if (day in 11..13) {
+            "th"
+        } else when (day % 10) {
+            1 -> "st"
+            2 -> "nd"
+            3 -> "rd"
+            else -> "th"
+        }
     }
 }

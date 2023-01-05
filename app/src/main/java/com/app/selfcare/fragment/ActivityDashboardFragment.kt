@@ -45,35 +45,35 @@ class ActivityDashboardFragment : BaseFragment() {
         drinkWaterProgress.setCurrentProgress(74.0)*/
 
         txtActivityShowAll.setOnClickListener {
-            replaceFragment(
+            /*replaceFragment(
                 ActivityShowAllFragment(),
                 R.id.layout_home,
                 ActivityShowAllFragment.TAG
-            )
+            )*/
         }
 
         txtGoalShowAll.setOnClickListener {
-            replaceFragment(
+            /*replaceFragment(
                 ActivityShowAllFragment(),
                 R.id.layout_home,
                 ActivityShowAllFragment.TAG
-            )
+            )*/
         }
 
         activityCreateGoal.setOnClickListener {
-            replaceFragment(
+            /*replaceFragment(
                 ActivityCreateGoalFragment(),
                 R.id.layout_home,
                 ActivityCreateGoalFragment.TAG
-            )
+            )*/
         }
 
         cardViewActivityDrinkWater.setOnClickListener {
-            replaceFragment(
+            /*replaceFragment(
                 ActivityGoalDetailFragment(),
                 R.id.layout_home,
                 ActivityGoalDetailFragment.TAG
-            )
+            )*/
         }
 
         drinkWaterProgress.setProgress(74.0,100.0)

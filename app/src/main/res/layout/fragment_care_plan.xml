@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".fragment.CarePlanFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_5dp"
+            app:cardCornerRadius="@dimen/_10dp"
+            app:cardElevation="@dimen/_5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/carePlanBack"
+                        android:layout_width="@dimen/_40dp"
+                        android:layout_height="@dimen/_40dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/_5dp"
+                        android:padding="@dimen/_5dp"
+                        android:src="@drawable/journal_resource_back"
+                        app:tint="@color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="CarePlan"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_26sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_40dp"
+                        android:layout_height="@dimen/_40dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginEnd="@dimen/_5dp"
+                        android:padding="@dimen/_10dp"
+                        android:src="@drawable/notification"
+                        app:tint="@color/black" />
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewCarePlanDayList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15dp"
+            android:layout_marginTop="@dimen/_5dp"
+            android:layout_marginEnd="@dimen/_15dp"
+            android:text="Task Progress"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15dp"
+            android:layout_marginTop="-5dp"
+            android:layout_marginEnd="@dimen/_15dp"
+            android:text="Your today’s progress of each section"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14sp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_5dp"
+            android:paddingTop="@dimen/_5dp"
+            android:paddingBottom="@dimen/_5dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/layoutTaskProgressTaskCompleted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_centerInParent="true"
+                            android:layout_margin="@dimen/_5dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="@dimen/_5dp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_40dp"
+                                android:layout_height="@dimen/_40dp"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="center"
+                                android:padding="@dimen/_5dp"
+                                android:src="@drawable/tasklist" />
+                        </androidx.cardview.widget.CardView>
+
+                        <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+                            android:id="@+id/taskCompletedProgress"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_centerInParent="true"
+                            app:direction="clockwise"
+                            app:enableProgressAnimation="true"
+                            app:progressBackgroundColor="@color/white"
+                            app:progressBackgroundStrokeWidth="@dimen/_2dp"
+                            app:progressCap="butt"
+                            app:progressColor="#0AFF29"
+                            app:progressStrokeWidth="@dimen/_10dp"
+                            app:textSize="0sp" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/taskProgress"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Tasks Completed"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtTaskCompleted"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="2 of 7"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#948989"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutTaskProgressCalories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_centerInParent="true"
+                            android:layout_margin="@dimen/_5dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="@dimen/_5dp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_40dp"
+                                android:layout_height="@dimen/_40dp"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="center"
+                                android:padding="@dimen/_5dp"
+                                android:src="@drawable/careplan_calories" />
+                        </androidx.cardview.widget.CardView>
+
+                        <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+                            android:id="@+id/caloriesProgress"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_centerInParent="true"
+                            app:direction="clockwise"
+                            app:enableProgressAnimation="true"
+                            app:progressBackgroundColor="@color/white"
+                            app:progressBackgroundStrokeWidth="@dimen/_2dp"
+                            app:progressCap="butt"
+                            app:progressColor="#FCC419"
+                            app:progressStrokeWidth="@dimen/_10dp"
+                            app:textSize="0sp" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/taskProgress"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Calories"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtCaloriesData"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="750 of 2500"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#948989"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutTaskProgressExercise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_centerInParent="true"
+                            android:layout_margin="@dimen/_5dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="@dimen/_5dp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_40dp"
+                                android:layout_height="@dimen/_40dp"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="center"
+                                android:padding="@dimen/_5dp"
+                                android:src="@drawable/exercise_care_plan"
+                                app:tint="#210A33" />
+                        </androidx.cardview.widget.CardView>
+
+                        <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+                            android:id="@+id/exerciseProgress"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_centerInParent="true"
+                            app:direction="clockwise"
+                            app:enableProgressAnimation="true"
+                            app:progressBackgroundColor="@color/white"
+                            app:progressBackgroundStrokeWidth="@dimen/_2dp"
+                            app:progressCap="butt"
+                            app:progressColor="#210A33"
+                            app:progressStrokeWidth="@dimen/_10dp"
+                            app:textSize="0sp" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/taskProgress"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Exercise"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtExerciseData"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="20 of 45 Mins"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#948989"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutTaskProgressMusic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_centerInParent="true"
+                            android:layout_margin="@dimen/_5dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="@dimen/_5dp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_40dp"
+                                android:layout_height="@dimen/_40dp"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="center"
+                                android:padding="@dimen/_5dp"
+                                android:src="@drawable/careplan_music" />
+                        </androidx.cardview.widget.CardView>
+
+                        <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+                            android:id="@+id/musicProgress"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_centerInParent="true"
+                            app:direction="clockwise"
+                            app:enableProgressAnimation="true"
+                            app:progressBackgroundColor="@color/white"
+                            app:progressBackgroundStrokeWidth="@dimen/_2dp"
+                            app:progressCap="butt"
+                            app:progressColor="#2D8979"
+                            app:progressStrokeWidth="@dimen/_10dp"
+                            app:textSize="0sp" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/taskProgress"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Music"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtMusicData"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="8 of 20 Mins"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#948989"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutTaskProgressMindfulness"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_centerInParent="true"
+                            android:layout_margin="@dimen/_5dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="@dimen/_5dp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_40dp"
+                                android:layout_height="@dimen/_40dp"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="center"
+                                android:padding="@dimen/_5dp"
+                                android:src="@drawable/careplan_mindfulness" />
+                        </androidx.cardview.widget.CardView>
+
+                        <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+                            android:id="@+id/mindfulnessProgress"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_centerInParent="true"
+                            app:direction="clockwise"
+                            app:enableProgressAnimation="true"
+                            app:progressBackgroundColor="@color/white"
+                            app:progressBackgroundStrokeWidth="@dimen/_2dp"
+                            app:progressCap="butt"
+                            app:progressColor="#0F40A7"
+                            app:progressStrokeWidth="@dimen/_10dp"
+                            app:textSize="0sp" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Mindfulness"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtMindfulnessData"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="20 of 45 Mins"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#948989"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutTaskProgressYoga"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_centerInParent="true"
+                            android:layout_margin="@dimen/_5dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="@dimen/_5dp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_40dp"
+                                android:layout_height="@dimen/_40dp"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="center"
+                                android:padding="@dimen/_5dp"
+                                android:src="@drawable/careplan_yoga" />
+                        </androidx.cardview.widget.CardView>
+
+                        <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+                            android:id="@+id/carePlanYogaProgress"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_centerInParent="true"
+                            app:direction="clockwise"
+                            app:enableProgressAnimation="true"
+                            app:progressBackgroundColor="@color/white"
+                            app:progressBackgroundStrokeWidth="@dimen/_2dp"
+                            app:progressCap="butt"
+                            app:progressColor="#0F40A7"
+                            app:progressStrokeWidth="@dimen/_10dp"
+                            app:textSize="0sp" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Yoga"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtYogaData"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="35 of 45 Mins"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#948989"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15dp"
+            android:layout_marginTop="@dimen/_5dp"
+            android:layout_marginEnd="@dimen/_15dp"
+            android:text="Today's Tasks"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/primaryGreen"
+            android:textSize="@dimen/_20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15dp"
+            android:layout_marginTop="-5dp"
+            android:layout_marginEnd="@dimen/_15dp"
+            android:text="Complete below to earn a medal for today"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewTodayTask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:paddingBottom="@dimen/_10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10dp"
+            android:paddingBottom="@dimen/_10dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:src="@drawable/round_bullet" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_weight="0.7"
+                        android:gravity="top"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Mindfulness"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_20sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-5dp"
+                            android:text="Meditate for 45 mins"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_14sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.3">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Completed"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_14sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginTop="-30dp">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/lightestGreyColor" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="-10dp">
+
+                <LinearLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:src="@drawable/incomplete_round_bullet" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_weight="0.7"
+                        android:gravity="bottom"
+                        android:orientation="vertical"
+                        android:background="@drawable/plan_settings_box"
+                        android:padding="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Nutrition"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_18sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-5dp"
+                                android:text="Greek courgette salad"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_14sp" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:padding="@dimen/_5dp"
+                            android:src="@drawable/more_than" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.3">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="13:00 hrs"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#69E10A"
+                            android:textSize="@dimen/_14sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginTop="-30dp">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/lightestGreyColor" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

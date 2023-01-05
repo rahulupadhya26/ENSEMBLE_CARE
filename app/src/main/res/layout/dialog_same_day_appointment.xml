@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:cardCornerRadius="40dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_20dp"
+        app:cardBackgroundColor="@color/primaryGreen">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/warning"
+            android:padding="@dimen/_20dp"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/_15dp"
+        android:layout_marginEnd="@dimen/_15dp"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:paddingBottom="@dimen/_10dp"
+        android:paddingTop="@dimen/_10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Warning"
+            android:textStyle="bold"
+            android:textSize="@dimen/_24sp"
+            android:textColor="@color/black"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="We see that you already have an appointment for today"
+            android:textSize="@dimen/_16sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Do you wish to continue?"
+            android:textSize="@dimen/_16sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_5dp"
+            android:gravity="center"/>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewSameDayApptYes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_5dp"
+            app:cardElevation="@dimen/_5dp"
+            app:cardUseCompatPadding="true"
+            app:cardBackgroundColor="@color/primaryGreen"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="Yes"
+                android:textStyle="bold"
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/white"
+                android:padding="@dimen/_10dp"
+                android:gravity="center"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewSameDayApptNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_5dp"
+            app:cardElevation="@dimen/_5dp"
+            app:cardUseCompatPadding="true"
+            app:cardBackgroundColor="#38A387"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="No"
+                android:textStyle="bold"
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/white"
+                android:padding="@dimen/_10dp"
+                android:gravity="center"/>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</LinearLayout>

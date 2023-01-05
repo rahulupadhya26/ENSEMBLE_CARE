@@ -58,6 +58,7 @@
                     android:layout_height="@dimen/_5dp"
                     android:layout_weight="1"
                     android:orientation="vertical"
+                    android:visibility="gone"
                     android:background="@drawable/dash_white_progress_bar"/>
 
                 <LinearLayout
@@ -237,9 +238,8 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cv_option_one"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="100dp"
                         app:cardCornerRadius="@dimen/_5dp"
-                        app:cardElevation="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_15dp"
                         app:rippleColor="@color/primaryGreen"
                         app:cardUseCompatPadding="true">
@@ -248,8 +248,9 @@
                             android:id="@+id/tv_option_one"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:textAppearance="@style/fontfamily"
+                            android:fontFamily="@font/inter_bold"
                             android:padding="@dimen/_20dp"
+                            android:gravity="center_vertical"
                             android:background="@drawable/edittext_background_box"
                             android:textColor="@color/primaryGreen"
                             android:textStyle="bold"
@@ -259,18 +260,19 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cv_option_two"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="100dp"
                         app:cardCornerRadius="@dimen/_5dp"
-                        app:cardElevation="@dimen/_5dp"
                         app:rippleColor="@color/primaryGreen"
+                        android:layout_marginTop="@dimen/_10dp"
                         app:cardUseCompatPadding="true">
 
                         <TextView
                             android:id="@+id/tv_option_two"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:textAppearance="@style/fontfamily"
+                            android:fontFamily="@font/inter_bold"
                             android:padding="@dimen/_20dp"
+                            android:gravity="center_vertical"
                             android:background="@drawable/edittext_background_box"
                             android:textColor="@color/primaryGreen"
                             android:textStyle="bold"
@@ -280,9 +282,9 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cv_option_three"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="100dp"
                         app:cardCornerRadius="@dimen/_5dp"
-                        app:cardElevation="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
                         app:rippleColor="@color/primaryGreen"
                         app:cardUseCompatPadding="true">
 
@@ -290,8 +292,9 @@
                             android:id="@+id/tv_option_three"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:textAppearance="@style/fontfamily"
+                            android:fontFamily="@font/inter_bold"
                             android:padding="@dimen/_20dp"
+                            android:gravity="center_vertical"
                             android:background="@drawable/edittext_background_box"
                             android:textColor="@color/primaryGreen"
                             android:textStyle="bold"
@@ -301,9 +304,9 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cv_option_four"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="100dp"
                         app:cardCornerRadius="@dimen/_5dp"
-                        app:cardElevation="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
                         app:cardUseCompatPadding="true"
                         app:rippleColor="@color/primaryGreen">
 
@@ -311,8 +314,9 @@
                             android:id="@+id/tv_option_four"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:textAppearance="@style/fontfamily"
+                            android:fontFamily="@font/inter_bold"
                             android:padding="@dimen/_20dp"
+                            android:gravity="center_vertical"
                             android:background="@drawable/edittext_background_box"
                             android:textColor="@color/primaryGreen"
                             android:textStyle="bold"
@@ -326,55 +330,8 @@
                 android:id="@+id/rv_option_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/tv_current_question"
                 android:layout_margin="5dp"
                 android:visibility="gone" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_next_question"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/tv_next_question"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/cardViewBtnNext"
-                android:ellipsize="end"
-                android:fontFamily="@font/muli"
-                android:gravity="center|left"
-                android:maxLines="3"
-                android:padding="5dp"
-                android:textColor="@color/secondary_text"
-                android:textSize="16dp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardViewBtnNext"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:visibility="gone"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="40dp"
-                app:cardElevation="10dp">
-
-                <ImageView
-                    android:id="@+id/forward"
-                    android:layout_width="18dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/up_arrow" />
-            </androidx.cardview.widget.CardView>
-
 
         </RelativeLayout>
 

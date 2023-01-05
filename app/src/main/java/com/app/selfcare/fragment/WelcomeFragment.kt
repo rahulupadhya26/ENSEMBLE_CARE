@@ -1,7 +1,10 @@
 package com.app.selfcare.fragment
 
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import com.app.selfcare.R
 import kotlinx.android.synthetic.main.fragment_welcome.*
 
@@ -39,12 +42,43 @@ class WelcomeFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
 
-        btn_login_srcn.setOnClickListener {
-            replaceFragment(LoginFragment(), R.id.layout_home, LoginFragment.TAG)
+        val rawId = resources.getIdentifier("splash_video", "raw", requireActivity().packageName)
+        val video: Uri =
+            Uri.parse("android.resource://" + requireActivity().packageName + "/" + rawId)
+
+        imgSplashBackground.setVideoURI(video)
+        imgSplashBackground.setOnPreparedListener { mp ->
+            mp.isLooping = true
+            imgSplashBackground.start()
         }
-        txt_signup_srcn.setOnClickListener {
-            replaceFragment(RegistrationFragment(), R.id.layout_home, RegistrationFragment.TAG)
+
+        txtLoginButton.setOnClickListener {
+            replaceFragmentNoBackStack(
+                LoginFragment(),
+                R.id.layout_home,
+                LoginFragment.TAG
+            )
         }
+        /*Glide.with(requireActivity())
+            .load("https://drive.google.com/file/d/16paRRS2WNT8jdMLFlCGrsJLbz_fguYri/view?usp=share_link")
+            .into(imgSplashBackground)*/
+        btnSplash.setOnClickListener {
+            replaceFragmentNoBackStack(
+                CarouselFragment(),
+                R.id.layout_home,
+                CarouselFragment.TAG
+            )
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
     }
 
     companion object {

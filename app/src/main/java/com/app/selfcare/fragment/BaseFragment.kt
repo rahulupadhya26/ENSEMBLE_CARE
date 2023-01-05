@@ -1,9 +1,9 @@
 package com.app.selfcare.fragment
 
 
+import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -13,9 +13,15 @@ import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
 import android.provider.Settings
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.TextUtils
 import android.text.format.DateFormat
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Base64
+import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
@@ -27,15 +33,17 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.app.selfcare.BaseActivity
+import com.app.selfcare.GroupVideoCall
 import com.app.selfcare.MainActivity
 import com.app.selfcare.R
+import com.app.selfcare.adapters.CarePlanDayListAdapter
 import com.app.selfcare.controller.IController
 import com.app.selfcare.controller.IFragment
 import com.app.selfcare.crypto.DecryptionImpl
-import com.app.selfcare.data.AppointmentReq
-import com.app.selfcare.data.DataId
-import com.app.selfcare.data.DeviceId
-import com.app.selfcare.data.Login
+import com.app.selfcare.data.*
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper
 import com.app.selfcare.preference.PreferenceHelper.get
@@ -43,12 +51,17 @@ import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.services.RequestInterface
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.display_image.*
+import kotlinx.android.synthetic.main.fragment_care_plan.*
 import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -57,14 +70,12 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.HttpException
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
+import java.io.*
+import java.lang.reflect.Type
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
 
 abstract class BaseFragment : Fragment(), IFragment, IController {
@@ -189,7 +200,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                     "(?=.*[a-zA-Z])" +      //any letter
                     "(?=.*[@#$%^&+=])" +    //at least 1 special character
                     "(?=\\S+$)" +           //no white spaces
-                    ".{9,}" +               //at least 9 characters
+                    ".{8,}" +               //at least 8 characters
                     "$"
         );
         return passwordREGEX.matcher(password).matches()
@@ -253,6 +264,11 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun captureImage() {
         mActivity!!.captureImage()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    protected fun captureImage(imageView: ImageView?, type: String) {
+        mActivity!!.captureImage(imageView, type)
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -400,12 +416,13 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                             myCallback.invoke("")
                         } catch (e: Exception) {
                             hideProgress()
+                            e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
 
                     }, { error ->
                         hideProgress()
-                        if ((error as HttpException).code() == 400) {
+                        if ((error as HttpException).code() == 401) {
                             displayErrorMsg(error)
                         } else {
                             displayToast("Something went wrong.. Please try after sometime")
@@ -426,6 +443,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         preference!![PrefKeys.PREF_LNAME] = jsonObj.getJSONObject("patient").getString("last_name")
         preference!![PrefKeys.PREF_DOB] = jsonObj.getJSONObject("patient").getString("dob")
         preference!![PrefKeys.PREF_SSN] = Utils.ssn
+        preference!![PrefKeys.PREF_PHOTO] = jsonObj.getJSONObject("patient").getString("photo")
         preference!![PrefKeys.PREF_PATIENT_ID] =
             jsonObj.getJSONObject("patient").getString("patient_id")
         preference!![PrefKeys.PREF_SELECTED_PLAN] =
@@ -465,13 +483,12 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                         }
                     }
                     if (errList.isNotEmpty()) {
-
                         val errorStr = errList.joinToString("\n")
                         displayToast(errorStr)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    displayToast(decryptedErrMsg)
+                    displayMsg("Alert", decryptedErrMsg)
                 }
             } catch (e: Exception) {
                 displayToast(errorMsg)
@@ -610,6 +627,77 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         handler.postDelayed(runnable!!, 1000)
     }
 
+    fun sendApptStatus(
+        apptId: String,
+        actualStartTime: String,
+        actualEndTime: String,
+        duration: String,
+        myCallback: (result: String?) -> Unit
+    ) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendApptStatus(
+                        "PI0060",
+                        AppointmentStatus(
+                            apptId,
+                            actualStartTime,
+                            actualEndTime,
+                            duration,
+                            status = 4
+                        ), getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "202" || status == "200") {
+                                myCallback.invoke("Success")
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                sendApptStatus(
+                                    apptId,
+                                    actualStartTime,
+                                    actualEndTime,
+                                    duration
+                                ) { response ->
+                                    if (response == "Success") {
+                                        replaceFragmentNoBackStack(
+                                            TherapistFeedbackFragment(),
+                                            R.id.layout_home,
+                                            TherapistFeedbackFragment.TAG
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                            popBackStack()
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
     fun showImage(imageView: ImageView) {
         val dialog = Dialog(requireActivity())
         dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
@@ -665,7 +753,8 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
 
     fun convert(bitmap: Bitmap): String? {
         val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+        Log.i("File size after compress", bitmap.byteCount.toString())
         return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
     }
 
@@ -700,11 +789,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                     .sendDeviceId(
                         DeviceId(
                             deviceId,
-                            selectedTherapyId,
-                            consentImg,
-                            parentName,
-                            relation,
-                            contactNo
+                            selectedTherapyId
                         )
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -805,7 +890,8 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
             // image naming and path  to include sd card  appending name you choose for file
             val mPath: String =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                    .toString() + "/" + System.currentTimeMillis().toString().replace(":", ".") + ".jpg"
+                    .toString() + "/" + System.currentTimeMillis().toString()
+                    .replace(":", ".") + ".jpg"
 
             // create bitmap screen capture
             val v1: View = requireActivity().window.decorView.rootView
@@ -819,11 +905,622 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
             outputStream.flush()
             outputStream.close()
+            displayToast("Saved screenshot")
             hideProgress()
         } catch (e: Exception) {
             hideProgress()
             // Several error may come out with file handling or DOM
             e.printStackTrace()
         }
+    }
+
+    fun getData(tableId: String, myCallback: (result: String?) -> Unit) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getData(tableId, getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                userLogin(
+                                    preference!![PrefKeys.PREF_EMAIL]!!,
+                                    preference!![PrefKeys.PREF_PASS]!!
+                                ) { result ->
+
+                                }
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun getDetailData(type: String, category: String, myCallback: (result: String?) -> Unit) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getDetailData(type, category, getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                userLogin(
+                                    preference!![PrefKeys.PREF_EMAIL]!!,
+                                    preference!![PrefKeys.PREF_PASS]!!
+                                ) { result ->
+
+                                }
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun calculateNoOfColumns(context: Context, columnWidthDp: Float): Int {
+        val displayMetrics: DisplayMetrics = context.resources.displayMetrics
+        val screenWidthDp: Float = displayMetrics.widthPixels / displayMetrics.density
+        return (screenWidthDp / columnWidthDp + 0.5).toInt()
+    }
+
+    fun sendFavoriteData(
+        id: Int,
+        type: String,
+        isFavorite: Boolean,
+        wellnessType: String,
+        myCallback: (result: String?) -> Unit
+    ) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendFavoriteData(
+                        wellnessType + "_favourites",
+                        FavoriteData(id, type, isFavorite),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                userLogin(
+                                    preference!![PrefKeys.PREF_EMAIL]!!,
+                                    preference!![PrefKeys.PREF_PASS]!!
+                                ) { result ->
+
+                                }
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun getFavoriteData(wellnessType: String, myCallback: (result: String?) -> Unit) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getFavoriteData(wellnessType + "_favourites", getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                userLogin(
+                                    preference!![PrefKeys.PREF_EMAIL]!!,
+                                    preference!![PrefKeys.PREF_PASS]!!
+                                ) { result ->
+
+                                }
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun sendResourceFavoriteData(
+        id: Int,
+        type: String,
+        isFavorite: Boolean,
+        myCallback: (result: String?) -> Unit
+    ) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendResourceFavoriteData(
+                        FavoriteData(id, type, isFavorite),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                userLogin(
+                                    preference!![PrefKeys.PREF_EMAIL]!!,
+                                    preference!![PrefKeys.PREF_PASS]!!
+                                ) { result ->
+
+                                }
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun getResourceFavoriteData(myCallback: (result: String?) -> Unit) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getResourceFavoriteData(getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                userLogin(
+                                    preference!![PrefKeys.PREF_EMAIL]!!,
+                                    preference!![PrefKeys.PREF_PASS]!!
+                                ) { result ->
+
+                                }
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun shareDetails(title: String, text: String, link: String, imgLink: String, type: String) {
+        when (type) {
+            "Video" -> {
+
+            }
+            "Article" -> {
+
+            }
+            "Podcast" -> {
+                if (text.isNotEmpty() && link.isNotEmpty() && imgLink.isNotEmpty()) {
+                    val imageUrl = BaseActivity.baseURL.dropLast(5) + imgLink
+                    Glide.with(requireActivity()).asBitmap().load(imageUrl)
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(
+                                resource: Bitmap,
+                                transition: Transition<in Bitmap>?
+                            ) {
+                                val imageUri = getImageUri(resource)
+                                val shareIntent = Intent()
+                                shareIntent.action = Intent.ACTION_SEND
+                                shareIntent.putExtra(Intent.EXTRA_TITLE, text + "\n\n" + link)
+                                if (imageUri != null) {
+                                    shareIntent.type = "image/*"
+                                    shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
+                                }
+                                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                startActivity(
+                                    Intent.createChooser(
+                                        shareIntent,
+                                        "Shared via Ensemble care user"
+                                    )
+                                )
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {
+
+                            }
+                        })
+                }
+            }
+            "Journal" -> {
+                if (text.isNotEmpty()) {
+                    val shareIntent = Intent()
+                    shareIntent.action = Intent.ACTION_SEND
+                    shareIntent.putExtra(Intent.EXTRA_TITLE, "Shared via Ensemble care user")
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, text)
+                    shareIntent.type = "text/plain"
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    startActivity(
+                        Intent.createChooser(
+                            shareIntent,
+                            "Shared via Ensemble care user"
+                        )
+                    )
+                }
+            }
+            "Quote" -> {
+                if (text.isNotEmpty() && imgLink.isNotEmpty()) {
+                    val imageUrl = BaseActivity.baseURL.dropLast(5) + imgLink
+                    Glide.with(requireActivity()).asBitmap().load(imageUrl)
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(
+                                resource: Bitmap,
+                                transition: Transition<in Bitmap>?
+                            ) {
+                                /*val imgBitmapPath: String = MediaStore.Images.Media.insertImage(
+                                    requireActivity().contentResolver,
+                                    resource,
+                                    text,
+                                    null
+                                )*/
+                                val imageUri = getImageUri(resource)
+                                val shareIntent = Intent()
+                                shareIntent.action = Intent.ACTION_SEND
+                                shareIntent.putExtra(Intent.EXTRA_TITLE, text)
+                                if (imageUri != null) {
+                                    shareIntent.type = "image/*"
+                                    shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
+                                }
+                                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                startActivity(
+                                    Intent.createChooser(
+                                        shareIntent,
+                                        "Shared via Ensemble care user"
+                                    )
+                                )
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {
+
+                            }
+                        })
+                }
+            }
+        }
+    }
+
+    private fun getLocalBitmapUri(bmp: Bitmap): Uri? {
+        var bmpUri: Uri? = null
+        try {
+            val file = File(
+                requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                "share_image.jpeg"
+            )
+            val out = FileOutputStream(file)
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, out)
+            out.close()
+            bmpUri = Uri.fromFile(file)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return bmpUri
+    }
+
+    /**
+     * Return the URI for a file. This URI is used for
+     * sharing of video.
+     * NOTE: You cannot share a file by file path.
+     *
+     * @param context Context
+     * @param videoFile File
+     * @return Uri?
+     */
+    @SuppressLint("Range")
+    fun getVideoContentUri(context: Context, videoFile: File): Uri? {
+        var uri: Uri? = null
+        try {
+            val filePath = videoFile.absolutePath
+            val cursor = context.contentResolver.query(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                arrayOf(MediaStore.Video.Media._ID),
+                MediaStore.Video.Media.DATA + "=? ",
+                arrayOf(filePath), null
+            )
+
+            if (cursor != null && cursor.moveToFirst()) {
+                val id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID))
+                val baseUri = Uri.parse("content://media/external/video/media")
+                uri = Uri.withAppendedPath(baseUri, "" + id)
+            } else if (videoFile.exists()) {
+                val values = ContentValues()
+                values.put(MediaStore.Video.Media.DATA, filePath)
+                uri = context.contentResolver.insert(
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values
+                )
+            }
+            cursor!!.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return uri
+    }
+
+    fun getDayWiseCarePlanData(dayNo: Int, myCallback: (result: String?) -> Unit) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getDayWiseCarePlanData(dayNo, getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            myCallback.invoke(responseBody)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun getToken(appointment: GetAppointment, myCallback: (result: String?) -> Unit) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getToken(
+                        GetToken(appointment.appointment.appointment_id),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            myCallback.invoke(responseBody)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            //displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun CheckBox.addClickableLink(
+        fullText: String,
+        linkText: SpannableString,
+        callback: () -> Unit
+    ) {
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                widget.cancelPendingInputEvents() // Prevent CheckBox state from being toggled when link is clicked
+                callback.invoke()
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = true // Show links with underlines
+                ds.color = resources.getColor(R.color.primaryGreen);
+            }
+        }
+        linkText.setSpan(
+            clickableSpan,
+            0,
+            linkText.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        val fullTextWithTemplate = fullText.replace(linkText.toString(), "^1", false)
+        val cs = TextUtils.expandTemplate(fullTextWithTemplate, linkText)
+
+        text = cs
+        movementMethod = LinkMovementMethod.getInstance() // Make link clickable
+    }
+
+    fun updateNotificationStatus(notificationId: Int) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .updateNotificationStatus(
+                        "PI0061",
+                        NotifyStatus(notificationId),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                        }
+                    }, { error ->
+                        displayToast("Error ${error.localizedMessage}")
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
     }
 }

@@ -1,86 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layout_Video"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
-    android:layout_margin="@dimen/_5dp"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="@dimen/_5dp"
-    app:cardUseCompatPadding="true">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/_10dp"
+    android:layout_marginEnd="@dimen/_10dp"
+    android:orientation="horizontal"
+    android:weightSum="1">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_item_video"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:orientation="vertical">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/layout_Video"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_weight="0.45"
+        app:cardBackgroundColor="#D9D9D9"
+        app:cardCornerRadius="@dimen/_10dp"
+        app:cardElevation="@dimen/_5dp"
+        app:cardUseCompatPadding="true">
 
         <ImageView
             android:id="@+id/img_video"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/_5dp"
             android:contentDescription="@string/app_name"
-            android:scaleType="fitCenter"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:scaleType="fitCenter" />
 
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/videosPlayer"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_margin="8dp"
-            android:background="#000000"
-            android:visibility="gone"
-            app:controller_layout_id="@layout/exo_playback_control_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_video"
-            app:played_color="@android:color/holo_red_dark"
-            app:show_timeout="10000"
-            app:use_controller="true"
-            app:resize_mode="fill"/>
+    </androidx.cardview.widget.CardView>
 
-        <ImageView
-            android:id="@+id/imgVideoPlay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_action_play_arrow"
-            app:layout_constraintBottom_toBottomOf="@id/img_video"
-            app:layout_constraintEnd_toEndOf="@id/img_video"
-            app:layout_constraintStart_toStartOf="@id/img_video"
-            app:layout_constraintTop_toTopOf="@id/img_video" />
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/_5dp"
+        android:layout_weight="0.55">
 
-        <TextView
-            android:id="@+id/txtVideoTitle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:ellipsize="end"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/img_video"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/videosPlayer" />
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/_5dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtVideoDesc"
+            <TextView
+                android:id="@+id/videoTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp" />
+
+            <TextView
+                android:id="@+id/videoDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-5dp"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="#978181"
+                android:textSize="@dimen/_12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutVideoFav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:ellipsize="end"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_16sp"
-            app:layout_constraintStart_toEndOf="@id/img_video"
-            app:layout_constraintStart_toStartOf="@id/txtVideoTitle"
-            app:layout_constraintTop_toBottomOf="@id/txtVideoTitle" />
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="-5dp"
+            android:layout_marginBottom="@dimen/_5dp"
+            android:orientation="horizontal">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+            <ImageView
+                android:id="@+id/favVideoImg"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="@dimen/_5dp"
+                android:src="@drawable/favorite_outline" />
+
+            <TextView
+                android:id="@+id/favVideoTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_14sp" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

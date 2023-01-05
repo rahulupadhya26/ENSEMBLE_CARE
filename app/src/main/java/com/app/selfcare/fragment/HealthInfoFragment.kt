@@ -72,7 +72,7 @@ class HealthInfoFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        checkPermissionsAndRun(FitActionRequestCode1.SUBSCRIBE)
+        //checkPermissionsAndRun(FitActionRequestCode1.SUBSCRIBE)
     }
 
     private fun checkPermissionsAndRun(fitActionRequestCode: FitActionRequestCode1) {

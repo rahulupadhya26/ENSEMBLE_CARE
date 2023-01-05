@@ -158,8 +158,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="150dp"
                                 android:foreground="#80000000"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/exercise_careplan_back" />
+                                android:scaleType="centerCrop" />
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -232,8 +231,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="200dp"
                                 android:foreground="#80000000"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/nutrition_img1" />
+                                android:scaleType="centerCrop" />
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -308,8 +306,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="150dp"
                                 android:foreground="#80000000"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/meditation_careplan" />
+                                android:scaleType="centerCrop" />
 
                             <RelativeLayout
                                 android:layout_width="match_parent"

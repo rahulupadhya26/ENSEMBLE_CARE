@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layoutBottomNav"
-    tools:context=".MainActivity"
-    android:visibility="gone">
+    tools:context=".MainActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -17,7 +16,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewBottomNav"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         app:cardCornerRadius="2dp"
         app:cardElevation="@dimen/_10dp">
@@ -34,15 +33,14 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:background="@drawable/ripple_effect"
-                android:animateLayoutChanges="true"
                 android:id="@+id/layoutDashboard">
 
                 <ImageView
                     android:id="@+id/imgDashboard"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="@dimen/_20dp"
-                    android:src="@drawable/home_new"/>
+                    android:padding="@dimen/_15dp"
+                    android:src="@drawable/dashboard" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewDashboard"
@@ -80,7 +78,7 @@
                             android:text="Home"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/_18sp" />
+                            android:textSize="@dimen/_14sp" />
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -91,14 +89,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/ripple_effect"
-                android:animateLayoutChanges="true"
                 android:id="@+id/layoutActivity">
 
                 <ImageView
                     android:id="@+id/imgActivity"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="@dimen/_20dp"
+                    android:padding="@dimen/_15dp"
                     android:src="@drawable/activity" />
 
                 <androidx.cardview.widget.CardView
@@ -134,10 +131,10 @@
                             android:layout_marginStart="@dimen/_5dp"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:text="Activity"
+                            android:text="CarePlan"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/_18sp" />
+                            android:textSize="@dimen/_14sp" />
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -148,23 +145,20 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/ripple_effect"
-                android:animateLayoutChanges="true"
                 android:id="@+id/layoutCoaches">
 
                 <ImageView
                     android:id="@+id/imgCoaches"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="@dimen/_20dp"
-                    android:src="@drawable/personal_trainer"/>
+                    android:padding="@dimen/_15dp"
+                    android:src="@drawable/personal_trainer" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewCoaches"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_centerInParent="true"
-                    android:layout_marginStart="@dimen/_5dp"
-                    android:layout_marginEnd="@dimen/_5dp"
                     app:cardBackgroundColor="#38A387"
                     app:cardCornerRadius="@dimen/_10dp"
                     app:cardElevation="@dimen/_5dp"
@@ -175,7 +169,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:padding="@dimen/_5dp">
+                        android:paddingStart="@dimen/_5dp">
 
                         <ImageView
                             android:layout_width="@dimen/_10dp"
@@ -191,10 +185,10 @@
                             android:layout_marginStart="@dimen/_5dp"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:text="Coach"
+                            android:text="Wellness"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/_18sp" />
+                            android:textSize="@dimen/_14sp" />
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -205,15 +199,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/ripple_effect"
-                android:animateLayoutChanges="true"
                 android:id="@+id/layoutCrisis">
 
                 <ImageView
                     android:id="@+id/imgCrisis"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="@dimen/_20dp"
-                    android:src="@drawable/crisis"/>
+                    android:padding="@dimen/_15dp"
+                    android:src="@drawable/crisis" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewCrisis"
@@ -251,7 +244,7 @@
                             android:text="Crisis"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/_18sp" />
+                            android:textSize="@dimen/_14sp" />
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -298,7 +291,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/_10dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="70dp"
         android:backgroundTint="@color/primaryGreen"
         android:contentDescription="@string/app_name"
         app:maxImageSize="30dp"

@@ -49,6 +49,14 @@ class ExpoPlayerUtils {
         }
         val fullScreen = playerView.findViewById<ImageView>(R.id.imgFullScreen)
 
+        fullScreen.setImageDrawable(
+            ContextCompat.getDrawable(
+                context,
+                com.google.android.exoplayer2.ui.R.drawable.exo_controls_fullscreen_exit
+            )
+        )
+        fullscreen = true
+
         fullScreen.setOnClickListener {
             if (fullscreen) {
                 fullScreen.setImageDrawable(

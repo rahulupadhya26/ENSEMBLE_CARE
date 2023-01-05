@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_box_grey_top_corners">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewPictureDialogDash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/_10dp"
+        app:cardCornerRadius="@dimen/_5dp"
+        app:cardUseCompatPadding="true">
+
+        <View
+            android:layout_width="60dp"
+            android:layout_height="@dimen/_8dp"
+            android:background="#A79C9C" />
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/_15dp"
+        android:layout_marginEnd="@dimen/_15dp">
+
+        <TextView
+            android:id="@+id/txtFormTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Consent to treatment"
+            android:textSize="@dimen/_20sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Signature"
+            android:textSize="@dimen/_14sp"
+            android:textColor="@color/black"/>
+
+        <com.app.selfcare.utils.SignatureView
+            android:id="@+id/formSignatureView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:background="@drawable/login_edittxt_background" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_5dp"
+            android:layout_marginBottom="@dimen/_5dp">
+
+            <LinearLayout
+                android:id="@+id/btnClearFormSigned"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/login_edittxt_background">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="Clear"
+                    android:textSize="@dimen/_14sp"
+                    android:padding="@dimen/_10dp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="All the documents can be viewed in Dashboard -> Documents"
+            android:textSize="@dimen/_10sp"
+            android:textColor="#998787"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:textStyle="bold"/>
+
+
+        <Button
+            android:id="@+id/btnConfirmSignature"
+            style="@style/buttonBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:textSize="@dimen/_16sp"
+            android:text="Confirm Signature" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -5,133 +5,182 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/initial_screen_background"
     tools:context=".fragment.PaymentSelectFragment">
 
-    <LinearLayout
-        android:id="@+id/layoutPaymentTitle"
+    <RelativeLayout
+        android:id="@+id/layoutPaymentSectionHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true">
+        android:layout_margin="@dimen/_5dp">
 
         <ImageView
-            android:id="@+id/imgPaymentSelection"
+            android:id="@+id/paymentSectionBack"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:contentDescription="@string/app_name"
-            android:padding="10dp"
-            android:layout_marginTop="@dimen/_20dp"
-            android:layout_marginStart="@dimen/_5dp"
-            android:src="@drawable/ic_action_back_btn"
-            app:tint="@color/white" />
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:padding="@dimen/_8dp"
+            android:src="@drawable/journal_resource_back"
+            app:tint="@color/primaryGreen" />
 
         <TextView
-            android:id="@+id/txtProfDetails"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Payment"
+            android:layout_centerInParent="true"
+            android:text="Checkout"
             android:textAppearance="@style/fontfamily"
-            android:textColor="@color/white"
+            android:textColor="@color/primaryGreen"
             android:textSize="@dimen/_22sp"
-            android:layout_marginStart="@dimen/_20dp"
-            android:layout_marginEnd="@dimen/_15dp"
-            android:layout_marginBottom="@dimen/_15dp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/txtChoosePlan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_20dp"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="Payment"
-            android:visibility="gone"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_26sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/layoutPaymentTitle"
-        android:layout_above="@+id/txtPaymentBillingPeriod">
+        android:layout_below="@+id/layoutPaymentSectionHeader"
+        android:layout_above="@+id/btnPaymentSection">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/_20dp"
+            android:layout_marginEnd="@dimen/_20dp"
+            android:layout_marginTop="@dimen/_10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Payment Summary"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp"
+                android:textStyle="bold"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/plan_payment_bg_rounded_corner"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginEnd="@dimen/_20dp"
-                android:elevation="@dimen/_10dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Plan Name"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_22sp"
-                    android:layout_marginStart="@dimen/_20dp"
-                    android:layout_marginEnd="@dimen/_15dp"
-                    android:layout_marginBottom="@dimen/_15dp"
-                    android:textStyle="bold" />
+                android:background="@drawable/edittext_background_box"
+                android:elevation="@dimen/_10dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:paddingTop="@dimen/_10dp"
+                android:layout_marginBottom="@dimen/_10dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:layout_marginStart="@dimen/_20dp"
-                    android:layout_marginEnd="@dimen/_15dp"
-                    android:layout_marginBottom="@dimen/_15dp">
+                    android:layout_height="wrap_content">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/txtPaymentPlanName"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/txtPaymentPlanName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_20sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="05 Services"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_14sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp"
+                        android:layout_alignParentStart="true"/>
 
                     <TextView
                         android:id="@+id/txtPaymentPlanPrice"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentBottom="true"
-                        android:gravity="center"
+                        android:layout_height="wrap_content"
                         android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_24sp" />
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp"
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentEnd="true"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/txtPlanCheckOutSubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="#6B6B6B"
+                    android:textSize="@dimen/_10sp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#D4BCBC"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_10dp"/>
+
+                <LinearLayout
+                    android:id="@+id/layoutAddOnService"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/txtPaymentAddOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Addons"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_14sp"
+                            android:layout_alignParentStart="true"/>
+
+                        <TextView
+                            android:id="@+id/txtPaymentAddOnPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="$768"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_14sp"
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentEnd="true"/>
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/txtAddonCheckOutSubTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="#6B6B6B"
+                        android:textSize="@dimen/_10sp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#D4BCBC"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:layout_marginBottom="@dimen/_10dp"/>
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp"
+                        android:layout_alignParentStart="true"/>
+
+                    <TextView
+                        android:id="@+id/txtPaymentTotalPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
 
                 </RelativeLayout>
 
@@ -141,105 +190,125 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Payment Method"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_20dp"
                 android:textAppearance="@style/fontfamily"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_20sp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp"
+                android:layout_marginTop="@dimen/_20dp"
                 android:textStyle="bold"/>
 
-            <Button
-                android:id="@+id/cardViewSelfPay"
-                style="@style/buttonBackground"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_20dp"
-                android:layout_marginEnd="@dimen/_20dp"
-                app:backgroundTint="#28323C"
-                android:textStyle="bold"
-                android:textSize="@dimen/_20sp"
-                android:padding="@dimen/_10dp"
-                android:text="Self Pay" />
+                android:orientation="vertical"
+                android:background="@drawable/edittext_background_box"
+                android:elevation="@dimen/_10dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:paddingTop="@dimen/_10dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="0dp"
+                android:layout_marginBottom="@dimen/_10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Or"
-                android:gravity="center"
-                android:layout_marginTop="@dimen/_20dp"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="@dimen/_24sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <Button
-                android:id="@+id/cardViewInsurance"
-                style="@style/buttonBackground"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_20dp"
-                android:layout_marginEnd="@dimen/_20dp"
-                app:backgroundTint="#28323C"
-                android:textStyle="bold"
-                android:textSize="@dimen/_20sp"
-                android:padding="@dimen/_10dp"
-                android:text="Insurance" />
+                    <LinearLayout
+                        android:id="@+id/cardViewSelfPay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
+                        <ImageView
+                            android:id="@+id/imgSelfPayUnSelected"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="@dimen/_8dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/circle_border_dot"
+                            android:visibility="gone"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:src="@drawable/payment"
-                android:visibility="gone"/>
+                        <ImageView
+                            android:id="@+id/imgSelfPaySelected"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="@dimen/_8dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/circle_solid_dot"/>
 
-            <Button
-                style="@style/buttonBackground"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_30dp"
-                android:layout_marginTop="@dimen/_20dp"
-                android:layout_marginEnd="@dimen/_30dp"
-                android:text="Insurance Pay"
-                android:visibility="gone" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:text="Self Pay"
+                            android:layout_gravity="center"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_14sp" />
 
-            <Button
-                style="@style/buttonBackground"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_30dp"
-                android:layout_marginTop="@dimen/_20dp"
-                android:layout_marginEnd="@dimen/_30dp"
-                android:text="Self Pay"
-                android:visibility="gone" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/black"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:layout_marginBottom="@dimen/_10dp"
+                        android:layout_marginStart="40dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/cardViewInsurance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imgInsurancePayUnSelected"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="@dimen/_8dp"
+                            android:src="@drawable/circle_border_dot"/>
+
+                        <ImageView
+                            android:id="@+id/imgInsurancePaySelected"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="@dimen/_8dp"
+                            android:src="@drawable/circle_solid_dot"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Insurance Pay"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_14sp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:layout_alignParentStart="true"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
-    <TextView
-        android:id="@+id/txtPaymentBillingPeriod"
-        android:layout_above="@+id/txtPaymentRenewPlan"
+    <Button
+        android:id="@+id/btnPaymentSection"
+        style="@style/buttonBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Billing Period"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_18sp"
-        android:gravity="center"
-        android:layout_marginBottom="-5dp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/txtPaymentRenewPlan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Auto renews on December 21 2022"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_16sp"
-        android:gravity="center"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginTop="@dimen/_20dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:textStyle="bold"
+        android:padding="@dimen/_10dp"
         android:layout_marginBottom="@dimen/_20dp"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:text="Proceed" />
 
 </RelativeLayout>

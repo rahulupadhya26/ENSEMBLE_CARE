@@ -1,10 +1,12 @@
 package com.app.selfcare.fragment
 
+import android.app.Dialog
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.Window
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +15,6 @@ import com.app.selfcare.adapters.SpecialistAdapter
 import com.app.selfcare.controller.OnItemTherapistImageClickListener
 import com.app.selfcare.controller.OnTherapistItemClickListener
 import com.app.selfcare.data.PatientId
-import com.app.selfcare.data.Question
 import com.app.selfcare.data.Therapist
 import com.app.selfcare.preference.PrefKeys
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,9 +24,10 @@ import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.dialog_same_day_appointment.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,14 +43,14 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
     OnTherapistItemClickListener {
     // TODO: Rename and change types of parameters
     private var isRegister: Boolean? = null
-    private var param2: String? = null
-    var specialist: ArrayList<Therapist> = ArrayList()
+    private var specialist: ArrayList<Therapist>? = null
+    //var specialist: ArrayList<Therapist> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             isRegister = it.getBoolean(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            specialist = it.getParcelableArrayList(ARG_PARAM2)
         }
     }
 
@@ -59,22 +61,30 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        if (isRegister!!) {
-            getBackButton().visibility = View.GONE
-        } else {
-            getBackButton().visibility = View.VISIBLE
-        }
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+        updateStatusBarColor(R.color.therapist_list_background)
 
-        btnConfirmDoctor.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.buttonBackground))
+        therapistListBack.setOnClickListener {
+            popBackStack()
+        }
 
-        getTherapistList()
+        btnConfirmDoctor.backgroundTintList = ColorStateList.valueOf(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.buttonBackground
+            )
+        )
+
+        //getTherapistList()
+        updatePhysiciansList(specialist!!)
 
         btnConfirmDoctor.setOnClickListener {
             if (Utils.providerId.isNotEmpty() &&
                 Utils.providerPublicId.isNotEmpty() &&
                 Utils.providerType.isNotEmpty() &&
-                Utils.providerName.isNotEmpty()) {
+                Utils.providerName.isNotEmpty()
+            ) {
                 replaceFragment(
                     TherapySelectionFragment(),
                     R.id.layout_home,
@@ -111,7 +121,6 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
                             val therapistList: Type =
                                 object : TypeToken<ArrayList<Therapist?>?>() {}.type
                             specialist = Gson().fromJson(responseBody, therapistList)
-                            updatePhysiciansList(specialist)
                         } catch (e: Exception) {
                             hideProgress()
                             displayToast("Something went wrong.. Please try after sometime")
@@ -161,11 +170,11 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: Boolean, param2: String = "") =
+        fun newInstance(param1: Boolean, param2: ArrayList<Therapist>) =
             TherapistListFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putParcelableArrayList(ARG_PARAM2, param2)
                 }
             }
 
@@ -176,12 +185,37 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
         Utils.providerId = therapist.doctor_id
         Utils.providerPublicId = therapist.doctor_public_id
         Utils.providerType = therapist.doctor_type
-        Utils.providerName = therapist.first_name + " " + therapist.middle_name + " " + therapist.last_name
-        replaceFragment(
-            TherapistDetailFragment.newInstance(therapist),
-            R.id.layout_home,
-            TherapistDetailFragment.TAG
-        )
+        Utils.providerName =
+            therapist.first_name + " " + therapist.middle_name + " " + therapist.last_name
+        Utils.aptScheduleDate = therapist.appointment.date
+        Utils.aptScheduleTime = therapist.appointment.time_slot.starting_time
+        Utils.appointmentId = therapist.appointment.appointment_id.toString()
+        if (!therapist.appointment.on_sameday) {
+            replaceFragment(
+                TherapistDetailFragment.newInstance(therapist),
+                R.id.layout_home,
+                TherapistDetailFragment.TAG
+            )
+        } else {
+            //display alert message
+            val dialog = Dialog(requireActivity())
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(false)
+            dialog.setContentView(R.layout.dialog_same_day_appointment)
+            dialog.cardViewSameDayApptYes.setOnClickListener {
+                dialog.dismiss()
+                replaceFragment(
+                    TherapistDetailFragment.newInstance(therapist),
+                    R.id.layout_home,
+                    TherapistDetailFragment.TAG
+                )
+            }
+            dialog.cardViewSameDayApptNo.setOnClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
     }
 
     override fun onTherapistItemClickListener(therapist: Therapist) {
@@ -190,6 +224,7 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
         Utils.providerType = therapist.doctor_type
         Utils.providerName =
             therapist.first_name + " " + therapist.middle_name + " " + therapist.last_name
-        btnConfirmDoctor.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+        btnConfirmDoctor.backgroundTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
     }
 }

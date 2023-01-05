@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutReferEmp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:id="@+id/layoutReferEmp"
     android:background="@color/initial_screen_background"
+    android:orientation="vertical"
     tools:context=".fragment.RegisterPartCFragment">
 
     <ImageView
         android:id="@+id/imgRegister3Back"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:contentDescription="@string/app_name"
-        android:padding="10dp"
-        android:layout_marginTop="@dimen/_20dp"
         android:layout_marginStart="@dimen/_5dp"
-        android:src="@drawable/ic_action_back_btn"
+        android:layout_marginTop="@dimen/_20dp"
+        android:contentDescription="@string/app_name"
+        android:padding="@dimen/_10dp"
+        android:src="@drawable/journal_resource_back"
         app:tint="@color/white" />
 
     <LinearLayout
         android:id="@+id/layoutRegistration2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_alignParentTop="true"
         android:layout_marginStart="@dimen/_20dp"
         android:layout_marginEnd="@dimen/_15dp"
-        android:layout_marginBottom="@dimen/_15dp">
+        android:layout_marginBottom="@dimen/_15dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/txtProfDetails"
@@ -43,155 +43,177 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
             android:text="Please provide the information"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/white"
             android:textSize="@dimen/_18sp"
-            android:layout_marginTop="-5dp"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 
-        <RelativeLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_box_grey_top_corners"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:background="@drawable/bg_box_grey_top_corners">
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btnRegisterC"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/_20dp"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_above="@+id/btnRegisterC"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_alignParentTop="true"
-                android:layout_margin="@dimen/_20dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/edittext_background_box"
-                    android:padding="@dimen/_5dp"
-                    android:layout_marginBottom="@dimen/_5dp"
-                    android:layout_marginTop="@dimen/_10dp">
-                    <Spinner
-                        android:id="@+id/spinnerEmployerTypeList"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp" />
-                </RelativeLayout>
-
-                <RadioGroup
-                    android:id="@+id/radio_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:visibility="gone"
-                    android:orientation="vertical">
-
-                    <RadioButton
-                        android:id="@+id/radioBtn1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="SelfPay" />
-
-                    <RadioButton
-                        android:id="@+id/radioBtn2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Employer assisted program" />
-
-                    <RadioButton
-                        android:id="@+id/radioBtn3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="I have health insurance coverage" />
-                </RadioGroup>
-
-                <LinearLayout
-                    android:id="@+id/layout_employeeId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.8dp"
-                        android:background="@color/black"
-                        android:layout_marginTop="@dimen/_10dp"
-                        android:layout_marginBottom="@dimen/_10dp"
-                        android:layout_marginStart="@dimen/_30dp"
-                        android:layout_marginEnd="@dimen/_30dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Employee ID"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/primaryGreen"
-                        android:layout_marginTop="@dimen/_15dp"
-                        android:textSize="@dimen/_16sp"
-                        android:textStyle="bold"/>
-
-                    <EditText
-                        android:id="@+id/etSignUpEmployeeId"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/fontfamily"
-                        android:imeOptions="actionNext"
-                        android:inputType="text"
-                        android:maxLength="50"
-                        android:maxLines="2"
-                        android:layout_marginBottom="@dimen/_5dp"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_16sp"
-                        android:hint="Ex: 1QAT673"
-                        android:textStyle="bold"
-                        android:textColorHint="#807B7B"
-                        android:background="@drawable/edittext_background_box"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Company Name"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/primaryGreen"
-                        android:layout_marginTop="@dimen/_15dp"
-                        android:textSize="@dimen/_16sp"
-                        android:textStyle="bold"/>
-
-                    <EditText
-                        android:id="@+id/etSignUpEmployer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/fontfamily"
-                        android:imeOptions="actionNext"
-                        android:inputType="text"
-                        android:maxLength="50"
-                        android:maxLines="2"
-                        android:layout_marginBottom="@dimen/_5dp"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_16sp"
-                        android:hint="Ex: Primesophictech"
-                        android:textStyle="bold"
-                        android:textColorHint="#807B7B"
-                        android:background="@drawable/edittext_background_box"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btnRegisterC"
-                style="@style/buttonBackground"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10dp"
-                android:layout_marginStart="@dimen/_30dp"
-                android:layout_marginEnd="@dimen/_30dp"
-                android:layout_marginBottom="@dimen/_10dp"
-                android:layout_alignParentBottom="true"
-                android:text="Verify" />
-        </RelativeLayout>
+                android:layout_marginBottom="@dimen/_5dp"
+                android:background="@drawable/edittext_background_box"
+                android:padding="@dimen/_5dp">
+
+                <Spinner
+                    android:id="@+id/spinnerEmployerTypeList"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutCoveredSelfPay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <CheckBox
+                    android:id="@+id/checkboxCoveredSelfPay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:gravity="top"
+                    android:paddingTop="@dimen/_5dp"
+                    android:text="@string/covered_self_pay"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_employeeId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.8dp"
+                    android:layout_marginStart="@dimen/_30dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_30dp"
+                    android:layout_marginBottom="@dimen/_10dp"
+                    android:background="@color/black" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:text="Employee ID"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etSignUpEmployeeId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_background_box"
+                    android:hint="Employee ID"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#807B7B"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:text="Company Name"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etSignUpEmployer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_background_box"
+                    android:hint="Company Name"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#807B7B"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:text="Employee Code"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etSignUpEmployerCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_background_box"
+                    android:hint="Employee Code"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#807B7B"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnRegisterC"
+            style="@style/buttonBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/_20dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_20dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:text="Verify" />
+    </RelativeLayout>
 
 </LinearLayout>

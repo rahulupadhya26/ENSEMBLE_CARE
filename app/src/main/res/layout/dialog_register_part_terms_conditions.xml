@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_box_grey_top_corners">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewPictureDialogDash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/_10dp"
+        app:cardCornerRadius="@dimen/_5dp"
+        app:cardUseCompatPadding="true">
+
+        <View
+            android:layout_width="60dp"
+            android:layout_height="@dimen/_8dp"
+            android:background="@color/black" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="Terms and conditions"
+                android:textSize="@dimen/_20sp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:padding="@dimen/_5dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="What’s covered in these terms"
+                android:textSize="@dimen/_16sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="We know it’s tempting to skip these Terms of Service, but it’s important to establish what you can expect from us as you use Ensemble care services, and what we expect from you."
+                android:textSize="@dimen/_18sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="These Terms of Service reflect the way Ensemble care’s business works, the laws that apply to our company, and certain things we’ve always believed to be true. As a result, these Terms of Service help define Ensemble care’s relationship with you as you interact with our services. For example, these terms include the following topic headings:"
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="1. What you can expect from us, which describes how we provide and develop our services"
+                android:textSize="@dimen/_12sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="2. What we expect from you, which establishes certain rules for using our services"
+                android:textSize="@dimen/_12sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="3. Content in Ensemble care services, which describes the intellectual property rights to the content you find in our services — whether that content belongs to you"
+                android:textSize="@dimen/_12sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="4. In case of problems or disagreements, which describes other legal rights you have, and what to expect in case someone violates these terms"
+                android:textSize="@dimen/_12sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="Understanding these terms is important because, by using our services, you’re agreeing to these terms."
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="Besides these terms, we also publish a Privacy Policy. Although it’s not part of these terms, we encourage you to read it to better understand how you can update, manage, export, and delete your information."
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="Terms"
+                android:textSize="@dimen/_16sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="Age requirements"
+                android:textSize="@dimen/_16sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="If you’re under the age required to manage your own Ensemble care Account, you must have your parent or legal guardian’s permission to use a Ensemble care Account. Please have your parent or legal guardian read these terms with you."
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="If you’re a parent or legal guardian, and you allow your child to use the services, then these terms apply to you and you’re responsible for your child’s activity on the services."
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

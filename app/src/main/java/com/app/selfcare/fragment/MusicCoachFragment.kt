@@ -40,9 +40,14 @@ class MusicCoachFragment : BaseFragment() {
         getHeader().visibility = View.GONE
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+        updateStatusBarColor(R.color.music_status_bar)
 
         musicBack.setOnClickListener {
             popBackStack()
+        }
+
+        musicFav.setOnClickListener {
+
         }
     }
 
@@ -64,6 +69,7 @@ class MusicCoachFragment : BaseFragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_Music"
     }
 }

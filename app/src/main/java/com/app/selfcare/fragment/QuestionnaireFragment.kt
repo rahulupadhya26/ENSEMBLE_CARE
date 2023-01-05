@@ -2,6 +2,7 @@ package com.app.selfcare.fragment
 
 import android.content.res.ColorStateList
 import android.graphics.Typeface
+import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -23,8 +24,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_questionnaire.*
-import org.json.JSONArray
-import org.json.JSONObject
 import retrofit2.HttpException
 import java.io.*
 import java.lang.reflect.Type
@@ -92,7 +91,6 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
         cv_option_two.setOnClickListener(this)
         cv_option_three.setOnClickListener(this)
         cv_option_four.setOnClickListener(this)
-        cardViewBtnNext.setOnClickListener(this)
 
         /*val jsonString = Constants.getJson(requireActivity())
         jsonArr = JSONArray(jsonString)
@@ -258,7 +256,6 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
         progressBar.progress = count
         defaultOptionsView()
         tv_current_question.text = question.question
-        tv_next_question.text = ""
         //tv_start_text.text = "Let's get started.."
         noOfAnswers = question.answers.size
         when (noOfAnswers) {
@@ -308,19 +305,23 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setQuestion(questions: ArrayList<Question>) {
+        var getIndex = 0
         for (i in 0 until questions.size) {
             if (questions[i].option_id == nextOptionId) {
+                getIndex = i
                 this.question = questions[i]
                 break
             }
         }
         progressBar.max = questions.size - 1
         progressBar.progress = count
+        if (getIndex == 1) {
+            count = 0
+        }
         setMaxProgress(count)
         //setCurrentProgress(count)
         defaultOptionsView()
         tv_current_question.text = question!!.question
-        tv_next_question.text = ""
         /*when (count) {
             1 -> {
                 tv_start_text.text = "Keep going.."
@@ -474,7 +475,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
 
         for (option in options) {
             option.setTextColor(requireActivity().getColor(R.color.primaryGreen))
-            option.typeface = Typeface.DEFAULT
+            option.setTypeface(option.typeface, Typeface.BOLD)
             option.background =
                 ContextCompat.getDrawable(requireActivity(), R.drawable.edittext_background_box)
         }
@@ -1112,44 +1113,6 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                     question!!.question_id,
                     nextQuestionId
                 )
-            }
-            R.id.cardViewBtnNext -> {
-                if (mSelectedOptionId != 0) {
-                    //sendAnswers(mAnsweredQuesitonId, mSelectedOptionId)
-                } else {
-                    displayToast("Please select the option")
-                }
-                /*if (mSelectedOptionPosition != -1) {
-                    if (mSelectedOptionPosition != 0) {
-                        mCurrentPosition = mSelectedOptionPosition
-                    }
-                    when {
-                        count < tempQuestions!!.size - 1 || mSelectedOptionPosition != 0 -> {
-                            mSelectedOptionPosition = -1
-                            count++
-                            progressBar.progress = progressBar.progress + 1
-                            setQuestion()
-                        }
-                        else -> {
-                            replaceFragmentNoBackStack(
-                                CongratsUserFragment(),
-                                R.id.layout_home,
-                                CongratsUserFragment.TAG
-                            )
-                            *//*Toast.makeText(
-                                this,
-                                "You have successfully completed the assessment",
-                                Toast.LENGTH_SHORT
-                            ).show()*//*
-                        }
-                    }
-                } else {
-                    Toast.makeText(
-                        requireActivity(),
-                        "Please select the option",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }*/
             }
         }
     }

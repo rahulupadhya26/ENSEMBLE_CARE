@@ -76,7 +76,7 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
             if (msg != "") {
                 val message = mRtmClient!!.createMessage()
                 message.text = msg
-                val messageBean = MessageBean(appointment!!.appointment.patient.toString(), message, true)
+                val messageBean = MessageBean(appointment!!.appointment.appointment_id.toString(), message, true)
                 mMessageBeanList.add(messageBean)
                 mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
                 chatMessageList.scrollToPosition(mMessageBeanList.size - 1)
@@ -383,7 +383,7 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
             if (appointment!!.rtc_token.isNotEmpty()) {
                 mRtmClient!!.login(
                     appointment!!.rtc_token,
-                    appointment!!.appointment.patient.toString(),
+                    appointment!!.appointment.appointment_id.toString(),
                     object : ResultCallback<Void?> {
                         override fun onSuccess(responseInfo: Void?) {
                             Utils.rtmLoggedIn = true

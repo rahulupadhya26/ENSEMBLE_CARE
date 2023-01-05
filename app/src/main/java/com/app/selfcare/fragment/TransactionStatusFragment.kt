@@ -50,7 +50,7 @@ class TransactionStatusFragment : BaseFragment() {
 
         if (paymentSts) {
             imgTransaction.setImageResource(R.drawable.success)
-            txtTransStatus.text = "Transaction successful"
+            txtTransStatus.text = "Transaction Successful"
             txtTransStatus.setTextColor(
                 ContextCompat.getColor(
                     requireActivity(),
@@ -59,7 +59,7 @@ class TransactionStatusFragment : BaseFragment() {
             )
         } else {
             imgTransaction.setImageResource(R.drawable.cancel)
-            txtTransStatus.text = "Transaction failed"
+            txtTransStatus.text = "Transaction Failed"
             txtTransStatus.setTextColor(ContextCompat.getColor(requireActivity(), R.color.red))
         }
         txtTransId.text = transSts!!.transaction_id
@@ -77,16 +77,15 @@ class TransactionStatusFragment : BaseFragment() {
             } else {
                 Utils.isTherapististScreen = true
                 replaceFragmentNoBackStack(
-                    TherapistListFragment.newInstance(true),
+                    ClientAvailabilityFragment.newInstance(true),
                     R.id.layout_home,
-                    TherapistListFragment.TAG
+                    ClientAvailabilityFragment.TAG
                 )
             }
         }
 
         layoutScreenshot.setOnClickListener {
             takeScreenshot()
-            displayToast("Saved screenshot.")
         }
     }
 

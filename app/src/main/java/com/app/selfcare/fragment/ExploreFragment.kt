@@ -160,7 +160,7 @@ class ExploreFragment : BaseFragment(), OnGoalItemClickListener, OnJournalItemCl
 
     }
 
-    private fun getData(tableId: String, myCallback: (result: String?) -> Unit) {
+    /*private fun getData(tableId: String, myCallback: (result: String?) -> Unit) {
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
@@ -201,7 +201,7 @@ class ExploreFragment : BaseFragment(), OnGoalItemClickListener, OnJournalItemCl
             )
         }
         handler.postDelayed(runnable!!, 1000)
-    }
+    }*/
 
     companion object {
         /**

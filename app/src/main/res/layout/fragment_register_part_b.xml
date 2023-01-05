@@ -90,9 +90,10 @@
                     android:layout_marginBottom="@dimen/_5dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_16sp"
-                    android:hint="Ex: John@example.com"
+                    android:hint="Email"
                     android:textStyle="bold"
                     android:textColorHint="#807B7B"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:background="@drawable/edittext_background_box"/>
 
                 <TextView
@@ -117,9 +118,10 @@
                     android:layout_marginBottom="@dimen/_5dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_16sp"
-                    android:hint="Ex: (555) 555-1234"
+                    android:hint="Phone Number"
                     android:textStyle="bold"
                     android:textColorHint="#807B7B"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:background="@drawable/edittext_background_box"/>
 
                 <TextView
@@ -136,11 +138,38 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:passwordToggleEnabled="true"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
                     app:hintEnabled="false"
-                    app:hintTextAppearance="@style/fontfamily">
+                    android:background="@android:color/transparent">
 
                     <EditText
                         android:id="@+id/etSignUpPass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_background_box"
+                        android:textAppearance="@style/fontfamily"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:hint="Password"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:padding="@dimen/_15dp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:textColorHint="#807B7B"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true"
+                    android:visibility="gone">
+
+                    <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/fontfamily"
@@ -170,11 +199,48 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:passwordToggleEnabled="true"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
                     app:hintEnabled="false"
-                    app:hintTextAppearance="@style/fontfamily">
+                    android:background="@android:color/transparent">
 
                     <EditText
                         android:id="@+id/etSignUpConfirmPass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_background_box"
+                        android:textAppearance="@style/fontfamily"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:padding="@dimen/_15dp"
+                        android:hint="Confirm Password"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:textColorHint="#807B7B"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <CheckBox
+                    android:id="@+id/checkboxRegisterTermsConditions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="@string/register_part_2"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_14sp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true"
+                    android:visibility="gone">
+
+                    <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/fontfamily"
@@ -182,7 +248,7 @@
                         android:imeOptions="actionDone"
                         android:maxLines="1"
                         android:maxLength="15"
-                        android:hint="**********"
+                        android:text="dfghj"
                         android:textColorHint="#807B7B"
                         android:textColor="@color/black"
                         android:background="@drawable/edittext_background_box"
@@ -199,10 +265,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/_20dp"
             android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_20dp"
             android:layout_marginBottom="@dimen/_10dp"
-            android:layout_marginStart="@dimen/_30dp"
-            android:layout_marginEnd="@dimen/_30dp"
             android:text="Continue" />
 
     </RelativeLayout>

@@ -104,6 +104,7 @@ object Utils {
     var ssn = ""
     var dob = ""
     var gender = ""
+    var prefLang = ""
     var email = ""
     var phoneNo = ""
     var pass = ""
@@ -136,6 +137,14 @@ object Utils {
     var timeSlotId = ""
     var apptPcId = ""
     var isTherapististScreen = false
+
+
+    const val WELLNESS_EXERCISE = "exercise"
+    const val WELLNESS_NUTRITION = "nutrition"
+    const val WELLNESS_MUSIC = "music"
+    const val WELLNESS_MINDFULNESS = "mindfulness"
+    const val WELLNESS_YOGA = "yoga"
+    const val FAVORITES = "favorites"
 
     const val NAVIGATE_FROM_DASHBOARD = "fromDashboard"
     const val QUICK_BOOK = "quick_book"

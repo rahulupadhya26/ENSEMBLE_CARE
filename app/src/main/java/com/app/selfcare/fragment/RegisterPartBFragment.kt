@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.telephony.PhoneNumberUtils
 import android.text.Editable
+import android.text.SpannableString
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -15,9 +16,13 @@ import com.app.selfcare.data.UserDetails
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.dialog_picture_option.view.*
+import kotlinx.android.synthetic.main.fragment_final_review.*
 import kotlinx.android.synthetic.main.fragment_register_part_b.*
 import kotlinx.android.synthetic.main.fragment_register_part_c.*
 import kotlinx.android.synthetic.main.fragment_registration.*
@@ -96,6 +101,21 @@ class RegisterPartBFragment : BaseFragment() {
             }
         })
 
+        checkboxRegisterTermsConditions.addClickableLink(
+            "I hereby agree to abide by the terms and conditions provider by EnsembleCare",
+            SpannableString("terms and conditions")
+        ) {
+            val createRegisterTermsConditions = BottomSheetDialog(requireActivity())
+            val registerTermsConditionsDialog: View = layoutInflater.inflate(
+                R.layout.dialog_register_part_terms_conditions, null
+            )
+            createRegisterTermsConditions.setContentView(registerTermsConditionsDialog)
+            createRegisterTermsConditions.behavior.isFitToContents = false
+            createRegisterTermsConditions.behavior.halfExpandedRatio = 0.6f
+            createRegisterTermsConditions.setCanceledOnTouchOutside(true)
+            createRegisterTermsConditions.show()
+        }
+
         imgRegister2Back.setOnClickListener {
             popBackStack()
         }
@@ -117,7 +137,14 @@ class RegisterPartBFragment : BaseFragment() {
                                                             )
                                                         ))
                                             ) {
-                                                validateUserDetails()
+                                                if (checkboxRegisterTermsConditions.isChecked) {
+                                                    validateUserDetails()
+                                                } else {
+                                                    displayMsg(
+                                                        "Message",
+                                                        "Please select terms and conditions for further procedure"
+                                                    )
+                                                }
                                             } else {
                                                 setEditTextError(
                                                     etSignUpPass,
@@ -201,9 +228,9 @@ class RegisterPartBFragment : BaseFragment() {
                                 Utils.pass = getText(etSignUpPass)
                                 Utils.confirmPass = getText(etSignUpConfirmPass)
                                 replaceFragment(
-                                    RegisterPartCFragment(),
+                                    SignUpFragment(),
                                     R.id.layout_home,
-                                    RegisterPartCFragment.TAG
+                                    SignUpFragment.TAG
                                 )
                             } else {
                                 displayMsg("Alert", responseBody.trim())

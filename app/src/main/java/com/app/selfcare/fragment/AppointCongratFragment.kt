@@ -58,7 +58,7 @@ class AppointCongratFragment : BaseFragment() {
             val appointmentDate = DateUtils(Utils.aptScheduleDate + " 00:00:00")
 
             text_appointment_date_time.text = appointmentDate.getDay() + " " +
-                    appointmentDate.getFullMonthName() + " at " + Utils.aptScheduleTime.dropLast(11)
+                    appointmentDate.getFullMonthName() + " at " + Utils.aptScheduleTime.dropLast(3)
 
             if (Utils.selectedCommunicationMode == "Video") {
                 appointedMode.setBackgroundResource(R.drawable.video)
@@ -68,6 +68,9 @@ class AppointCongratFragment : BaseFragment() {
                 appointedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
             }
 
+            layoutAppointCongratsScreenshot.setOnClickListener {
+                takeScreenshot()
+            }
 
             btn_go_to_dashboard.setOnClickListener {
                 navigateToHomeScreen()

@@ -31,6 +31,7 @@ class ActivityGoalDetailFragment : BaseFragment() {
     private var param2: String? = null
     private val calendar = Calendar.getInstance()
     private var currentMonth = 0
+    private var list: MutableList<Date> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +51,7 @@ class ActivityGoalDetailFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        drinkWaterProgress.setProgress(54.0,100.0)
+        drinkWaterProgress.setProgress(54.0, 100.0)
 
         activityGoalDetailBack.setOnClickListener {
             popBackStack()
@@ -163,6 +164,7 @@ class ActivityGoalDetailFragment : BaseFragment() {
             calendarChangesObserver = myCalendarChangesObserver
             calendarSelectionManager = mySelectionManager
             setDates(getFutureDatesOfCurrentMonth())
+            list = mutableListOf()
             init()
         }
 
@@ -191,7 +193,7 @@ class ActivityGoalDetailFragment : BaseFragment() {
             calendar.set(Calendar.YEAR, calendar[Calendar.YEAR] + 1)
             currentMonth = 0 // 0 == january
         }
-        return getDates(mutableListOf())
+        return getDates()
     }
 
     private fun getDatesOfPreviousMonth(): List<Date> {
@@ -201,16 +203,16 @@ class ActivityGoalDetailFragment : BaseFragment() {
             calendar.set(Calendar.YEAR, calendar[Calendar.YEAR] - 1)
             currentMonth = 11 // 11 == december
         }
-        return getDates(mutableListOf())
+        return getDates()
     }
 
     private fun getFutureDatesOfCurrentMonth(): List<Date> {
         // get all next dates of current month
         currentMonth = calendar[Calendar.MONTH]
-        return getDates(mutableListOf())
+        return getDates()
     }
 
-    private fun getDates(list: MutableList<Date>): List<Date> {
+    private fun getDates(): List<Date> {
         // load dates of whole month
         calendar.set(Calendar.MONTH, currentMonth)
         val cal = Calendar.getInstance()
@@ -226,6 +228,9 @@ class ActivityGoalDetailFragment : BaseFragment() {
                 list.add(calendar.time)
         }
         calendar.add(Calendar.DATE, -1)
+        if (list.size < 5) {
+            getDatesOfNextMonth()
+        }
         return list
     }
 
@@ -247,6 +252,7 @@ class ActivityGoalDetailFragment : BaseFragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_activity_goal_detail"
     }
 }

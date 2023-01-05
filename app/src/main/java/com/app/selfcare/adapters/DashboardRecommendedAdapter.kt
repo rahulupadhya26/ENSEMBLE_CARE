@@ -96,7 +96,6 @@ class DashboardRecommendedAdapter(
             videoImg = "http://img.youtube.com/vi/$videoId/hqdefault.jpg" //high quality thumbnail
         }
         Glide.with(context).load(videoImg)
-            .placeholder(R.drawable.sample_img)
             .transform(CenterCrop(), RoundedCorners(5))
             .into(holder.videoImage)
         holder.videoTitle.text = item.name
@@ -107,14 +106,8 @@ class DashboardRecommendedAdapter(
 
     private fun bindPodcastView(holder: PodcastViewHolder, item: RecommendedData) {
         Glide.with(context).load(BaseActivity.baseURL.dropLast(5) + item.podcast_image)
-            .placeholder(R.drawable.sample_img)
             .transform(CenterCrop(), RoundedCorners(5))
             .into(holder.podcastImage)
-        holder.podcastTitle.text = item.name
-        holder.podcastArtist.text = item.artist
-        holder.podcastLayout.setOnClickListener {
-            adapterItemClickListener!!.onRecommendedItemClickListener(item)
-        }
     }
 
     private fun bindArticlesView(holder: ArticlesViewHolder, item: RecommendedData) {
@@ -133,9 +126,6 @@ class DashboardRecommendedAdapter(
 
     inner class PodcastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val podcastImage: ImageView = itemView.img_podcast
-        val podcastTitle: TextView = itemView.txt_podcast_title
-        val podcastArtist: TextView = itemView.txt_podcast_artist
-        val podcastLayout: CardView = itemView.cardview_podcast
     }
 
     inner class ArticlesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

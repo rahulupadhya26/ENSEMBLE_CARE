@@ -1,28 +1,24 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
-import android.os.Handler
+import android.text.SpannableString
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.RadioButton
 import com.app.selfcare.R
 import com.app.selfcare.data.Employee
 import com.app.selfcare.data.Register
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
-import com.app.selfcare.preference.PreferenceHelper.set
-import com.app.selfcare.utils.Utils
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_register_part_c.*
 import retrofit2.HttpException
-import java.lang.Exception
+import kotlin.Exception
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -65,17 +61,7 @@ class RegisterPartCFragment : BaseFragment() {
 
         employeeTypeListSpinner()
 
-        // Get radio group selected item using on checked change listener
-        radio_group.setOnCheckedChangeListener { group, checkedId ->
-            val radio: RadioButton = view.findViewById(checkedId)
-            if (radio.text == "Yes") {
-                layout_employeeId.visibility = View.VISIBLE
-                etSignUpEmployeeId.requestFocus()
-            } else {
-                layout_employeeId.visibility = View.GONE
-                hideKeyboard(layoutReferEmp)
-            }
-        }
+        checkboxCoveredSelfPay.isChecked = false
 
         if (preference!![PrefKeys.PREF_REG, ""]!!.isNotEmpty()) {
             val register =
@@ -84,6 +70,7 @@ class RegisterPartCFragment : BaseFragment() {
                 layout_employeeId.visibility = View.VISIBLE
                 etSignUpEmployeeId.setText(register.employee_id)
                 etSignUpEmployer.setText(register.employer)
+                etSignUpEmployerCode.setText(register.access_code)
             } else {
                 layout_employeeId.visibility = View.GONE
             }
@@ -93,33 +80,51 @@ class RegisterPartCFragment : BaseFragment() {
             popBackStack()
         }
 
+        checkboxCoveredSelfPay.addClickableLink(
+            "I hereby agree to abide by the terms and conditions provider by EnsembleCare for SelfPay",
+            SpannableString("terms and conditions")
+        ) {
+            val createRegisterTermsConditions = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+            val coveredSelfPayTermsConditionsDialog: View = layoutInflater.inflate(
+                R.layout.dialog_register_part_terms_conditions, null
+            )
+            createRegisterTermsConditions.setContentView(coveredSelfPayTermsConditionsDialog)
+            createRegisterTermsConditions.behavior.isFitToContents = false
+            createRegisterTermsConditions.behavior.halfExpandedRatio = 0.6f
+            createRegisterTermsConditions.setCanceledOnTouchOutside(true)
+            createRegisterTermsConditions.show()
+        }
+
         btnRegisterC.setOnClickListener {
             employerTypeData = resources.getStringArray(R.array.employer_type)
             when (selectedType) {
                 employerTypeData!![0] -> {
-                    replaceFragment(
-                        SignUpFragment(),
-                        R.id.layout_home,
-                        SignUpFragment.TAG
-                    )
+                    if (checkboxCoveredSelfPay.isChecked) {
+                        callVerifyEmp("SelfPay")
+                    } else {
+                        displayMsg(
+                            "Message",
+                            "Please select terms and conditions for further procedure"
+                        )
+                    }
                 }
                 employerTypeData!![1] -> {
+                    callVerifyEmp("Insurance")
+                }
+                employerTypeData!![2] -> {
                     if (getText(etSignUpEmployeeId).isNotEmpty()) {
                         if (getText(etSignUpEmployer).isNotEmpty()) {
-                            callVerifyEmp()
+                            if (getText(etSignUpEmployerCode).isNotEmpty()) {
+                                callVerifyEmp("EAP")
+                            } else {
+                                setEditTextError(etSignUpEmployer, "Employer Code cannot be blank")
+                            }
                         } else {
                             setEditTextError(etSignUpEmployer, "Company name cannot be blank")
                         }
                     } else {
                         setEditTextError(etSignUpEmployeeId, "Employee ID cannot be blank")
                     }
-                }
-                employerTypeData!![2] -> {
-                    replaceFragment(
-                        SignUpFragment(),
-                        R.id.layout_home,
-                        SignUpFragment.TAG
-                    )
                 }
             }
         }
@@ -137,18 +142,34 @@ class RegisterPartCFragment : BaseFragment() {
             spinnerEmployerTypeList.onItemSelectedListener = object :
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
+                    parent: AdapterView<*>?,
+                    view: View?, position: Int, id: Long
                 ) {
-                    selectedType = employerTypeData!![position]
-                    if (selectedType == employerTypeData!![1]) {
-                        layout_employeeId.visibility = View.VISIBLE
-                    } else {
-                        layout_employeeId.visibility = View.GONE
+                    try {
+                        selectedType = employerTypeData!![position]
+                        when (selectedType) {
+                            employerTypeData!![0] -> {
+                                layoutCoveredSelfPay.visibility = View.VISIBLE
+                                layout_employeeId.visibility = View.GONE
+                                etSignUpEmployeeId.setText("")
+                                etSignUpEmployer.setText("")
+                                etSignUpEmployerCode.setText("")
+                            }
+                            employerTypeData!![2] -> {
+                                layout_employeeId.visibility = View.VISIBLE
+                                layoutCoveredSelfPay.visibility = View.GONE
+                            }
+                            else -> {
+                                layout_employeeId.visibility = View.GONE
+                                layoutCoveredSelfPay.visibility = View.GONE
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>) {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
                     // write code to perform some action
                 }
             }
@@ -157,16 +178,19 @@ class RegisterPartCFragment : BaseFragment() {
         }
     }
 
-    private fun callVerifyEmp() {
+    private fun callVerifyEmp(coveredType: String) {
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .verifyEmp(
+                    .coveredType(
                         Employee(
+                            coveredType,
+                            getText(etSignUpEmployeeId),
                             getText(etSignUpEmployer),
-                            getText(etSignUpEmployeeId)
-                        )
+                            getText(etSignUpEmployerCode)
+                        ),
+                        getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
@@ -178,30 +202,39 @@ class RegisterPartCFragment : BaseFragment() {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0].replace("\"", "")
-                            if (responseBody == "Record Found") {
-                                Utils.refEmp = true
+                            if (responseBody == "covered type updated") {
+                                /*Utils.refEmp = true
                                 Utils.employeeId = getText(etSignUpEmployeeId)
-                                Utils.employer = getText(etSignUpEmployer)
+                                Utils.employer = getText(etSignUpEmployer)*/
                                 replaceFragment(
-                                    SignUpFragment(),
+                                    PlanFragment(),
                                     R.id.layout_home,
-                                    SignUpFragment.TAG
+                                    PlanFragment.TAG
                                 )
                             } else {
-                                displayToast("Record not found!")
+                                displayMsg(
+                                    "Alert",
+                                    "Employer or Employee Id or Access Code is not correct"
+                                )
                             }
                         } catch (e: Exception) {
                             hideProgress()
+                            e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
 
                     }, { error ->
                         hideProgress()
                         //displayToast("Error ${error.localizedMessage}")
-                        if ((error as HttpException).code() == 404 || (error as HttpException).code() == 400) {
-                            displayErrorMsg(error)
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                callVerifyEmp(coveredType)
+                            }
                         } else {
-                            displayToast("Something went wrong.. Please try after sometime")
+                            displayAfterLoginErrorMsg(error)
                         }
                     })
             )

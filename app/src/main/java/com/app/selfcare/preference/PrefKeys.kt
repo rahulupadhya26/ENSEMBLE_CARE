@@ -3,6 +3,7 @@ package com.app.selfcare.preference
 class PrefKeys {
     companion object {
         const val PREF_IS_LOGGEDIN = "is_logged_in"
+        const val PREF_IS_REMEMBER_ME = "is_remember_me"
         const val PREF_STEP = "step"            //Int
         const val PREF_ID = "id"                //Int
         const val PREF_DEVICE_ID = "device_id"  //String
@@ -16,6 +17,8 @@ class PrefKeys {
         const val PREF_DOB = "dob"
         const val PREF_SSN = "ssn"
         const val PREF_GENDER = "gender"
+        const val PREF_PREFERRED_LANG = "preferred_language"
+        const val PREF_RELATIONSHIP = "relationship"
         const val PREF_MARTIAL_STATUS = "martial_status"
         const val PREF_EMERGENCY_CONTACT_NAME = "emergency_contact_name"
         const val PREF_PATIENT_ID = "patient_id"

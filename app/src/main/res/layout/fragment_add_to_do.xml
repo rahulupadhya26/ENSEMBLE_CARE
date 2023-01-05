@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.AddToDoFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5dp">
+
+            <ImageView
+                android:id="@+id/addToDoBack"
+                app:tint="@color/primaryGreen"
+                android:layout_width="@dimen/_40dp"
+                android:layout_height="@dimen/_40dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/_5dp"
+                android:padding="@dimen/_5dp"
+                android:src="@drawable/journal_resource_back" />
+
+            <LinearLayout
+                android:id="@+id/layoutToDoSelectDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:layout_width="@dimen/_30dp"
+                    android:layout_height="@dimen/_30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/calendar_img" />
+
+                <TextView
+                    android:id="@+id/txtToDoSelectedDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Due Date"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_18sp"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnAddToDo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="@dimen/_10dp"
+                android:padding="5dp"
+                android:text="Save"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_18sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/editTxtToDoName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15dp"
+            android:layout_marginEnd="@dimen/_15dp"
+            android:textAppearance="@style/fontfamily"
+            android:textColorHint="#A9A0A0"
+            android:hint="Task name here..."
+            android:textSize="@dimen/_18sp"
+            android:padding="@dimen/_5dp"
+            android:maxLines="1"
+            android:inputType="text"
+            android:textColor="@color/black"
+            android:imeOptions="actionNext"
+            android:background="@android:color/transparent" />
+
+        <EditText
+            android:id="@+id/editTextToDoDescription"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/_15dp"
+            android:layout_marginEnd="@dimen/_15dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:textAppearance="@style/fontfamily"
+            android:textColorHint="#A9A0A0"
+            android:hint="Add a note"
+            android:textSize="@dimen/_14sp"
+            android:gravity="top"
+            android:padding="@dimen/_5dp"
+            android:inputType="textMultiLine"
+            android:textColor="@color/black"
+            android:imeOptions="actionDone"
+            android:scrollbars="vertical"
+            android:background="@android:color/transparent" />
+    </LinearLayout>
+
+</FrameLayout>

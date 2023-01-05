@@ -10,6 +10,10 @@ interface OnTherapistItemClickListener {
     fun onTherapistItemClickListener(therapist: Therapist)
 }
 
+interface OnClickListener {
+    fun onClickListener(string: String, isRemove: Boolean)
+}
+
 interface OnTextClickListener {
     fun onTextClickListener(timeSlot: TimeSlot)
 }
@@ -35,7 +39,7 @@ interface OnJournalItemClickListener {
 }
 
 interface OnVideoItemClickListener {
-    fun onVideoItemClickListener(video: Video)
+    fun onVideoItemClickListener(video: Video, isFav: Boolean, isWellness: Boolean)
 }
 
 interface OnGoalItemClickListener {
@@ -63,5 +67,33 @@ interface OnRecommendedItemClickListener {
 }
 
 interface OnConsentRoisItemClickListener {
-    fun onConsentRoisItemClickListener(consentRois: ConsentRois)
+    fun onConsentRoisItemClickListener(consentRois: ArrayList<ConsentRois>)
+}
+
+interface OnNutritionDashboardItemClickListener {
+    fun onNutritionDashboardItemClicked(nutritionDashboard: NutritionDashboard)
+}
+
+interface OnCarePlanDayWiseItemClickListener {
+    fun onCarePlanDayWiseItemClickListener(carePlans: CarePlans, careDay: CareDay)
+}
+
+interface OnCarePlanDayItemClickListener {
+    fun onCarePlanDayItemClickListener(dayNumber: Int)
+}
+
+interface OnCarePlanTaskItemClickListener {
+    fun onCarePlanTaskItemClickListener(type: String)
+}
+
+interface OnCarePlanPendingTaskItemClickListener {
+    fun onCarePlanPendingTaskItemClickListener(careDayIndividualTaskDetail: CareDayIndividualTaskDetail)
+}
+
+interface OnDocumentItemClickListener {
+    fun onDocumentItemClickListener(imageList: ArrayList<String>, title: String)
+}
+
+interface OnToDoItemClickListener {
+    fun onToDoItemClickListener(toDoData: ToDoData)
 }

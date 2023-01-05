@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="parental_consent">Parental consent</string>
+    <string name="parental_consent">Parental Consent Form</string>
     <string name="thank_you_for_filling_the_assessment">Thank you for filling\nthe questionnaire</string>
     <string name="appreciate_text_after_assessment">I really appreciate your effort and the time you devoted to filling the assessment. Your answers will help us improve our services for you.</string>
     <string name="first_name">First Name</string>

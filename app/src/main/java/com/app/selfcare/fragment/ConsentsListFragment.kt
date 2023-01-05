@@ -11,6 +11,7 @@ import com.app.selfcare.adapters.ConsentRoisListAdapter
 import com.app.selfcare.adapters.GroupAppointmentsAdapter
 import com.app.selfcare.controller.OnConsentRoisItemClickListener
 import com.app.selfcare.data.ConsentRois
+import com.app.selfcare.data.ConsentRoisFormsNotify
 import com.app.selfcare.data.GroupAppointment
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
@@ -37,13 +38,13 @@ private const val ARG_PARAM2 = "param2"
  */
 class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    private var consentRoisFormsNotifyList: ArrayList<ConsentRoisFormsNotify>? = null
     private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+            consentRoisFormsNotifyList = it.getParcelableArrayList(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -109,7 +110,6 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
                                                 "None",
                                                 "None",
                                                 "None",
-                                                "None",
                                                 "None"
                                             )
                                             consentRois.add(consentRoisData)
@@ -125,9 +125,7 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
                                                 consentArr.getJSONObject(arr).getJSONObject(key)
                                                     .getString("patient_status"),
                                                 consentArr.getJSONObject(arr).getJSONObject(key)
-                                                    .getString("doctor_status"),
-                                                consentArr.getJSONObject(arr).getJSONObject(key)
-                                                    .getString("pdf_file.url"),
+                                                    .getString("doctor_status")
                                             )
                                             consentRois.add(consentRoisData)
                                         }
@@ -146,7 +144,6 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
                                                 "None",
                                                 "None",
                                                 "None",
-                                                "None",
                                                 "None"
                                             )
                                             consentRois.add(consentRoisData)
@@ -155,16 +152,14 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
                                                 key,
                                                 value as String,
                                                 true,
-                                                consentArr.getJSONObject(arr).getJSONObject(key)
+                                                roisArr.getJSONObject(arr).getJSONObject(key)
                                                     .getString("patient"),
-                                                consentArr.getJSONObject(arr).getJSONObject(key)
+                                                roisArr.getJSONObject(arr).getJSONObject(key)
                                                     .getString("doctor"),
-                                                consentArr.getJSONObject(arr).getJSONObject(key)
+                                                roisArr.getJSONObject(arr).getJSONObject(key)
                                                     .getString("patient_status"),
-                                                consentArr.getJSONObject(arr).getJSONObject(key)
-                                                    .getString("doctor_status"),
-                                                consentArr.getJSONObject(arr).getJSONObject(key)
-                                                    .getString("pdf_file.url"),
+                                                roisArr.getJSONObject(arr).getJSONObject(key)
+                                                    .getString("doctor_status")
                                             )
                                             consentRois.add(consentRoisData)
                                         }
@@ -191,6 +186,7 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
                             }
                         } catch (e: Exception) {
                             hideProgress()
+                            e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->
@@ -222,10 +218,10 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param1: ArrayList<ConsentRoisFormsNotify>, param2: String="") =
             ConsentsListFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
+                    putParcelableArrayList(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                 }
             }
@@ -233,9 +229,9 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
         const val TAG = "Screen_consents"
     }
 
-    override fun onConsentRoisItemClickListener(consentRois: ConsentRois) {
+    override fun onConsentRoisItemClickListener(consentRois: ArrayList<ConsentRois>) {
         replaceFragment(
-            ConsentRoisSignFragment.newInstance(consentRois),
+            ConsentRoisSignFragment.newInstance(consentRois, consentRoisFormsNotifyList!!),
             R.id.layout_home,
             ConsentRoisSignFragment.TAG
         )

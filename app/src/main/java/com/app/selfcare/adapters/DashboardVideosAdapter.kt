@@ -45,12 +45,10 @@ class DashboardVideosAdapter (
             videoImg = "http://img.youtube.com/vi/$videoId/hqdefault.jpg" //high quality thumbnail
         }
         Glide.with(context).load(videoImg)
-            .placeholder(R.drawable.sample_img)
             .transform(CenterCrop(), RoundedCorners(5))
             .into(holder.videoImage)
         holder.videoTitle.text = item.name
         holder.videoLayout.setOnClickListener {
-            adapterItemClickListener!!.onVideoItemClickListener(item)
         }
     }
 

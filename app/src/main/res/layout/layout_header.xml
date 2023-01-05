@@ -51,7 +51,6 @@
             android:layout_toEndOf="@id/ic_menu"
             android:adjustViewBounds="true"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/img_splash"
             android:textStyle="bold"
             android:visibility="gone"
             android:typeface="serif"
@@ -64,7 +63,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/user"
             android:padding="@dimen/_5dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/app_name"
@@ -183,11 +181,10 @@
         android:id="@+id/ico_action_back"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_margin="5dp"
-        android:visibility="gone"
         android:contentDescription="@string/app_name"
         android:padding="10dp"
-        android:src="@drawable/ic_action_back_btn"
+        android:visibility="gone"
+        android:src="@drawable/journal_resource_back"
         app:tint="@color/primaryGreen" />
 
     <TextView

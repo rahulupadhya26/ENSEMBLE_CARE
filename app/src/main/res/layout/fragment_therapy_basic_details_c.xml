@@ -8,29 +8,28 @@
     android:background="@color/screen_background_color"
     tools:context=".fragment.TherapyBasicDetailsCFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="Therapy basic details"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_26sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
+    <ImageView
+        android:id="@+id/callModeBack"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:padding="@dimen/_5dp"
+        android:src="@drawable/journal_resource_back"
+        app:tint="@color/primaryGreen" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/screen_background_color"
-        android:layout_above="@+id/viewBtnBasicDetailC">
+        android:layout_above="@+id/viewBtnBasicDetailC"
+        android:layout_below="@+id/callModeBack">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/screen_background_color"
-            android:layout_margin="@dimen/_15dp">
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_10dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -142,38 +141,6 @@
 
                 </androidx.cardview.widget.CardView>
 
-
-                <LinearLayout
-                    android:id="@+id/layoutOfficeVisit"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/edittext_rectangle_bg"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="5dp"
-                        android:src="@drawable/office_visit"
-                        app:tint="@color/primaryGreen" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_10dp"
-                        android:gravity="center"
-                        android:text="Office visit"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/primaryGreen"
-                        android:textSize="@dimen/_12sp" />
-
-                </LinearLayout>
-
             </LinearLayout>
 
             <TextView
@@ -185,46 +152,6 @@
                 android:textSize="@dimen/_20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="@dimen/_10dp"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewPrescriptionImgList"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:layout_marginEnd="@dimen/_10dp"
-                    android:layout_marginBottom="@dimen/_10dp"
-                    android:visibility="gone"
-                    android:background="@drawable/bg_corner_rounded_images" />
-
-                <ImageView
-                    android:id="@+id/imgPrescriptionPic"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:layout_marginEnd="@dimen/_10dp"
-                    android:layout_marginBottom="@dimen/_10dp"
-                    android:background="@drawable/bg_corner_rounded_edittext"
-                    android:padding="@dimen/_10dp"
-                    android:src="@drawable/prescription"
-                    android:visibility="gone"/>
-
-                <ImageView
-                    android:id="@+id/imgTherapistReviewPicClear"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_margin="@dimen/_10dp"
-                    android:padding="@dimen/_10dp"
-                    android:src="@drawable/cancel_appointment"
-                    android:visibility="gone"/>
-
-            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tvAddTherapyReviewPic"
@@ -269,6 +196,13 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/imgPrescriptionPic1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/plusnew" />
+
                         <ImageView
                             android:id="@+id/imgPrescriptionPic1Clear"
                             android:layout_width="35dp"
@@ -276,13 +210,7 @@
                             android:layout_alignParentRight="true"
                             android:padding="@dimen/_10dp"
                             android:visibility="gone"
-                            android:src="@drawable/cancel_appointment"/>
-
-                        <ImageView
-                            android:id="@+id/imgPrescriptionPic1"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/plusnew" />
+                            android:src="@drawable/cancel"/>
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -300,6 +228,13 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/imgPrescriptionPic2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/plusnew" />
+
                         <ImageView
                             android:id="@+id/imgPrescriptionPic2Clear"
                             android:layout_width="35dp"
@@ -307,13 +242,7 @@
                             android:layout_alignParentRight="true"
                             android:padding="@dimen/_10dp"
                             android:visibility="gone"
-                            android:src="@drawable/cancel_appointment"/>
-
-                        <ImageView
-                            android:id="@+id/imgPrescriptionPic2"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/plusnew" />
+                            android:src="@drawable/cancel"/>
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -331,6 +260,13 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/imgPrescriptionPic3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/plusnew"/>
+
                         <ImageView
                             android:id="@+id/imgPrescriptionPic3Clear"
                             android:layout_width="35dp"
@@ -338,33 +274,12 @@
                             android:layout_alignParentRight="true"
                             android:padding="@dimen/_10dp"
                             android:visibility="gone"
-                            android:src="@drawable/cancel_appointment"/>
-
-                        <ImageView
-                            android:id="@+id/imgPrescriptionPic3"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/plusnew"/>
+                            android:src="@drawable/cancel"/>
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="@dimen/_20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/button_style_blue"
-                android:padding="@dimen/_5dp"
-                android:text="Continue"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_16sp"
-                android:visibility="gone"/>
 
         </LinearLayout>
 
@@ -385,11 +300,11 @@
         style="@style/buttonBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="@dimen/_20dp"
         android:layout_marginTop="@dimen/_10dp"
         android:layout_marginEnd="@dimen/_20dp"
         android:layout_marginBottom="@dimen/_10dp"
-        android:layout_alignParentBottom="true"
         android:text="Next" />
 
 </RelativeLayout>
