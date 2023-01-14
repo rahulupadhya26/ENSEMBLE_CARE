@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import com.app.selfcare.R
 import com.app.selfcare.controller.IOnBackPressed
+import com.app.selfcare.data.AddOn
 import com.app.selfcare.data.Plan
 import kotlinx.android.synthetic.main.fragment_add_on.*
 
@@ -17,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_add_on.*
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param3"
 
 /**
  * A simple [Fragment] subclass.
@@ -27,12 +29,14 @@ class AddOnFragment : BaseFragment(), IOnBackPressed {
     // TODO: Rename and change types of parameters
     private var plan: Plan? = null
     private var planType: String? = null
+    private var addOn: AddOn? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             plan = it.getParcelable(ARG_PARAM1)
             planType = it.getString(ARG_PARAM2)
+            addOn = it.getParcelable(ARG_PARAM3)
         }
     }
 
@@ -50,24 +54,12 @@ class AddOnFragment : BaseFragment(), IOnBackPressed {
         imgAddOnBack.setOnClickListener {
             popBackStack()
         }
-        when (planType!!) {
-            "Monthly" -> {
-                txtAddOnPrice.text =
-                    "$" + (plan!!.therapy.add_on_plan.price - plan!!.therapy.monthly_price.toInt())
-            }
-            "Quarterly" -> {
-                txtAddOnPrice.text =
-                    "$" + (plan!!.therapy.add_on_plan.price - plan!!.therapy.quaterly_price.toInt())
-            }
-            "Annually" -> {
-                txtAddOnPrice.text =
-                    "$" + (plan!!.therapy.add_on_plan.price - plan!!.therapy.annually_price.toInt())
-            }
-        }
+
+        txtAddOnPrice.text = "$" + addOn!!.monthly_price
 
         skipForNow.setOnClickListener {
             replaceFragment(
-                PaymentSelectFragment.newInstance(plan!!, 0, planType!!),
+                PaymentSelectFragment.newInstance(plan!!, null, planType!!),
                 R.id.layout_home,
                 PaymentSelectFragment.TAG
             )
@@ -77,7 +69,7 @@ class AddOnFragment : BaseFragment(), IOnBackPressed {
             replaceFragment(
                 PaymentSelectFragment.newInstance(
                     plan!!,
-                    plan!!.therapy.add_on_plan.price, planType!!
+                    addOn!!, planType!!
                 ),
                 R.id.layout_home,
                 PaymentSelectFragment.TAG
@@ -106,11 +98,12 @@ class AddOnFragment : BaseFragment(), IOnBackPressed {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: Plan, param2: String = "") =
+        fun newInstance(param1: Plan, param2: String = "", param3: AddOn) =
             AddOnFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
+                    putParcelable(ARG_PARAM3, param3)
                 }
             }
 

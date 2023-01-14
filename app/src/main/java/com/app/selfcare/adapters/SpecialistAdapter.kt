@@ -13,11 +13,16 @@ import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnItemTherapistImageClickListener
 import com.app.selfcare.controller.OnTherapistItemClickListener
 import com.app.selfcare.data.Therapist
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.card.MaterialCardView
+import kotlinx.android.synthetic.main.dialog_appointment_cancelled_alert.*
 import kotlinx.android.synthetic.main.fragment_therapist_detail.*
 import kotlinx.android.synthetic.main.layout_item_specialist.view.*
 
@@ -51,8 +56,16 @@ class SpecialistAdapter(
         holder.doctorType.text = item.doctor_type
         holder.doctorNextAvailSlot.text = "Friday, 11 Nov"
 
+        Glide.with(context)
+            .load(BaseActivity.baseURL.dropLast(5) + item.photo)
+            .placeholder(R.drawable.doctor_img)
+            .transform(CenterCrop(), RoundedCorners(5))
+            .into(holder.imgTherapistPic)
+
         if (position < 2) {
             holder.cardViewRecommendedTherapist.visibility = View.VISIBLE
+        } else {
+            holder.cardViewRecommendedTherapist.visibility = View.GONE
         }
 
         when (item.ratings) {
@@ -146,6 +159,7 @@ class SpecialistAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val doctorName: TextView = itemView.txtTherapistName
         val doctorType: TextView = itemView.txtTherapistType
+        val imgTherapistPic: ImageView = itemView.imgTherapistPic
         val doctorNextAvailSlot: TextView = itemView.txtTherapistNextSlot
         val cardViewRecommendedTherapist: CardView = itemView.cardViewRecommendedTherapist
         val doctorLayout: RelativeLayout = itemView.cardview_layout_therapist

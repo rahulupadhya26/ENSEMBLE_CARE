@@ -346,7 +346,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layoutPlanMonthly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_20dp"
@@ -358,6 +357,7 @@
                 android:padding="@dimen/_10dp">
 
                 <RelativeLayout
+                    android:id="@+id/layoutPlanMonthly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -378,9 +378,9 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/txtMonthlySessions"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="4 Sessions"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_10sp" />
@@ -414,6 +414,7 @@
                 </RelativeLayout>
 
                 <TextView
+                    android:id="@+id/txtMonthlyPlanTerms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/billed_monthly_terms_apply"
@@ -425,7 +426,6 @@
             </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/layoutPlanQuarterly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -463,6 +463,7 @@
                     android:padding="@dimen/_10dp">
 
                     <RelativeLayout
+                        android:id="@+id/layoutPlanQuarterly"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -483,9 +484,9 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/txtQuarterlySessions"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="12 Sessions"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/_10sp" />
@@ -519,9 +520,10 @@
                     </RelativeLayout>
 
                     <TextView
+                        android:id="@+id/txtQuarterlyPlanTerms"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/billed_monthly_terms_apply"
+                        android:text="@string/billed_quarterly_terms_apply"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_10sp"
@@ -532,7 +534,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/layoutPlanAnnually"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -570,6 +571,7 @@
                     android:padding="@dimen/_10dp">
 
                     <RelativeLayout
+                        android:id="@+id/layoutPlanAnnually"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -590,6 +592,7 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/txtAnnuallySessions"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="45 Sessions"
@@ -626,9 +629,10 @@
                     </RelativeLayout>
 
                     <TextView
+                        android:id="@+id/txtAnnuallyPlanTerms"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/billed_monthly_terms_apply"
+                        android:text="@string/billed_annually_terms_apply"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_10sp"

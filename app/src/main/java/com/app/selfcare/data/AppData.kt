@@ -32,11 +32,14 @@ data class OptionModel(
 
 @Parcelize
 data class Plan(
-    val price_id: Int,
-    val price: Int,
-    val stripe_price_id: String,
+    val id: Int,
     val name: String,
-    val therapy: PlanTherapy
+    val stripe_product_id: String,
+    val is_addon: Boolean,
+    val monthly_price: String,
+    val quarterly_price: String,
+    val annually_price: String,
+    val no_of_sessions: Int
 ) : Parcelable
 
 @Parcelize
@@ -53,16 +56,14 @@ data class PlanTherapy(
 
 @Parcelize
 data class AddOn(
-    var product_id: Int,
-    var name: String,
-    var stripe_product_id: String,
-    var has_addon: Boolean,
+    val id: Int,
+    val name: String,
+    val stripe_product_id: String,
+    val is_addon: Boolean,
     val monthly_price: String,
-    val quaterly_price: String,
+    val quarterly_price: String?,
     val annually_price: String,
-    val add_on_plan: String,
-    val price: Int,
-    val stripe_price_id: String
+    val no_of_sessions: Int
 ) : Parcelable
 
 @Parcelize
@@ -232,7 +233,8 @@ data class VerifyOtp(
 
 data class SelfPay(
     val patient_id: String,
-    val stripe_price_id: String
+    val add_on: String,
+    val plan_id: Int
 )
 
 data class PaymentStatus(
@@ -370,19 +372,18 @@ data class PartProfileData(
     val middle_name: String,
     val last_name: String,
     val dob: String,
-    val photo: String,
+    val photo: String?,
     val emergency_phone: String,
     val city: String,
     val state: String,
     val address: String,
-    val marital_status: String,
+    val marital_status: String?,
     val zipcode: String,
-    val ssn: String,
-    val relation_to: String,
+    val relation_to: String?,
     val address1: String,
     val country: String,
-    val gender: String,
-    val preffered_language: String
+    val gender: String?,
+    val preffered_language: String?
 )
 
 data class AppointmentReq(
@@ -607,12 +608,13 @@ data class Preference(
 
 data class InsuranceVerifyReqBody(
     val patient: Int,
-    val insurance_companhy: String,
-    val plain_id: String,
+    val insurance_company: String,
+    val plan_id: String,
     val member_id: String,
-    val gourp_id: String,
+    val group_id: String,
     val member_name: String,
-    val scheme: String
+    val scheme: String,
+    val photo: String
 )
 
 data class Feedback(
@@ -771,7 +773,14 @@ data class YogaDashboard(
 ) : Parcelable
 
 @Parcelize
-data class DocumentData(
+data class Documents(
+    val date: String,
+    val Appointment: ArrayList<AppointmentDocumentData>?,
+    val Consents: ArrayList<ConsentsRoisDocumentData>?
+) : Parcelable
+
+@Parcelize
+data class AppointmentDocumentData(
     val id: Int,
     val date: String,
     val time: String,
@@ -779,8 +788,17 @@ data class DocumentData(
     val title: String,
     val prescriptions: ArrayList<String>,
     val insurance: ArrayList<String>,
-    val consents: ArrayList<String>,
-    var dateTime: String
+    val consents: ArrayList<String>
+) : Parcelable
+
+@Parcelize
+data class ConsentsRoisDocumentData(
+    val name: String,
+    val pdf_url: String,
+    val date: String,
+    val time: String,
+    val title: String,
+    val section: String
 ) : Parcelable
 
 @Parcelize
@@ -1058,4 +1076,32 @@ data class YogaCarePlan(
 data class NotifyStatus(
     val id: Int,
     val is_read: String = "yes"
+) : Parcelable
+
+@Parcelize
+data class PlanDetails(
+    val id: Int,
+    val plan_detail: String,
+    val price: String,
+    val expired_at: String,
+    val created_at: String,
+    val updated_on: String,
+    val plan: Int,
+    val user: Int,
+    val transaction: String?,
+    val vob_verified: String
+) : Parcelable
+
+@Parcelize
+data class InsuranceVerifiedDetails(
+    val patient_insurance_id: Int,
+    val insurance_company: String,
+    val plan_id: String,
+    val scheme: String,
+    val member_id: String,
+    val group_id: String,
+    val member_name: String,
+    val photo: String,
+    val vob_verified: String,
+    val patient: Int
 ) : Parcelable

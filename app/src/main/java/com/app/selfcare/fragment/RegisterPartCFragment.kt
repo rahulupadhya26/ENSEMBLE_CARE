@@ -34,8 +34,6 @@ class RegisterPartCFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    var selectedUserType: String = "Patient"
-    private var referEmp: String = "false"
     private var selectedType: String? = null
     private var employerTypeData: Array<String>? = null
 
@@ -76,15 +74,16 @@ class RegisterPartCFragment : BaseFragment() {
             }
         }
 
-        imgRegister3Back.setOnClickListener {
+        /*imgRegister3Back.setOnClickListener {
             popBackStack()
-        }
+        }*/
 
         checkboxCoveredSelfPay.addClickableLink(
             "I hereby agree to abide by the terms and conditions provider by EnsembleCare for SelfPay",
             SpannableString("terms and conditions")
         ) {
-            val createRegisterTermsConditions = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+            val createRegisterTermsConditions =
+                BottomSheetDialog(requireActivity(), R.style.SheetDialog)
             val coveredSelfPayTermsConditionsDialog: View = layoutInflater.inflate(
                 R.layout.dialog_register_part_terms_conditions, null
             )
@@ -206,11 +205,30 @@ class RegisterPartCFragment : BaseFragment() {
                                 /*Utils.refEmp = true
                                 Utils.employeeId = getText(etSignUpEmployeeId)
                                 Utils.employer = getText(etSignUpEmployer)*/
-                                replaceFragment(
-                                    PlanFragment(),
-                                    R.id.layout_home,
-                                    PlanFragment.TAG
-                                )
+                                when (coveredType) {
+                                    "SelfPay" -> {
+                                        replaceFragment(
+                                            PlanFragment.newInstance("Yes"),
+                                            R.id.layout_home,
+                                            PlanFragment.TAG
+                                        )
+                                    }
+                                    "Insurance" -> {
+                                        replaceFragment(
+                                            InsuranceFragment(),
+                                            R.id.layout_home,
+                                            InsuranceFragment.TAG
+                                        )
+                                    }
+                                    "EAP" -> {
+                                        replaceFragment(
+                                            InsuranceFragment.newInstance(null, null, "EAP"),
+                                            R.id.layout_home,
+                                            InsuranceFragment.TAG
+                                        )
+                                    }
+                                }
+
                             } else {
                                 displayMsg(
                                     "Alert",

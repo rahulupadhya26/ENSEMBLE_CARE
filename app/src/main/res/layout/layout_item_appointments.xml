@@ -118,20 +118,51 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/time_icon" />
-
                         <TextView
-                            android:id="@+id/txtAppointmentDateTime"
+                            android:id="@+id/txtMissedByProviderOrYou"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_5dp"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BE1414"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:text="Missed by provider/you"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/txtCancelledAppt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="#544E4E"
                             android:textSize="@dimen/_12sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:text="Cancelled"
+                            android:visibility="gone"/>
+
+                        <LinearLayout
+                            android:id="@+id/layoutAppointmentDateTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/time_icon" />
+
+                            <TextView
+                                android:id="@+id/txtAppointmentDateTime"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_5dp"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#544E4E"
+                                android:textSize="@dimen/_12sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
                 </LinearLayout>

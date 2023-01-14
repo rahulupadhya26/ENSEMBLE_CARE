@@ -20,7 +20,8 @@
             android:layout_margin="@dimen/_10dp"
             android:padding="@dimen/_5dp"
             android:src="@drawable/journal_resource_back"
-            app:tint="@color/primaryGreen" />
+            app:tint="@color/primaryGreen"
+            android:visibility="invisible"/>
 
         <LinearLayout
             android:layout_width="match_parent"

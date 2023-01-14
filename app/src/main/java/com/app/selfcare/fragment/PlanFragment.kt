@@ -11,12 +11,14 @@ import androidx.viewpager2.widget.MarginPageTransformer
 import com.app.selfcare.R
 import com.app.selfcare.adapters.PlanViewPagerAdapter
 import com.app.selfcare.controller.AdapterCallback
+import com.app.selfcare.data.AddOn
 import com.app.selfcare.data.Plan
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.DateUtils
 import com.app.selfcare.utils.Utils
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -40,14 +42,15 @@ private const val ARG_PARAM2 = "param2"
  */
 class PlanFragment : BaseFragment(), AdapterCallback {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    private var addOnNeeded: String? = null
     private var param2: String? = null
     private var selectedPlan = ""
+    private var addOnPlan: AddOn? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+            addOnNeeded = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -82,15 +85,30 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                     ) + " " +
                     nextMonthDateFormat.getYear()
 
+        txtPlanAgreeByTerms.makeLinks(
+            Pair("our terms", View.OnClickListener {
+                val termsApplyDialog = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+                val termsApplyDialogView: View = layoutInflater.inflate(
+                    R.layout.dialog_plan_terms_apply, null
+                )
+                termsApplyDialog.setContentView(termsApplyDialogView)
+                termsApplyDialog.behavior.isFitToContents = false
+                termsApplyDialog.behavior.halfExpandedRatio = 0.6f
+                termsApplyDialog.setCanceledOnTouchOutside(true)
+                termsApplyDialog.show()
+            })
+        )
+
         getPlanList()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getPlanList() {
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getData("PI0039", getAccessToken())
+                    .getData("PI0038", getAccessToken())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -106,24 +124,50 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                             val planList: ArrayList<Plan> = Gson().fromJson(responseBody, planType)
                             val planLists: ArrayList<Plan> = arrayListOf()
                             for (i in 0 until planList.size) {
-                                if (!planList[i].therapy.has_addon) {
+                                if (!planList[i].is_addon) {
                                     planLists.add(planList[i])
+                                } else {
+                                    addOnPlan = AddOn(
+                                        planList[i].id,
+                                        planList[i].name,
+                                        planList[i].stripe_product_id,
+                                        planList[i].is_addon,
+                                        planList[i].monthly_price,
+                                        planList[i].quarterly_price,
+                                        planList[i].annually_price,
+                                        planList[i].no_of_sessions
+                                    )
                                 }
                             }
 
-                            selectedPlan = "Plus"
+                            selectedPlan = planLists[0].name
 
-                            txtCardViewPlan1.text = planLists[0].therapy.name
-                            txtPlan1.text = planLists[0].therapy.name
-                            txtCardViewPlan2.text = planLists[1].therapy.name
-                            txtPlan2.text = planLists[1].therapy.name
+                            txtCardViewPlan1.text = planLists[0].name
+                            txtPlan1.text = planLists[0].name
+                            txtCardViewPlan2.text = planLists[1].name
+                            txtPlan2.text = planLists[1].name
 
-                            txtPlanMonthlyPrice.text = "$" + planLists[0].therapy.monthly_price
-                            txtPlanQuarterlyPrice.text = "$" + planLists[0].therapy.quaterly_price
-                            txtPlanAnnuallyPrice.text = "$" + planLists[0].therapy.annually_price
+                            txtPlanMonthlyPrice.text = "$" + planLists[0].monthly_price
+                            txtPlanQuarterlyPrice.text = "$" + planLists[0].quarterly_price
+                            txtPlanAnnuallyPrice.text = "$" + planLists[0].annually_price
+
+                            txtMonthlySessions.text =
+                                planLists[0].no_of_sessions.toString() + " Sessions"
+                            txtQuarterlySessions.text =
+                                (planLists[0].no_of_sessions * 3).toString() + " Sessions"
+                            txtAnnuallySessions.text =
+                                (planLists[0].no_of_sessions * 12).toString() + " Sessions"
+
+                            txtPlan1.visibility = View.GONE
+                            cardViewPlan1.visibility = View.VISIBLE
+                            txtPlan2.visibility = View.VISIBLE
+                            cardViewPlan2.visibility = View.GONE
+                            tick1.visibility = View.INVISIBLE
+                            tick2.visibility = View.INVISIBLE
+                            tick3.visibility = View.INVISIBLE
 
                             txtPlan1.setOnClickListener {
-                                selectedPlan = planLists[0].therapy.name
+                                selectedPlan = planLists[0].name
                                 txtPlan1.visibility = View.GONE
                                 cardViewPlan1.visibility = View.VISIBLE
                                 txtPlan2.visibility = View.VISIBLE
@@ -131,15 +175,22 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                 tick1.visibility = View.INVISIBLE
                                 tick2.visibility = View.INVISIBLE
                                 tick3.visibility = View.INVISIBLE
-                                txtPlanMonthlyPrice.text = "$" + planLists[0].therapy.monthly_price
+                                txtPlanMonthlyPrice.text = "$" + planLists[0].monthly_price
                                 txtPlanQuarterlyPrice.text =
-                                    "$" + planLists[0].therapy.quaterly_price
+                                    "$" + planLists[0].quarterly_price
                                 txtPlanAnnuallyPrice.text =
-                                    "$" + planLists[0].therapy.annually_price
+                                    "$" + planLists[0].annually_price
+
+                                txtMonthlySessions.text =
+                                    planLists[0].no_of_sessions.toString() + " Sessions"
+                                txtQuarterlySessions.text =
+                                    (planLists[0].no_of_sessions * 3).toString() + " Sessions"
+                                txtAnnuallySessions.text =
+                                    (planLists[0].no_of_sessions * 12).toString() + " Sessions"
                             }
 
                             txtPlan2.setOnClickListener {
-                                selectedPlan = planLists[1].therapy.name
+                                selectedPlan = planLists[1].name
                                 txtPlan2.visibility = View.GONE
                                 cardViewPlan2.visibility = View.VISIBLE
                                 txtPlan1.visibility = View.VISIBLE
@@ -147,15 +198,67 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                 tick1.visibility = View.VISIBLE
                                 tick2.visibility = View.VISIBLE
                                 tick3.visibility = View.VISIBLE
-                                txtPlanMonthlyPrice.text = "$" + planLists[1].therapy.monthly_price
+                                txtPlanMonthlyPrice.text = "$" + planLists[1].monthly_price
                                 txtPlanQuarterlyPrice.text =
-                                    "$" + planLists[1].therapy.quaterly_price
+                                    "$" + planLists[1].quarterly_price
                                 txtPlanAnnuallyPrice.text =
-                                    "$" + planLists[1].therapy.annually_price
+                                    "$" + planLists[1].annually_price
+
+                                txtMonthlySessions.text =
+                                    planLists[1].no_of_sessions.toString() + " Sessions"
+                                txtQuarterlySessions.text =
+                                    (planLists[1].no_of_sessions * 3).toString() + " Sessions"
+                                txtAnnuallySessions.text =
+                                    (planLists[1].no_of_sessions * 12).toString() + " Sessions"
                             }
 
+                            txtMonthlyPlanTerms.makeLinks(
+                                Pair("Terms apply", View.OnClickListener {
+                                    val termsApplyDialog =
+                                        BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+                                    val termsApplyDialogView: View = layoutInflater.inflate(
+                                        R.layout.dialog_plan_terms_apply, null
+                                    )
+                                    termsApplyDialog.setContentView(termsApplyDialogView)
+                                    termsApplyDialog.behavior.isFitToContents = false
+                                    termsApplyDialog.behavior.halfExpandedRatio = 0.6f
+                                    termsApplyDialog.setCanceledOnTouchOutside(true)
+                                    termsApplyDialog.show()
+                                })
+                            )
+
+                            txtQuarterlyPlanTerms.makeLinks(
+                                Pair("Terms apply", View.OnClickListener {
+                                    val termsApplyDialog =
+                                        BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+                                    val termsApplyDialogView: View = layoutInflater.inflate(
+                                        R.layout.dialog_plan_terms_apply, null
+                                    )
+                                    termsApplyDialog.setContentView(termsApplyDialogView)
+                                    termsApplyDialog.behavior.isFitToContents = false
+                                    termsApplyDialog.behavior.halfExpandedRatio = 0.6f
+                                    termsApplyDialog.setCanceledOnTouchOutside(true)
+                                    termsApplyDialog.show()
+                                })
+                            )
+
+                            txtAnnuallyPlanTerms.makeLinks(
+                                Pair("Terms apply", View.OnClickListener {
+                                    val termsApplyDialog =
+                                        BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+                                    val termsApplyDialogView: View = layoutInflater.inflate(
+                                        R.layout.dialog_plan_terms_apply, null
+                                    )
+                                    termsApplyDialog.setContentView(termsApplyDialogView)
+                                    termsApplyDialog.behavior.isFitToContents = false
+                                    termsApplyDialog.behavior.halfExpandedRatio = 0.6f
+                                    termsApplyDialog.setCanceledOnTouchOutside(true)
+                                    termsApplyDialog.show()
+                                })
+                            )
+
                             layoutPlanMonthly.setOnClickListener {
-                                if (selectedPlan == planLists[0].therapy.name) {
+                                if (selectedPlan == planLists[0].name) {
                                     onClickPlan(planLists[0], "Monthly")
                                 } else {
                                     onClickPlan(planLists[1], "Monthly")
@@ -163,7 +266,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                             }
 
                             layoutPlanQuarterly.setOnClickListener {
-                                if (selectedPlan == planLists[0].therapy.name) {
+                                if (selectedPlan == planLists[0].name) {
                                     onClickPlan(planLists[0], "Quarterly")
                                 } else {
                                     onClickPlan(planLists[1], "Quarterly")
@@ -171,7 +274,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                             }
 
                             layoutPlanAnnually.setOnClickListener {
-                                if (selectedPlan == planLists[0].therapy.name) {
+                                if (selectedPlan == planLists[0].name) {
                                     onClickPlan(planLists[0], "Annually")
                                 } else {
                                     onClickPlan(planLists[1], "Annually")
@@ -232,7 +335,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param1: String, param2: String = "") =
             PlanFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
@@ -246,13 +349,21 @@ class PlanFragment : BaseFragment(), AdapterCallback {
     private fun onClickPlan(plan: Plan, selectedPlan: String) {
         val alreadySelectedPlan = preference!![PrefKeys.PREF_SELECTED_PLAN, ""]!!
         if (alreadySelectedPlan == "null") {
-            replaceFragment(
-                AddOnFragment.newInstance(plan, selectedPlan),
-                R.id.layout_home,
-                PaymentSelectFragment.TAG
-            )
+            if (addOnNeeded == "Yes") {
+                replaceFragment(
+                    AddOnFragment.newInstance(plan, selectedPlan, addOnPlan!!),
+                    R.id.layout_home,
+                    PaymentSelectFragment.TAG
+                )
+            } else {
+                replaceFragment(
+                    PaymentSelectFragment.newInstance(plan, null, selectedPlan),
+                    R.id.layout_home,
+                    PaymentSelectFragment.TAG
+                )
+            }
         } else {
-            if (plan.therapy.name == alreadySelectedPlan) {
+            if (plan.name == alreadySelectedPlan) {
                 val severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
                 preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
                 if (severityRating in 0..14) {
@@ -271,30 +382,54 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                 }
             } else {
                 when (alreadySelectedPlan) {
-                    "Plus" -> if (plan.therapy.name == "Premium" || plan.therapy.name == "Plus") {
-                        replaceFragment(
-                            AddOnFragment.newInstance(plan, selectedPlan),
-                            R.id.layout_home,
-                            AddOnFragment.TAG
-                        )
+                    "Plus" -> if (plan.name == "Premium" || plan.name == "Plus") {
+                        if (addOnNeeded == "Yes") {
+                            replaceFragment(
+                                AddOnFragment.newInstance(plan, selectedPlan, addOnPlan!!),
+                                R.id.layout_home,
+                                PaymentSelectFragment.TAG
+                            )
+                        } else {
+                            replaceFragment(
+                                PaymentSelectFragment.newInstance(plan, null, selectedPlan),
+                                R.id.layout_home,
+                                PaymentSelectFragment.TAG
+                            )
+                        }
                     } else {
                         displayMsg("Alert", "Plan cannot be downgrade.")
                     }
-                    "Premium" -> if (plan.therapy.name == "Premium") {
-                        replaceFragment(
-                            AddOnFragment.newInstance(plan, selectedPlan),
-                            R.id.layout_home,
-                            AddOnFragment.TAG
-                        )
+                    "Premium" -> if (plan.name == "Premium") {
+                        if (addOnNeeded == "Yes") {
+                            replaceFragment(
+                                AddOnFragment.newInstance(plan, selectedPlan, addOnPlan!!),
+                                R.id.layout_home,
+                                PaymentSelectFragment.TAG
+                            )
+                        } else {
+                            replaceFragment(
+                                PaymentSelectFragment.newInstance(plan, null, selectedPlan),
+                                R.id.layout_home,
+                                PaymentSelectFragment.TAG
+                            )
+                        }
                     } else {
                         displayMsg("Alert", "Plan cannot be downgrade.")
                     }
                     else -> {
-                        replaceFragment(
-                            AddOnFragment.newInstance(plan, selectedPlan),
-                            R.id.layout_home,
-                            AddOnFragment.TAG
-                        )
+                        if (addOnNeeded == "Yes") {
+                            replaceFragment(
+                                AddOnFragment.newInstance(plan, selectedPlan, addOnPlan!!),
+                                R.id.layout_home,
+                                PaymentSelectFragment.TAG
+                            )
+                        } else {
+                            replaceFragment(
+                                PaymentSelectFragment.newInstance(plan, null, selectedPlan),
+                                R.id.layout_home,
+                                PaymentSelectFragment.TAG
+                            )
+                        }
                     }
                 }
             }
@@ -305,12 +440,12 @@ class PlanFragment : BaseFragment(), AdapterCallback {
         val selectedPlan = preference!![PrefKeys.PREF_SELECTED_PLAN, ""]!!
         if (selectedPlan == "null") {
             replaceFragment(
-                AddOnFragment.newInstance(plan),
+                AddOnFragment.newInstance(plan, "", addOnPlan!!),
                 R.id.layout_home,
                 PaymentSelectFragment.TAG
             )
         } else {
-            if (plan.therapy.name == selectedPlan) {
+            if (plan.name == selectedPlan) {
                 val severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
                 preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
                 if (severityRating in 0..14) {
@@ -329,18 +464,18 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                 }
             } else {
                 when (selectedPlan) {
-                    "Plus" -> if (plan.therapy.name == "Premium" || plan.therapy.name == "Plus") {
+                    "Plus" -> if (plan.name == "Premium" || plan.name == "Plus") {
                         replaceFragment(
-                            AddOnFragment.newInstance(plan),
+                            AddOnFragment.newInstance(plan, "", addOnPlan!!),
                             R.id.layout_home,
                             AddOnFragment.TAG
                         )
                     } else {
                         displayMsg("Alert", "Plan cannot be downgrade.")
                     }
-                    "Premium" -> if (plan.therapy.name == "Premium") {
+                    "Premium" -> if (plan.name == "Premium") {
                         replaceFragment(
-                            AddOnFragment.newInstance(plan),
+                            AddOnFragment.newInstance(plan, "", addOnPlan!!),
                             R.id.layout_home,
                             AddOnFragment.TAG
                         )
@@ -349,7 +484,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                     }
                     else -> {
                         replaceFragment(
-                            AddOnFragment.newInstance(plan),
+                            AddOnFragment.newInstance(plan, "", addOnPlan!!),
                             R.id.layout_home,
                             AddOnFragment.TAG
                         )

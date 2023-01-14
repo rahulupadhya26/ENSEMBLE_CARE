@@ -4,9 +4,7 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/layoutAvailability"
-    android:layout_marginTop="@dimen/_5dp"
-    android:layout_marginBottom="@dimen/_5dp">
+    android:id="@+id/layoutAvailability">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewAvailability"

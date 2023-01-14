@@ -7,4 +7,5 @@
     <string name="middle_name">Middle Name</string>
     <string name="last_name">Last Name</string>
     <string name="ssn">SSN</string>
+    <string name="vob_verified">Congratulations! You have been subscribed to Plus</string>
 </resources>

@@ -63,7 +63,13 @@ class SettingsFragment : BaseFragment() {
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun onClickEvents() {
         settingsBack.setOnClickListener {
-            popBackStack()
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
         layoutAccountSettings.setOnClickListener {

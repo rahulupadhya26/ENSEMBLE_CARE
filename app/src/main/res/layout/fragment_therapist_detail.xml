@@ -20,6 +20,7 @@
             android:background="@drawable/bg_box_grey_top_corners">
 
             <ImageView
+                android:id="@+id/imgTherapistDetail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"

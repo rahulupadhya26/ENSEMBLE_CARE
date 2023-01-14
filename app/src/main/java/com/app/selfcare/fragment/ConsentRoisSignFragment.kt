@@ -2,10 +2,13 @@ package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -14,6 +17,7 @@ import com.app.selfcare.R
 import com.app.selfcare.data.ConsentRois
 import com.app.selfcare.data.ConsentRoisFormsNotify
 import com.app.selfcare.data.FormSignature
+import com.app.selfcare.data.NotifyStatus
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.SignatureView
@@ -29,6 +33,7 @@ import java.util.*
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param3"
 
 /**
  * A simple [Fragment] subclass.
@@ -37,8 +42,9 @@ private const val ARG_PARAM2 = "param2"
  */
 class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
     // TODO: Rename and change types of parameters
-    private var consentRois: ArrayList<ConsentRois>? = null
+    //private var consentRois: ArrayList<ConsentRois>? = null
     private var consentRoisFormsNotifyList: ArrayList<ConsentRoisFormsNotify>? = null
+    //private var consentRoisObj: ConsentRois? = null
     private var signedCount: Int = 0
     var bSigned: Boolean = false
     private var createSignFormSheet: BottomSheetDialog? = null
@@ -46,8 +52,9 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            consentRois = it.getParcelableArrayList(ARG_PARAM1)
-            consentRoisFormsNotifyList = it.getParcelableArrayList(ARG_PARAM2)
+            //consentRois = it.getParcelableArrayList(ARG_PARAM1)
+            consentRoisFormsNotifyList = it.getParcelableArrayList(ARG_PARAM1)
+            //consentRoisObj = it.getParcelable(ARG_PARAM3)
         }
     }
 
@@ -63,12 +70,20 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
         getSubTitle().visibility = View.GONE
 
         consentFormBack.setOnClickListener {
-            popBackStack()
+            //popBackStack()
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
-        webviewConsentRoisForm.settings.javaScriptEnabled = true
-        webviewConsentRoisForm.settings.builtInZoomControls = true
-        webviewConsentRoisForm.settings.pluginState = WebSettings.PluginState.ON
+        val browser = webviewConsentRoisForm.settings
+        browser.javaScriptEnabled = true
+        browser.builtInZoomControls = true
+        browser.pluginState = WebSettings.PluginState.ON
         webviewConsentRoisForm.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 view?.loadUrl(url!!)
@@ -82,7 +97,7 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
                 webviewConsentRoisForm.visibility = View.VISIBLE
                 //progressView.setVisibility(View.VISIBLE);
                 dismissProgressDialog()
-                Log.v("after load", view.url!!)
+                view.loadUrl("javascript:clickFunction(){  })()")
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -95,6 +110,7 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
                 description: String?,
                 failingUrl: String?
             ) {
+                dismissProgressDialog()
                 Log.e("error", description!!)
             }
 
@@ -113,29 +129,31 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
 
         displayForms()
 
-        consentFormSign.setOnClickListener {
-            createSignFormSheet = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
-            val formSignDialog: View = layoutInflater.inflate(
-                R.layout.dialog_sign_form, null
-            )
-            createSignFormSheet!!.setContentView(formSignDialog)
-            createSignFormSheet!!.setCanceledOnTouchOutside(true)
-            //createSignFormSheet.behavior.isDraggable = false
-            formSignDialog.txtFormTitle.text = consentRois!![signedCount].text
-            formSignDialog.formSignatureView.setOnSignedListener(this)
-            formSignDialog.formSignatureView.clear()
-            formSignDialog.btnClearFormSigned.setOnClickListener {
-                formSignDialog.formSignatureView.clear()
-            }
-            formSignDialog.btnConfirmSignature.setOnClickListener {
-                if (bSigned) {
-                    val bitmap = formSignDialog.formSignatureView.getSignatureBitmap()
-                    sendFormSignature(consentRois!![signedCount].key, bitmap)
+        /*if (consentRois != null) {
+            consentFormSign.visibility = View.VISIBLE
+
+        } else {
+            consentFormSign.visibility = View.GONE
+            if (consentRoisObj != null) {
+                if (consentRoisObj!!.key.contains("consent", true)) {
+                    webviewConsentRoisForm.loadUrl(
+                        BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentRoisObj!!.key + "/" + getAccessToken().drop(
+                            7
+                        )
+                    )
                 } else {
-                    displayToast("Please sign the consent letter")
+                    webviewConsentRoisForm.loadUrl(
+                        BaseActivity.baseURL.dropLast(5) + "/patient/roi_mobile/" + consentRoisObj!!.key + "/" + getAccessToken().drop(
+                            7
+                        )
+                    )
                 }
             }
-            createSignFormSheet!!.show()
+        }*/
+
+
+        consentFormSign.setOnClickListener {
+            displaySignaturePad()
         }
 
         /*if (consentRois!!.isCompleted) {
@@ -152,33 +170,48 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
     }
 
     private fun displayForms() {
-        if (signedCount < consentRois!!.size) {
-            webviewConsentRoisForm.loadUrl(
-                BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentRois!![signedCount].key + "/" + getAccessToken().drop(
-                    7
+        if (signedCount < consentRoisFormsNotifyList!!.size) {
+            if (consentRoisFormsNotifyList!![signedCount].description.contains("consent", true)) {
+                webviewConsentRoisForm.loadUrl(
+                    BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentRoisFormsNotifyList!![signedCount].description + "/" + getAccessToken().drop(
+                        7
+                    )
                 )
-            )
+            } else {
+                webviewConsentRoisForm.loadUrl(
+                    BaseActivity.baseURL.dropLast(5) + "/patient/roi_mobile/" + consentRoisFormsNotifyList!![signedCount].description + "/" + getAccessToken().drop(
+                        7
+                    )
+                )
+            }
         } else {
             val builder = AlertDialog.Builder(mActivity!!)
             builder.setTitle("Message")
             builder.setMessage("All forms are signed.")
             builder.setPositiveButton("OK") { dialog, which ->
                 dialog.dismiss()
-                popBackStack()
+                //popBackStack()
+                setBottomNavigation(null)
+                setLayoutBottomNavigation(null)
+                replaceFragmentNoBackStack(
+                    BottomNavigationFragment(),
+                    R.id.layout_home,
+                    BottomNavigationFragment.TAG
+                )
             }
             builder.setCancelable(false)
             builder.show()
         }
     }
 
-    private fun sendFormSignature(consentName: String, signature: Bitmap) {
+    private fun sendFormSignature(signature: Bitmap) {
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
                     .sendFormSignature(
                         FormSignature(
-                            consentName,
+                            consentRoisFormsNotifyList!![signedCount].description,
                             "data:image/jpg;base64," + convert(signature),
                         ), getAccessToken()
                     )
@@ -195,14 +228,7 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
                             if (createSignFormSheet!! != null) {
                                 createSignFormSheet!!.dismiss()
                             }
-                            signedCount += 1
-                            for (i in 0 until consentRoisFormsNotifyList!!.size) {
-                                if (consentRoisFormsNotifyList!![i].description == consentName) {
-                                    updateNotificationStatus(consentRoisFormsNotifyList!![i].id)
-                                    break
-                                }
-                            }
-                            displayForms()
+                            updateNotificationStatus(consentRoisFormsNotifyList!![signedCount].id)
                         } catch (e: Exception) {
                             hideProgress()
                             e.printStackTrace()
@@ -216,7 +242,7 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
                                 preference!![PrefKeys.PREF_EMAIL]!!,
                                 preference!![PrefKeys.PREF_PASS]!!
                             ) { result ->
-                                sendFormSignature(consentName, signature)
+                                sendFormSignature(signature)
                             }
                         } else {
                             displayAfterLoginErrorMsg(error)
@@ -227,6 +253,66 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
         handler.postDelayed(runnable!!, 1000)
     }
 
+    private fun updateNotificationStatus(notificationId: Int) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .updateNotificationStatus(
+                        "PI0061",
+                        NotifyStatus(notificationId),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            signedCount += 1
+                            displayForms()
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                        }
+                    }, { error ->
+                        hideProgress()
+                        displayToast("Error ${error.localizedMessage}")
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    private fun displaySignaturePad() {
+        createSignFormSheet = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+        val formSignDialog: View = layoutInflater.inflate(
+            R.layout.dialog_sign_form, null
+        )
+        createSignFormSheet!!.setContentView(formSignDialog)
+        createSignFormSheet!!.setCanceledOnTouchOutside(true)
+        //createSignFormSheet.behavior.isDraggable = false
+        formSignDialog.txtFormTitle.text = consentRoisFormsNotifyList!![signedCount].title
+        formSignDialog.formSignatureView.setOnSignedListener(this)
+        formSignDialog.formSignatureView.clear()
+        formSignDialog.btnClearFormSigned.setOnClickListener {
+            formSignDialog.formSignatureView.clear()
+        }
+        formSignDialog.btnConfirmSignature.setOnClickListener {
+            if (bSigned) {
+                webviewConsentRoisForm.loadUrl("javascript:data_submit()")
+                val bitmap = formSignDialog.formSignatureView.getSignatureBitmap()
+                sendFormSignature(bitmap)
+            } else {
+                displayToast("Please sign the consent letter")
+            }
+        }
+        createSignFormSheet!!.show()
+    }
 
     companion object {
         /**
@@ -239,11 +325,16 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: ArrayList<ConsentRois>, param2: ArrayList<ConsentRoisFormsNotify>) =
+        fun newInstance(
+            param1: ArrayList<ConsentRoisFormsNotify>?
+            /*, param2: ArrayList<ConsentRois>?,
+            param3: ConsentRois?*/
+        ) =
             ConsentRoisSignFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(ARG_PARAM1, param1)
-                    putParcelableArrayList(ARG_PARAM2, param2)
+                    //putParcelableArrayList(ARG_PARAM2, param2)
+                    //putParcelable(ARG_PARAM3, param3)
                 }
             }
 

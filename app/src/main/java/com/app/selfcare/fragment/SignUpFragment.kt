@@ -125,25 +125,43 @@ class SignUpFragment : BaseFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun resendBtnTimer() {
-        resend.visibility = View.GONE
-        counter = object : CountDownTimer(45000, 1000) {
-            // Callback function, fired on regular interval
-            @SuppressLint("SetTextI18n")
-            override fun onTick(millisUntilFinished: Long) {
-                val f: NumberFormat = DecimalFormat("00")
-                val min = millisUntilFinished / 60000 % 60
-                val sec = millisUntilFinished / 1000 % 60
-
-                resendBtnTimer.text = f.format(min) + ":" + f.format(sec)
+        try {
+            if (resendBtnTimer != null) {
+                resend.visibility = View.GONE
             }
+            counter = object : CountDownTimer(45000, 1000) {
+                // Callback function, fired on regular interval
+                @SuppressLint("SetTextI18n")
+                override fun onTick(millisUntilFinished: Long) {
+                    try {
+                        val f: NumberFormat = DecimalFormat("00")
+                        val min = millisUntilFinished / 60000 % 60
+                        val sec = millisUntilFinished / 1000 % 60
 
-            // Callback function, fired
-            // when the time is up
-            override fun onFinish() {
-                resend.visibility = View.VISIBLE
-                resendBtnTimer.text = ""
-            }
-        }.start()
+                        if (resendBtnTimer != null) {
+                            resendBtnTimer.text = f.format(min) + ":" + f.format(sec)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
+                // Callback function, fired
+                // when the time is up
+                override fun onFinish() {
+                    try {
+                        if (resendBtnTimer != null) {
+                            resend.visibility = View.VISIBLE
+                            resendBtnTimer.text = ""
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }.start()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     class GenericTextWatcher(private val etNext: EditText, private val etPrev: EditText) :

@@ -190,6 +190,7 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
         Utils.aptScheduleDate = therapist.appointment.date
         Utils.aptScheduleTime = therapist.appointment.time_slot.starting_time
         Utils.appointmentId = therapist.appointment.appointment_id.toString()
+        Utils.providerPhoto = therapist.photo
         if (!therapist.appointment.on_sameday) {
             replaceFragment(
                 TherapistDetailFragment.newInstance(therapist),

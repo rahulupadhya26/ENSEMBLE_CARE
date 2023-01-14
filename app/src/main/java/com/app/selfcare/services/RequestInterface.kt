@@ -75,7 +75,7 @@ interface RequestInterface {
 
     @POST("payment_sheet/")
     fun getSelfPayDetails(
-        @Query("table_id") table_id: String,
+        @Query("type") type: String,
         @Body selfPay: SelfPay,
         @Header("Authorization") auth: String
     ): Single<ResponseBody>

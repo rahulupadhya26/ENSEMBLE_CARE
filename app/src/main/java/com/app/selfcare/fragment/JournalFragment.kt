@@ -167,34 +167,21 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                                 txt_no_journal.visibility = View.GONE
 
                                 for (i in 0 until journalLists.size) {
-                                    Log.d(
-                                        TAG,
-                                        "getJournalsDataList: ${journalLists[i].journal_date}"
-                                    )
                                     val d1 = sdf.parse(journalLists[i].journal_date)
                                     val d2 = sdf.parse(currentDate!!)
 
                                     // Finding the absolute difference between
                                     // the two dates.time (in milli seconds)
                                     val mDifference = abs(d1!!.time - d2!!.time)
-
                                     // Converting milli seconds to dates
                                     val mDifferenceDates = mDifference / (24 * 60 * 60 * 1000)
-
                                     val mDayDifference = mDifferenceDates.toString()
-                                    Log.d(TAG, "getJournalsDataDays:$mDayDifference")
-
                                     if (mDayDifference.toInt() <= 7) {
                                         recyclerViewJournalList.visibility = View.VISIBLE
                                         journalPrevious7DaysLists.add(journalLists[i])
                                     }
-
-                                    if (mDayDifference.toInt() in 8..15) {
+                                    if (mDayDifference.toInt() > 7) {
                                         journalWeeksLists.add(journalLists[i])
-                                        Log.d(
-                                            TAG,
-                                            "getJournalsDataLastWeeksData: $journalWeeksLists"
-                                        )
                                         ll_previous_months.visibility = View.VISIBLE
                                     }
                                 }
@@ -271,28 +258,21 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
             journalPrevious7DaysLists = arrayListOf()
             journalWeeksLists = arrayListOf()
             for (i in 0 until journalLists.size) {
-                Log.d(TAG, "getJournalsDataList: ${journalLists[i].journal_date}")
                 val d1 = sdf.parse(journalLists[i].journal_date)
                 val d2 = sdf.parse(currentDate!!)
-
                 // Finding the absolute difference between
                 // the two dates.time (in milli seconds)
                 val mDifference = abs(d1!!.time - d2!!.time)
 
                 // Converting milli seconds to dates
                 val mDifferenceDates = mDifference / (24 * 60 * 60 * 1000)
-
                 val mDayDifference = mDifferenceDates.toString()
-                Log.d(TAG, "getJournalsDataDays:$mDayDifference")
-
                 if (mDayDifference.toInt() <= 7) {
                     recyclerViewJournalList.visibility = View.VISIBLE
                     journalPrevious7DaysLists.add(journalLists[i])
                 }
-
-                if (mDayDifference.toInt() in 8..15) {
+                if (mDayDifference.toInt() > 7) {
                     journalWeeksLists.add(journalLists[i])
-                    Log.d(TAG, "getJournalsDataLastWeeksData: $journalWeeksLists")
                     ll_previous_months.visibility = View.VISIBLE
                 }
             }

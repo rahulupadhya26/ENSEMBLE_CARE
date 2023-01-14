@@ -420,7 +420,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_toStartOf="@+id/txtVideoSeeAll"
-                            android:text="Currently there are no podcasts."
+                            android:text="Currently there are no podcasts"
                             android:gravity="center"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/localBackground"

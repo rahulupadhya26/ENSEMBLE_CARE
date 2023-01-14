@@ -10,6 +10,7 @@ import com.app.selfcare.R
 import com.app.selfcare.adapters.ConsentRoisListAdapter
 import com.app.selfcare.adapters.GroupAppointmentsAdapter
 import com.app.selfcare.controller.OnConsentRoisItemClickListener
+import com.app.selfcare.controller.OnConsentRoisViewItemClickListener
 import com.app.selfcare.data.ConsentRois
 import com.app.selfcare.data.ConsentRoisFormsNotify
 import com.app.selfcare.data.GroupAppointment
@@ -36,7 +37,8 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ConsentsListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
+class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener,
+    OnConsentRoisViewItemClickListener {
     // TODO: Rename and change types of parameters
     private var consentRoisFormsNotifyList: ArrayList<ConsentRoisFormsNotify>? = null
     private var param2: String? = null
@@ -56,8 +58,19 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-        getBackButton().visibility = View.VISIBLE
+        getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+        updateStatusBarColor(R.color.white)
+
+        consentsRoisBack.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
+        }
 
         //Appointments
         displayConsentsList()
@@ -177,7 +190,9 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
                                         false
                                     )
                                     adapter = ConsentRoisListAdapter(
-                                        consentRois, this@ConsentsListFragment
+                                        consentRois,
+                                        this@ConsentsListFragment,
+                                        this@ConsentsListFragment
                                     )
                                 }
                             } else {
@@ -218,7 +233,7 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: ArrayList<ConsentRoisFormsNotify>, param2: String="") =
+        fun newInstance(param1: ArrayList<ConsentRoisFormsNotify>, param2: String = "") =
             ConsentsListFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(ARG_PARAM1, param1)
@@ -231,7 +246,15 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener {
 
     override fun onConsentRoisItemClickListener(consentRois: ArrayList<ConsentRois>) {
         replaceFragment(
-            ConsentRoisSignFragment.newInstance(consentRois, consentRoisFormsNotifyList!!),
+            ConsentRoisSignFragment.newInstance(consentRoisFormsNotifyList!!),
+            R.id.layout_home,
+            ConsentRoisSignFragment.TAG
+        )
+    }
+
+    override fun onConsentRoisViewItemClickListener(consentRois: ConsentRois) {
+        replaceFragment(
+            ConsentRoisSignFragment.newInstance(consentRoisFormsNotifyList!!),
             R.id.layout_home,
             ConsentRoisSignFragment.TAG
         )

@@ -36,7 +36,7 @@ private const val ARG_PARAM3 = "param3"
 class PaymentSelectFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var plan: Plan? = null
-    private var addOn: Int = 0
+    private var addOn: AddOn? = null
     private var planType: String? = ""
     private var PUBLISHABLE_KEY = ""
     private var customerID: String? = null
@@ -54,7 +54,7 @@ class PaymentSelectFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             plan = it.getParcelable(ARG_PARAM1)
-            addOn = it.getInt(ARG_PARAM2)
+            addOn = it.getParcelable(ARG_PARAM2)
             planType = it.getString(ARG_PARAM3)
         }
     }
@@ -76,54 +76,38 @@ class PaymentSelectFragment : BaseFragment() {
             popBackStack()
         }
 
-        txtPaymentPlanName.text = plan!!.therapy.name + " plan"
+        txtPaymentPlanName.text = plan!!.name + " plan"
 
         when (planType) {
             "Monthly" -> {
                 txtPlanCheckOutSubTitle.text =
-                    "$" + plan!!.therapy.monthly_price + " - Billed Monthly"
-                txtPaymentPlanPrice.text = "$" + plan!!.therapy.monthly_price
-                planPrice = plan!!.therapy.monthly_price.toInt()
+                    "$" + plan!!.monthly_price + " - Billed Monthly"
+                txtPaymentPlanPrice.text = "$" + plan!!.monthly_price
+                planPrice = plan!!.monthly_price.toInt()
             }
             "Quarterly" -> {
                 txtPlanCheckOutSubTitle.text =
-                    "$" + plan!!.therapy.quaterly_price + " - Billed Quarterly"
-                txtPaymentPlanPrice.text = "$" + (plan!!.therapy.quaterly_price.toInt())
-                planPrice = plan!!.therapy.quaterly_price.toInt()
+                    "$" + plan!!.quarterly_price + " - Billed Quarterly"
+                txtPaymentPlanPrice.text = "$" + (plan!!.quarterly_price.toInt() * 3)
+                planPrice = plan!!.quarterly_price.toInt() * 3
             }
             "Annually" -> {
                 txtPlanCheckOutSubTitle.text =
-                    "$" + plan!!.therapy.annually_price + " - Billed Annually"
-                txtPaymentPlanPrice.text = "$" + (plan!!.therapy.annually_price.toInt())
-                planPrice = plan!!.therapy.annually_price.toInt()
+                    "$" + plan!!.annually_price + " - Billed Annually"
+                txtPaymentPlanPrice.text = "$" + (plan!!.annually_price.toInt() * 12)
+                planPrice = plan!!.annually_price.toInt() * 12
             }
         }
 
-        if (addOn == 0) {
+        var addOnPrice = 0
+        if (addOn == null) {
             layoutAddOnService.visibility = View.GONE
         } else {
             layoutAddOnService.visibility = View.VISIBLE
-            val finalAddon = addOn - plan!!.price
-            when (planType) {
-                "Monthly" -> {
-                    txtAddonCheckOutSubTitle.text =
-                        "$$finalAddon - Billed Monthly"
-                    txtPaymentAddOnPrice.text = "$$finalAddon"
-                    addOnPrice = finalAddon
-                }
-                "Quarterly" -> {
-                    txtAddonCheckOutSubTitle.text =
-                        "$$finalAddon - Billed Quarterly"
-                    txtPaymentAddOnPrice.text = "$" + (finalAddon)
-                    addOnPrice = finalAddon
-                }
-                "Annually" -> {
-                    txtAddonCheckOutSubTitle.text =
-                        "$$finalAddon - Billed Annually"
-                    txtPaymentAddOnPrice.text = "$" + (finalAddon)
-                    addOnPrice = finalAddon
-                }
-            }
+            txtAddonCheckOutSubTitle.text =
+                "$" + addOn!!.monthly_price + " - Billed Monthly"
+            txtPaymentAddOnPrice.text = "$" + addOn!!.monthly_price
+            addOnPrice = addOn!!.monthly_price.toInt()
         }
 
         txtPaymentTotalPrice.text = "$" + (planPrice + addOnPrice)
@@ -165,7 +149,7 @@ class PaymentSelectFragment : BaseFragment() {
                 getSelfPayDetails()
             } else {
                 replaceFragment(
-                    InsuranceFragment.newInstance(plan!!, addOn),
+                    InsuranceFragment.newInstance(plan!!, addOn!!, planType!!),
                     R.id.layout_home,
                     InsuranceFragment.TAG
                 )
@@ -175,11 +159,6 @@ class PaymentSelectFragment : BaseFragment() {
 
     private fun getSelfPayDetails() {
         showProgress()
-        val priceId = if (addOn == 0) {
-            plan!!.stripe_price_id
-        } else {
-            plan!!.therapy.add_on_plan.stripe_price_id
-        }
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
@@ -187,8 +166,8 @@ class PaymentSelectFragment : BaseFragment() {
                         planType!!,
                         SelfPay(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!,
-                            priceId
-                            //"price_1LD7TsSBFqUpdWnSSJ0awbWQ"
+                            if (addOn == null) "" else addOn!!.id.toString(),
+                            plan!!.id
                         ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -325,11 +304,11 @@ class PaymentSelectFragment : BaseFragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: Plan, param2: Int, param3: String) =
+        fun newInstance(param1: Plan, param2: AddOn?, param3: String) =
             PaymentSelectFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, param1)
-                    putInt(ARG_PARAM2, param2)
+                    putParcelable(ARG_PARAM2, param2)
                     putString(ARG_PARAM3, param3)
                 }
             }

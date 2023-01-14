@@ -10,12 +10,14 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnConsentRoisItemClickListener
+import com.app.selfcare.controller.OnConsentRoisViewItemClickListener
 import com.app.selfcare.data.ConsentRois
 import kotlinx.android.synthetic.main.layout_item_consents_rois.view.*
 
 class ConsentRoisListAdapter(
     val list: ArrayList<ConsentRois>,
-    private val adapterItemClickListener: OnConsentRoisItemClickListener?
+    private val adapterItemClickListener: OnConsentRoisItemClickListener?,
+    private val adapterViewItemClickListener: OnConsentRoisViewItemClickListener?
 ) :
     RecyclerView.Adapter<ConsentRoisListAdapter.ViewHolder>() {
 
@@ -43,9 +45,20 @@ class ConsentRoisListAdapter(
             holder.consentRoisStatus.setBackgroundResource(R.color.red)
             holder.consentRoisStatus.text = "Incomplete"
         }
+
         holder.consentRoisLayout.setOnClickListener {
             if (!item.isCompleted) {
-                adapterItemClickListener!!.onConsentRoisItemClickListener(list)
+                val tempList: ArrayList<ConsentRois> = arrayListOf()
+                for (consentRois in list) {
+                    if (!consentRois.isCompleted) {
+                        tempList.add(consentRois)
+                    }
+                }
+                if (tempList.isNotEmpty()) {
+                    adapterItemClickListener!!.onConsentRoisItemClickListener(tempList)
+                }
+            } else {
+                adapterViewItemClickListener!!.onConsentRoisViewItemClickListener(item)
             }
         }
     }

@@ -12,6 +12,13 @@
         android:layout_margin="@dimen/_5dp"
         android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/consentsRoisBack"
+            android:layout_width="@dimen/_40dp"
+            android:layout_height="@dimen/_40dp"
+            android:padding="@dimen/_5dp"
+            android:src="@drawable/journal_resource_back" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

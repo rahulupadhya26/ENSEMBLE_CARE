@@ -142,11 +142,7 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
                     Utils.aptScheduleDate = selectedDate!!
                     Utils.aptScheduleTime = selectedTimeSlot
                     //Allergies, symptoms,
-                    replaceFragment(
-                        TherapyBasicDetailsCFragment(),
-                        R.id.layout_home,
-                        TherapyBasicDetailsCFragment.TAG
-                    )
+
                 } else {
                     displayToast("Select time slot")
                 }

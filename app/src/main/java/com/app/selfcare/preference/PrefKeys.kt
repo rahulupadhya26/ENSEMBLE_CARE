@@ -35,5 +35,6 @@ class PrefKeys {
         const val PREF_Personal_Goal_Added = "personalGoalAdded"
         const val PREF_NEXT_QUESTION_ID = "next_question_id"
         const val PREF_SET_ANSWER = "set_answer"
+        const val PREF_INSURANCE_VERIFICATION = "insurance_verified"
     }
 }

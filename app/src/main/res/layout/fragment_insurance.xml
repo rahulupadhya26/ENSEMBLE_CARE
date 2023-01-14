@@ -40,18 +40,18 @@
         android:text="Pay by your insurance"
         android:textAppearance="@style/fontfamily"
         android:textColor="@color/white"
-        android:visibility="gone"
-        android:textSize="@dimen/_18sp" />
+        android:textSize="@dimen/_18sp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/txtInsurancePlanName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginBottom="@dimen/_5dp"
         android:textAppearance="@style/fontfamily"
         android:textColor="@color/white"
         android:textSize="@dimen/_18sp"
-        android:layout_marginBottom="@dimen/_5dp"
         android:textStyle="bold" />
 
     <TextView
@@ -84,43 +84,47 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/_10dp">
+
                 <RelativeLayout
+                    android:id="@+id/layoutPrimaryInsurance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10dp"
-                    android:layout_marginEnd="@dimen/_10dp"
-                    android:layout_marginTop="@dimen/_10dp">
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Primary"
                         android:padding="@dimen/_10dp"
+                        android:text="Primary"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_20sp"
                         android:textStyle="bold" />
 
                     <ImageView
+                        android:id="@+id/imgPrimaryDownIcon"
                         android:layout_width="@dimen/_20dp"
                         android:layout_height="@dimen/_20dp"
-                        android:src="@drawable/dropdown"
-                        android:padding="@dimen/_2dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
                         android:layout_marginEnd="@dimen/_10dp"
-                        android:visibility="gone"/>
+                        android:padding="@dimen/_2dp"
+                        android:src="@drawable/dropdown" />
 
                 </RelativeLayout>
 
                 <LinearLayout
+                    android:id="@+id/layoutPrimaryInsuranceDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_20dp"
-                    android:layout_marginEnd="@dimen/_20dp"
-                    android:layout_marginBottom="@dimen/_20dp"
                     android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_20dp"
+                    android:layout_marginBottom="@dimen/_10dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
@@ -137,11 +141,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:padding="@dimen/_5dp">
 
                         <Spinner
-                            android:id="@+id/spinnerInsuranceCompany"
+                            android:id="@+id/spinnerPrimaryInsuranceCompany"
                             android:layout_width="match_parent"
                             android:layout_height="40dp" />
                     </RelativeLayout>
@@ -157,10 +162,11 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/etPlanId"
+                        android:id="@+id/etPrimaryPlanId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Plan ID"
                         android:imeOptions="actionNext"
@@ -183,10 +189,11 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/etGroupId"
+                        android:id="@+id/etPrimaryGroupId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Group ID"
                         android:imeOptions="actionNext"
@@ -209,10 +216,11 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/etMemberId"
+                        android:id="@+id/etPrimaryMemberId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Member ID"
                         android:imeOptions="actionNext"
@@ -235,10 +243,11 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/etMemberName"
+                        android:id="@+id/etPrimaryMemberName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Member Name"
                         android:imeOptions="actionNext"
@@ -260,107 +269,235 @@
                         android:textSize="@dimen/_16sp"
                         android:textStyle="bold" />
 
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_5dp"
-                        android:hint="Insurance Company"
-                        android:visibility="gone"
-                        app:hintTextAppearance="@style/TextLabel">
+                        android:layout_marginTop="5dp"
+                        android:padding="5dp"
+                        android:text="Insurance Card Picture (Optional)"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp"
+                        android:visibility="gone" />
 
-                        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5dp">
+
+                        <ImageView
+                            android:id="@+id/imgPrimaryInsurancePic"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:focusable="false"
-                            android:imeOptions="actionNext"
-                            android:inputType="none"
-                            android:textColor="@color/black"
-                            android:textSize="16sp"
-                            app:hintTextAppearance="@style/fontfamily" />
+                            android:layout_height="150dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/bg_corner_rounded_edittext"
+                            android:src="@drawable/health_insurance" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <ImageView
+                            android:id="@+id/imgPrimaryInsurancePicClear"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="5dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/cancel"
+                            android:visibility="gone" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvAddPrimaryInsuranceCardPic"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_5dp"
+                        android:gravity="center"
+                        android:padding="@dimen/_10dp"
+                        android:text="Click here to add a picture"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutSecondaryInsurance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/_10dp"
+                        android:text="Secondary"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_20sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/imgSecondaryDownIcon"
+                        android:layout_width="@dimen/_20dp"
+                        android:layout_height="@dimen/_20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:padding="@dimen/_2dp"
+                        android:src="@drawable/dropdown" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutSecondaryInsuranceDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_20dp"
+                    android:layout_marginBottom="@dimen/_10dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Insurance Company"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:background="@drawable/edittext_background_box"
+                        android:padding="@dimen/_5dp">
+
+                        <Spinner
+                            android:id="@+id/spinnerSecondaryInsuranceCompany"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:text="Plan ID"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/etSecondaryPlanId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:background="@drawable/edittext_background_box"
                         android:hint="Plan ID"
-                        android:visibility="gone"
-                        app:hintTextAppearance="@style/TextLabel">
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textColorHint="#807B7B"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:imeOptions="actionNext"
-                            android:inputType="text"
-                            android:maxLines="1"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/black"
-                            android:textSize="16dp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_5dp"
-                        android:hint="Member ID"
-                        android:visibility="gone"
-                        app:hintTextAppearance="@style/TextLabel">
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:text="Group ID"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:imeOptions="actionNext"
-                            android:inputType="text"
-                            android:maxLines="1"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/black"
-                            android:textSize="16dp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <EditText
+                        android:id="@+id/etSecondaryGroupId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:background="@drawable/edittext_background_box"
                         android:hint="Group ID"
-                        android:visibility="gone"
-                        app:hintTextAppearance="@style/TextLabel">
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textColorHint="#807B7B"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:imeOptions="actionNext"
-                            android:inputType="text"
-                            android:maxLines="1"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/black"
-                            android:textSize="16dp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_5dp"
-                        android:hint="Member Name"
-                        android:visibility="gone"
-                        app:hintTextAppearance="@style/TextLabel">
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:text="Member ID"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:maxLines="1"
-                            android:textAppearance="@style/fontfamily"
-                            android:textColor="@color/black"
-                            android:textSize="16dp" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                    <EditText
+                        android:id="@+id/etSecondaryMemberId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:background="@drawable/edittext_background_box"
+                        android:hint="Member ID"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textColorHint="#807B7B"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:text="Member Name"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/etSecondaryMemberName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:background="@drawable/edittext_background_box"
+                        android:hint="Member Name"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textColorHint="#807B7B"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:text="Insurance Card Image(Optional)"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -375,10 +512,11 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5dp">
 
                         <ImageView
-                            android:id="@+id/imgInsurancePic"
+                            android:id="@+id/imgSecondaryInsurancePic"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
                             android:layout_marginTop="5dp"
@@ -386,19 +524,249 @@
                             android:src="@drawable/health_insurance" />
 
                         <ImageView
-                            android:id="@+id/imgInsurancePicClear"
+                            android:id="@+id/imgSecondaryInsurancePicClear"
                             android:layout_width="45dp"
                             android:layout_height="45dp"
                             android:layout_alignParentRight="true"
                             android:layout_marginTop="5dp"
                             android:padding="@dimen/_10dp"
                             android:src="@drawable/cancel"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
 
                     </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/tvAddInsuranceCardPic"
+                        android:id="@+id/tvAddSecondaryInsuranceCardPic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="@dimen/_10dp"
+                        android:text="Click here to add a picture"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutPharmacyInsurance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/_10dp"
+                        android:text="Pharmacy"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_20sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/imgPharmacyDownIcon"
+                        android:layout_width="@dimen/_20dp"
+                        android:layout_height="@dimen/_20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:padding="@dimen/_2dp"
+                        android:src="@drawable/dropdown" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutPharmacyInsuranceDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_20dp"
+                    android:layout_marginBottom="@dimen/_20dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Insurance Company"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:background="@drawable/edittext_background_box"
+                        android:padding="@dimen/_5dp">
+
+                        <Spinner
+                            android:id="@+id/spinnerPharmacyInsuranceCompany"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:text="Plan ID"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/etPharmacyPlanId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:background="@drawable/edittext_background_box"
+                        android:hint="Plan ID"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textColorHint="#807B7B"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:text="Group ID"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/etPharmacyGroupId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:background="@drawable/edittext_background_box"
+                        android:hint="Group ID"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textColorHint="#807B7B"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:text="Member ID"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/etPharmacyMemberId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:background="@drawable/edittext_background_box"
+                        android:hint="Member ID"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textColorHint="#807B7B"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:text="Member Name"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/etPharmacyMemberName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:background="@drawable/edittext_background_box"
+                        android:hint="Member Name"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textColorHint="#807B7B"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:text="Insurance Card Image(Optional)"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:padding="5dp"
+                        android:text="Insurance Card Picture (Optional)"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp"
+                        android:visibility="gone" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5dp">
+
+                        <ImageView
+                            android:id="@+id/imgPharmacyInsurancePic"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/bg_corner_rounded_edittext"
+                            android:src="@drawable/health_insurance" />
+
+                        <ImageView
+                            android:id="@+id/imgPharmacyInsurancePicClear"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="5dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/cancel"
+                            android:visibility="gone" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvAddPharmacyInsuranceCardPic"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/_20dp"

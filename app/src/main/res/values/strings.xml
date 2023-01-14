@@ -62,13 +62,14 @@
     <string name="dob">DOB</string>
     <string name="you_are_done">You are done!</string>
     <string name="resend_the_code"><u>Resend the code</u></string>
-    <string name="register_part_2">I hereby agree to abide by the <font color='#5C2E7E'><u>terms and conditions</u></font> provider by EnsembleCare</string>
-    <string name="covered_self_pay">I hereby agree to abide by the <font color='#5C2E7E'><u>terms and conditions</u></font> provider by EnsembleCare for SelfPay</string>
+    <string name="register_part_2">I hereby agree to abide by the <font color='#5C2E7E'><u>terms and conditions</u></font> provided by EnsembleCare</string>
+    <string name="covered_self_pay">I hereby agree to abide by the <font color='#5C2E7E'><u>terms and conditions</u></font> provided by EnsembleCare for SelfPay</string>
     <string name="consent_imp">Why is consent important? Read about it <font color='#5C2E7E'><u>here</u></font></string>
     <string name="billed_monthly_terms_apply">Billed Monthly. <font color='#830CDB'><u>Terms apply</u></font></string>
     <string name="billed_quarterly_terms_apply">Billed Quarterly. <font color='#830CDB'><u>Terms apply</u></font></string>
     <string name="billed_annually_terms_apply">Billed Annually. <font color='#830CDB'><u>Terms apply</u></font></string>
     <string name="plan_by_subscribing">By subscribing, you agree to <font color='#830CDB'><u>our terms</u></font>.</string>
+    <string name="vob_verified"><font color='#5C2E7E'><b>Congratulations!</b></font> You have been subscribed to <b>Plus</b> plan</string>
 
     <string-array name="gender">
         <item>Prefer not to say</item>
@@ -147,6 +148,7 @@
     </string-array>
 
     <string-array name="insurance_name">
+        <item>Select Insurance</item>
         <item>AARP</item>
         <item>Aetna</item>
         <item>American Family Insurance</item>

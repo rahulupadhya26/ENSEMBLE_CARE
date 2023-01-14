@@ -126,6 +126,7 @@ object Utils {
     var providerPublicId = ""
     var providerType = ""
     var providerName = ""
+    var providerPhoto = ""
     var aptScheduleDate = ""
     var aptScheduleTime = ""
     var aptEndTime = "00:30:00"
@@ -229,6 +230,14 @@ object Utils {
     const val CONST_16 = "16"
     const val CONST_17 = "17"
     const val CONST_18 = "18"
+
+    const val VOB_PENDING = 1
+    const val VOB_FAILED = 2
+    const val VOB_COMPLETED = 3
+
+    const val VOB_STATUS_PENDING = "Pending"
+    const val VOB_STATUS_FAILED = "Failed"
+    const val VOB_STATUS_COMPLETED = "Completed"
 
     fun viewToImage(view: View): Bitmap? {
         val returnedBitmap =

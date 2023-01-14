@@ -53,6 +53,7 @@ class CarePlanDashboardFragment : BaseFragment(), OnCarePlanDayWiseItemClickList
         getHeader().visibility = View.GONE
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+        updateStatusBarColor(R.color.carePlanBackColor)
 
         runOnUiThread {
             getCarePlanDayData()
@@ -92,6 +93,8 @@ class CarePlanDashboardFragment : BaseFragment(), OnCarePlanDayWiseItemClickList
                             }
                         } catch (e: Exception) {
                             hideProgress()
+                            recyclerViewCarePlanDashboard.visibility = View.GONE
+                            txtNoCarePlanAssigned.visibility = View.VISIBLE
                             e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }

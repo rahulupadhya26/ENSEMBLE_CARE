@@ -45,7 +45,7 @@ class PlanViewPagerAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: PlanViewHolder, position: Int) {
         val planObj: Plan = planList[position]
-        if(!planObj.therapy.has_addon){
+        if(!planObj.is_addon){
             planName = if (selectedPlan.isNotEmpty()) {
                 when (selectedPlan) {
                     "Standard" -> "Plus"
@@ -62,7 +62,7 @@ class PlanViewPagerAdapter(
                 holder.recommendImg.visibility = View.GONE
             }*/
 
-            if (planObj.therapy.name == selectedPlan) {
+            if (planObj.name == selectedPlan) {
                 holder.planBtn.text = "Selected"
             }
             /*when (planObj.plan) {
@@ -76,8 +76,8 @@ class PlanViewPagerAdapter(
                     holder.planText.setTextColor(ContextCompat.getColor(context, R.color.white))
                 }
             }*/
-            holder.planText.text = planObj.therapy.name
-            holder.planPrice.text = "$" + planObj.price
+            holder.planText.text = planObj.name
+            holder.planPrice.text = "$" + planObj.monthly_price
             holder.btnStartPlan.setOnClickListener {
                 onClickBack.onItemClicked(planObj);
             }

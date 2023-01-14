@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.app.selfcare.R
+import com.app.selfcare.utils.Utils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_bottom_navigation.*
 
@@ -89,7 +90,9 @@ class BottomNavigationFragment : BaseFragment() {
         }
 
         fab.setOnClickListener {
-            replaceFragment(
+            Utils.isTherapististScreen = false
+            clearTempFormData()
+            replaceFragmentNoBackStack(
                 ClientAvailabilityFragment.newInstance(false),
                 R.id.layout_home,
                 ClientAvailabilityFragment.TAG

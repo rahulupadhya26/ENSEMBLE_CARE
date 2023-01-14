@@ -3,29 +3,23 @@ package com.app.selfcare.fragment
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.adapters.FinalReviewAdapter
-import com.app.selfcare.data.AppointmentReq
-import com.app.selfcare.data.TimeSlots
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
-import com.app.selfcare.utils.CalenderUtils
 import com.app.selfcare.utils.DateUtils
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import kotlinx.android.synthetic.main.fragment_final_review.*
-import retrofit2.HttpException
 import java.io.File
-import java.text.SimpleDateFormat
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -75,6 +69,12 @@ class FinalReviewFragment : BaseFragment() {
             appointmentDate.getDay() + " " + appointmentDate.getFullMonthName()
 
         txtFinalReviewSelectedTime.text = Utils.aptScheduleTime.dropLast(3)
+
+        Glide.with(requireActivity())
+            .load(BaseActivity.baseURL.dropLast(5) + Utils.providerPhoto)
+            .placeholder(R.drawable.doctor_img)
+            .transform(CenterCrop(), RoundedCorners(5))
+            .into(imgFinalReviewTherapist)
 
         if (Utils.selectedCommunicationMode == "Video") {
             imgFinalReviewSelectedMode.setBackgroundResource(R.drawable.video)

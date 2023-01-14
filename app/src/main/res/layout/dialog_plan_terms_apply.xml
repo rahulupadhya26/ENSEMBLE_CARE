@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_box_grey_top_corners">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewPictureDialogDash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/_10dp"
+        app:cardCornerRadius="@dimen/_5dp"
+        app:cardUseCompatPadding="true">
+
+        <View
+            android:layout_width="60dp"
+            android:layout_height="@dimen/_8dp"
+            android:background="@color/black" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="Terms and conditions"
+                android:textSize="@dimen/_20sp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:padding="@dimen/_5dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="What’s covered in these terms"
+                android:textSize="@dimen/_16sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="Terms and Conditions agreements (also known as Terms of Use or Terms of Service) are a contract between a business and its customers and users. It outlines the rights and responsibilities of both parties. Your users must agree to comply with your terms and conditions in order to use your product or website."
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="Now, you've probably seen Terms and Conditions called Terms of Service or Terms of Use agreements. Some people may mistakenly believe that these terms are separate agreements."
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="However, they're the same thing. There is no difference, and each of these terms is often used interchangeably on many major websites. It is the information within the page that matters most, and not the title."
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="Terms and Conditions Agreements Not Legally Required"
+                android:textSize="@dimen/_16sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="You should understand that although they aren't legally required, a formal Terms and Conditions agreement is very important to have and can greatly benefit your business."
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:text="The fees for the Products and Support Services are listed in the Order Form. In addition to the fees listed in the Order Form, Customer shall be responsible for all personal property, sales, use, value-added, withholding and similar taxes (other than taxes on Axway's net income) arising from the transactions described in this Agreement. Where Customer's Use of the Software or receipt of Services is exempt from sales or other taxes, Customer shall provide Axway with the appropriate exemption certificate. All amounts payable under this Agreement shall be paid net thirty (30) days from the invoice date, unless stated otherwise in an Order Form."
+                android:textSize="@dimen/_12sp"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5dp"/>
+
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

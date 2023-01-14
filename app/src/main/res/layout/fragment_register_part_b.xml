@@ -228,10 +228,10 @@
                     android:id="@+id/checkboxRegisterTermsConditions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
                     android:text="@string/register_part_2"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
+                    android:paddingStart="@dimen/_10dp"
                     android:textSize="@dimen/_14sp" />
 
                 <com.google.android.material.textfield.TextInputLayout

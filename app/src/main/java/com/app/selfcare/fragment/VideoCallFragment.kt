@@ -287,7 +287,8 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             Utils.rtmLoggedIn = false
             sendApptStatus(appointment!!.appointment.appointment_id.toString(),
             actualStartTime!!, actualEndTime!!, duration!!){
-                replaceFragment(
+                clearPreviousFragmentStack()
+                replaceFragmentNoBackStack(
                     TherapistFeedbackFragment.newInstance(appointment!!.appointment.appointment_id.toString()),
                     R.id.layout_home,
                     TherapistFeedbackFragment.TAG

@@ -120,8 +120,8 @@ class ExerciseCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
                             currentDate,
                             dayWiseCarePlan.id,
                             is_completed = true,
+                            detail.plan,
                             detail.id,
-                            detail.task_detail.id,
                             detail.time
                             ),
                         getAccessToken()

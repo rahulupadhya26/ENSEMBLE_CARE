@@ -88,11 +88,7 @@ class TherapyBasicDetailsBFragment : BaseFragment() {
                                 Utils.selectedState = getText(etBasicDetailState)
                                 Utils.selectedPostalCode = getText(etBasicDetailPostalCode)
                                 Utils.selectedCountry = getText(etBasicDetailCountry)
-                                replaceFragment(
-                                    TherapyBasicDetailsCFragment(),
-                                    R.id.layout_home,
-                                    TherapyBasicDetailsCFragment.TAG
-                                )
+
                             } else {
                                 setEditTextError(etBasicDetailCountry,"Country cannot be blank.")
                             }

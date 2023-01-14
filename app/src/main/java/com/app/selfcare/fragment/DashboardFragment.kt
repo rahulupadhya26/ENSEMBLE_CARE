@@ -87,6 +87,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
 
     private var subscriptionStatusDialog: Dialog? = null
     private var apptCancelledAlertDialog: Dialog? = null
+    private var isGetNotification: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,6 +125,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
 
         itemsSwipeToRefresh.setOnRefreshListener {
             try {
+                isGetNotification = false
                 displayAppointments()
                 displayDashboardNotifications()
                 val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
@@ -148,7 +150,9 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
             object : TypeToken<CancelledAppointmentNotify?>() {}.type
         val cancelAppointmentNotify: CancelledAppointmentNotify =
             Gson().fromJson(jsonObj.toString(), cancelAppointmentNotifyType)
-        updateNotificationStatus(cancelAppointmentNotify.id)
+        if (apptCancelledAlertDialog != null && apptCancelledAlertDialog!!.isShowing) {
+            apptCancelledAlertDialog!!.dismiss()
+        }
         apptCancelledAlertDialog = Dialog(requireActivity())
         apptCancelledAlertDialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
         apptCancelledAlertDialog!!.setCancelable(false)
@@ -205,28 +209,38 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
 
         apptCancelledAlertDialog!!.cardViewApptCancelledReschedule.setOnClickListener {
             apptCancelledAlertDialog!!.dismiss()
-            Utils.providerId = cancelAppointmentNotify.extra_data.next_appt_detials.doctor.id.toString()
-            Utils.providerType = cancelAppointmentNotify.extra_data.next_appt_detials.doctor.designation
+            Utils.providerId =
+                cancelAppointmentNotify.extra_data.next_appt_detials.doctor.id.toString()
+            Utils.providerType =
+                cancelAppointmentNotify.extra_data.next_appt_detials.doctor.designation
             Utils.providerName = cancelAppointmentNotify.extra_data.next_appt_detials.doctor.name
             Utils.aptScheduleDate = cancelAppointmentNotify.extra_data.next_appt_detials.date
-            Utils.aptScheduleTime = cancelAppointmentNotify.extra_data.next_appt_detials.time_slot.starting_time
-            Utils.appointmentId = cancelAppointmentNotify.extra_data.next_appt_detials.appointment_id.toString()
-            replaceFragment(
-                TherapyBasicDetailsCFragment(),
-                R.id.layout_home,
-                TherapyBasicDetailsCFragment.TAG
-            )
+            Utils.aptScheduleTime =
+                cancelAppointmentNotify.extra_data.next_appt_detials.time_slot.starting_time
+            Utils.appointmentId =
+                cancelAppointmentNotify.extra_data.next_appt_detials.appointment_id.toString()
+            updateNotificationStatus(cancelAppointmentNotify.id) {
+                clearPreviousFragmentStack()
+                replaceFragmentNoBackStack(
+                    TherapyBasicDetailsCFragment.newInstance(true),
+                    R.id.layout_home,
+                    TherapyBasicDetailsCFragment.TAG
+                )
+            }
         }
 
         apptCancelledAlertDialog!!.cardViewTryDiffProvider.setOnClickListener {
             apptCancelledAlertDialog!!.dismiss()
             Utils.isTherapististScreen = false
             clearTempFormData()
-            replaceFragment(
-                ClientAvailabilityFragment.newInstance(false),
-                R.id.layout_home,
-                ClientAvailabilityFragment.TAG
-            )
+            updateNotificationStatus(cancelAppointmentNotify.id) {
+                clearPreviousFragmentStack()
+                replaceFragmentNoBackStack(
+                    ClientAvailabilityFragment.newInstance(false),
+                    R.id.layout_home,
+                    ClientAvailabilityFragment.TAG
+                )
+            }
         }
         if (apptCancelledAlertDialog!!.isShowing) {
             apptCancelledAlertDialog!!.dismiss()
@@ -247,6 +261,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
             subscriptionStatusDialog!!.setCanceledOnTouchOutside(false)
             subscriptionStatusDialog!!.setContentView(R.layout.dialog_plan_subscription_alert)
             subscriptionStatusDialog!!.cardViewRenewSubscription.setOnClickListener {
+                subscriptionStatusDialog!!.dismiss()
                 replaceFragmentNoBackStack(
                     RegisterPartCFragment(),
                     R.id.layout_home,
@@ -277,7 +292,6 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
     override fun onResume() {
         super.onResume()
         try {
-            displayAppointments()
             val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
             if (photo != "null" && photo.isNotEmpty()) {
                 Glide.with(requireActivity())
@@ -295,7 +309,8 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
 
     private fun onClickEvents() {
         img_user_pic.setOnClickListener {
-            replaceFragment(
+            clearPreviousFragmentStack()
+            replaceFragmentNoBackStack(
                 SettingsFragment(),
                 R.id.layout_home,
                 SettingsFragment.TAG
@@ -303,7 +318,8 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
         }
 
         layoutUserName.setOnClickListener {
-            replaceFragment(
+            clearPreviousFragmentStack()
+            replaceFragmentNoBackStack(
                 SettingsFragment(),
                 R.id.layout_home,
                 SettingsFragment.TAG
@@ -353,7 +369,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
         fabCreateAppointmentBtn.setOnClickListener {
             Utils.isTherapististScreen = false
             clearTempFormData()
-            replaceFragment(
+            replaceFragmentNoBackStack(
                 ClientAvailabilityFragment.newInstance(false),
                 R.id.layout_home,
                 ClientAvailabilityFragment.TAG
@@ -479,46 +495,60 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
     private fun displayDashboardNotifications() {
         itemsSwipeToRefresh.isRefreshing = false
         var consentRoisCount = 0
-        getDashboardNotifications { response ->
-            try {
-                val jsonArr = JSONArray(response)
-                val consentRoisFormsNotifyList :ArrayList<ConsentRoisFormsNotify> = arrayListOf()
-                for (i in 0 until jsonArr.length()) {
-                    val jsonObj = jsonArr.getJSONObject(i)
-                    if (jsonObj.getString("title").contains("Appointment", ignoreCase = true)) {
-                        displayAppointmentCancelledAlert(jsonObj)
-                    } else if (jsonObj.getString("title").contains("Consent", ignoreCase = true)) {
-                        consentRoisCount += 1
-                        val consentRoisNotifyType: Type = object : TypeToken<ConsentRoisFormsNotify?>() {}.type
-                        val consentRoisNotify: ConsentRoisFormsNotify =
-                            Gson().fromJson(jsonObj.toString(), consentRoisNotifyType)
-                        consentRoisFormsNotifyList.add(consentRoisNotify)
-                    } else if (jsonObj.getString("title").contains("ROI", ignoreCase = true)) {
-                        consentRoisCount += 1
-                        val consentRoisNotifyType: Type = object : TypeToken<ConsentRoisFormsNotify?>() {}.type
-                        val consentRoisNotify: ConsentRoisFormsNotify =
-                            Gson().fromJson(jsonObj.toString(), consentRoisNotifyType)
-                        consentRoisFormsNotifyList.add(consentRoisNotify)
-                    } else if (jsonObj.getString("title").contains("Plan", ignoreCase = true)) {
-                        displayPlanSubscriptionAlert(jsonObj)
+        if (!isGetNotification) {
+            isGetNotification = !isGetNotification
+            getDashboardNotifications { response ->
+                try {
+                    val jsonArr = JSONArray(response)
+                    val consentRoisFormsNotifyList: ArrayList<ConsentRoisFormsNotify> =
+                        arrayListOf()
+                    for (i in 0 until jsonArr.length()) {
+                        val jsonObj = jsonArr.getJSONObject(i)
+                        if (jsonObj.getString("title").contains("Appointment", ignoreCase = true)) {
+                            displayAppointmentCancelledAlert(jsonObj)
+                        } else if (jsonObj.getString("title")
+                                .contains("Consent", ignoreCase = true)
+                        ) {
+                            consentRoisCount += 1
+                            val consentRoisNotifyType: Type =
+                                object : TypeToken<ConsentRoisFormsNotify?>() {}.type
+                            val consentRoisNotify: ConsentRoisFormsNotify =
+                                Gson().fromJson(jsonObj.toString(), consentRoisNotifyType)
+                            consentRoisFormsNotifyList.add(consentRoisNotify)
+                        } else if (jsonObj.getString("title").contains("ROI", ignoreCase = true)) {
+                            consentRoisCount += 1
+                            val consentRoisNotifyType: Type =
+                                object : TypeToken<ConsentRoisFormsNotify?>() {}.type
+                            val consentRoisNotify: ConsentRoisFormsNotify =
+                                Gson().fromJson(jsonObj.toString(), consentRoisNotifyType)
+                            consentRoisFormsNotifyList.add(consentRoisNotify)
+                        } else if (jsonObj.getString("title").contains("Plan", ignoreCase = true)) {
+                            displayPlanSubscriptionAlert(jsonObj)
+                        }
                     }
-                }
-                if (consentRoisCount > 0) {
-                    cardViewConsentsRoisNotify.visibility = View.VISIBLE
-                    consentsRoisNotify.text =
-                        "Consents and Rois - $consentRoisCount pending forms."
-                    cardViewConsentsRoisNotify.setOnClickListener {
-                        replaceFragment(
-                            ConsentsListFragment.newInstance(consentRoisFormsNotifyList),
-                            R.id.layout_home,
-                            ConsentsListFragment.TAG
-                        )
+                    if (consentRoisCount > 0) {
+                        cardViewConsentsRoisNotify.visibility = View.VISIBLE
+                        consentsRoisNotify.text =
+                            "Consents and ROI's - $consentRoisCount pending forms."
+                        cardViewConsentsRoisNotify.setOnClickListener {
+                            clearPreviousFragmentStack()
+                            replaceFragmentNoBackStack(
+                                ConsentRoisSignFragment.newInstance(consentRoisFormsNotifyList),
+                                R.id.layout_home,
+                                ConsentRoisSignFragment.TAG
+                            )
+                            /*replaceFragmentNoBackStack(
+                                ConsentsListFragment.newInstance(consentRoisFormsNotifyList),
+                                R.id.layout_home,
+                                ConsentsListFragment.TAG
+                            )*/
+                        }
+                    } else {
+                        cardViewConsentsRoisNotify.visibility = View.GONE
                     }
-                } else {
-                    cardViewConsentsRoisNotify.visibility = View.GONE
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
     }
@@ -558,8 +588,9 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                 startActivity(intent)
                                 requireActivity().overridePendingTransition(0, 0)
                             } else {
+                                clearPreviousFragmentStack()
                                 //Start video call
-                                replaceFragment(
+                                replaceFragmentNoBackStack(
                                     VideoCallFragment.newInstance(
                                         appointment,
                                         rtcToken,
@@ -680,11 +711,19 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
         handler.postDelayed(runnable!!, 1000)
     }
 
-    private fun getDashboardNotifications(myCallback: (result: String?) -> Unit) {
+    private fun updateNotificationStatus(
+        notificationId: Int,
+        myCallback: (result: String?) -> Unit
+    ) {
+        showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getDashboardNotification(getAccessToken())
+                    .updateNotificationStatus(
+                        "PI0061",
+                        NotifyStatus(notificationId),
+                        getAccessToken()
+                    )
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -702,16 +741,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                         }
                     }, { error ->
                         hideProgress()
-                        if ((error as HttpException).code() == 401) {
-                            userLogin(
-                                preference!![PrefKeys.PREF_EMAIL]!!,
-                                preference!![PrefKeys.PREF_PASS]!!
-                            ) { result ->
-                                displayDashboardNotifications()
-                            }
-                        } else {
-                            displayAfterLoginErrorMsg(error)
-                        }
+                        displayToast("Error ${error.localizedMessage}")
                     })
             )
         }

@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.adapters.DocumentListAdapter
 import com.app.selfcare.controller.OnDocumentItemClickListener
-import com.app.selfcare.data.DocumentData
+import com.app.selfcare.controller.OnDocumentsConsentRoisViewItemClickListener
+import com.app.selfcare.data.AppointmentDocumentData
+import com.app.selfcare.data.ConsentsRoisDocumentData
+import com.app.selfcare.data.Documents
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
@@ -17,6 +20,8 @@ import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_document.*
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import kotlin.collections.ArrayList
@@ -31,7 +36,8 @@ private const val ARG_PARAM2 = "param2"
  * Use the [DocumentFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class DocumentFragment : BaseFragment(), OnDocumentItemClickListener {
+class DocumentFragment : BaseFragment(), OnDocumentItemClickListener,
+    OnDocumentsConsentRoisViewItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -78,7 +84,16 @@ class DocumentFragment : BaseFragment(), OnDocumentItemClickListener {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            val documentType: Type =
+                            var documentList: ArrayList<Documents> = arrayListOf()
+                            val jsonArray = JSONArray(responseBody)
+                            for (i in 0 until jsonArray.length()) {
+                                val jsonObj = jsonArray.getJSONObject(i).toString()
+                                val documentType: Type = object : TypeToken<Documents?>() {}.type
+                                val document: Documents = Gson().fromJson(jsonObj, documentType)
+                                documentList.add(document)
+                            }
+
+                            /*val documentType: Type =
                                 object : TypeToken<ArrayList<DocumentData?>?>() {}.type
                             val documentList: ArrayList<DocumentData> =
                                 Gson().fromJson(responseBody, documentType)
@@ -95,7 +110,7 @@ class DocumentFragment : BaseFragment(), OnDocumentItemClickListener {
                                 ) {
                                     tempDocumentList.add(documentData)
                                 }
-                            }
+                            }*/
                             /*var documents: ArrayList<SortedDocumentData> = arrayListOf()
                             val routesMap = documentList.groupBy { it.dateTime }
                             val keys = routesMap.keys
@@ -117,7 +132,7 @@ class DocumentFragment : BaseFragment(), OnDocumentItemClickListener {
                                 )
                                 adapter = DocumentListAdapter(
                                     mActivity!!,
-                                    tempDocumentList, this@DocumentFragment
+                                    documentList, this@DocumentFragment, this@DocumentFragment
                                 )
                             }
                         } catch (e: Exception) {
@@ -171,6 +186,14 @@ class DocumentFragment : BaseFragment(), OnDocumentItemClickListener {
             DisplayImagesFragment.newInstance(imageList, title),
             R.id.layout_home,
             DisplayImagesFragment.TAG
+        )
+    }
+
+    override fun onDocumentsConsentRoisViewItemClickListener(consentsRoisDocumentData: ConsentsRoisDocumentData) {
+        replaceFragment(
+            ViewFormsFragment.newInstance(consentsRoisDocumentData),
+            R.id.layout_home,
+            ViewFormsFragment.TAG
         )
     }
 }

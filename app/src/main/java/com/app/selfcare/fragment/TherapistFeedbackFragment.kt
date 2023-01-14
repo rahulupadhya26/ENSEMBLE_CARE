@@ -106,13 +106,20 @@ class TherapistFeedbackFragment : BaseFragment() {
                             val status = respBody[1]
                             responseBody = respBody[0]
                             if (status == "201") {
-                                for (i in 0 until mActivity!!.supportFragmentManager.backStackEntryCount) {
+                                /*for (i in 0 until mActivity!!.supportFragmentManager.backStackEntryCount) {
                                     if (mActivity!!.getCurrentFragment() !is DashboardFragment) {
                                         popBackStack()
                                     } else {
                                         break
                                     }
-                                }
+                                }*/
+                                setBottomNavigation(null)
+                                setLayoutBottomNavigation(null)
+                                replaceFragmentNoBackStack(
+                                    BottomNavigationFragment(),
+                                    R.id.layout_home,
+                                    BottomNavigationFragment.TAG
+                                )
                             }
                         } catch (e: Exception) {
                             hideProgress()

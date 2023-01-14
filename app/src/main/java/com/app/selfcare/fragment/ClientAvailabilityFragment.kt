@@ -69,7 +69,13 @@ class ClientAvailabilityFragment : BaseFragment(), OnClickListener {
         }
 
         clientAvailabilityBack.setOnClickListener {
-            popBackStack()
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
         val availData = resources.getStringArray(R.array.availability)

@@ -105,7 +105,7 @@ class RegisterPartBFragment : BaseFragment() {
             "I hereby agree to abide by the terms and conditions provider by EnsembleCare",
             SpannableString("terms and conditions")
         ) {
-            val createRegisterTermsConditions = BottomSheetDialog(requireActivity())
+            val createRegisterTermsConditions = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
             val registerTermsConditionsDialog: View = layoutInflater.inflate(
                 R.layout.dialog_register_part_terms_conditions, null
             )

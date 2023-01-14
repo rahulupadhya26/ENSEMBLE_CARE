@@ -70,6 +70,10 @@ interface OnConsentRoisItemClickListener {
     fun onConsentRoisItemClickListener(consentRois: ArrayList<ConsentRois>)
 }
 
+interface OnConsentRoisViewItemClickListener {
+    fun onConsentRoisViewItemClickListener(consentRois: ConsentRois)
+}
+
 interface OnNutritionDashboardItemClickListener {
     fun onNutritionDashboardItemClicked(nutritionDashboard: NutritionDashboard)
 }
@@ -96,4 +100,8 @@ interface OnDocumentItemClickListener {
 
 interface OnToDoItemClickListener {
     fun onToDoItemClickListener(toDoData: ToDoData)
+}
+
+interface OnDocumentsConsentRoisViewItemClickListener {
+    fun onDocumentsConsentRoisViewItemClickListener(consentsRoisDocumentData: ConsentsRoisDocumentData)
 }

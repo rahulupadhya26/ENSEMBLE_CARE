@@ -260,6 +260,7 @@
                         android:layout_centerInParent="true"
                         android:layout_marginEnd="@dimen/_5dp"
                         android:padding="@dimen/_5dp"
+                        android:visibility="gone"
                         android:src="@drawable/view_all_nutrition" />
 
                     <androidx.cardview.widget.CardView
@@ -296,9 +297,9 @@
                         android:id="@+id/cardViewNutritionCard1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
                         app:cardCornerRadius="@dimen/_20dp"
                         app:cardElevation="@dimen/_5dp"
+                        android:visibility="gone"
                         app:cardUseCompatPadding="true">
 
                         <RelativeLayout

@@ -46,6 +46,7 @@
     <color name="music_select_color">#2D8979</color>
     <color name="goldenColor">#ffca28</color>
     <color name="toDoCompletedTxtColor">#999292</color>
+    <color name="carePlanBackColor">#F1F5FC</color>
 
     <color name="editTextBackground">#f6f8f9</color>
     <color name="imgCardBackground">#f0f3f5</color>

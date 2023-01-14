@@ -65,6 +65,7 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
         getHeader().visibility = View.GONE
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+        updateStatusBarColor(R.color.white)
 
         nutritionBack.setOnClickListener {
             popBackStack()

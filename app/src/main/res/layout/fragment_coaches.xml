@@ -377,7 +377,7 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardViewInspiration"
                         android:layout_width="match_parent"
-                        android:layout_height="220dp"
+                        android:layout_height="230dp"
                         android:layout_margin="@dimen/_5dp"
                         app:cardCornerRadius="@dimen/_10dp"
                         app:cardElevation="@dimen/_5dp">

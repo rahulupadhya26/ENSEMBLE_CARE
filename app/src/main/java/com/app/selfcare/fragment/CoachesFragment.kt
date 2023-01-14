@@ -113,17 +113,21 @@ class CoachesFragment : BaseFragment() {
         }
 
         cardViewInspiration.setOnClickListener {
-            val dialog = Dialog(requireActivity())
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.setContentView(R.layout.dialog_inspiration)
-            Glide.with(requireActivity())
-                .load(BaseActivity.baseURL.dropLast(5) + quoteData.getString("img"))
-                .into(dialog.imgQuote)
-            dialog.txtShareInspiration.setOnClickListener {
-                shareDetails("", "Quote", "", quoteData.getString("img"), "Quote")
+            try {
+                val dialog = Dialog(requireActivity())
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                dialog.setContentView(R.layout.dialog_inspiration)
+                Glide.with(requireActivity())
+                    .load(BaseActivity.baseURL.dropLast(5) + quoteData.getString("img"))
+                    .into(dialog.imgQuote)
+                dialog.txtShareInspiration.setOnClickListener {
+                    shareDetails("", "Quote", "", quoteData.getString("img"), "Quote")
+                }
+                dialog.show()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            dialog.show()
         }
 
         /*val coachTypeList: ArrayList<CoachType> = ArrayList()

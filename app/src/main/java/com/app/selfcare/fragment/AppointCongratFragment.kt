@@ -6,11 +6,15 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.DateUtils
 import com.app.selfcare.utils.Utils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import kotlinx.android.synthetic.main.fragment_appoint_congrat.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -60,6 +64,12 @@ class AppointCongratFragment : BaseFragment() {
             text_appointment_date_time.text = appointmentDate.getDay() + " " +
                     appointmentDate.getFullMonthName() + " at " + Utils.aptScheduleTime.dropLast(3)
 
+            Glide.with(requireActivity())
+                .load(BaseActivity.baseURL.dropLast(5) + Utils.providerPhoto)
+                .placeholder(R.drawable.doctor_img)
+                .transform(CenterCrop(), RoundedCorners(5))
+                .into(imgAppointCongrats)
+
             if (Utils.selectedCommunicationMode == "Video") {
                 appointedMode.setBackgroundResource(R.drawable.video)
                 appointedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
@@ -92,14 +102,8 @@ class AppointCongratFragment : BaseFragment() {
     }
 
     private fun navigateToHomeScreen() {
-        if(Utils.isTherapististScreen){
-            setBottomNavigation(null)
-            setLayoutBottomNavigation(null)
-            replaceFragmentNoBackStack(
-                BottomNavigationFragment(),
-                R.id.layout_home,
-                BottomNavigationFragment.TAG
-            )
+        /*if(Utils.isTherapististScreen){
+
         }else {
             for (i in 0 until mActivity!!.supportFragmentManager.backStackEntryCount) {
                 if (mActivity!!.getCurrentFragment() !is DashboardFragment) {
@@ -108,7 +112,14 @@ class AppointCongratFragment : BaseFragment() {
                     break
                 }
             }
-        }
+        }*/
+        setBottomNavigation(null)
+        setLayoutBottomNavigation(null)
+        replaceFragmentNoBackStack(
+            BottomNavigationFragment(),
+            R.id.layout_home,
+            BottomNavigationFragment.TAG
+        )
     }
 
     companion object {

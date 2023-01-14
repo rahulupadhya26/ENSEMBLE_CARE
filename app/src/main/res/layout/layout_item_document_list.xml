@@ -15,7 +15,6 @@
             android:id="@+id/txtDocumentDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Today"
             android:textAppearance="@style/fontfamily"
             android:textColor="#5F6368"
             android:textSize="@dimen/_18sp"
@@ -31,20 +30,22 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/layoutDocumentConsentTreatment"
+        android:id="@+id/layoutDocumentAppointmentConsent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/document_box"
         android:layout_marginStart="@dimen/_10dp"
         android:layout_marginEnd="@dimen/_10dp"
-        android:layout_marginBottom="@dimen/_10dp">
+        android:layout_marginBottom="@dimen/_10dp"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Consent to Treatment"
+            android:text="Appointment consent"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/black"
+            android:layout_centerVertical="true"
             android:textSize="@dimen/_16sp"/>
 
         <ImageView
@@ -59,21 +60,23 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/layoutDocumentAppointmentConsent"
+        android:id="@+id/layoutDocumentAppointmentPrescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/document_box"
         android:layout_marginStart="@dimen/_10dp"
         android:layout_marginEnd="@dimen/_10dp"
         android:layout_marginTop="@dimen/_10dp"
-        android:layout_marginBottom="@dimen/_10dp">
+        android:layout_marginBottom="@dimen/_10dp"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Appointment Consent"
+            android:text="Appointment prescriptions"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/black"
+            android:layout_centerVertical="true"
             android:textSize="@dimen/_16sp" />
 
         <ImageView
@@ -86,5 +89,80 @@
             android:src="@drawable/more_than" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutDocumentInsurance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/document_box"
+        android:layout_marginStart="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_10dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Insurance"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/_16sp" />
+
+        <ImageView
+            android:layout_width="@dimen/_30dp"
+            android:layout_height="@dimen/_30dp"
+            android:layout_gravity="center"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:padding="@dimen/_5dp"
+            android:src="@drawable/more_than" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutDocumentConsentsRoisList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/layoutDocumentConsentsRois"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/document_box"
+            android:layout_margin="@dimen/_10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Consents and ROIs"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/_16sp" />
+
+            <ImageView
+                android:layout_width="@dimen/_30dp"
+                android:layout_height="@dimen/_30dp"
+                android:layout_gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/_5dp"
+                android:src="@drawable/more_than" />
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewConsentsRoisView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15dp"
+            android:layout_marginEnd="@dimen/_15dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
 </LinearLayout>

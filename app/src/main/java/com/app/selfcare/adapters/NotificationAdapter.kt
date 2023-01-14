@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
-import com.app.selfcare.data.DocumentData
 import com.app.selfcare.data.NotificationData
 import kotlinx.android.synthetic.main.layout_item_notification_list.view.*
 

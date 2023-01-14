@@ -186,6 +186,10 @@ class ProfileFragment : BaseFragment() {
         preference!![PrefKeys.PREF_PREFERRED_LANG] = profileData.preffered_language
         preference!![PrefKeys.PREF_RELATIONSHIP] = profileData.relation_to
         preference!![PrefKeys.PREF_PHOTO] = profileData.photo
+        selectedGender = profileData.gender
+        selectedRelationship = profileData.relation_to
+        selectedPreferredLang = profileData.preffered_language
+        selectedMartialStatus = profileData.marital_status
         val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
         if (photo.isNotEmpty()) {
             Glide.with(requireActivity())
@@ -345,7 +349,6 @@ class ProfileFragment : BaseFragment() {
             getText(etProfileAddress),
             selectedMartialStatus,
             getText(etProfileZipcode),
-            "",
             selectedRelationship,
             getText(etProfileAddress2),
             getText(etProfileCountry),

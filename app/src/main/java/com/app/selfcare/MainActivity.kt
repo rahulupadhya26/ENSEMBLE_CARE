@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Rect
@@ -79,7 +80,10 @@ class MainActivity : BaseActivity(), IController {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adjustFontScale(resources.configuration, 1.0f)
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         //window.statusBarColor = Color.WHITE
         setContentView(R.layout.activity_main)
         preference = PreferenceHelper.defaultPrefs(this)
@@ -387,16 +391,40 @@ class MainActivity : BaseActivity(), IController {
     }
 
     private fun takePicture() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                // Create the File where the photo should go
+                val photoFile: File? = try {
+                    createFile()
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    ex.printStackTrace()
+                    null
+                }
+                // Continue only if the File was successfully created
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        this,
+                        "com.example.android.fileprovider",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, requestImageCapture)
+                }
+            }
+        }
+
+        /*val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val file: File = createFile()
 
         val uri: Uri = FileProvider.getUriForFile(
             this,
-            "com.app.selfcare",
+            "com.example.android.fileprovider",
             file
         )
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        startActivityForResult(intent, requestImageCapture)
+        startActivityForResult(intent, requestImageCapture)*/
     }
 
     private fun choosePhotoFromGallery() {
@@ -420,7 +448,7 @@ class MainActivity : BaseActivity(), IController {
     private fun createFile(): File {
         // Create an image file name
         val timeStamp: String =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
+            SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
             "JPEG_${timeStamp}_", /* prefix */
@@ -521,17 +549,25 @@ class MainActivity : BaseActivity(), IController {
                     BitmapFactory.decodeFile(fileName),
                     Utils.NSFW_CONFIDENCE_THRESHOLD.toFloat()
                 ) { isNSFW, label, confidence, image ->
-                    if (isNSFW) {
-                        Glide.with(this)
-                            .load(File(fileName))
-                            .into(imageView!!)
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "This is an obscene image - $confidence",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+                    when (label) {
+                        Utils.LABEL_SFW -> {
+                            Toast.makeText(this, "This is an obscene image", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        Utils.LABEL_NSFW -> {
+                            Glide.with(this)
+                                .load(File(fileName))
+                                .into(imageView!!)
+                            //Toast.makeText(this, "SFW with confidence: $confidence", Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {
+                            Toast.makeText(
+                                this,
+                                "Error while loading image - $label - $isNSFW - $confidence",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
                     }
                 }
             } else {
@@ -546,7 +582,37 @@ class MainActivity : BaseActivity(), IController {
         } else {
             bitmapList.add(fileName)
         }
+    }
 
+    private fun setPic() {
+        try {
+            // Get the dimensions of the View
+            val targetW: Int = imageView!!.width
+            val targetH: Int = imageView!!.height
+
+            val bmOptions = BitmapFactory.Options().apply {
+                // Get the dimensions of the bitmap
+                inJustDecodeBounds = true
+
+                BitmapFactory.decodeFile(mCurrentPhotoPath!!, this)
+
+                val photoW: Int = outWidth
+                val photoH: Int = outHeight
+
+                // Determine how much to scale down the image
+                val scaleFactor: Int = Math.max(1, Math.min(photoW / targetW, photoH / targetH))
+
+                // Decode the image file into a Bitmap sized to fill the View
+                inJustDecodeBounds = false
+                inSampleSize = scaleFactor
+                inPurgeable = true
+            }
+            BitmapFactory.decodeFile(mCurrentPhotoPath!!, bmOptions)?.also { bitmap ->
+                imageView!!.setImageBitmap(bitmap)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -610,7 +676,7 @@ class MainActivity : BaseActivity(), IController {
         }
     }
 
-    fun displayConfirmPopup() {
+    private fun displayConfirmPopup() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Alert")
         builder.setMessage("Would you like to exit the App?")

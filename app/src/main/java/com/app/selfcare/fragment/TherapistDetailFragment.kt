@@ -6,9 +6,13 @@ import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
+import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.data.Therapist
 import com.app.selfcare.utils.Utils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import kotlinx.android.synthetic.main.fragment_therapist_detail.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -52,6 +56,13 @@ class TherapistDetailFragment : BaseFragment() {
             therapist!!.first_name + " " + therapist!!.middle_name + " " + therapist!!.last_name
         therapistType.text = therapist!!.doctor_type
         txtTherapyDescription.text = therapist!!.description
+
+        Glide.with(requireActivity())
+            .load(BaseActivity.baseURL.dropLast(5) + therapist!!.photo)
+            .placeholder(R.drawable.doctor_img)
+            .transform(CenterCrop(), RoundedCorners(5))
+            .into(imgTherapistDetail)
+
         img_back.setOnClickListener {
             popBackStack()
         }
@@ -87,7 +98,7 @@ class TherapistDetailFragment : BaseFragment() {
                 Utils.providerName.isNotEmpty()
             ) {
                 replaceFragment(
-                    TherapyBasicDetailsCFragment(),
+                    TherapyBasicDetailsCFragment.newInstance(false),
                     R.id.layout_home,
                     TherapyBasicDetailsCFragment.TAG
                 )
