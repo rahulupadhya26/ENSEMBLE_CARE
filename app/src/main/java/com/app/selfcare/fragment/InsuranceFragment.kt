@@ -86,10 +86,13 @@ class InsuranceFragment : BaseFragment() {
         isSecondaryInsuranceAvailable = false
         isPharmacyInsuranceAvailable = false
         isPrimaryInsuranceVisible = true
-        isSecondaryInsuranceVisible = true
-        isPharmacyInsuranceVisible = true
+        isSecondaryInsuranceVisible = false
+        isPharmacyInsuranceVisible = false
         isSecondaryInsuranceUserChange = false
         isPharmacyInsuranceUserChange = false
+
+        layoutSecondaryInsuranceDetails.visibility = View.GONE
+        layoutPharmacyInsuranceDetails.visibility = View.GONE
 
         if (plan != null) {
             txtInsurancePlanName.visibility = View.VISIBLE
@@ -138,9 +141,9 @@ class InsuranceFragment : BaseFragment() {
 
         btnInsuranceDetails.setOnClickListener {
             if (checkPrimaryInsuranceData()) {
-                if (isSecondaryInsuranceUserChange || selectedSecondaryInsuranceName != "Select Insurance") {
+                if (isSecondaryInsuranceUserChange || selectedSecondaryInsuranceName != "Select Insurance Company") {
                     if (checkSecondaryInsuranceData()) {
-                        if (isPharmacyInsuranceUserChange || selectedPharmacyInsuranceName != "Select Insurance") {
+                        if (isPharmacyInsuranceUserChange || selectedPharmacyInsuranceName != "Select Insurance Company") {
                             if (checkPharmacyInsuranceData()) {
                                 verifyPrimaryInsuranceApi()
                                 verifySecondaryInsuranceApi()
@@ -161,7 +164,7 @@ class InsuranceFragment : BaseFragment() {
                             "Please fill the necessary details"
                         )
                     }
-                } else if (isPharmacyInsuranceUserChange || selectedPharmacyInsuranceName != "Select Insurance") {
+                } else if (isPharmacyInsuranceUserChange || selectedPharmacyInsuranceName != "Select Insurance Company") {
                     if (checkPharmacyInsuranceData()) {
                         verifyPrimaryInsuranceApi()
                         verifyPharmacyInsuranceApi()
@@ -415,7 +418,7 @@ class InsuranceFragment : BaseFragment() {
 
     private fun checkPrimaryInsuranceData(): Boolean {
         isPrimaryInsuranceAvailable = false
-        if (selectedPrimaryInsuranceName != "Select Insurance") {
+        if (selectedPrimaryInsuranceName != "Select Insurance Company") {
             if (getText(etPrimaryPlanId).isNotEmpty()) {
                 if (getText(etPrimaryMemberId).isNotEmpty()) {
                     if (getText(etPrimaryGroupId).isNotEmpty()) {
@@ -444,7 +447,7 @@ class InsuranceFragment : BaseFragment() {
 
     private fun checkSecondaryInsuranceData(): Boolean {
         isSecondaryInsuranceAvailable = false
-        if (selectedSecondaryInsuranceName != "Select Insurance") {
+        if (selectedSecondaryInsuranceName != "Select Insurance Company") {
             if (getText(etSecondaryPlanId).isNotEmpty()) {
                 if (getText(etSecondaryMemberId).isNotEmpty()) {
                     if (getText(etSecondaryGroupId).isNotEmpty()) {
@@ -473,7 +476,7 @@ class InsuranceFragment : BaseFragment() {
 
     private fun checkPharmacyInsuranceData(): Boolean {
         isPharmacyInsuranceAvailable = false
-        if (selectedPharmacyInsuranceName != "Select Insurance") {
+        if (selectedPharmacyInsuranceName != "Select Insurance Company") {
             if (getText(etPharmacyPlanId).isNotEmpty()) {
                 if (getText(etPharmacyMemberId).isNotEmpty()) {
                     if (getText(etPharmacyGroupId).isNotEmpty()) {
