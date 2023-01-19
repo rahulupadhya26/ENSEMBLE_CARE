@@ -93,6 +93,8 @@ class InsuranceFragment : BaseFragment() {
 
         layoutSecondaryInsuranceDetails.visibility = View.GONE
         layoutPharmacyInsuranceDetails.visibility = View.GONE
+        imgSecondaryDownIcon.rotation = -90f
+        imgPharmacyDownIcon.rotation = -90f
 
         if (plan != null) {
             txtInsurancePlanName.visibility = View.VISIBLE
@@ -141,9 +143,9 @@ class InsuranceFragment : BaseFragment() {
 
         btnInsuranceDetails.setOnClickListener {
             if (checkPrimaryInsuranceData()) {
-                if (isSecondaryInsuranceUserChange || selectedSecondaryInsuranceName != "Select Insurance Company") {
+                if (isSecondaryInsuranceUserChange && selectedSecondaryInsuranceName != "Select Insurance Company") {
                     if (checkSecondaryInsuranceData()) {
-                        if (isPharmacyInsuranceUserChange || selectedPharmacyInsuranceName != "Select Insurance Company") {
+                        if (isPharmacyInsuranceUserChange && selectedPharmacyInsuranceName != "Select Insurance Company") {
                             if (checkPharmacyInsuranceData()) {
                                 verifyPrimaryInsuranceApi()
                                 verifySecondaryInsuranceApi()
@@ -164,7 +166,7 @@ class InsuranceFragment : BaseFragment() {
                             "Please fill the necessary details"
                         )
                     }
-                } else if (isPharmacyInsuranceUserChange || selectedPharmacyInsuranceName != "Select Insurance Company") {
+                } else if (isPharmacyInsuranceUserChange && selectedPharmacyInsuranceName != "Select Insurance Company") {
                     if (checkPharmacyInsuranceData()) {
                         verifyPrimaryInsuranceApi()
                         verifyPharmacyInsuranceApi()

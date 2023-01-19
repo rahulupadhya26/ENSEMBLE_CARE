@@ -172,6 +172,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                             displayArticleList(articlesLists)
                         } catch (e: Exception) {
                             hideProgress()
+                            e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->
