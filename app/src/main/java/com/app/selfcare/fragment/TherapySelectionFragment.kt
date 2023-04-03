@@ -5,7 +5,9 @@ import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,6 +19,8 @@ import com.app.selfcare.calendar.SingleRowCalendarAdapter
 import com.app.selfcare.controller.OnTextClickListener
 import com.app.selfcare.data.TimeSlot
 import com.app.selfcare.data.TimeSlots
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentTherapySelectionBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.selection.CalendarSelectionManager
@@ -29,8 +33,6 @@ import com.varunbarad.highlightable_calendar_view.OnDateSelectListener
 import com.varunbarad.highlightable_calendar_view.OnMonthChangeListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.calendar_item.view.*
-import kotlinx.android.synthetic.main.fragment_therapy_selection.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.util.*
@@ -57,6 +59,7 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
 
     private val calendar = Calendar.getInstance()
     private var currentMonth = 0
+    private lateinit var binding: FragmentTherapySelectionBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +67,15 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentTherapySelectionBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -76,14 +88,14 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
         getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
 
-        layoutTimeSlotSelection.visibility = View.GONE
+        binding.layoutTimeSlotSelection.visibility = View.GONE
 
         selectedTimeSlot = ""
 
         val c = Calendar.getInstance()
         val currentDay = c.get(Calendar.DAY_OF_MONTH)
 
-        calendarViewNew.dayDecorators = listOf(
+        binding.calendarViewNew.dayDecorators = listOf(
             DayDecorator(
                 Calendar.getInstance().apply { set(Calendar.DAY_OF_MONTH, currentDay) },
                 ContextCompat.getColor(requireActivity(), R.color.white),
@@ -91,7 +103,7 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
             )
         )
 
-        calendarViewNew.onMonthChangeListener = OnMonthChangeListener { oldMonth, newMonth ->
+        binding.calendarViewNew.onMonthChangeListener = OnMonthChangeListener { oldMonth, newMonth ->
             val oldMonthDisplay = oldMonth.getDisplayName(
                 Calendar.MONTH,
                 Calendar.LONG,
@@ -103,10 +115,10 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
                 Locale.getDefault()
             )
             selectedTimeSlot = ""
-            layoutTimeSlotSelection.visibility = View.GONE
+            binding.layoutTimeSlotSelection.visibility = View.GONE
         }
 
-        calendarViewNew.onDateSelectListener = OnDateSelectListener { selDate ->
+        binding.calendarViewNew.onDateSelectListener = OnDateSelectListener { selDate ->
             val date = String.format("%02d", selDate.get(Calendar.DAY_OF_MONTH))
             val month = selDate.getDisplayName(
                 Calendar.MONTH,
@@ -119,15 +131,15 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
             getTimeSlots()
         }
 
-        calendarView.minDate = System.currentTimeMillis() - 1000
-        calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
+        binding.calendarView.minDate = System.currentTimeMillis() - 1000
+        binding.calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
             // Note that months are indexed from 0. So, 0 means January, 1 means february, 2 means march etc.
             selectedDate = (month + 1).toString() + "/" + dayOfMonth + "/" + year.toString()
             //getTimeSlots()
         }
 
         // Fetch long milliseconds from calenderView.
-        val dateMillis: Long = calendarView.date
+        val dateMillis: Long = binding.calendarView.date
         // Create Date object from milliseconds.
         val date = Date(dateMillis)
         selectedDate = DateFormat.format("MM", date) as String + "/" +
@@ -136,7 +148,7 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
 
         //getTimeSlots()
 
-        btnTimeSlotContinue.setOnClickListener {
+        binding.btnTimeSlotContinue.setOnClickListener {
             if (selectedDate != null) {
                 if (selectedTimeSlot.isNotEmpty()) {
                     Utils.aptScheduleDate = selectedDate!!
@@ -205,8 +217,8 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
             ) {
                 // using this method we can bind data to calendar view
                 // good practice is if all views in layout have same IDs in all item views
-                holder.itemView.tv_date_calendar_item.text = DateUtil.getDayNumber(date)
-                holder.itemView.tv_day_calendar_item.text = DateUtil.getDay3LettersName(date)
+                /*holder.itemView.tv_date_calendar_item.text = DateUtil.getDayNumber(date)
+                holder.itemView.tv_day_calendar_item.text = DateUtil.getDay3LettersName(date)*/
             }
         }
 
@@ -221,24 +233,24 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
                 date: Date
             ) {
                 super.whenWeekMonthYearChanged(weekNumber, monthNumber, monthName, year, date)
-                tvDate.text = "${DateUtil.getMonthName(date)} "
+                binding.tvDate.text = "${DateUtil.getMonthName(date)} "
                 //tvDay.text = DateUtil.getDayName(date)
             }
 
             // you can override more methods, in this example we need only this one
             override fun whenSelectionChanged(isSelected: Boolean, position: Int, date: Date) {
                 super.whenSelectionChanged(isSelected, position, date)
-                tvDate.text = "${DateUtil.getMonthName(date)}, "
+                binding.tvDate.text = "${DateUtil.getMonthName(date)}, "
                 if (isSelected) {
-                    tvDay.text = "${DateUtil.getDayNumber(date)} ${DateUtil.getDayName(date)}"
+                    binding.tvDay.text = "${DateUtil.getDayNumber(date)} ${DateUtil.getDayName(date)}"
                     selectedDate = DateFormat.format("MM", date) as String + "/" +
                             DateFormat.format("dd", date) as String + "/" +
                             DateFormat.format("yyyy", date) as String
                     getTimeSlots()
                 } else {
-                    tvDay.text = ""
+                    binding.tvDay.text = ""
                     selectedTimeSlot = ""
-                    layoutTimeSlotSelection.visibility = View.GONE
+                    binding.layoutTimeSlotSelection.visibility = View.GONE
                 }
             }
         }
@@ -260,7 +272,7 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
         }
 
         // here we init our calendar, also you can set more properties if you haven't specified in XML layout
-        val singleRowCalendar = main_single_row_calendar.apply {
+        val singleRowCalendar = binding.mainSingleRowCalendar.apply {
             calendarViewManager = myCalendarViewManager
             calendarChangesObserver = myCalendarChangesObserver
             calendarSelectionManager = mySelectionManager
@@ -268,17 +280,17 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
             init()
         }
 
-        btnRight.setOnClickListener {
-            tvDay.text = ""
+        binding.btnRight.setOnClickListener {
+            binding.tvDay.text = ""
             selectedTimeSlot = ""
-            layoutTimeSlotSelection.visibility = View.GONE
+            binding.layoutTimeSlotSelection.visibility = View.GONE
             singleRowCalendar.setDates(getDatesOfNextMonth())
         }
 
-        btnLeft.setOnClickListener {
-            tvDay.text = ""
+        binding.btnLeft.setOnClickListener {
+            binding.tvDay.text = ""
             selectedTimeSlot = ""
-            layoutTimeSlotSelection.visibility = View.GONE
+            binding.layoutTimeSlotSelection.visibility = View.GONE
             val cal = Calendar.getInstance()
             if (currentMonth > cal[Calendar.MONTH]) {
                 singleRowCalendar.setDates(getDatesOfPreviousMonth())
@@ -333,14 +345,14 @@ class TherapySelectionFragment : BaseFragment(), OnTextClickListener {
         val timeSlotList: Type = object : TypeToken<ArrayList<TimeSlot?>?>() {}.type
         val timeSlots: ArrayList<TimeSlot> = Gson().fromJson(resp, timeSlotList)
         if (timeSlots.isNotEmpty()) {
-            layoutTimeSlotSelection.visibility = View.VISIBLE
+            binding.layoutTimeSlotSelection.visibility = View.VISIBLE
             /*recyclerviewTimeSlots.layoutManager = LinearLayoutManager(
                 mActivity!!, RecyclerView.HORIZONTAL,
                 false
             )*/
             val layoutManager = GridLayoutManager(requireActivity(), 3)
-            recyclerviewTimeSlots.layoutManager = layoutManager
-            recyclerviewTimeSlots.adapter = TimeSlotAdapter(mActivity!!, timeSlots, this)
+            binding.recyclerviewTimeSlots.layoutManager = layoutManager
+            binding.recyclerviewTimeSlots.adapter = TimeSlotAdapter(mActivity!!, timeSlots, this)
         } else {
             displayMsg("Alert", "Time slots are empty for selected date!")
         }

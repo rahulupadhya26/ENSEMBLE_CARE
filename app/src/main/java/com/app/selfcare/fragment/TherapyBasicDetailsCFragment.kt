@@ -10,14 +10,10 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.app.selfcare.R
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentTherapyBasicDetailsCBinding
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.fragment_final_review.*
-import kotlinx.android.synthetic.main.fragment_insurance.*
-import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.*
-import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.imgPrescriptionPic1
-import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.layoutVideoCall
 import java.io.File
 
 // TODO: Rename parameter arguments, choose names that match
@@ -35,6 +31,7 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
     private var isFromDashboard: Boolean = false
     private var param2: String? = null
     var communicationType: String? = null
+    private lateinit var binding: FragmentTherapyBasicDetailsCBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +39,15 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             isFromDashboard = it.getBoolean(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentTherapyBasicDetailsCBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -56,7 +62,7 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.screen_background_color)
 
-        callModeBack.setOnClickListener {
+        binding.callModeBack.setOnClickListener {
             if (isFromDashboard) {
                 setBottomNavigation(null)
                 setLayoutBottomNavigation(null)
@@ -70,32 +76,52 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             }
         }
 
-        layoutPhoneCall.setOnClickListener {
+        binding.layoutPhoneCall.setOnClickListener {
             communicationType = "Audio"
-            layoutPhoneCall.setCardBackgroundColor(
+            binding.layoutPhoneCall.setCardBackgroundColor(
                 ContextCompat.getColor(
                     requireActivity(),
                     R.color.primaryGreen
                 )
             )
-            imgPhoneCall.imageTintList =
+            binding.imgPhoneCall.imageTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
-            txtPhoneCall.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
+            binding.txtPhoneCall.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
 
-            layoutVideoCall.setCardBackgroundColor(
+            binding.layoutVideoCall.setCardBackgroundColor(
                 ContextCompat.getColor(
                     requireActivity(),
                     R.color.white
                 )
             )
-            imgVideoCall.imageTintList =
+            binding.imgVideoCall.imageTintList =
                 ColorStateList.valueOf(
                     ContextCompat.getColor(
                         requireActivity(),
                         R.color.primaryGreen
                     )
                 )
-            txtVideoCall.setTextColor(
+            binding.txtVideoCall.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
+
+            binding.layoutText.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.white
+                )
+            )
+            binding.imgText.imageTintList =
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
+                )
+            binding.txtText.setTextColor(
                 ContextCompat.getColor(
                     requireActivity(),
                     R.color.primaryGreen
@@ -103,32 +129,52 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             )
         }
 
-        layoutVideoCall.setOnClickListener {
+        binding.layoutVideoCall.setOnClickListener {
             communicationType = "Video"
-            layoutVideoCall.setCardBackgroundColor(
+            binding.layoutVideoCall.setCardBackgroundColor(
                 ContextCompat.getColor(
                     requireActivity(),
                     R.color.primaryGreen
                 )
             )
-            imgVideoCall.imageTintList =
+            binding.imgVideoCall.imageTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
-            txtVideoCall.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
+            binding.txtVideoCall.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
 
-            layoutPhoneCall.setCardBackgroundColor(
+            binding.layoutPhoneCall.setCardBackgroundColor(
                 ContextCompat.getColor(
                     requireActivity(),
                     R.color.white
                 )
             )
-            imgPhoneCall.imageTintList =
+            binding.imgPhoneCall.imageTintList =
                 ColorStateList.valueOf(
                     ContextCompat.getColor(
                         requireActivity(),
                         R.color.primaryGreen
                     )
                 )
-            txtPhoneCall.setTextColor(
+            binding.txtPhoneCall.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
+
+            binding.layoutText.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.white
+                )
+            )
+            binding.imgText.imageTintList =
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
+                )
+            binding.txtText.setTextColor(
                 ContextCompat.getColor(
                     requireActivity(),
                     R.color.primaryGreen
@@ -136,7 +182,60 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             )
         }
 
-        cardViewPrescription1.setOnClickListener {
+        binding.layoutText.setOnClickListener {
+            communicationType = "Text"
+            binding.layoutText.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
+            binding.imgText.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
+            binding.txtText.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
+
+            binding.layoutPhoneCall.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.white
+                )
+            )
+            binding.imgPhoneCall.imageTintList =
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
+                )
+            binding.txtPhoneCall.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
+
+            binding.layoutVideoCall.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.white
+                )
+            )
+            binding.imgVideoCall.imageTintList =
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
+                )
+            binding.txtVideoCall.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
+        }
+
+        binding.cardViewPrescription1.setOnClickListener {
             if (getBitmapList().size > 0) {
                 showImage(getBitmapList()[0])
             } else {
@@ -145,7 +244,7 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             }
         }
 
-        cardViewPrescription2.setOnClickListener {
+        binding.cardViewPrescription2.setOnClickListener {
             if (getBitmapList().size > 1) {
                 showImage(getBitmapList()[1])
             } else {
@@ -154,7 +253,7 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             }
         }
 
-        cardViewPrescription3.setOnClickListener {
+        binding.cardViewPrescription3.setOnClickListener {
             if (getBitmapList().size > 2) {
                 showImage(getBitmapList()[2])
             } else {
@@ -163,34 +262,34 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             }
         }
 
-        imgPrescriptionPic1Clear.setOnClickListener {
+        binding.imgPrescriptionPic1Clear.setOnClickListener {
             if (getBitmapList().size > 0) {
                 getBitmapList().removeAt(0)
-                imgPrescriptionPic1.setImageDrawable(null)
-                imgPrescriptionPic1.setImageResource(R.drawable.plusnew)
+                binding.imgPrescriptionPic1.setImageDrawable(null)
+                binding.imgPrescriptionPic1.setImageResource(R.drawable.plusnew)
                 onResume()
             }
         }
 
-        imgPrescriptionPic2Clear.setOnClickListener {
+        binding.imgPrescriptionPic2Clear.setOnClickListener {
             if (getBitmapList().size > 1) {
                 getBitmapList().removeAt(1)
-                imgPrescriptionPic2.setImageDrawable(null)
-                imgPrescriptionPic2.setImageResource(R.drawable.plusnew)
+                binding.imgPrescriptionPic2.setImageDrawable(null)
+                binding.imgPrescriptionPic2.setImageResource(R.drawable.plusnew)
                 onResume()
             }
         }
 
-        imgPrescriptionPic3Clear.setOnClickListener {
+        binding.imgPrescriptionPic3Clear.setOnClickListener {
             if (getBitmapList().size > 2) {
                 getBitmapList().removeAt(2)
-                imgPrescriptionPic3.setImageDrawable(null)
-                imgPrescriptionPic3.setImageResource(R.drawable.plusnew)
+                binding.imgPrescriptionPic3.setImageDrawable(null)
+                binding.imgPrescriptionPic3.setImageResource(R.drawable.plusnew)
                 onResume()
             }
         }
 
-        btnBasicDetailC.setOnClickListener {
+        binding.btnBasicDetailC.setOnClickListener {
             if (communicationType != null) {
                 Utils.selectedCommunicationMode = communicationType!!
                 replaceFragment(FinalReviewFragment(), R.id.layout_home, FinalReviewFragment.TAG)
@@ -206,46 +305,46 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             1 -> {
                 Glide.with(this)
                     .load(File(getBitmapList()[0]))
-                    .into(imgPrescriptionPic1)
-                imgPrescriptionPic2.setImageDrawable(null)
-                imgPrescriptionPic2.setImageResource(R.drawable.plusnew)
-                imgPrescriptionPic3.setImageDrawable(null)
-                imgPrescriptionPic3.setImageResource(R.drawable.plusnew)
-                imgPrescriptionPic1Clear.visibility = View.VISIBLE
-                imgPrescriptionPic2Clear.visibility = View.GONE
-                imgPrescriptionPic3Clear.visibility = View.GONE
+                    .into(binding.imgPrescriptionPic1)
+                binding.imgPrescriptionPic2.setImageDrawable(null)
+                binding.imgPrescriptionPic2.setImageResource(R.drawable.plusnew)
+                binding.imgPrescriptionPic3.setImageDrawable(null)
+                binding.imgPrescriptionPic3.setImageResource(R.drawable.plusnew)
+                binding.imgPrescriptionPic1Clear.visibility = View.VISIBLE
+                binding.imgPrescriptionPic2Clear.visibility = View.GONE
+                binding.imgPrescriptionPic3Clear.visibility = View.GONE
             }
             2 -> {
                 Glide.with(this)
                     .load(File(getBitmapList()[0]))
-                    .into(imgPrescriptionPic1)
+                    .into(binding.imgPrescriptionPic1)
                 Glide.with(this)
                     .load(File(getBitmapList()[1]))
-                    .into(imgPrescriptionPic2)
-                imgPrescriptionPic3.setImageDrawable(null)
-                imgPrescriptionPic3.setImageResource(R.drawable.plusnew)
-                imgPrescriptionPic1Clear.visibility = View.VISIBLE
-                imgPrescriptionPic2Clear.visibility = View.VISIBLE
-                imgPrescriptionPic3Clear.visibility = View.GONE
+                    .into(binding.imgPrescriptionPic2)
+                binding.imgPrescriptionPic3.setImageDrawable(null)
+                binding.imgPrescriptionPic3.setImageResource(R.drawable.plusnew)
+                binding.imgPrescriptionPic1Clear.visibility = View.VISIBLE
+                binding.imgPrescriptionPic2Clear.visibility = View.VISIBLE
+                binding.imgPrescriptionPic3Clear.visibility = View.GONE
             }
             3 -> {
                 Glide.with(this)
                     .load(File(getBitmapList()[0]))
-                    .into(imgPrescriptionPic1)
+                    .into(binding.imgPrescriptionPic1)
                 Glide.with(this)
                     .load(File(getBitmapList()[1]))
-                    .into(imgPrescriptionPic2)
+                    .into(binding.imgPrescriptionPic2)
                 Glide.with(this)
                     .load(File(getBitmapList()[2]))
-                    .into(imgPrescriptionPic3)
-                imgPrescriptionPic1Clear.visibility = View.VISIBLE
-                imgPrescriptionPic2Clear.visibility = View.VISIBLE
-                imgPrescriptionPic3Clear.visibility = View.VISIBLE
+                    .into(binding.imgPrescriptionPic3)
+                binding.imgPrescriptionPic1Clear.visibility = View.VISIBLE
+                binding.imgPrescriptionPic2Clear.visibility = View.VISIBLE
+                binding.imgPrescriptionPic3Clear.visibility = View.VISIBLE
             }
             else -> {
-                imgPrescriptionPic1Clear.visibility = View.GONE
-                imgPrescriptionPic2Clear.visibility = View.GONE
-                imgPrescriptionPic3Clear.visibility = View.GONE
+                binding.imgPrescriptionPic1Clear.visibility = View.GONE
+                binding.imgPrescriptionPic2Clear.visibility = View.GONE
+                binding.imgPrescriptionPic3Clear.visibility = View.GONE
             }
         }
     }

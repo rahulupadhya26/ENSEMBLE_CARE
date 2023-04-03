@@ -2,18 +2,12 @@ package com.app.selfcare.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.app.selfcare.R
 import com.app.selfcare.controller.OnGoalItemClickListener
 import com.app.selfcare.data.Goal
+import com.app.selfcare.databinding.LayoutItemPersonalGoalBinding
 import com.app.selfcare.utils.DateUtils
-import kotlinx.android.synthetic.main.layout_item_personal_goal.view.*
-import kotlin.math.min
 
 class PersonalGoalAdapter(
     val context: Context,
@@ -25,44 +19,45 @@ class PersonalGoalAdapter(
         parent: ViewGroup,
         viewType: Int
     ): PersonalGoalAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_personal_goal, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemPersonalGoalBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_personal_goal, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
-    override fun onBindViewHolder(holder: PersonalGoalAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        val goalDate = DateUtils(item.start_date + " 01:00:00")
-        holder.goalMonth.text = goalDate.getFullMonthName()
-        holder.goalDate.text = goalDate.getDay()
-        holder.goalTitle.text = item.title
-        var durationTxt = ""
-        when (item.duration) {
-            0 -> durationTxt = "Does not repeat"
-            1 -> durationTxt = "Everyday"
-            2 -> durationTxt = "Every week"
-            3 -> durationTxt = "Every month"
-            4 -> durationTxt = "Every year"
-        }
-        holder.goalDuration.text = durationTxt
-        holder.goalLayout.setOnClickListener {
-            adapterItemClickListener!!.onGoalItemClickListener(item, false)
-        }
-        holder.deleteGoal.setOnClickListener {
-            adapterItemClickListener!!.onGoalItemClickListener(item, true)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            val goalDate = DateUtils(item.start_date + " 01:00:00")
+            tvGoalMonth.text = goalDate.getFullMonthName()
+            tvGoalDate.text = goalDate.getDay()
+            tvGoalTitle.text = item.title
+            var durationTxt = ""
+            when (item.duration) {
+                0 -> durationTxt = "Does not repeat"
+                1 -> durationTxt = "Everyday"
+                2 -> durationTxt = "Every week"
+                3 -> durationTxt = "Every month"
+                4 -> durationTxt = "Every year"
+            }
+            tvGoalDuration.text = durationTxt
+            cardviewGoal.setOnClickListener {
+                adapterItemClickListener!!.onGoalItemClickListener(item, false)
+            }
+            deleteGoal.setOnClickListener {
+                adapterItemClickListener!!.onGoalItemClickListener(item, true)
+            }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val deleteGoal: ImageView = itemView.deleteGoal
-        val goalMonth: TextView = itemView.tvGoalMonth
-        val goalDate: TextView = itemView.tvGoalDate
-        val goalTitle: TextView = itemView.tvGoalTitle
-        val goalDuration: TextView = itemView.tvGoalDuration
-        val goalLayout: CardView = itemView.cardviewGoal
-    }
+    inner class ViewHolder(val binding: LayoutItemPersonalGoalBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

@@ -9,12 +9,9 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
-import com.app.selfcare.controller.OnJournalItemClickListener
 import com.app.selfcare.data.Coaches
-import com.app.selfcare.utils.DateUtils
-import kotlinx.android.synthetic.main.layout_item_coach_list.view.*
-import kotlinx.android.synthetic.main.layout_item_journal_list.view.*
-import kotlinx.android.synthetic.main.layout_item_specialist.view.*
+import com.app.selfcare.databinding.LayoutItemCoachListBinding
+import com.app.selfcare.databinding.LayoutItemGoalBinding
 
 class CoachListAdapter(
     val context: Context,
@@ -26,33 +23,31 @@ class CoachListAdapter(
         parent: ViewGroup,
         viewType: Int
     ): CoachListAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_coach_list, parent, false)
-        return ViewHolder(v)
+        val binding =
+            LayoutItemCoachListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_coach_list, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
-    override fun onBindViewHolder(holder: CoachListAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        holder.coachName.text =
-            "Dr. " + item.coach.first_name + " " + item.coach.middle_name + " " + item.coach.last_name
-        holder.coachType.text = item.coach.doctor_type
-        holder.coachQualification.text = item.coach.qualification
-        holder.coachRating.text = "DOB : " + item.coach.dob
-        /*holder.coachLayout.setOnClickListener {
-            onItemClickListener!!.onTherapistItemClickListener(item)
-        }*/
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            txtCoachName.text =
+                "Dr. " + item.coach.first_name + " " + item.coach.middle_name + " " + item.coach.last_name
+            txtCoachType.text = item.coach.doctor_type
+            txtCoachQualification.text = item.coach.qualification
+            txtCoachRating.text = "DOB : " + item.coach.dob
+            /*coachLayout.setOnClickListener {
+                onItemClickListener!!.onTherapistItemClickListener(item)
+            }*/
+        }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val coachImage: ImageView = itemView.imgCoachPic
-        val coachName: TextView = itemView.txtCoachName
-        val coachType: TextView = itemView.txtCoachType
-        val coachQualification: TextView = itemView.txtCoachQualification
-        val coachRating: TextView = itemView.txtCoachRating
-        val coachLayout: CardView = itemView.cardview_layout_coach
-    }
+    inner class ViewHolder(val binding: LayoutItemCoachListBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

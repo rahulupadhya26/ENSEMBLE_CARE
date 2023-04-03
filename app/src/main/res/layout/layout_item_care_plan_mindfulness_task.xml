@@ -22,6 +22,7 @@
                 android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewMindfulnessCompletedTask"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_margin="@dimen/_5dp"
@@ -133,6 +134,7 @@
                 android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewMindfulnessPendingTask"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_margin="@dimen/_5dp"

@@ -2,8 +2,10 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.selfcare.R
 import com.app.selfcare.adapters.PersonalGoalAdapter
@@ -11,13 +13,14 @@ import com.app.selfcare.controller.OnGoalItemClickListener
 import com.app.selfcare.data.Goal
 import com.app.selfcare.data.PatientId
 import com.app.selfcare.data.PersonalGoalData
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentPersonalGoalBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_personal_goal.*
 import retrofit2.HttpException
 import java.lang.Exception
 import java.lang.reflect.Type
@@ -38,6 +41,7 @@ class PersonalGoalFragment : BaseFragment(), OnGoalItemClickListener {
     private var param1: String? = null
     private var param2: String? = null
     private var offset: Int? = 0
+    private lateinit var binding: FragmentPersonalGoalBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,13 +51,22 @@ class PersonalGoalFragment : BaseFragment(), OnGoalItemClickListener {
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPersonalGoalBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun getLayout(): Int {
         return R.layout.fragment_personal_goal
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab_add_goals.setOnClickListener {
+        binding.fabAddGoals.setOnClickListener {
             replaceFragment(CreateGoalFragment(), R.id.layout_home, CreateGoalFragment.TAG)
         }
         getPersonalGoalsList()
@@ -84,9 +97,9 @@ class PersonalGoalFragment : BaseFragment(), OnGoalItemClickListener {
                             goalLists = Gson().fromJson(responseBody, goalList)
 
                             if (goalLists.isNotEmpty()) {
-                                recycler_view_personalGoalsList.visibility = View.VISIBLE
-                                txt_no_personal_goals.visibility = View.GONE
-                                recycler_view_personalGoalsList.apply {
+                                binding.recyclerViewPersonalGoalsList.visibility = View.VISIBLE
+                                binding.txtNoPersonalGoals.visibility = View.GONE
+                                binding.recyclerViewPersonalGoalsList.apply {
                                     layoutManager = GridLayoutManager(mActivity!!, 2)
                                     adapter = PersonalGoalAdapter(
                                         mActivity!!,
@@ -95,8 +108,8 @@ class PersonalGoalFragment : BaseFragment(), OnGoalItemClickListener {
                                     )
                                 }
                             } else {
-                                recycler_view_personalGoalsList.visibility = View.GONE
-                                txt_no_personal_goals.visibility = View.VISIBLE
+                                binding.recyclerViewPersonalGoalsList.visibility = View.GONE
+                                binding.txtNoPersonalGoals.visibility = View.VISIBLE
                             }
                         } catch (e: Exception) {
                             hideProgress()

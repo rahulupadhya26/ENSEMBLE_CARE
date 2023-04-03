@@ -286,16 +286,16 @@
                                 android:gravity="center">
 
                                 <com.skydoves.progressview.ProgressView
-                                    android:layout_width="20dp"
+                                    android:layout_width="10dp"
                                     android:layout_height="100dp"
+                                    app:progressView_autoAnimate="true"
                                     app:progressView_colorBackground="#D8D8D8"
                                     app:progressView_colorProgress="#26476D"
                                     app:progressView_max="100"
-                                    app:progressView_progress="40"
                                     app:progressView_orientation="vertical"
-                                    app:progressView_radius="@dimen/_10dp"
-                                    app:progressView_autoAnimate="true"
-                                    app:progressView_padding="1dp"/>
+                                    app:progressView_padding="1dp"
+                                    app:progressView_progress="40"
+                                    app:progressView_radius="@dimen/_10dp" />
 
                                 <TextView
                                     android:layout_width="wrap_content"

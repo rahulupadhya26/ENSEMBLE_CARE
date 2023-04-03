@@ -2,18 +2,18 @@ package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.content.res.ColorStateList
 import android.os.Bundle
-import android.os.Handler
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.controller.IOnBackPressed
+import com.app.selfcare.databinding.DialogCheckTeenDobBinding
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentCarouselBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.android.synthetic.main.dialog_check_teen_dob.view.*
-import kotlinx.android.synthetic.main.fragment_carousel.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,6 +33,7 @@ class CarouselFragment : BaseFragment(), IOnBackPressed {
     private var param1: String? = null
     private var param2: String? = null
     private var therapySel: String = ""
+    private lateinit var binding: FragmentCarouselBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +41,15 @@ class CarouselFragment : BaseFragment(), IOnBackPressed {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCarouselBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -54,24 +64,24 @@ class CarouselFragment : BaseFragment(), IOnBackPressed {
         getSubTitle().text = ""
         updateStatusBarColor(R.color.initial_screen_background)
 
-        cardViewSelf.setOnClickListener {
+        binding.cardViewSelf.setOnClickListener {
             therapySel = "Individual"
-            getConfirmation(therapySel, txtTherapySelf.text.toString())
+            getConfirmation(therapySel, binding.txtTherapySelf.text.toString())
         }
 
-        cardViewTeen.setOnClickListener {
+        binding.cardViewTeen.setOnClickListener {
             therapySel = "Teen"
-            getConfirmation(therapySel, txtTherapyTeen.text.toString())
+            getConfirmation(therapySel, binding.txtTherapyTeen.text.toString())
         }
 
-        cardViewCouple.setOnClickListener {
+        binding.cardViewCouple.setOnClickListener {
             therapySel = "Couple"
-            getConfirmation(therapySel, txtTherapyCouple.text.toString())
+            getConfirmation(therapySel, binding.txtTherapyCouple.text.toString())
         }
 
-        cardViewLgbtq.setOnClickListener {
+        binding.cardViewLgbtq.setOnClickListener {
             therapySel = "LGBTQ"
-            getConfirmation(therapySel, txtTherapyLgbtqia.text.toString())
+            getConfirmation(therapySel, binding.txtTherapyLgbtqia.text.toString())
         }
     }
 
@@ -86,11 +96,13 @@ class CarouselFragment : BaseFragment(), IOnBackPressed {
 
     private fun checkTeenDob(selectedTherapy: String) {
         val createPostDialog = BottomSheetDialog(mContext!!)
-        val checkTeenDob = requireActivity().layoutInflater.inflate(
+        val checkTeenDob = DialogCheckTeenDobBinding.inflate(layoutInflater)
+        val view = checkTeenDob.root
+        /*val checkTeenDob = requireActivity().layoutInflater.inflate(
             R.layout.dialog_check_teen_dob, null
-        )
+        )*/
         //onlineChatView!!.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-        createPostDialog.setContentView(checkTeenDob!!)
+        createPostDialog.setContentView(view)
         createPostDialog.setCanceledOnTouchOutside(false)
 
         checkTeenDob.txtVerify.setOnClickListener {

@@ -107,7 +107,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:gravity="center"
-                        android:text="$90.00"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/primaryGreen"
                         android:textSize="@dimen/_18sp"
@@ -171,7 +170,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:gravity="center"
-                        android:text="$20.00"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/primaryGreen"
                         android:textSize="@dimen/_18sp"
@@ -629,15 +627,19 @@
                 android:layout_marginBottom="@dimen/_10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Upgrade your plan"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_14sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_toStartOf="@+id/planUpgradeMore"
                     android:layout_centerVertical="true" />
 
                 <ImageView
+                    android:id="@+id/planUpgradeMore"
                     android:layout_width="@dimen/_30dp"
                     android:layout_height="@dimen/_30dp"
                     android:layout_alignParentEnd="true"
@@ -659,15 +661,19 @@
                 android:layout_marginBottom="@dimen/_10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Buy addtional session"
+                    android:text="Buy additional session"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_14sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_toStartOf="@+id/buySessionMore"
                     android:layout_centerVertical="true" />
 
                 <ImageView
+                    android:id="@+id/buySessionMore"
                     android:layout_width="@dimen/_30dp"
                     android:layout_height="@dimen/_30dp"
                     android:layout_alignParentEnd="true"
@@ -701,15 +707,19 @@
                 android:layout_marginBottom="@dimen/_10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Change or update your payment method"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/changePaymentMethodMore"
                     android:textSize="@dimen/_14sp"/>
 
                 <ImageView
+                    android:id="@+id/changePaymentMethodMore"
                     android:layout_width="@dimen/_30dp"
                     android:layout_height="@dimen/_30dp"
                     android:layout_gravity="center"
@@ -731,15 +741,19 @@
                 android:layout_marginBottom="@dimen/_10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Insurance Pay"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_toStartOf="@+id/insurancePayMore"
                     android:layout_centerVertical="true"
                     android:textSize="@dimen/_14sp"/>
 
                 <ImageView
+                    android:id="@+id/insurancePayMore"
                     android:layout_width="@dimen/_30dp"
                     android:layout_height="@dimen/_30dp"
                     android:layout_gravity="center"
@@ -761,15 +775,19 @@
                 android:layout_marginBottom="@dimen/_10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Employee Assisted Program"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_toStartOf="@+id/empAssistMore"
                     android:layout_centerVertical="true"
                     android:textSize="@dimen/_14sp"/>
 
                 <ImageView
+                    android:id="@+id/empAssistMore"
                     android:layout_width="@dimen/_30dp"
                     android:layout_height="@dimen/_30dp"
                     android:layout_gravity="center"
@@ -803,15 +821,19 @@
                 android:layout_marginBottom="@dimen/_10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Change Auto-renewal settings"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:layout_centerVertical="true"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_toStartOf="@+id/changeAutoRenewalMore"
                     android:textSize="@dimen/_14sp"/>
 
                 <ImageView
+                    android:id="@+id/changeAutoRenewalMore"
                     android:layout_width="@dimen/_30dp"
                     android:layout_height="@dimen/_30dp"
                     android:layout_gravity="center"

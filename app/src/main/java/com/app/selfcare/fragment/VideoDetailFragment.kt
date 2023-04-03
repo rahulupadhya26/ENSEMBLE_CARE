@@ -3,17 +3,16 @@ package com.app.selfcare.fragment
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.app.selfcare.MainActivity
 import com.app.selfcare.R
 import com.app.selfcare.controller.IOnBackPressed
 import com.app.selfcare.data.Video
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentVideoDetailBinding
 import com.app.selfcare.utils.ExpoPlayerUtils
-import kotlinx.android.synthetic.main.fragment_video_detail.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,6 +30,7 @@ class VideoDetailFragment : BaseFragment(), IOnBackPressed {
     private var videoDetail: Video? = null
     private var param2: String? = null
     private var expoPlayerUtils: ExpoPlayerUtils? = null
+    private lateinit var binding: FragmentVideoDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +38,15 @@ class VideoDetailFragment : BaseFragment(), IOnBackPressed {
             videoDetail = it.getParcelable(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentVideoDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -55,16 +64,16 @@ class VideoDetailFragment : BaseFragment(), IOnBackPressed {
     }
 
     private fun displayVideoDetails() {
-        layout_details_video.visibility = View.VISIBLE
-        txtVideoTitle.text = videoDetail!!.name
-        txtVideoTitle.maxLines = 10
-        txtVideoDesc.text = videoDetail!!.description
-        txtVideoDesc.maxLines = 1000
-        img_video.visibility = View.GONE
-        videosPlayer.visibility = View.VISIBLE
+        binding.layoutDetailsVideo.visibility = View.VISIBLE
+        binding.txtVideoTitle.text = videoDetail!!.name
+        binding.txtVideoTitle.maxLines = 10
+        binding.txtVideoDesc.text = videoDetail!!.description
+        binding.txtVideoDesc.maxLines = 1000
+        binding.imgVideo.visibility = View.GONE
+        binding.videosPlayer.visibility = View.VISIBLE
         expoPlayerUtils = ExpoPlayerUtils()
-        expoPlayerUtils!!.initializePlayer(mActivity!!, videosPlayer, videoDetail!!.video_url)
-        imgVideoPlay.visibility = View.GONE
+        expoPlayerUtils!!.initializePlayer(mActivity!!, binding.videosPlayer, videoDetail!!.video_url)
+        binding.imgVideoPlay.visibility = View.GONE
     }
 
     override fun onPause() {

@@ -105,6 +105,28 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layoutCoveredInsurance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <CheckBox
+                    android:id="@+id/checkboxCoveredInsurance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:gravity="top"
+                    android:paddingTop="@dimen/_5dp"
+                    android:text="@string/covered_insurance"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/layout_employeeId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -200,6 +222,27 @@
                     android:textColorHint="#807B7B"
                     android:textSize="@dimen/_16sp"
                     android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/layoutCoveredEAP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/checkboxCoveredEAP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:gravity="top"
+                        android:paddingTop="@dimen/_5dp"
+                        android:text="@string/covered_eap"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

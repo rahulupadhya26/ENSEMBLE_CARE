@@ -4,36 +4,25 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
-import android.widget.RadioButton
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
-import com.app.selfcare.adapters.CoachTypesAdapter
-import com.app.selfcare.controller.OnCoachTypeClickListener
-import com.app.selfcare.data.CoachType
-import com.app.selfcare.data.SendOtp
-import com.app.selfcare.data.Video
+import com.app.selfcare.databinding.DialogInspirationBinding
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentCoachesBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.dialog_inspiration.*
-import kotlinx.android.synthetic.main.fragment_coaches.*
-import kotlinx.android.synthetic.main.fragment_resources.*
-import kotlinx.android.synthetic.main.fragment_sign_up.*
 import org.json.JSONObject
 import retrofit2.HttpException
-import java.lang.reflect.Type
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,6 +39,8 @@ class CoachesFragment : BaseFragment() {
     private var param1: String? = null
     private var param2: String? = null
     private var quoteData: JSONObject = JSONObject()
+    private var mLastClickTime: Long = 0
+    private lateinit var binding: FragmentCoachesBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +48,15 @@ class CoachesFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCoachesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -72,63 +72,93 @@ class CoachesFragment : BaseFragment() {
 
         displayWellnessData()
 
-        cardViewExercise.setOnClickListener {
-            replaceFragment(
+        binding.cardViewExercise.setOnClickListener {
+            clearPreviousFragmentStack()
+            replaceFragmentNoBackStack(
                 ExerciseFragment(),
                 R.id.layout_home,
                 ExerciseFragment.TAG
             )
         }
 
-        cardViewNutrition.setOnClickListener {
-            replaceFragment(
+        binding.cardViewNutrition.setOnClickListener {
+            clearPreviousFragmentStack()
+            replaceFragmentNoBackStack(
                 NutritionFragment(),
                 R.id.layout_home,
                 NutritionFragment.TAG
             )
         }
 
-        cardViewMindfulness.setOnClickListener {
-            replaceFragment(
+        binding.cardViewMindfulness.setOnClickListener {
+            clearPreviousFragmentStack()
+            replaceFragmentNoBackStack(
                 MindfullnessFragment(),
                 R.id.layout_home,
                 MindfullnessFragment.TAG
             )
         }
 
-        cardViewYoga.setOnClickListener {
-            replaceFragment(
+        binding.cardViewYoga.setOnClickListener {
+            clearPreviousFragmentStack()
+            replaceFragmentNoBackStack(
                 YogaCoachFragment(),
                 R.id.layout_home,
                 YogaCoachFragment.TAG
             )
         }
 
-        cardViewMusic.setOnClickListener {
-            replaceFragment(
+        binding.cardViewMusic.setOnClickListener {
+            clearPreviousFragmentStack()
+            replaceFragmentNoBackStack(
                 MusicCoachFragment(),
                 R.id.layout_home,
                 MusicCoachFragment.TAG
             )
         }
 
-        cardViewInspiration.setOnClickListener {
+        binding.cardViewInspiration.setSafeOnClickListener {
             try {
                 val dialog = Dialog(requireActivity())
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                 dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                dialog.setContentView(R.layout.dialog_inspiration)
-                Glide.with(requireActivity())
-                    .load(BaseActivity.baseURL.dropLast(5) + quoteData.getString("img"))
-                    .into(dialog.imgQuote)
-                dialog.txtShareInspiration.setOnClickListener {
-                    shareDetails("", "Quote", "", quoteData.getString("img"), "Quote")
+                val dialogInspiration = DialogInspirationBinding.inflate(layoutInflater)
+                val view = dialogInspiration.root
+                dialog.setContentView(view)
+
+                if (quoteData.has("name") && quoteData.getString("name").isNotEmpty()) {
+                    dialogInspiration.txtInspiration.visibility = View.VISIBLE
+                    dialogInspiration.imgQuote.visibility = View.GONE
+                    dialogInspiration.txtInspiration.text = quoteData.getString("name")
+                    dialogInspiration.txtShareInspiration.setOnClickListener {
+                        shareDetails("", quoteData.getString("name"), "", "", "Journal")
+                    }
+                } else {
+                    dialogInspiration.txtInspiration.visibility = View.GONE
+                    dialogInspiration.imgQuote.visibility = View.VISIBLE
+                    Glide.with(requireActivity())
+                        .load(BaseActivity.baseURL.dropLast(5) + quoteData.getString("img"))
+                        .into(dialogInspiration.imgQuote)
+                    dialogInspiration.txtShareInspiration.setOnClickListener {
+                        shareDetails("", "Quote", "", quoteData.getString("img"), "Quote")
+                    }
                 }
+
+                /*Glide.with(requireActivity())
+                    .load(BaseActivity.baseURL.dropLast(5) + quoteData.getString("img"))
+                    .into(dialogInspiration.imgQuote)*/
+                /*dialogInspiration.txtShareInspiration.setOnClickListener {
+                    shareDetails("", "Quote", "", quoteData.getString("img"), "Quote")
+                }*/
                 dialog.show()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+
+        /*cardViewInspiration.setOnClickListener {
+
+        }*/
 
         /*val coachTypeList: ArrayList<CoachType> = ArrayList()
         coachTypeList.add(CoachType("Exercise","Last Workout","59 mins", R.drawable.exercise_img))
@@ -171,16 +201,16 @@ class CoachesFragment : BaseFragment() {
                             val mindfulnessData = jsonObj.getJSONObject("mindfulness")
                             quoteData = jsonObj.getJSONObject("quote")
 
-                            txtExerciseSubTitle.text = exerciseData.getString("name")
-                            txtExerciseRemainTime.text = exerciseData.getString("time")
-                            txtNutritionSubTitle.text = nutritionData.getString("name")
-                            txtNutritionFood.text = nutritionData.getString("time")
-                            txtYogaSubTitle.text = yogaData.getString("name")
-                            txtYogaRemainTime.text = yogaData.getString("time")
-                            txtMindfulnessSubTitle.text = mindfulnessData.getString("name")
-                            txtMindfulnessRemainTime.text = mindfulnessData.getString("time")
-                            txtMusicSubTitle.text = musicData.getString("name")
-                            txtMusicRemainTime.text = musicData.getString("time")
+                            binding.txtExerciseSubTitle.text = exerciseData.getString("name")
+                            binding.txtExerciseRemainTime.text = exerciseData.getString("time")
+                            binding.txtNutritionSubTitle.text = nutritionData.getString("name")
+                            binding.txtNutritionFood.text = nutritionData.getString("time")
+                            binding.txtYogaSubTitle.text = yogaData.getString("name")
+                            binding.txtYogaRemainTime.text = yogaData.getString("time")
+                            binding.txtMindfulnessSubTitle.text = mindfulnessData.getString("name")
+                            binding.txtMindfulnessRemainTime.text = mindfulnessData.getString("time")
+                            binding.txtMusicSubTitle.text = musicData.getString("name")
+                            binding.txtMusicRemainTime.text = musicData.getString("time")
 
                         } catch (e: Exception) {
                             hideProgress()
@@ -202,6 +232,27 @@ class CoachesFragment : BaseFragment() {
             )
         }
         handler.postDelayed(runnable!!, 1000)
+    }
+
+    class SafeClickListener(
+        private var defaultInterval: Int = 500,
+        private val onSafeCLick: (View) -> Unit
+    ) : View.OnClickListener {
+        private var lastTimeClicked: Long = 0
+        override fun onClick(v: View) {
+            if (SystemClock.elapsedRealtime() - lastTimeClicked < defaultInterval) {
+                return
+            }
+            lastTimeClicked = SystemClock.elapsedRealtime()
+            onSafeCLick(v)
+        }
+    }
+
+    fun View.setSafeOnClickListener(onSafeClick: (View) -> Unit) {
+        val safeClickListener = SafeClickListener {
+            onSafeClick(it)
+        }
+        setOnClickListener(safeClickListener)
     }
 
     companion object {

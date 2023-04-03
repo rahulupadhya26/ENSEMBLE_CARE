@@ -5,20 +5,17 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Handler
 import android.util.Log
-import android.view.View
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import com.app.selfcare.R
 import com.app.selfcare.data.Podcast
+import com.app.selfcare.databinding.DialogStreamAudioBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_stream_audio.view.*
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -33,7 +30,7 @@ class AudioStream(
     var mediaPlayer: MediaPlayer
 ) {
 
-    var dialogView: View? = null
+    private lateinit var dialogView: DialogStreamAudioBinding
     private val audioHandler = Handler()
     private var createStreamAudioDialog: BottomSheetDialog? = null
 
@@ -45,31 +42,33 @@ class AudioStream(
 
     @SuppressLint("SetTextI18n")
     fun streamAudio() {
-        createStreamAudioDialog = BottomSheetDialog(context)
-        dialogView = context.layoutInflater.inflate(
+        createStreamAudioDialog = BottomSheetDialog(context, R.style.SheetDialog)
+        dialogView = DialogStreamAudioBinding.inflate(context.layoutInflater)
+        /*dialogView = context.layoutInflater.inflate(
             R.layout.dialog_stream_audio, null
-        )
-        createStreamAudioDialog!!.setContentView(dialogView!!)
+        )*/
+        val view = dialogView.root
+        createStreamAudioDialog!!.setContentView(view)
         createStreamAudioDialog!!.show()
-        dialogView!!.txt_audio_title.text = audioDetails.name
-        dialogView!!.txt_audio_artist.text = audioDetails.artist
+        dialogView.txtAudioTitle.text = audioDetails.name
+        dialogView.txtAudioArtist.text = audioDetails.artist
 
         createStreamAudioDialog!!.setOnCancelListener {
-            dialogView!!.podcast_seekbar.progress = 0
-            dialogView!!.img_audio_btn.setImageResource(R.drawable.ic_play_arrow)
-            dialogView!!.txtCurrentTime.text = "00:00"
-            dialogView!!.txtDurationTime.text = "00:00"
+            dialogView.podcastSeekbar.progress = 0
+            dialogView.imgAudioBtn.setImageResource(R.drawable.ic_play_arrow)
+            dialogView.txtCurrentTime.text = "00:00"
+            dialogView.txtDurationTime.text = "00:00"
             mediaPlayer.reset()
         }
 
-        dialogView!!.podcast_seekbar.max = 100
+        dialogView.podcastSeekbar.max = 100
 
-        dialogView!!.img_audio_btn.setOnClickListener {
+        dialogView.imgAudioBtn.setOnClickListener {
             if (mediaPlayer.isPlaying) {
                 audioHandler.removeCallbacks(updater)
                 handler.removeCallbacks(runnable)
                 mediaPlayer.pause()
-                dialogView!!.img_audio_btn.setImageResource(R.drawable.ic_play_arrow)
+                dialogView.imgAudioBtn.setImageResource(R.drawable.ic_play_arrow)
                 mediaPlayer.seekTo(mediaPlayer.currentPosition)
             } else {
                 startMusic()
@@ -78,13 +77,13 @@ class AudioStream(
 
         prepareMediaPlayer(audioDetails.podcast_url)
 
-        dialogView!!.podcast_seekbar.setOnSeekBarChangeListener(object :
+        dialogView.podcastSeekbar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     val playPos: Int = (mediaPlayer.duration / 100) * seekBar!!.progress
                     mediaPlayer.seekTo(playPos)
-                    dialogView!!.txtCurrentTime.text =
+                    dialogView.txtCurrentTime.text =
                         millisecondsToTimer(mediaPlayer.currentPosition.toLong())
                 }
             }
@@ -98,24 +97,24 @@ class AudioStream(
         })
 
         mediaPlayer.setOnBufferingUpdateListener { mp, percent ->
-            dialogView!!.podcast_seekbar.secondaryProgress = percent
+            dialogView.podcastSeekbar.secondaryProgress = percent
         }
 
         mediaPlayer.setOnCompletionListener {
-            dialogView!!.podcast_seekbar.progress = 0
-            dialogView!!.img_audio_btn.setImageResource(R.drawable.ic_play_arrow)
-            dialogView!!.txtCurrentTime.text = "00:00"
-            dialogView!!.txtDurationTime.text = "00:00"
+            dialogView.podcastSeekbar.progress = 0
+            dialogView.imgAudioBtn.setImageResource(R.drawable.ic_play_arrow)
+            dialogView.txtCurrentTime.text = "00:00"
+            dialogView.txtDurationTime.text = "00:00"
             mediaPlayer.reset()
         }
 
-        dialogView!!.img_audio_download_btn.setOnClickListener {
+        dialogView.imgAudioDownloadBtn.setOnClickListener {
             val async = DownloadAudioFromUrl(context, audioDetails.name)
             async.execute(audioDetails.podcast_url);
         }
 
         // Seek bar change listener
-        dialogView!!.podcast_seekbar.setOnSeekBarChangeListener(object :
+        dialogView.podcastSeekbar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 if (b) {
@@ -133,8 +132,8 @@ class AudioStream(
 
     private fun startMusic() {
         mediaPlayer.start()
-        dialogView!!.img_audio_btn.setImageResource(R.drawable.ic_pause)
-        dialogView!!.img_audio_btn.imageTintList =
+        dialogView.imgAudioBtn.setImageResource(R.drawable.ic_pause)
+        dialogView.imgAudioBtn.imageTintList =
             ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primaryGreen))
         initializeSeekBar()
     }
@@ -170,7 +169,7 @@ class AudioStream(
             mediaPlayer.prepareAsync()
             mediaPlayer.setOnPreparedListener {
                 hideProgress()
-                dialogView!!.txtDurationTime.text =
+                dialogView.txtDurationTime.text =
                     millisecondsToTimer(mediaPlayer.duration.toLong())
                 startMusic()
             }
@@ -183,12 +182,12 @@ class AudioStream(
     private var updater: Runnable = Runnable {
         updateSeekBar()
         val currentDuration: Long = mediaPlayer.currentPosition.toLong()
-        dialogView!!.txtCurrentTime.text = millisecondsToTimer(currentDuration)
+        dialogView.txtCurrentTime.text = millisecondsToTimer(currentDuration)
     }
 
     private fun updateSeekBar() {
         if (mediaPlayer.isPlaying) {
-            dialogView!!.podcast_seekbar.progress =
+            dialogView.podcastSeekbar.progress =
                 (mediaPlayer.currentPosition / max(1, mediaPlayer.duration)) * 100
             audioHandler.postDelayed(updater, 1000)
         }
@@ -196,13 +195,13 @@ class AudioStream(
 
     // Method to initialize seek bar and audio stats
     private fun initializeSeekBar() {
-        dialogView!!.podcast_seekbar.max = mediaPlayer.seconds
+        dialogView.podcastSeekbar.max = mediaPlayer.seconds
 
         runnable = Runnable {
-            dialogView!!.podcast_seekbar.progress = mediaPlayer.currentSeconds
+            dialogView.podcastSeekbar.progress = mediaPlayer.currentSeconds
 
             val currentDuration: Long = mediaPlayer.currentPosition.toLong()
-            dialogView!!.txtCurrentTime.text = millisecondsToTimer(currentDuration)
+            dialogView.txtCurrentTime.text = millisecondsToTimer(currentDuration)
             /*val diff = mediaPlayer.seconds - mediaPlayer.currentSeconds
             tv_due.text = "$diff sec"*/
 

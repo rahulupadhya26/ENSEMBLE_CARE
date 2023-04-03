@@ -6,8 +6,42 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:contentDescription="@string/app_name"
         android:layout_centerInParent="true"
-        android:src="@drawable/ensemble_care_logo" />
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ensemble_care_logo"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:src="@drawable/company_logo" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="#201A8B"
+            android:textSize="@dimen/_38sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Unifying Wellness"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="#2FA88A"
+            android:textSize="@dimen/_24sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

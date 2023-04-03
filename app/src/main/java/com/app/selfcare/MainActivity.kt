@@ -32,25 +32,24 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.loader.content.CursorLoader
 import com.app.selfcare.controller.IController
 import com.app.selfcare.controller.IOnBackPressed
+import com.app.selfcare.databinding.ActivityMainBinding
+import com.app.selfcare.databinding.DialogPictureOptionBinding
+import com.app.selfcare.databinding.LayoutHeaderBinding
+import com.app.selfcare.databinding.LayoutHeaderDrawerBinding
 import com.app.selfcare.fragment.*
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.NSFWDetector
+import com.app.selfcare.utils.NetworkConnection
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
+import com.github.ybq.android.spinkit.SpinKitView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_picture_option.view.*
-import kotlinx.android.synthetic.main.fragment_insurance.*
-import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.layout_header.*
-import kotlinx.android.synthetic.main.layout_header_drawer.*
-import kotlinx.android.synthetic.main.layout_header_drawer.view.*
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -75,31 +74,42 @@ class MainActivity : BaseActivity(), IController {
     private var navigationView: BottomNavigationView? = null
     private var layoutBottomNav: RelativeLayout? = null
     private var createPictureDialog: BottomSheetDialog? = null
+    private var networkConnection: NetworkConnection? = null
+    private var spinKit: SpinKitView? = null
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var headerBinding:LayoutHeaderBinding
+    private lateinit var headerDrawerBinding:LayoutHeaderDrawerBinding
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adjustFontScale(resources.configuration, 1.0f)
-        window.setFlags(
+        /*window.setFlags(
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE
-        )
+        )*/
         //window.statusBarColor = Color.WHITE
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        Utils.bottomNav = Utils.BOTTOM_NAV_DASHBOARD
         preference = PreferenceHelper.defaultPrefs(this)
         FirebaseApp.initializeApp(this)
-        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        ic_menu.setOnClickListener { handleClick(it) }
-        imgUserPic.setOnClickListener {
+        headerBinding = LayoutHeaderBinding.inflate(layoutInflater)
+        headerDrawerBinding = LayoutHeaderDrawerBinding.inflate(layoutInflater)
+        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        headerBinding.icMenu.setOnClickListener { handleClick(it) }
+        headerBinding.imgUserPic.setOnClickListener {
             replaceFragment(
                 ProfileFragment(),
                 R.id.layout_home,
                 ProfileFragment.TAG
             )
         }
-        nav_view.getHeaderView(0).drawer_img_back.setOnClickListener { _view -> handleClick(_view) }
-        nav_view.setNavigationItemSelectedListener { item: MenuItem ->
-            drawer_layout.closeDrawer(GravityCompat.START)
+        binding.navView.getHeaderView(0)
+        headerDrawerBinding.drawerImgBack.setOnClickListener { _view -> handleClick(_view) }
+        binding.navView.setNavigationItemSelectedListener { item: MenuItem ->
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
             handleClick(item.itemId)
             false
         }
@@ -111,7 +121,33 @@ class MainActivity : BaseActivity(), IController {
             popBackStack()
         }
 
+        spinKit = findViewById(R.id.spin_kit)
+
+        networkConnection = NetworkConnection(applicationContext)
         replaceFragmentNoBackStack(SplashFragment(), R.id.layout_home, SplashFragment.TAG)
+        networkConnection!!.observe(this) { isConnected ->
+            if (!isConnected) {
+                Toast.makeText(this, "Not Connected", Toast.LENGTH_SHORT).show()
+                replaceFragment(
+                    InternetConnectionFragment(),
+                    R.id.layout_home,
+                    InternetConnectionFragment.TAG
+                )
+            }
+        }
+    }
+
+    private fun clearPreviousFragments() {
+        supportFragmentManager.fragments.let {
+            if (it.isNotEmpty()) {
+                supportFragmentManager.beginTransaction().apply {
+                    for (fragment in it) {
+                        remove(fragment)
+                    }
+                    commit()
+                }
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -125,20 +161,20 @@ class MainActivity : BaseActivity(), IController {
     @SuppressLint("SetTextI18n")
     fun setUserDetails() {
         if (preference!![PrefKeys.PREF_USER_ID, ""]!!.isNotEmpty()) {
-            nav_view.getHeaderView(0).txtProfileName.text =
+            headerDrawerBinding.txtProfileName.text =
                 preference!![PrefKeys.PREF_FNAME, ""]!! + " " +
                         preference!![PrefKeys.PREF_MNAME, ""]!! + " " +
                         preference!![PrefKeys.PREF_LNAME, ""]!!
 
-            nav_view.getHeaderView(0).txtProfileEmail.text = preference!![PrefKeys.PREF_EMAIL, ""]!!
+            headerDrawerBinding.txtProfileEmail.text = preference!![PrefKeys.PREF_EMAIL, ""]!!
 
-            nav_view.getHeaderView(0).img_profile.setOnClickListener {
+            headerDrawerBinding.imgProfile.setOnClickListener {
                 replaceFragment(
                     ProfileFragment(),
                     R.id.layout_home,
                     ProfileFragment.TAG
                 )
-                drawer_layout.closeDrawer(GravityCompat.START)
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
             }
         }
     }
@@ -146,10 +182,10 @@ class MainActivity : BaseActivity(), IController {
     private fun handleClick(view: View) {
         when (view.id) {
             R.id.drawer_img_back -> {
-                drawer_layout.closeDrawer(GravityCompat.START)
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
             }
             R.id.ic_menu -> {
-                drawer_layout.openDrawer(GravityCompat.START)
+                binding.drawerLayout.openDrawer(GravityCompat.START)
             }
         }
     }
@@ -280,9 +316,9 @@ class MainActivity : BaseActivity(), IController {
 
     override fun swipeSliderEnable(flag: Boolean) {
         if (flag)
-            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)
+            binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)
         else
-            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
     @SuppressLint("WrongViewCast")
@@ -291,7 +327,12 @@ class MainActivity : BaseActivity(), IController {
     }
 
     override fun showProgress() {
-        if (progressAlive) {
+        /*val fadingCircle = FadingCircle()
+        fadingCircle.setBounds(0,0,200,200)
+        fadingCircle.color = R.color.primaryGreen
+        progress!!.indeterminateDrawable = fadingCircle*/
+        binding.layoutProgress.visibility = View.VISIBLE
+        /*if (progressAlive) {
             pDialog!!.cancel()
             progressAlive = false
         }
@@ -299,17 +340,17 @@ class MainActivity : BaseActivity(), IController {
         pDialog!!.setMessage("Please wait...")
         if ("Please wait".contains("Please wait")) pDialog!!.setCanceledOnTouchOutside(false)
         progressAlive = true
-        pDialog!!.show()
+        pDialog!!.show()*/
     }
 
     override fun hideProgress() {
-        layout_home.setBackgroundColor(Color.TRANSPARENT)
-        layout_progress.visibility = View.GONE
-        if (progressAlive) {
+        binding.layoutHome.setBackgroundColor(Color.TRANSPARENT)
+        binding.layoutProgress.visibility = View.GONE
+        /*if (progressAlive) {
             pDialog!!.dismiss()
             pDialog!!.cancel()
             progressAlive = false
-        }
+        }*/
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -366,6 +407,10 @@ class MainActivity : BaseActivity(), IController {
 
     fun getLayoutBottomNavigation(): RelativeLayout? {
         return layoutBottomNav
+    }
+
+    fun getNetworkInit(): NetworkConnection? {
+        return networkConnection
     }
 
     override fun clearTempFormData() {
@@ -460,11 +505,15 @@ class MainActivity : BaseActivity(), IController {
         }
     }
 
+    private lateinit var pictureDialog:DialogPictureOptionBinding
+
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun displayPictureDialog(type: String) {
         createPictureDialog = BottomSheetDialog(this, R.style.SheetDialog)
-        val pictureDialog: View = layoutInflater.inflate(R.layout.dialog_picture_option, null)
-        createPictureDialog!!.setContentView(pictureDialog)
+        pictureDialog = DialogPictureOptionBinding.inflate(layoutInflater)
+        val view = pictureDialog.root
+        //val pictureDialog: View = layoutInflater.inflate(R.layout.dialog_picture_option, null)
+        createPictureDialog!!.setContentView(view)
         createPictureDialog!!.setCanceledOnTouchOutside(true)
 
         pictureDialog.pictureDialogCamera.setOnClickListener {
@@ -494,7 +543,7 @@ class MainActivity : BaseActivity(), IController {
                 }
                 "Insurance" -> {
                     imageView!!.setImageDrawable(null)
-                    imageView!!.setImageResource(R.drawable.health_insurance)
+                    imageView!!.setImageResource(R.drawable.plusnew)
                 }
             }
         }

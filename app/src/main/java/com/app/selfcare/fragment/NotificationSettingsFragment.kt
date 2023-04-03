@@ -8,14 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.app.selfcare.R
 import com.app.selfcare.data.*
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentNotificationSettingsBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_detail_journal.*
-import kotlinx.android.synthetic.main.fragment_notification_settings.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 
@@ -42,6 +42,7 @@ class NotificationSettingsFragment : BaseFragment() {
     private var taskCompletion: Boolean = false
     private var carePlanAppointmentStarting: Boolean = false
     private var notificationId: Int = 0
+    private lateinit var binding: FragmentNotificationSettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +50,15 @@ class NotificationSettingsFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentNotificationSettingsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -70,74 +80,74 @@ class NotificationSettingsFragment : BaseFragment() {
     }
 
     private fun onClickEvents() {
-        notificationSettingsBack.setOnClickListener {
+        binding.notificationSettingsBack.setOnClickListener {
             updateNotificationData()
         }
 
-        layoutProviderMatched.setOnClickListener {
-            switchProviderMatched.isChecked = !switchProviderMatched.isChecked
+        binding.layoutProviderMatched.setOnClickListener {
+            binding.switchProviderMatched.isChecked = !binding.switchProviderMatched.isChecked
         }
 
-        layoutProviderAvailable.setOnClickListener {
-            switchProviderAvailable.isChecked = !switchProviderAvailable.isChecked
+        binding.layoutProviderAvailable.setOnClickListener {
+            binding.switchProviderAvailable.isChecked = !binding.switchProviderAvailable.isChecked
         }
 
-        layoutAppointmentCancelled.setOnClickListener {
-            switchAppointmentCancelled.isChecked = !switchAppointmentCancelled.isChecked
+        binding.layoutAppointmentCancelled.setOnClickListener {
+            binding.switchAppointmentCancelled.isChecked = !binding.switchAppointmentCancelled.isChecked
         }
 
-        layoutAppointmentStarting.setOnClickListener {
-            switchAppointmentStarting.isChecked = !switchAppointmentStarting.isChecked
+        binding.layoutAppointmentStarting.setOnClickListener {
+            binding.switchAppointmentStarting.isChecked = !binding.switchAppointmentStarting.isChecked
         }
 
-        layoutResourceAvailable.setOnClickListener {
-            switchResourceAvailable.isChecked = !switchResourceAvailable.isChecked
+        binding.layoutResourceAvailable.setOnClickListener {
+            binding.switchResourceAvailable.isChecked = !binding.switchResourceAvailable.isChecked
         }
 
-        layoutNewTaskAvailable.setOnClickListener {
-            switchNewTaskAvailable.isChecked = !switchNewTaskAvailable.isChecked
+        binding.layoutNewTaskAvailable.setOnClickListener {
+            binding.switchNewTaskAvailable.isChecked = !binding.switchNewTaskAvailable.isChecked
         }
 
-        layoutTaskCompletion.setOnClickListener {
-            switchTaskCompletion.isChecked = !switchTaskCompletion.isChecked
+        binding.layoutTaskCompletion.setOnClickListener {
+            binding.switchTaskCompletion.isChecked = !binding.switchTaskCompletion.isChecked
         }
 
-        layoutCarePlanAppointmentStarting.setOnClickListener {
-            switchCarePlanAppointmentStarting.isChecked =
-                !switchCarePlanAppointmentStarting.isChecked
+        binding.layoutCarePlanAppointmentStarting.setOnClickListener {
+            binding.switchCarePlanAppointmentStarting.isChecked =
+                !binding.switchCarePlanAppointmentStarting.isChecked
         }
     }
 
     private fun onSwitchChangeEvents() {
-        switchProviderMatched.setOnCheckedChangeListener { _, isChecked ->
+        binding.switchProviderMatched.setOnCheckedChangeListener { _, isChecked ->
             providerMatched = isChecked
         }
 
-        switchProviderAvailable.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switchProviderAvailable.setOnCheckedChangeListener { buttonView, isChecked ->
             providerAvailable = isChecked
         }
 
-        switchAppointmentCancelled.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switchAppointmentCancelled.setOnCheckedChangeListener { buttonView, isChecked ->
             appointmentCancelled = isChecked
         }
 
-        switchAppointmentStarting.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switchAppointmentStarting.setOnCheckedChangeListener { buttonView, isChecked ->
             appointmentStarting = isChecked
         }
 
-        switchResourceAvailable.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switchResourceAvailable.setOnCheckedChangeListener { buttonView, isChecked ->
             resourceAvailable = isChecked
         }
 
-        switchNewTaskAvailable.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switchNewTaskAvailable.setOnCheckedChangeListener { buttonView, isChecked ->
             newTaskAvailable = isChecked
         }
 
-        switchTaskCompletion.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switchTaskCompletion.setOnCheckedChangeListener { buttonView, isChecked ->
             taskCompletion = isChecked
         }
 
-        switchCarePlanAppointmentStarting.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switchCarePlanAppointmentStarting.setOnCheckedChangeListener { buttonView, isChecked ->
             carePlanAppointmentStarting = isChecked
         }
     }
@@ -192,14 +202,14 @@ class NotificationSettingsFragment : BaseFragment() {
 
     private fun displayNotificationSettingsData(notificationSettings: NotificationSettings) {
         notificationId = notificationSettings.id
-        switchProviderMatched.isChecked = notificationSettings.provider
-        switchProviderAvailable.isChecked = notificationSettings.provider
-        switchAppointmentCancelled.isChecked = notificationSettings.appointment_cancelled
-        switchAppointmentStarting.isChecked = notificationSettings.appointment_started
-        switchResourceAvailable.isChecked = notificationSettings.wellness
-        switchNewTaskAvailable.isChecked = notificationSettings.task_assigned
-        switchTaskCompletion.isChecked = notificationSettings.task_completed
-        switchCarePlanAppointmentStarting.isChecked = notificationSettings.appointment_started
+        binding.switchProviderMatched.isChecked = notificationSettings.provider
+        binding.switchProviderAvailable.isChecked = notificationSettings.provider
+        binding.switchAppointmentCancelled.isChecked = notificationSettings.appointment_cancelled
+        binding.switchAppointmentStarting.isChecked = notificationSettings.appointment_started
+        binding.switchResourceAvailable.isChecked = notificationSettings.wellness
+        binding.switchNewTaskAvailable.isChecked = notificationSettings.task_assigned
+        binding.switchTaskCompletion.isChecked = notificationSettings.task_completed
+        binding.switchCarePlanAppointmentStarting.isChecked = notificationSettings.appointment_started
     }
 
     private fun updateNotificationData() {
@@ -213,16 +223,16 @@ class NotificationSettingsFragment : BaseFragment() {
                             notificationId,
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
                             appointment_created = false,
-                            switchAppointmentStarting.isChecked,
-                            switchAppointmentCancelled.isChecked,
+                            binding.switchAppointmentStarting.isChecked,
+                            binding.switchAppointmentCancelled.isChecked,
                             appointment_completed = false,
                             consent = false,
-                            provider = switchProviderMatched.isChecked,
-                            task_assigned = switchNewTaskAvailable.isChecked,
-                            task_completed = switchTaskCompletion.isChecked,
+                            provider = binding.switchProviderMatched.isChecked,
+                            task_assigned = binding.switchNewTaskAvailable.isChecked,
+                            task_completed = binding.switchTaskCompletion.isChecked,
                             task_missed = false,
                             email_notification = false,
-                            wellness = switchResourceAvailable.isChecked
+                            wellness = binding.switchResourceAvailable.isChecked
                         ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())

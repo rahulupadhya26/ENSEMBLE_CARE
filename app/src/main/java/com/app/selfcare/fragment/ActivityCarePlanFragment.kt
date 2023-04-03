@@ -1,12 +1,14 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import com.app.selfcare.R
 import com.app.selfcare.adapters.ActivityCarePlanAdapter
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.fragment_activity_care_plan.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +24,7 @@ class ActivityCarePlanFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentActivityCarePlanBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +32,15 @@ class ActivityCarePlanFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentActivityCarePlanBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -41,24 +53,25 @@ class ActivityCarePlanFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        tabLayoutActivityCarePlan.removeAllTabs()
-        viewPagerActivityCarePlan.removeAllViewsInLayout()
-        tabLayoutActivityCarePlan.addTab(tabLayoutActivityCarePlan.newTab().setText("Activity"))
-        tabLayoutActivityCarePlan.addTab(tabLayoutActivityCarePlan.newTab().setText("Care Plan"))
-        tabLayoutActivityCarePlan.tabGravity = TabLayout.GRAVITY_FILL
+        binding.tabLayoutActivityCarePlan.removeAllTabs()
+        binding.viewPagerActivityCarePlan.removeAllViewsInLayout()
+        binding.tabLayoutActivityCarePlan.addTab(binding.tabLayoutActivityCarePlan.newTab().setText("Activity"))
+        binding.tabLayoutActivityCarePlan.addTab(binding.tabLayoutActivityCarePlan.newTab().setText("Care Plan"))
+        binding.tabLayoutActivityCarePlan.tabGravity = TabLayout.GRAVITY_FILL
         val adapter = ActivityCarePlanAdapter(
             requireActivity(), childFragmentManager,
-            tabLayoutActivityCarePlan.tabCount
+            binding.tabLayoutActivityCarePlan.tabCount
         )
-        viewPagerActivityCarePlan.adapter = adapter
-        viewPagerActivityCarePlan.addOnPageChangeListener(
+        binding.viewPagerActivityCarePlan.adapter = adapter
+        binding.viewPagerActivityCarePlan.addOnPageChangeListener(
             TabLayout.TabLayoutOnPageChangeListener(
-                tabLayoutActivityCarePlan
+                binding.tabLayoutActivityCarePlan
             )
         )
-        tabLayoutActivityCarePlan.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tabLayoutActivityCarePlan.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPagerActivityCarePlan.currentItem = tab.position
+                binding.viewPagerActivityCarePlan.currentItem = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -84,6 +97,7 @@ class ActivityCarePlanFragment : BaseFragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_activity_care_plan"
     }
 }

@@ -69,12 +69,14 @@
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_24sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none">
+                    android:scrollbars="none"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -94,14 +96,14 @@
                             app:cardElevation="5dp">
 
                             <TextView
-                                android:layout_width="120dp"
+                                android:layout_width="160dp"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:paddingStart="@dimen/_15dp"
                                 android:paddingTop="@dimen/_5dp"
                                 android:paddingEnd="@dimen/_15dp"
                                 android:paddingBottom="@dimen/_5dp"
-                                android:text="Anxiety"
+                                android:text="Relaxation"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_16sp"
@@ -118,7 +120,7 @@
                             app:cardElevation="5dp">
 
                             <TextView
-                                android:layout_width="120dp"
+                                android:layout_width="160dp"
                                 android:layout_height="wrap_content"
                                 android:background="#70D9D9D9"
                                 android:gravity="center"
@@ -126,7 +128,7 @@
                                 android:paddingTop="@dimen/_5dp"
                                 android:paddingEnd="@dimen/_15dp"
                                 android:paddingBottom="@dimen/_5dp"
-                                android:text="Autism"
+                                android:text="Reminiscence"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_16sp"
@@ -143,7 +145,7 @@
                             app:cardElevation="5dp">
 
                             <TextView
-                                android:layout_width="140dp"
+                                android:layout_width="160dp"
                                 android:layout_height="wrap_content"
                                 android:background="#70D9D9D9"
                                 android:gravity="center"
@@ -151,7 +153,7 @@
                                 android:paddingTop="@dimen/_5dp"
                                 android:paddingEnd="@dimen/_15dp"
                                 android:paddingBottom="@dimen/_5dp"
-                                android:text="Depression"
+                                android:text="Self Expression"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_16sp"
@@ -168,7 +170,7 @@
                             app:cardElevation="5dp">
 
                             <TextView
-                                android:layout_width="120dp"
+                                android:layout_width="160dp"
                                 android:layout_height="wrap_content"
                                 android:background="#70D9D9D9"
                                 android:gravity="center"
@@ -176,7 +178,32 @@
                                 android:paddingTop="@dimen/_5dp"
                                 android:paddingEnd="@dimen/_15dp"
                                 android:paddingBottom="@dimen/_5dp"
-                                android:text="Bipolar"
+                                android:text="Enhanced Focus"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_16sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_5dp"
+                            app:cardBackgroundColor="#70D9D9D9"
+                            app:cardCornerRadius="@dimen/_20dp"
+                            app:cardElevation="5dp">
+
+                            <TextView
+                                android:layout_width="160dp"
+                                android:layout_height="wrap_content"
+                                android:background="#70D9D9D9"
+                                android:gravity="center"
+                                android:paddingStart="@dimen/_15dp"
+                                android:paddingTop="@dimen/_5dp"
+                                android:paddingEnd="@dimen/_15dp"
+                                android:paddingBottom="@dimen/_5dp"
+                                android:text="Well-being"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_16sp"
@@ -194,368 +221,574 @@
                     android:layout_marginStart="@dimen/_20dp"
                     android:layout_marginTop="@dimen/_15dp"
                     android:layout_marginEnd="@dimen/_20dp"
-                    android:background="#BDB4B4" />
+                    android:background="#BDB4B4"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layoutDashboardMusic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/layoutMusicRecommended"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:text="Recommended"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:text="Specially hand-picked for you"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_16sp"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewRecommendedMusic"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:layout_marginEnd="@dimen/_10dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbars="none"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_10dp"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:orientation="horizontal">
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="130dp"
+                                    app:cardCornerRadius="@dimen/_10dp"
+                                    app:cardElevation="@dimen/_5dp"
+                                    app:cardUseCompatPadding="true">
+
+                                    <LinearLayout
+                                        android:layout_width="120dp"
+                                        android:layout_height="match_parent"
+                                        android:background="#944B1212">
+
+                                    </LinearLayout>
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="130dp"
+                                    app:cardCornerRadius="@dimen/_10dp"
+                                    app:cardElevation="@dimen/_5dp"
+                                    app:cardUseCompatPadding="true">
+
+                                    <LinearLayout
+                                        android:layout_width="120dp"
+                                        android:layout_height="match_parent"
+                                        android:background="#944B1212">
+
+                                    </LinearLayout>
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="130dp"
+                                    app:cardCornerRadius="@dimen/_10dp"
+                                    app:cardElevation="@dimen/_5dp"
+                                    app:cardUseCompatPadding="true">
+
+                                    <LinearLayout
+                                        android:layout_width="120dp"
+                                        android:layout_height="match_parent"
+                                        android:background="#944B1212">
+
+                                    </LinearLayout>
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="130dp"
+                                    app:cardCornerRadius="@dimen/_10dp"
+                                    app:cardElevation="@dimen/_5dp"
+                                    app:cardUseCompatPadding="true">
+
+                                    <LinearLayout
+                                        android:layout_width="120dp"
+                                        android:layout_height="match_parent"
+                                        android:background="#944B1212">
+
+                                    </LinearLayout>
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="130dp"
+                                    app:cardCornerRadius="@dimen/_10dp"
+                                    app:cardElevation="@dimen/_5dp"
+                                    app:cardUseCompatPadding="true">
+
+                                    <LinearLayout
+                                        android:layout_width="120dp"
+                                        android:layout_height="match_parent"
+                                        android:background="#944B1212">
+
+                                    </LinearLayout>
+
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+                        </HorizontalScrollView>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="@dimen/_20dp"
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:layout_marginEnd="@dimen/_20dp"
+                            android:background="#BDB4B4"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutMusicRelaxation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:text="Relaxation"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_24sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:text="These can feels relax"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_16sp"
+                            android:visibility="gone"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewRelaxation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:layout_marginEnd="@dimen/_10dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="@dimen/_20dp"
+                            android:layout_marginTop="@dimen/_15dp"
+                            android:layout_marginEnd="@dimen/_20dp"
+                            android:background="#BDB4B4"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutMusicWellBeing"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:text="Well being"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_24sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:text="These can feels y"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_16sp"
+                            android:visibility="gone"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewWellBeing"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginStart="@dimen/_10dp"
+                            android:layout_marginEnd="@dimen/_10dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="@dimen/_20dp"
+                            android:layout_marginTop="@dimen/_15dp"
+                            android:layout_marginEnd="@dimen/_20dp"
+                            android:background="#BDB4B4"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10dp"
                     android:layout_marginTop="@dimen/_10dp"
-                    android:text="Recommended"
+                    android:text="Category"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_24sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:text="Specially hand-picked for you"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_16sp" />
-
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="none">
+                    android:orientation="horizontal"
+                    android:weightSum="1">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/layoutRelax"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_10dp"
-                        android:layout_marginTop="@dimen/_5dp"
-                        android:orientation="horizontal">
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
 
                         <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
                             app:cardCornerRadius="@dimen/_10dp"
                             app:cardElevation="@dimen/_5dp"
                             app:cardUseCompatPadding="true">
 
                             <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
 
-                            </LinearLayout>
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
 
-                        </androidx.cardview.widget.CardView>
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/carebuddy" />
 
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
+                                    <TextView
+                                        android:id="@+id/txtRelaxation"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Relaxation"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
 
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
-
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
-
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
-
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
+                                </RelativeLayout>
 
                             </LinearLayout>
 
                         </androidx.cardview.widget.CardView>
 
                     </LinearLayout>
-                </HorizontalScrollView>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="@dimen/_20dp"
-                    android:layout_marginTop="@dimen/_15dp"
-                    android:layout_marginEnd="@dimen/_20dp"
-                    android:background="#BDB4B4" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:text="Anxiety &amp; Stress"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:text="These can reduce feelings of anxiety &amp; stress"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_16sp" />
-
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="none">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/layoutReminiscence"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_10dp"
-                        android:layout_marginTop="@dimen/_5dp"
-                        android:orientation="horizontal">
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
 
                         <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
                             app:cardCornerRadius="@dimen/_10dp"
                             app:cardElevation="@dimen/_5dp"
                             app:cardUseCompatPadding="true">
 
                             <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
 
-                            </LinearLayout>
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
 
-                        </androidx.cardview.widget.CardView>
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/reminiscence" />
 
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
+                                    <TextView
+                                        android:id="@+id/txtReminiscence"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Reminiscence"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
 
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
-
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
-
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
-
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
+                                </RelativeLayout>
 
                             </LinearLayout>
 
                         </androidx.cardview.widget.CardView>
 
                     </LinearLayout>
-                </HorizontalScrollView>
+                </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="@dimen/_20dp"
-                    android:layout_marginTop="@dimen/_15dp"
-                    android:layout_marginEnd="@dimen/_20dp"
-                    android:background="#BDB4B4" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:text="Headache"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:text="These can reduce feelings of headache"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_16sp" />
-
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="none">
+                    android:orientation="horizontal"
+                    android:weightSum="1">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/layoutSelfExpression"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_10dp"
-                        android:layout_marginTop="@dimen/_5dp"
-                        android:orientation="horizontal">
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
 
                         <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
                             app:cardCornerRadius="@dimen/_10dp"
                             app:cardElevation="@dimen/_5dp"
                             app:cardUseCompatPadding="true">
 
                             <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
 
-                            </LinearLayout>
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
 
-                        </androidx.cardview.widget.CardView>
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/self_expression" />
 
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
+                                    <TextView
+                                        android:id="@+id/txtSelfExpression"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Self Expression"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
 
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
-
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
-
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="130dp"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
-
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="match_parent"
-                                android:background="#944B1212">
+                                </RelativeLayout>
 
                             </LinearLayout>
 
                         </androidx.cardview.widget.CardView>
 
                     </LinearLayout>
-                </HorizontalScrollView>
+
+                    <LinearLayout
+                        android:id="@+id/layoutEnhancedFocus"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/enhanced_focus" />
+
+                                    <TextView
+                                        android:id="@+id/txtEnhancedFocus"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Enhanced Focus"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:id="@+id/layoutWellBeing"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop"
+                                        android:src="@drawable/well_being" />
+
+                                    <TextView
+                                        android:id="@+id/txtWellBeing"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Well Being"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutNeuroMusic"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:foreground="#40000000"
+                                        android:scaleType="centerCrop" />
+
+                                    <TextView
+                                        android:id="@+id/txtNeuroMusic"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:text="Neuro Music"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="@dimen/_20sp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>

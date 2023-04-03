@@ -8,16 +8,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.app.selfcare.R
 import com.app.selfcare.controller.OnVideoItemClickListener
 import com.app.selfcare.data.Video
+import com.app.selfcare.databinding.LayoutItemDashboardVideoBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import kotlinx.android.synthetic.main.layout_item_dashboard_video.view.*
 import kotlin.math.min
 
-class DashboardVideosAdapter (
+class DashboardVideosAdapter(
     val context: Context,
     val list: List<Video>, private val adapterItemClickListener: OnVideoItemClickListener?
 ) :
@@ -27,9 +26,14 @@ class DashboardVideosAdapter (
         parent: ViewGroup,
         viewType: Int
     ): DashboardVideosAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_dashboard_video, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemDashboardVideoBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_dashboard_video, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -37,25 +41,25 @@ class DashboardVideosAdapter (
         return min(list.size, limit)
     }
 
-    override fun onBindViewHolder(holder: DashboardVideosAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        var videoImg = item.video_url
-        if (item.video_url.isNotEmpty() && item.video_url.contains("youtube")) {
-            val videoId: String = item.video_url.split("v=")[1]
-            videoImg = "http://img.youtube.com/vi/$videoId/hqdefault.jpg" //high quality thumbnail
-        }
-        Glide.with(context).load(videoImg)
-            .transform(CenterCrop(), RoundedCorners(5))
-            .into(holder.videoImage)
-        holder.videoTitle.text = item.name
-        holder.videoLayout.setOnClickListener {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            var videoImg = item.video_url
+            if (item.video_url.isNotEmpty() && item.video_url.contains("youtube")) {
+                val videoId: String = item.video_url.split("v=")[1]
+                videoImg =
+                    "http://img.youtube.com/vi/$videoId/hqdefault.jpg" //high quality thumbnail
+            }
+            Glide.with(context).load(videoImg)
+                .transform(CenterCrop(), RoundedCorners(5))
+                .into(imgVideoBanner)
+            txtVideoTitle.text = item.name
+            cardviewVideo.setOnClickListener {
+            }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val videoImage: ImageView = itemView.img_video_banner
-        val videoTitle: TextView = itemView.txt_video_title
-        val videoLayout: CardView = itemView.cardview_video
-    }
+    inner class ViewHolder(val binding: LayoutItemDashboardVideoBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
 }

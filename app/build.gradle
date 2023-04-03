@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
+    id 'kotlin-parcelize'
 }
 
 def apiKeyPropertiesFile = rootProject.file("apikey.properties")
@@ -61,13 +61,19 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    //noinspection GradleDependency
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
     //noinspection GradleCompatible
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'com.google.android.material:material:1.8.0'
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
     //noinspection GradleCompatible
@@ -95,11 +101,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.5.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     implementation 'com.scottyab:secure-preferences-lib:0.1.7'
     implementation "com.koushikdutta.ion:ion:2.1.8"
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
     implementation 'com.madgag.spongycastle:core:1.58.0.0'
     implementation 'com.madgag.spongycastle:prov:1.54.0.0'
@@ -107,13 +113,14 @@ dependencies {
     implementation 'com.madgag.spongycastle:pg:1.54.0.0'
     implementation 'io.agora.rtc:full-sdk:4.0.1'
     implementation 'io.agora.rtm:rtm-sdk:1.5.3'
+    implementation("io.agora.rtc:chat-sdk:1.1.0")
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.stripe:stripe-android:20.17.0'
     implementation 'com.github.HaarigerHarald:android-youtubeExtractor:master-SNAPSHOT'
     implementation('com.google.android.gms:play-services-fitness:21.1.0')
-    implementation('com.google.android.gms:play-services-auth:20.4.0')
+    implementation('com.google.android.gms:play-services-auth:20.4.1')
     implementation 'com.google.mlkit:image-labeling-custom:17.0.1'
     implementation 'com.google.mlkit:linkfirebase:17.0.0'
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
@@ -126,4 +133,11 @@ dependencies {
     implementation "com.facebook.shimmer:shimmer:0.5.0"
     implementation 'com.stripe:stripecardscan:20.17.0'
     implementation 'com.stripe:financial-connections:20.17.0'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 }
+
+/*
+configurations.implementation {
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+}*/

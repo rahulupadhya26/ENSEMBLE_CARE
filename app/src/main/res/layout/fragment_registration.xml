@@ -238,7 +238,7 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/_16sp"
                     android:layout_marginTop="@dimen/_5dp"
-                    android:hint="Date of Birth"
+                    android:hint="mm/dd/yyyy"
                     android:textStyle="bold"
                     android:textColorHint="#807B7B"
                     android:background="@drawable/edittext_background_box"/>

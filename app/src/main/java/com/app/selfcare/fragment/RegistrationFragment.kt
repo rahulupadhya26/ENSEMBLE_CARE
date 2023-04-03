@@ -1,23 +1,28 @@
 package com.app.selfcare.fragment
 
 import android.app.DatePickerDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextUtils.isEmpty
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.data.Register
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentRegistrationBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_registration.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,6 +48,7 @@ class RegistrationFragment : BaseFragment() {
     private var prefLangData: Array<String>? = null
     private var register: Register? = null
     private var selectedTherapy: String? = null
+    private lateinit var binding: FragmentRegistrationBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +56,15 @@ class RegistrationFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRegistrationBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -68,11 +83,11 @@ class RegistrationFragment : BaseFragment() {
 
         if (preference!![PrefKeys.PREF_REG, ""]!!.isNotEmpty()) {
             register = Gson().fromJson(preference!![PrefKeys.PREF_REG, ""]!!, Register::class.java)
-            etSignUpFname.setText(register!!.first_name)
-            etSignUpMname.setText(register!!.middle_name)
-            etSignUpLname.setText(register!!.last_name)
+            binding.etSignUpFname.setText(register!!.first_name)
+            binding.etSignUpMname.setText(register!!.middle_name)
+            binding.etSignUpLname.setText(register!!.last_name)
             //etSignUpSSN.setText(register!!.ssn)
-            txt_signup_dob.text = register!!.dob
+            binding.txtSignupDob.text = register!!.dob
         }
 
         genderSpinner()
@@ -80,10 +95,10 @@ class RegistrationFragment : BaseFragment() {
         setDobCalender()
 
         onClickEvents()
+        binding.txtSignupDob.hint = "mm/dd/yyyy"
+        binding.etSignUpFname.requestFocus()
 
-        etSignUpFname.requestFocus()
-
-        etSignUpSSN.addTextChangedListener(object : TextWatcher {
+        binding.etSignUpSSN.addTextChangedListener(object : TextWatcher {
             private var spaceDeleted = false
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             }
@@ -95,16 +110,16 @@ class RegistrationFragment : BaseFragment() {
 
             override fun afterTextChanged(editable: Editable) {
                 try {
-                    etSignUpSSN.removeTextChangedListener(this)
-                    val cursorPosition: Int = etSignUpSSN.selectionStart
+                    binding.etSignUpSSN.removeTextChangedListener(this)
+                    val cursorPosition: Int = binding.etSignUpSSN.selectionStart
                     val withSpaces = formatText(editable)
-                    etSignUpSSN.setText(withSpaces)
-                    etSignUpSSN.setSelection(cursorPosition + (withSpaces.length - editable.length))
+                    binding.etSignUpSSN.setText(withSpaces)
+                    binding.etSignUpSSN.setSelection(cursorPosition + (withSpaces.length - editable.length))
                     if (spaceDeleted) {
                         //  userNameET.setSelection(userNameET.getSelectionStart() - 1);
                         spaceDeleted = false
                     }
-                    etSignUpSSN.addTextChangedListener(this)
+                    binding.etSignUpSSN.addTextChangedListener(this)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -123,23 +138,50 @@ class RegistrationFragment : BaseFragment() {
     private fun genderSpinner() {
         try {
             genderData = resources.getStringArray(R.array.gender)
-            val adapter = ArrayAdapter(
+
+            val adapter = object : ArrayAdapter<String>(
                 requireActivity(),
                 R.layout.spinner_dropdown_custom_item, genderData!!
-            )
-            spinner_signup_gender.adapter = adapter
+            ) {
+                override fun isEnabled(position: Int): Boolean {
+                    return position != 0
+                }
+
+                override fun getDropDownView(
+                    position: Int,
+                    convertView: View?,
+                    parent: ViewGroup
+                ): View {
+                    val view: TextView =
+                        super.getDropDownView(position, convertView, parent) as TextView
+                    //set the color of first item in the drop down list to gray
+                    if (position == 0) {
+                        view.setTextColor(Color.GRAY)
+                    } else {
+                        //here it is possible to define color for other items by
+                        //view.setTextColor(Color.BLACK)
+                    }
+                    return view
+                }
+            }
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_custom_item)
+            binding.spinnerSignupGender.adapter = adapter
             if (Utils.gender.isNotEmpty()) {
                 Handler().postDelayed({
-                    if (spinner_signup_gender != null)
-                        spinner_signup_gender.setSelection(genderData!!.indexOf(Utils.gender))
+                    if (binding.spinnerSignupGender != null)
+                        binding.spinnerSignupGender.setSelection(genderData!!.indexOf(Utils.gender))
                 }, 300)
             }
-            spinner_signup_gender.onItemSelectedListener = object :
+            binding.spinnerSignupGender.onItemSelectedListener = object :
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
                     view: View, position: Int, id: Long
                 ) {
+                    val value = parent.getItemAtPosition(position).toString()
+                    if (value == genderData!![0]) {
+                        (view as TextView).setTextColor(Color.GRAY)
+                    }
                     selectedGender = genderData!![position]
                 }
 
@@ -155,23 +197,49 @@ class RegistrationFragment : BaseFragment() {
     private fun preferredLangSpinner() {
         try {
             prefLangData = resources.getStringArray(R.array.preferred_language)
-            val adapter = ArrayAdapter(
+            val adapter = object: ArrayAdapter<String>(
                 requireActivity(),
                 R.layout.spinner_dropdown_custom_item, prefLangData!!
-            )
-            txtSignupPreferredLang.adapter = adapter
+            ){
+                override fun isEnabled(position: Int): Boolean {
+                    return position != 0
+                }
+
+                override fun getDropDownView(
+                    position: Int,
+                    convertView: View?,
+                    parent: ViewGroup
+                ): View {
+                    val view: TextView =
+                        super.getDropDownView(position, convertView, parent) as TextView
+                    //set the color of first item in the drop down list to gray
+                    if (position == 0) {
+                        view.setTextColor(Color.GRAY)
+                    } else {
+                        //here it is possible to define color for other items by
+                        //view.setTextColor(Color.BLACK)
+                    }
+                    return view
+                }
+            }
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_custom_item)
+            binding.txtSignupPreferredLang.adapter = adapter
             if (Utils.prefLang.isNotEmpty()) {
                 Handler().postDelayed({
-                    if (txtSignupPreferredLang != null)
-                        txtSignupPreferredLang.setSelection(prefLangData!!.indexOf(Utils.prefLang))
+                    if (binding.txtSignupPreferredLang != null)
+                        binding.txtSignupPreferredLang.setSelection(prefLangData!!.indexOf(Utils.prefLang))
                 }, 300)
             }
-            txtSignupPreferredLang.onItemSelectedListener = object :
+            binding.txtSignupPreferredLang.onItemSelectedListener = object :
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
                     view: View, position: Int, id: Long
                 ) {
+                    val value = parent.getItemAtPosition(position).toString()
+                    if (value == prefLangData!![0]) {
+                        (view as TextView).setTextColor(Color.GRAY)
+                    }
                     selectedPrefLang = prefLangData!![position]
                 }
 
@@ -201,10 +269,10 @@ class RegistrationFragment : BaseFragment() {
 
                 val myFormat = "MM/dd/yyyy" // mention the format you need
                 val sdf = SimpleDateFormat(myFormat)
-                txt_signup_dob.setText(sdf.format(cal.time))
+                binding.txtSignupDob.setText(sdf.format(cal.time))
             }
 
-        txt_signup_dob.setOnClickListener {
+        binding.txtSignupDob.setOnClickListener {
             val datePickerDialog = DatePickerDialog(
                 mActivity!!, dateSetListener,
                 cal.get(Calendar.YEAR),
@@ -217,34 +285,38 @@ class RegistrationFragment : BaseFragment() {
     }
 
     private fun onClickEvents() {
-        btnRegister.setOnClickListener {
-            if (getText(etSignUpFname).isNotEmpty()) {
-                if (getText(etSignUpLname).isNotEmpty()) {
+        binding.btnRegister.setOnClickListener {
+            if (getText(binding.etSignUpFname).isNotEmpty()) {
+                if (getText(binding.etSignUpLname).isNotEmpty()) {
                     //if (getText(etSignUpSSN).isNotEmpty()) {
                     //if (getText(etSignUpSSN).replace("-", "").length == 9) {
-                    if (txt_signup_dob.text.toString().isNotEmpty()) {
-                        if (selectedGender!! != "Select...") {
-                            when (selectedTherapy) {
-                                "Teen" -> {
-                                    if (getAge(txt_signup_dob.text.toString()) in 13..17) {
-                                        storeAndNavigateToNextScreen()
-                                    } else {
-                                        displayMsg(
-                                            "Alert",
-                                            "Age must be greater than 12 years and less than 18 years."
-                                        )
+                    if (binding.txtSignupDob.text.toString().isNotEmpty()) {
+                        if (selectedGender!! != "Gender") {
+                            if (selectedPrefLang!! != "Language") {
+                                when (selectedTherapy) {
+                                    "Teen" -> {
+                                        if (getAge(binding.txtSignupDob.text.toString()) in 13..17) {
+                                            storeAndNavigateToNextScreen()
+                                        } else {
+                                            displayMsg(
+                                                "Alert",
+                                                "Age must be greater than 12 years and less than 18 years."
+                                            )
+                                        }
+                                    }
+                                    else -> {
+                                        if (getAge(binding.txtSignupDob.text.toString()) > 18) {
+                                            storeAndNavigateToNextScreen()
+                                        } else {
+                                            displayMsg(
+                                                "Alert",
+                                                "Age must be more than 18 years."
+                                            )
+                                        }
                                     }
                                 }
-                                else -> {
-                                    if (getAge(txt_signup_dob.text.toString()) > 18) {
-                                        storeAndNavigateToNextScreen()
-                                    } else {
-                                        displayMsg(
-                                            "Alert",
-                                            "Age must be more than 18 years."
-                                        )
-                                    }
-                                }
+                            } else {
+                                displayMsg("Alert", "Select the preferred language")
                             }
                         } else {
                             displayMsg("Alert", "Select the gender")
@@ -264,13 +336,13 @@ class RegistrationFragment : BaseFragment() {
                     }*/
                 } else {
                     setEditTextError(
-                        etSignUpLname,
+                        binding.etSignUpLname,
                         "Last name cannot be blank"
                     )
                 }
             } else {
                 setEditTextError(
-                    etSignUpFname,
+                    binding.etSignUpFname,
                     "First name cannot be blank"
                 )
             }
@@ -278,13 +350,13 @@ class RegistrationFragment : BaseFragment() {
     }
 
     private fun storeAndNavigateToNextScreen() {
-        Utils.firstName = getText(etSignUpFname)
-        Utils.middleName = getText(etSignUpMname)
-        Utils.lastName = getText(etSignUpLname)
-        Utils.ssn = getText(etSignUpSSN).replace("-", "")
+        Utils.firstName = getText(binding.etSignUpFname)
+        Utils.middleName = getText(binding.etSignUpMname)
+        Utils.lastName = getText(binding.etSignUpLname)
+        Utils.ssn = getText(binding.etSignUpSSN).replace("-", "")
         Utils.gender = selectedGender!!
         Utils.prefLang = selectedPrefLang!!
-        Utils.dob = txt_signup_dob.text.toString()
+        Utils.dob = binding.txtSignupDob.text.toString()
         replaceFragment(
             RegisterPartBFragment(),
             R.id.layout_home,

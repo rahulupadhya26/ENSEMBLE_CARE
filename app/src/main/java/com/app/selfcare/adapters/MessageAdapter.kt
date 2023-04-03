@@ -4,15 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.app.selfcare.R
 import com.app.selfcare.controller.OnMessageClickListener
 import com.app.selfcare.data.MessageBean
+import com.app.selfcare.databinding.MsgItemLayoutBinding
 import io.agora.rtm.RtmMessageType
-import kotlinx.android.synthetic.main.msg_item_layout.view.*
 
 class MessageAdapter(
     val context: Context,
@@ -25,59 +21,50 @@ class MessageAdapter(
         parent: ViewGroup,
         viewType: Int
     ): MessageAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.msg_item_layout, parent, false)
-        return ViewHolder(v)
+        val binding =
+            MsgItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.msg_item_layout, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
-    override fun onBindViewHolder(holder: MessageAdapter.ViewHolder, position: Int) {
-
-        val bean: MessageBean = list[position]
-        if (bean.isBeSelf()) {
-            holder.textViewSelfName.text = bean.getAccount()
-        } else {
-            holder.textViewOtherName.text = bean.getAccount()
-            if (bean.getBackground() !== 0) {
-                holder.textViewOtherName.setBackgroundResource(bean.getBackground())
-            }
-        }
-
-        holder.itemView.setOnClickListener { v: View? ->
-            listener.onItemClick(bean)
-        }
-
-        val rtmMessage = bean.getMessage()
-        when (rtmMessage!!.messageType) {
-            RtmMessageType.TEXT -> {
-                if (bean.isBeSelf()) {
-                    holder.textViewSelfMsg.visibility = View.VISIBLE
-                    holder.textViewSelfMsg.text = rtmMessage.text
-                } else {
-                    holder.textViewOtherMsg.visibility = View.VISIBLE
-                    holder.textViewOtherMsg.text = rtmMessage.text
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val bean: MessageBean = list[position]
+            if (bean.isBeSelf()) {
+                itemNameR.text = bean.getAccount()
+            } else {
+                itemNameL.text = bean.getAccount()
+                if (bean.getBackground() !== 0) {
+                    itemNameL.setBackgroundResource(bean.getBackground())
                 }
-                holder.imageViewSelfImg.visibility = View.GONE
-                holder.imageViewOtherImg.visibility = View.GONE
             }
-            RtmMessageType.IMAGE -> {}
+
+            val rtmMessage = bean.getMessage()
+            when (rtmMessage!!.messageType) {
+                RtmMessageType.TEXT -> {
+                    if (bean.isBeSelf()) {
+                        itemMsgR.visibility = View.VISIBLE
+                        itemMsgR.text = rtmMessage.text
+                    } else {
+                        itemMsgL.visibility = View.VISIBLE
+                        itemMsgL.text = rtmMessage.text
+                    }
+                    itemImgR.visibility = View.GONE
+                    itemImgL.visibility = View.GONE
+                }
+                RtmMessageType.IMAGE -> {}
+            }
+
+            itemLayoutR.visibility = if (bean.isBeSelf()) View.VISIBLE else View.GONE
+            itemLayoutL.visibility = if (bean.isBeSelf()) View.GONE else View.VISIBLE
         }
-
-        holder.layoutRight.visibility = if (bean.isBeSelf()) View.VISIBLE else View.GONE
-        holder.layoutLeft.visibility = if (bean.isBeSelf()) View.GONE else View.VISIBLE
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textViewOtherName: TextView = itemView.item_name_l
-        val textViewOtherMsg: TextView = itemView.item_msg_l
-        val imageViewOtherImg: ImageView = itemView.item_img_l
-        val textViewSelfName: TextView = itemView.item_name_r
-        val textViewSelfMsg: TextView = itemView.item_msg_r
-        val imageViewSelfImg: ImageView = itemView.item_img_r
-        val layoutLeft: RelativeLayout = itemView.item_layout_l
-        val layoutRight: RelativeLayout = itemView.item_layout_r
-    }
+    inner class ViewHolder(val binding: MsgItemLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

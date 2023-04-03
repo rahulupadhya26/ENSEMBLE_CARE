@@ -1,5 +1,6 @@
 package com.app.selfcare.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +9,10 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
-import com.app.selfcare.controller.OnAppointmentItemClickListener
 import com.app.selfcare.controller.OnAssessmentItemClickListener
 import com.app.selfcare.data.Assessments
-import com.app.selfcare.utils.DateUtils
-import kotlinx.android.synthetic.main.layout_item_assessment_list.view.*
-import kotlinx.android.synthetic.main.layout_item_journal_list.view.*
+import com.app.selfcare.databinding.LayoutItemAssessmentListBinding
+import com.app.selfcare.databinding.LayoutItemGoalBinding
 
 class AssessmentListAdapter(
     val context: Context,
@@ -26,28 +25,34 @@ class AssessmentListAdapter(
         parent: ViewGroup,
         viewType: Int
     ): AssessmentListAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_assessment_list, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemAssessmentListBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_assessment_list, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
-    override fun onBindViewHolder(holder: AssessmentListAdapter.ViewHolder, position: Int) {
+    @SuppressLint("SetTextI18n")
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val item = list[position]
-        holder.assessmentType.text = item.type_of_assessment
-        holder.assessmentTherapistName.text =
+        holder.binding.assessmentType.text = item.type_of_assessment
+        holder.binding.txtTherapistName.text =
             "Dr. " + item.doctor_first_name + " " + item.doctor_last_name
-        holder.assessmentDate.text = "Assigned Date : " + item.assign_date
+        holder.binding.txtAssignDate.text = "Assigned Date : " + item.assign_date
         if (item.is_completed) {
-            holder.assessmentBtn.text = "View"
+            holder.binding.txtAssessmentBtn.text = "View"
         } else {
-            holder.assessmentBtn.text = "Start"
+            holder.binding.txtAssessmentBtn.text = "Start"
         }
-        holder.assessmentStart.setOnClickListener {
+        holder.binding.startAssessment.setOnClickListener {
             val assessmentType = when (list[position].type_of_assessment) {
                 "GAD 7" -> "GAD7"
                 "PHQ 9" -> "PHQ9"
@@ -65,11 +70,6 @@ class AssessmentListAdapter(
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val assessmentType: TextView = itemView.assessmentType
-        val assessmentTherapistName: TextView = itemView.txtTherapistName
-        val assessmentDate: TextView = itemView.txtAssignDate
-        val assessmentStart: CardView = itemView.startAssessment
-        val assessmentBtn: TextView = itemView.txtAssessmentBtn
-    }
+    inner class ViewHolder(val binding: LayoutItemAssessmentListBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

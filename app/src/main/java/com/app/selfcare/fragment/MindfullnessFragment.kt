@@ -2,11 +2,15 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.data.MindfulnessDashboard
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentMindfullnessBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
@@ -17,7 +21,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_mindfullness.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.util.ArrayList
@@ -36,6 +39,7 @@ class MindfullnessFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentMindfullnessBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,15 @@ class MindfullnessFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentMindfullnessBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -63,11 +76,17 @@ class MindfullnessFragment : BaseFragment() {
     }
 
     private fun onClickEvents(){
-        mindfulnessBack.setOnClickListener {
-            popBackStack()
+        binding.mindfulnessBack.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
-        mindfulnessFav.setOnClickListener {
+        binding.mindfulnessFav.setOnClickListener {
             replaceFragment(
                 FavoriteFragment.newInstance(Utils.WELLNESS_MINDFULNESS),
                 R.id.layout_home,
@@ -75,65 +94,65 @@ class MindfullnessFragment : BaseFragment() {
             )
         }
 
-        layoutSpiritual.setOnClickListener {
+        binding.layoutSpiritual.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtSpiritual.text.toString(), Utils.WELLNESS_MINDFULNESS),
+                DetailFragment.newInstance("Improved focus", Utils.WELLNESS_MINDFULNESS),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutMovement.setOnClickListener {
+        binding.layoutMovement.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtMovement.text.toString(), Utils.WELLNESS_MINDFULNESS),
+                DetailFragment.newInstance("Mantra meditation", Utils.WELLNESS_MINDFULNESS),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutFocused.setOnClickListener {
+        binding.layoutFocused.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtFocused.text.toString(), Utils.WELLNESS_MINDFULNESS),
+                DetailFragment.newInstance("Transcendental awareness", Utils.WELLNESS_MINDFULNESS),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutProgressive.setOnClickListener {
+        binding.layoutProgressive.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtProgressive.text.toString(), Utils.WELLNESS_MINDFULNESS),
+                DetailFragment.newInstance("Visualising abundance", Utils.WELLNESS_MINDFULNESS),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutMantra.setOnClickListener {
+        binding.layoutMantra.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtMantra.text.toString(), Utils.WELLNESS_MINDFULNESS),
+                DetailFragment.newInstance("Guided imagery", Utils.WELLNESS_MINDFULNESS),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutTranscendental.setOnClickListener {
+        binding.layoutLovingKindness.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtTranscendental.text.toString(), Utils.WELLNESS_MINDFULNESS),
+                DetailFragment.newInstance("Loving kindness", Utils.WELLNESS_MINDFULNESS),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutVisualization.setOnClickListener {
+        binding.layoutVisualization.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtVisualization.text.toString(), Utils.WELLNESS_MINDFULNESS),
+                DetailFragment.newInstance(binding.txtVisualization.text.toString(), Utils.WELLNESS_MINDFULNESS),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutNature.setOnClickListener {
+        binding.layoutNature.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtNature.text.toString(), Utils.WELLNESS_MINDFULNESS),
+                DetailFragment.newInstance(binding.txtNature.text.toString(), Utils.WELLNESS_MINDFULNESS),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
@@ -162,45 +181,45 @@ class MindfullnessFragment : BaseFragment() {
                                 Gson().fromJson(responseBody, mindfulnessDashboardDataType)
 
                             if (mindfulnessDashboardDataList.isNotEmpty()) {
-                                layoutTopPicksForYou.visibility = View.VISIBLE
+                                binding.layoutTopPicksForYou.visibility = View.VISIBLE
 
                                 if (mindfulnessDashboardDataList.size == 1) {
-                                    layoutMindfulness1.visibility = View.VISIBLE
-                                    txtMindfulnessName1.text =
+                                    binding.layoutMindfulness1.visibility = View.VISIBLE
+                                    binding.txtMindfulnessName1.text =
                                         mindfulnessDashboardDataList[0].mindfulness_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + mindfulnessDashboardDataList[0].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgMindfulnessBackground1)
+                                        .into(binding.imgMindfulnessBackground1)
 
-                                    layoutMindfulness2.visibility = View.GONE
+                                    binding.layoutMindfulness2.visibility = View.GONE
                                 } else if (mindfulnessDashboardDataList.size >= 2) {
-                                    layoutMindfulness1.visibility = View.VISIBLE
-                                    txtMindfulnessName1.text =
+                                    binding.layoutMindfulness1.visibility = View.VISIBLE
+                                    binding.txtMindfulnessName1.text =
                                         mindfulnessDashboardDataList[0].mindfulness_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + mindfulnessDashboardDataList[0].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgMindfulnessBackground1)
+                                        .into(binding.imgMindfulnessBackground1)
 
-                                    layoutMindfulness2.visibility = View.VISIBLE
-                                    txtMindfulnessName2.text =
+                                    binding.layoutMindfulness2.visibility = View.VISIBLE
+                                    binding.txtMindfulnessName2.text =
                                         mindfulnessDashboardDataList[1].mindfulness_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + mindfulnessDashboardDataList[1].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgMindfulnessBackground2)
+                                        .into(binding.imgMindfulnessBackground2)
                                 }
 
                             } else {
-                                layoutTopPicksForYou.visibility = View.GONE
+                                binding.layoutTopPicksForYou.visibility = View.GONE
                             }
 
-                            layoutMindfulness1.setOnClickListener {
+                            binding.layoutMindfulness1.setOnClickListener {
                                 displayRespectiveScreen(mindfulnessDashboardDataList[0])
                             }
 
-                            layoutMindfulness2.setOnClickListener {
+                            binding.layoutMindfulness2.setOnClickListener {
                                 displayRespectiveScreen(mindfulnessDashboardDataList[1])
                             }
 

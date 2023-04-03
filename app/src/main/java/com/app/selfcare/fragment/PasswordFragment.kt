@@ -2,16 +2,19 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import com.app.selfcare.R
 import com.app.selfcare.data.ConfirmPassword
 import com.app.selfcare.data.SendEmail
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentPasswordBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_password.*
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.Exception
@@ -30,6 +33,7 @@ class PasswordFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var emailID: String? = null
     private var token: String? = null
+    private lateinit var binding: FragmentPasswordBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +41,15 @@ class PasswordFragment : BaseFragment() {
             emailID = it.getString(ARG_PARAM1)
             token = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPasswordBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -50,20 +63,20 @@ class PasswordFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
 
-        newPasswordBack.setOnClickListener {
+        binding.newPasswordBack.setOnClickListener {
             popBackStack()
         }
 
-        btnResetPassword.setOnClickListener {
-            if (isValidPasswordFormat(getText(createNewPassword))) {
-                if (getText(createNewPassword) == getText(createNewConfirmPassword)) {
+        binding.btnResetPassword.setOnClickListener {
+            if (isValidPasswordFormat(getText(binding.createNewPassword))) {
+                if (getText(binding.createNewPassword) == getText(binding.createNewConfirmPassword)) {
                     //Call Api
                     confirmPassword()
                 } else {
                     displayMsg("Alert", "Password mismatch")
                 }
             } else {
-                setEditTextError(createNewPassword, "Enter valid password")
+                setEditTextError(binding.createNewPassword, "Enter valid password")
             }
         }
 
@@ -84,7 +97,7 @@ class PasswordFragment : BaseFragment() {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
                     .confirmPassword(
-                        ConfirmPassword(getText(createNewPassword), token!!),
+                        ConfirmPassword(getText(binding.createNewPassword), token!!),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())

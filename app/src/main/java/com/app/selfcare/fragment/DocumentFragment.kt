@@ -2,26 +2,27 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.adapters.DocumentListAdapter
 import com.app.selfcare.controller.OnDocumentItemClickListener
 import com.app.selfcare.controller.OnDocumentsConsentRoisViewItemClickListener
-import com.app.selfcare.data.AppointmentDocumentData
 import com.app.selfcare.data.ConsentsRoisDocumentData
 import com.app.selfcare.data.Documents
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentDocumentBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_document.*
 import org.json.JSONArray
-import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import kotlin.collections.ArrayList
@@ -41,6 +42,7 @@ class DocumentFragment : BaseFragment(), OnDocumentItemClickListener,
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentDocumentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +50,15 @@ class DocumentFragment : BaseFragment(), OnDocumentItemClickListener,
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentDocumentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -61,8 +72,14 @@ class DocumentFragment : BaseFragment(), OnDocumentItemClickListener,
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        documentBack.setOnClickListener {
-            popBackStack()
+        binding.documentBack.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
         getDocumentData()
@@ -126,7 +143,7 @@ class DocumentFragment : BaseFragment(), OnDocumentItemClickListener,
                                     documents.add(SortedDocumentData(str, type, document))
                                 }
                             }*/
-                            recyclerViewDocumentList.apply {
+                            binding.recyclerViewDocumentList.apply {
                                 layoutManager = LinearLayoutManager(
                                     requireActivity(), RecyclerView.VERTICAL, false
                                 )

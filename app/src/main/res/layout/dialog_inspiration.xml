@@ -1,62 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="300dp"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/_10dp"
-        app:cardElevation="@dimen/_5dp"
-        android:layout_margin="@dimen/_5dp">
+        android:orientation="vertical"
+        android:layout_centerVertical="true">
 
-        <RelativeLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewBox"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5dp"
+            app:cardCornerRadius="@dimen/_10dp"
+            app:cardElevation="@dimen/_5dp"
+            android:layout_centerVertical="true">
 
-            <ImageView
-                android:id="@+id/imgQuote"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
-                android:scaleType="centerCrop"/>
+                android:layout_height="350dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/fontfamily"
-                android:text="Inspiration"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_24sp"
-                android:padding="@dimen/_10dp"
-                android:background="@drawable/black_gradient_background"/>
+                <ImageView
+                    android:id="@+id/imgQuote"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/txtInspiration"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/exercise_select_color"
+                    android:gravity="center"
+                    android:padding="@dimen/_10dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_16sp"
+                    android:visibility="gone" />
 
-    </androidx.cardview.widget.CardView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/black_gradient_background"
+                    android:padding="@dimen/_10dp"
+                    android:text="Inspiration"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_24sp"
+                    android:textStyle="bold" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/_10dp"
-        app:cardElevation="@dimen/_5dp"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/_5dp">
+            </RelativeLayout>
 
-        <TextView
-            android:id="@+id/txtShareInspiration"
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/fontfamily"
-            android:text="Share"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textColor="@color/primaryGreen"
-            android:textSize="@dimen/_20sp"
-            android:padding="@dimen/_10dp"/>
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/_5dp"
+            app:cardCornerRadius="@dimen/_10dp"
+            app:cardElevation="@dimen/_5dp">
 
-    </androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/txtShareInspiration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/_10dp"
+                android:text="Share"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_20sp"
+                android:textStyle="bold" />
 
-</LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+</RelativeLayout>

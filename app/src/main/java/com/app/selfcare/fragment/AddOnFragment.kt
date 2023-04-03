@@ -12,7 +12,7 @@ import com.app.selfcare.R
 import com.app.selfcare.controller.IOnBackPressed
 import com.app.selfcare.data.AddOn
 import com.app.selfcare.data.Plan
-import kotlinx.android.synthetic.main.fragment_add_on.*
+import com.app.selfcare.databinding.FragmentAddOnBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,6 +30,7 @@ class AddOnFragment : BaseFragment(), IOnBackPressed {
     private var plan: Plan? = null
     private var planType: String? = null
     private var addOn: AddOn? = null
+    private lateinit var binding: FragmentAddOnBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +39,15 @@ class AddOnFragment : BaseFragment(), IOnBackPressed {
             planType = it.getString(ARG_PARAM2)
             addOn = it.getParcelable(ARG_PARAM3)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAddOnBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -51,13 +61,13 @@ class AddOnFragment : BaseFragment(), IOnBackPressed {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        imgAddOnBack.setOnClickListener {
+        binding.imgAddOnBack.setOnClickListener {
             popBackStack()
         }
 
-        txtAddOnPrice.text = "$" + addOn!!.monthly_price
+        binding.txtAddOnPrice.text = "$" + addOn!!.monthly_price
 
-        skipForNow.setOnClickListener {
+        binding.skipForNow.setOnClickListener {
             replaceFragment(
                 PaymentSelectFragment.newInstance(plan!!, null, planType!!),
                 R.id.layout_home,
@@ -65,7 +75,7 @@ class AddOnFragment : BaseFragment(), IOnBackPressed {
             )
         }
 
-        btnSubscribe.setOnClickListener {
+        binding.btnSubscribe.setOnClickListener {
             replaceFragment(
                 PaymentSelectFragment.newInstance(
                     plan!!,

@@ -11,25 +11,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnGoalItemClickListener
 import com.app.selfcare.data.Goal
+import com.app.selfcare.databinding.LayoutItemGoalBinding
 import com.app.selfcare.utils.DateUtils
-import kotlinx.android.synthetic.main.layout_item_goal.view.*
-import kotlinx.android.synthetic.main.layout_item_personal_goal.view.*
 import kotlin.math.min
 
 class AllGoalsAdapter(
     val context: Context,
     val list: List<Goal>, private val adapterItemClickListener: OnGoalItemClickListener?,
-    val isProviderGoal: Boolean
+    private val isProviderGoal: Boolean
 ) :
     RecyclerView.Adapter<AllGoalsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): AllGoalsAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_goal, parent, false)
-        return ViewHolder(v)
+    ): ViewHolder {
+        val binding = LayoutItemGoalBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_goal, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -37,17 +37,17 @@ class AllGoalsAdapter(
         return min(list.size, limit)
     }
 
-    override fun onBindViewHolder(holder: AllGoalsAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
         if (isProviderGoal) {
-            holder.deleteGoal.visibility = View.GONE
+            holder.binding.txtDeleteGoal.visibility = View.GONE
         } else {
-            holder.deleteGoal.visibility = View.VISIBLE
+            holder.binding.txtDeleteGoal.visibility = View.VISIBLE
         }
         val goalDate = DateUtils(item.start_date + " 01:00:00")
-        holder.goalDate.text = goalDate.getFormattedDate()
-        holder.goalTitle.text = item.title
-        holder.goalDesc.text = item.description
+        holder.binding.goalDate.text = goalDate.getFormattedDate()
+        holder.binding.goalTitle.text = item.title
+        holder.binding.txtGoalDesc.text = item.description
         var durationTxt = ""
         when (item.duration) {
             0 -> durationTxt = "Does not repeat"
@@ -56,21 +56,15 @@ class AllGoalsAdapter(
             3 -> durationTxt = "Every month"
             4 -> durationTxt = "Every year"
         }
-        holder.goalDuration.text = durationTxt
-        holder.goalLayout.setOnClickListener {
+        holder.binding.goalDuration.text = durationTxt
+        holder.binding.cardviewGoal.setOnClickListener {
             adapterItemClickListener!!.onGoalItemClickListener(item, false)
         }
-        holder.deleteGoal.setOnClickListener {
+        holder.binding.txtDeleteGoal.setOnClickListener {
             adapterItemClickListener!!.onGoalItemClickListener(item, true)
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val deleteGoal: ImageView = itemView.txtDeleteGoal
-        val goalDesc: TextView = itemView.txtGoalDesc
-        val goalDate: TextView = itemView.txtGoalDate
-        val goalTitle: TextView = itemView.goalTitle
-        val goalDuration: TextView = itemView.goalDuration
-        val goalLayout: CardView = itemView.cardview_goal
-    }
+    inner class ViewHolder(val binding: LayoutItemGoalBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

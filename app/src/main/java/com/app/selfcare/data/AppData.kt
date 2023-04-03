@@ -3,8 +3,6 @@ package com.app.selfcare.data
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-import java.io.Serializable
-import java.lang.reflect.Array
 
 data class EncryptDecrypt(
     @SerializedName("msg") val data: String
@@ -15,13 +13,16 @@ data class Question(
     val question: String,
     val option_id: String,
     val next: String,
+    val is_multiple: Boolean,
     var no_of_options: String,
-    val answers: ArrayList<Answers>
+    val options: ArrayList<Answers>
 )
 
 data class Answers(
-    val answer_id: Int,
-    val answer: String,
+    val id: Int,
+    val data: String,
+    val rating: Int,
+    val created_at: String,
     val option_id: String
 )
 
@@ -172,7 +173,12 @@ data class SendAnswer(
 
 data class EachAnswer(
     val question_id: Int,
-    val answer_id: Int
+    val answer: Answer
+)
+
+data class Answer(
+    val option: ArrayList<Int>,
+    val other_text: String = ""
 )
 
 data class Employee(
@@ -303,6 +309,10 @@ data class CancelAppointment(
 
 data class GetToken(
     val appointment_id: Int
+)
+
+data class GetGroupApptToken(
+    val group_appointment_id: Int
 )
 
 @Parcelize
@@ -518,7 +528,7 @@ data class GetAppointment(
     val rtc_token: String,
     val rtm_token: String,
     val rtc_token_doctor: String,
-    val duration: String,
+    val duration: Int,
     val description: String,
     val meeting_date: String,
     val is_group_appointment: Boolean
@@ -614,7 +624,8 @@ data class InsuranceVerifyReqBody(
     val group_id: String,
     val member_name: String,
     val scheme: String,
-    val photo: String
+    val photo: String,
+    val photo_2: String
 )
 
 data class Feedback(
@@ -825,7 +836,15 @@ data class NotificationData(
 @Parcelize
 data class PlanSettingsData(
     val current_subscription: CurrentSubscription,
+    val has_addon: Boolean,
+    val add_on: PlanDetailAddOn,
     val payment_type: String
+) : Parcelable
+
+@Parcelize
+data class PlanDetailAddOn(
+    val plan_detail: String,
+    val price: String
 ) : Parcelable
 
 @Parcelize
@@ -872,7 +891,7 @@ data class DayWiseCarePlan(
 
 @Parcelize
 data class CarePlanCoach(
-    val name: String,
+    val name: String?,
     val type: String
 ) : Parcelable
 
@@ -914,6 +933,7 @@ data class CareDayIndividualTaskDetail(
     val duration: String,
     val date: String?,
     val is_completed: Boolean,
+    val task_input_id: Int,
     val plan: Int,
     val task_detail: CareDayTaskDetail
 ) : Parcelable
@@ -1027,6 +1047,22 @@ data class SubscriptionDetail(
 ) : Parcelable
 
 @Parcelize
+data class DailyInspiration(
+    val id: Int,
+    val title: String,
+    val type: String,
+    val description: String,
+    val extra_data: DailyInspirationDetail
+) : Parcelable
+
+@Parcelize
+data class DailyInspirationDetail(
+    val text: String,
+    val author: String,
+    val image: String
+) : Parcelable
+
+@Parcelize
 data class ConsentRoisFormsNotify(
     val id: Int,
     val title: String,
@@ -1073,6 +1109,22 @@ data class YogaCarePlan(
 ) : Parcelable
 
 @Parcelize
+data class RemoveCarePlan(
+    val id: Int
+) : Parcelable
+
+@Parcelize
+data class MindfulnessCarePlan(
+    val patient: Int,
+    val date: String,
+    val care_plan: Int,
+    val is_completed: Boolean,
+    val mindfulness_plan: Int,
+    val mindfulness_task: Int,
+    val time: String
+) : Parcelable
+
+@Parcelize
 data class NotifyStatus(
     val id: Int,
     val is_read: String = "yes"
@@ -1104,4 +1156,61 @@ data class InsuranceVerifiedDetails(
     val photo: String,
     val vob_verified: String,
     val patient: Int
+) : Parcelable
+
+@Parcelize
+data class EventCommunity(
+    val id: Int,
+    val title: String,
+    val date: String,
+    val start_time: String,
+    val end_time: String,
+    val address: String,
+    val description: String,
+    val image: String
+) : Parcelable
+
+data class FetchCareBuddyList(
+    val client: Int
+)
+
+data class FetchCareBuddyDetail(
+    val id: Int
+)
+
+@Parcelize
+data class CareBuddy(
+    val id: Int,
+    val first_name: String,
+    val last_name: String,
+    val gender: String,
+    val email: String,
+    val phone: String,
+    val relation: String,
+    val state: String,
+    val city: String,
+    val zip_code: String,
+    val country: String,
+    val address: String,
+    val address1: String,
+    val photo: String,
+    val is_verified: Boolean,
+    val client: Int
+) : Parcelable
+
+@Parcelize
+data class AddCareBuddy(
+    val client: Int,
+    val first_name: String,
+    val last_name: String,
+    val gender: String,
+    val email: String,
+    val phone: String,
+    val relation: String,
+    val state: String,
+    val city: String,
+    val zip_code: String,
+    val country: String,
+    val address: String,
+    val address1: String
 ) : Parcelable

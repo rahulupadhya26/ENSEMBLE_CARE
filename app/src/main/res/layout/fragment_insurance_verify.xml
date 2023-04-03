@@ -40,7 +40,7 @@
                 android:layout_marginStart="@dimen/_30dp"
                 android:layout_marginEnd="@dimen/_30dp"
                 android:gravity="center"
-                android:text="We will notify you once we are done verifying your details with your insurance provider"
+                android:text="We will notify you once the details are verified with the insurance provider"
                 android:textAppearance="@style/fontfamily"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_16sp" />
@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-5dp"
                     android:gravity="center"
-                    android:text="Bringing health together"
+                    android:text="Unifying Wellness"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="#38A387"
                     android:textSize="@dimen/_10sp" />

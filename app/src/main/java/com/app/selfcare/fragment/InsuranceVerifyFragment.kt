@@ -3,15 +3,18 @@ package com.app.selfcare.fragment
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import com.app.selfcare.R
 import com.app.selfcare.data.PlanDetails
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentInsuranceVerifyBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.Utils
-import kotlinx.android.synthetic.main.fragment_insurance_verify.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +32,7 @@ class InsuranceVerifyFragment : BaseFragment() {
     private var planDetail: PlanDetails? = null
     private var vobStatus: Int = 0
     private var type: String? = null
+    private lateinit var binding: FragmentInsuranceVerifyBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +41,15 @@ class InsuranceVerifyFragment : BaseFragment() {
             vobStatus = it.getInt(ARG_PARAM2)
             type = it.getString(ARG_PARAM3)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentInsuranceVerifyBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -52,14 +65,14 @@ class InsuranceVerifyFragment : BaseFragment() {
 
         when (vobStatus) {
             Utils.VOB_PENDING -> {
-                layoutInsuranceVerifyProgress.visibility = View.VISIBLE
-                layoutInsuranceVerifyCompleted.visibility = View.GONE
-                layoutInsuranceVerifyFailed.visibility = View.GONE
+                binding.layoutInsuranceVerifyProgress.visibility = View.VISIBLE
+                binding.layoutInsuranceVerifyCompleted.visibility = View.GONE
+                binding.layoutInsuranceVerifyFailed.visibility = View.GONE
             }
             Utils.VOB_COMPLETED -> {
-                layoutInsuranceVerifyCompleted.visibility = View.VISIBLE
-                layoutInsuranceVerifyProgress.visibility = View.GONE
-                layoutInsuranceVerifyFailed.visibility = View.GONE
+                binding.layoutInsuranceVerifyCompleted.visibility = View.VISIBLE
+                binding.layoutInsuranceVerifyProgress.visibility = View.GONE
+                binding.layoutInsuranceVerifyFailed.visibility = View.GONE
                 var htmlText = ""
                 if (planDetail != null) {
                     htmlText =
@@ -67,23 +80,29 @@ class InsuranceVerifyFragment : BaseFragment() {
                 } else {
                     htmlText = "<font color='#5C2E7E'><b>Congratulations!</b></font>"
                 }
-                txtVobVerified.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                binding.txtVobVerified.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     Html.fromHtml(htmlText, Html.FROM_HTML_MODE_COMPACT)
                 } else {
                     Html.fromHtml(htmlText)
                 }
             }
             Utils.VOB_FAILED -> {
-                layoutInsuranceVerifyFailed.visibility = View.VISIBLE
-                layoutInsuranceVerifyCompleted.visibility = View.GONE
-                layoutInsuranceVerifyProgress.visibility = View.GONE
+                binding.layoutInsuranceVerifyFailed.visibility = View.VISIBLE
+                binding.layoutInsuranceVerifyCompleted.visibility = View.GONE
+                binding.layoutInsuranceVerifyProgress.visibility = View.GONE
             }
         }
 
-        btnInsuranceVerificationCompleted.setOnClickListener {
+        binding.btnInsuranceVerificationCompleted.setOnClickListener {
+            Utils.isLoggedInFirstTime = true
             preference!![PrefKeys.PREF_STEP] = Utils.PLAN_PAY
             preference!![PrefKeys.PREF_INSURANCE_VERIFICATION] = false
-            val severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
+            val severityRating = 20
+            /*if (preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!! != null) {
+                if (preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.isNotEmpty()) {
+                    severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
+                }
+            }*/
             preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
             if (severityRating in 0..14) {
                 Utils.isTherapististScreen = false
@@ -102,7 +121,7 @@ class InsuranceVerifyFragment : BaseFragment() {
             }
         }
 
-        btnInsuranceVerificationFailed.setOnClickListener {
+        binding.btnInsuranceVerificationFailed.setOnClickListener {
             preference!![PrefKeys.PREF_INSURANCE_VERIFICATION] = false
             if (type != null && type == "EAP") {
                 replaceFragmentNoBackStack(

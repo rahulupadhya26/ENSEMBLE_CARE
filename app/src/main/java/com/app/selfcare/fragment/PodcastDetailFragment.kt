@@ -10,18 +10,20 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.data.Podcast
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentPodcastDetailBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import kotlinx.android.synthetic.main.fragment_detail.*
-import kotlinx.android.synthetic.main.fragment_podcast_detail.*
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -52,6 +54,7 @@ class PodcastDetailFragment : BaseFragment() {
 
     private lateinit var runnable1: Runnable
     private var handler1: Handler = Handler()
+    private lateinit var binding: FragmentPodcastDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +62,15 @@ class PodcastDetailFragment : BaseFragment() {
             podcast = it.getParcelable(ARG_PARAM1)
             wellnessType = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPodcastDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -76,23 +88,23 @@ class PodcastDetailFragment : BaseFragment() {
         Glide.with(requireActivity())
             .load(BaseActivity.baseURL.dropLast(5) + podcast!!.podcast_image)
             .transform(CenterCrop(), RoundedCorners(5))
-            .into(imgPodcastArtistLarge)
+            .into(binding.imgPodcastArtistLarge)
 
         Glide.with(requireActivity())
             .load(BaseActivity.baseURL.dropLast(5) + podcast!!.podcast_image)
             .transform(CenterCrop(), RoundedCorners(5))
-            .into(imgPodcastArtistSmall)
+            .into(binding.imgPodcastArtistSmall)
 
-        txtPodcastTitle.text = podcast!!.name
-        txtPodcastArtist.text = podcast!!.artist
-        txtPodcastSubTitle.text = podcast!!.description
+        binding.txtPodcastTitle.text = podcast!!.name
+        binding.txtPodcastArtist.text = podcast!!.artist
+        binding.txtPodcastSubTitle.text = podcast!!.description
         isFavourite = podcast!!.is_favourite
 
         runOnUiThread {
             if (podcast!!.is_favourite) {
-                imgFav.setImageResource(R.drawable.favorite)
+                binding.imgFav.setImageResource(R.drawable.favorite)
             } else {
-                imgFav.setImageResource(R.drawable.favourite_white)
+                binding.imgFav.setImageResource(R.drawable.favourite_white)
             }
         }
 
@@ -100,13 +112,13 @@ class PodcastDetailFragment : BaseFragment() {
 
         prepareMediaPlayer(podcast!!.podcast_url)
 
-        podcastSeekbar.setOnSeekBarChangeListener(object :
+        binding.podcastSeekbar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     val playPos: Int = (mediaPlayer!!.duration / 100) * seekBar!!.progress
                     mediaPlayer!!.seekTo(playPos)
-                    currentDuration.text =
+                    binding.currentDuration.text =
                         millisecondsToTimer(mediaPlayer!!.currentPosition.toLong())
                 }
             }
@@ -120,19 +132,19 @@ class PodcastDetailFragment : BaseFragment() {
         })
 
         mediaPlayer!!.setOnBufferingUpdateListener { mp, percent ->
-            podcastSeekbar.secondaryProgress = percent
+            binding.podcastSeekbar.secondaryProgress = percent
         }
 
         mediaPlayer!!.setOnCompletionListener {
-            podcastSeekbar.progress = 0
-            imgPlayPause.setImageResource(R.drawable.ic_action_play_arrow)
-            currentDuration.text = "00:00"
-            maxDuration.text = "00:00"
+            binding.podcastSeekbar.progress = 0
+            binding.imgPlayPause.setImageResource(R.drawable.ic_action_play_arrow)
+            binding.currentDuration.text = "00:00"
+            binding.maxDuration.text = "00:00"
             mediaPlayer!!.reset()
         }
 
         // Seek bar change listener
-        podcastSeekbar.setOnSeekBarChangeListener(object :
+        binding.podcastSeekbar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 if (b) {
@@ -150,18 +162,18 @@ class PodcastDetailFragment : BaseFragment() {
     }
 
     private fun onClickEvents() {
-        podcastPlayerBack.setOnClickListener {
+        binding.podcastPlayerBack.setOnClickListener {
             popBackStack()
         }
 
-        imgFav.setOnClickListener {
+        binding.imgFav.setOnClickListener {
             if (wellnessType!!.isNotEmpty()) {
                 sendFavoriteData(podcast!!.id, "Podcast", !isFavourite, wellnessType!!) {
                     runOnUiThread {
                         if (!isFavourite) {
-                            imgFav.setImageResource(R.drawable.favorite)
+                            binding.imgFav.setImageResource(R.drawable.favorite)
                         } else {
-                            imgFav.setImageResource(R.drawable.favourite_white)
+                            binding.imgFav.setImageResource(R.drawable.favourite_white)
                         }
                         isFavourite = !isFavourite
                     }
@@ -170,9 +182,9 @@ class PodcastDetailFragment : BaseFragment() {
                 sendResourceFavoriteData(podcast!!.id, "Podcast", !isFavourite) {
                     runOnUiThread {
                         if (!isFavourite) {
-                            imgFav.setImageResource(R.drawable.favorite)
+                            binding.imgFav.setImageResource(R.drawable.favorite)
                         } else {
-                            imgFav.setImageResource(R.drawable.favourite_white)
+                            binding.imgFav.setImageResource(R.drawable.favourite_white)
                         }
                         isFavourite = !isFavourite
                     }
@@ -180,27 +192,27 @@ class PodcastDetailFragment : BaseFragment() {
             }
         }
 
-        imgPrev.setOnClickListener {
+        binding.imgPrev.setOnClickListener {
 
         }
 
-        cardViewPlayButton.setOnClickListener {
+        binding.cardViewPlayButton.setOnClickListener {
             if (mediaPlayer!!.isPlaying) {
                 audioHandler.removeCallbacks(updater)
                 handler1.removeCallbacks(runnable1)
                 mediaPlayer!!.pause()
-                imgPlayPause.setImageResource(R.drawable.ic_action_play_arrow)
+                binding.imgPlayPause.setImageResource(R.drawable.ic_action_play_arrow)
                 mediaPlayer!!.seekTo(mediaPlayer!!.currentPosition)
             } else {
                 startMusic()
             }
         }
 
-        imgNext.setOnClickListener {
+        binding.imgNext.setOnClickListener {
 
         }
 
-        imgSharePodcast.setOnClickListener {
+        binding.imgSharePodcast.setOnClickListener {
             /*shareDetails(
                 "",
                 podcast!!.name,
@@ -213,13 +225,13 @@ class PodcastDetailFragment : BaseFragment() {
 
     private fun startMusic() {
         mediaPlayer!!.start()
-        imgPlayPause.setImageResource(R.drawable.pause)
+        binding.imgPlayPause.setImageResource(R.drawable.pause)
         initializeSeekBar()
     }
 
     private fun showAudioProgress() {
         requireActivity().runOnUiThread {
-            if (progressAlive) {
+            /*if (progressAlive) {
                 pDialog!!.cancel()
                 progressAlive = false
             }
@@ -227,17 +239,19 @@ class PodcastDetailFragment : BaseFragment() {
             pDialog!!.setMessage("Please wait...")
             if ("Please wait".contains("Please wait")) pDialog!!.setCanceledOnTouchOutside(false)
             progressAlive = true
-            pDialog!!.show()
+            pDialog!!.show()*/
+            showProgress()
         }
     }
 
     private fun hideAudioProgress() {
         requireActivity().runOnUiThread {
-            if (progressAlive) {
+            hideProgress()
+            /*if (progressAlive) {
                 pDialog!!.dismiss()
                 pDialog!!.cancel()
                 progressAlive = false
-            }
+            }*/
         }
     }
 
@@ -248,7 +262,7 @@ class PodcastDetailFragment : BaseFragment() {
             mediaPlayer!!.prepareAsync()
             mediaPlayer!!.setOnPreparedListener {
                 hideAudioProgress()
-                maxDuration.text =
+                binding.maxDuration.text =
                     millisecondsToTimer(mediaPlayer!!.duration.toLong())
                 startMusic()
             }
@@ -260,12 +274,12 @@ class PodcastDetailFragment : BaseFragment() {
     private var updater: Runnable = Runnable {
         updateSeekBar()
         val currentDurationLength: Long = mediaPlayer!!.currentPosition.toLong()
-        currentDuration.text = millisecondsToTimer(currentDurationLength)
+        binding.currentDuration.text = millisecondsToTimer(currentDurationLength)
     }
 
     private fun updateSeekBar() {
         if (mediaPlayer!!.isPlaying) {
-            podcastSeekbar.progress =
+            binding.podcastSeekbar.progress =
                 (mediaPlayer!!.currentPosition / max(1, mediaPlayer!!.duration)) * 100
             audioHandler.postDelayed(updater, 1000)
         }
@@ -273,13 +287,13 @@ class PodcastDetailFragment : BaseFragment() {
 
     // Method to initialize seek bar and audio stats
     private fun initializeSeekBar() {
-        podcastSeekbar.max = mediaPlayer!!.seconds
+        binding.podcastSeekbar.max = mediaPlayer!!.seconds
 
         runnable1 = Runnable {
-            podcastSeekbar.progress = mediaPlayer!!.currentSeconds
+            binding.podcastSeekbar.progress = mediaPlayer!!.currentSeconds
 
             val currentDurationLength: Long = mediaPlayer!!.currentPosition.toLong()
-            currentDuration.text = millisecondsToTimer(currentDurationLength)
+            binding.currentDuration.text = millisecondsToTimer(currentDurationLength)
             /*val diff = mediaPlayer.seconds - mediaPlayer.currentSeconds
             tv_due.text = "$diff sec"*/
 
@@ -420,7 +434,7 @@ class PodcastDetailFragment : BaseFragment() {
             audioHandler.removeCallbacks(updater)
             handler1.removeCallbacks(runnable1)
             mediaPlayer!!.pause()
-            imgPlayPause.setImageResource(R.drawable.ic_action_play_arrow)
+            binding.imgPlayPause.setImageResource(R.drawable.ic_action_play_arrow)
             mediaPlayer!!.seekTo(mediaPlayer!!.currentPosition)
         }
     }
@@ -446,7 +460,7 @@ class PodcastDetailFragment : BaseFragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: Podcast, param2: String) =
+        fun newInstance(param1: Podcast?, param2: String) =
             PodcastDetailFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, param1)

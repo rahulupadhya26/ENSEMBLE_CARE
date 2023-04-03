@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        app:cardBackgroundColor="@color/primaryGreen"
+        app:cardBackgroundColor="#31A88A"
         app:cardCornerRadius="@dimen/_2dp">
 
         <TextView
@@ -211,6 +211,7 @@
                             android:textColor="#6C6767"
                             android:textSize="@dimen/_12sp"
                             android:layout_marginTop="5dp"
+                            android:paddingBottom="@dimen/_5dp"
                             android:text="Click to view the provider"/>
                     </LinearLayout>
 

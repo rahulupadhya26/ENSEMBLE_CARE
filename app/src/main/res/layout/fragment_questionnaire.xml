@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,6 +7,7 @@
     tools:context=".fragment.QuestionnaireFragment">
 
     <RelativeLayout
+        android:id="@+id/layoutQuestionnaire"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/initial_screen_background">
@@ -40,6 +41,20 @@
                 android:maxLines="5"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_18sp" />
+
+            <TextView
+                android:id="@+id/tv_check_apply"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20dp"
+                android:layout_marginEnd="@dimen/_20dp"
+                android:layout_marginBottom="@dimen/_10dp"
+                android:ellipsize="end"
+                android:textAppearance="@style/fontfamily"
+                android:text="(Check all that apply)"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                android:textSize="@dimen/_14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -221,24 +236,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bg_box_grey_top_corners"
-            android:layout_above="@+id/layout_next_question"
             android:layout_below="@+id/rl_status">
 
             <ScrollView
+                android:id="@+id/scrollViewOptions"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_above="@+id/btnQuestionnaireContinue">
 
                 <LinearLayout
                     android:id="@+id/layout_options"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_margin="@dimen/_20dp">
+                    android:layout_margin="@dimen/_20dp"
+                    android:paddingBottom="@dimen/_30dp">
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cv_option_one"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_height="80dp"
                         app:cardCornerRadius="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_15dp"
                         app:rippleColor="@color/primaryGreen"
@@ -249,18 +266,20 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:fontFamily="@font/inter_bold"
-                            android:padding="@dimen/_20dp"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
                             android:gravity="center_vertical"
                             android:background="@drawable/edittext_background_box"
                             android:textColor="@color/primaryGreen"
                             android:textStyle="bold"
-                            android:textSize="@dimen/_18sp" />
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cv_option_two"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_height="80dp"
                         app:cardCornerRadius="@dimen/_5dp"
                         app:rippleColor="@color/primaryGreen"
                         android:layout_marginTop="@dimen/_10dp"
@@ -271,18 +290,20 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:fontFamily="@font/inter_bold"
-                            android:padding="@dimen/_20dp"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
                             android:gravity="center_vertical"
                             android:background="@drawable/edittext_background_box"
                             android:textColor="@color/primaryGreen"
                             android:textStyle="bold"
-                            android:textSize="@dimen/_18sp"/>
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cv_option_three"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_height="80dp"
                         app:cardCornerRadius="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_10dp"
                         app:rippleColor="@color/primaryGreen"
@@ -293,18 +314,20 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:fontFamily="@font/inter_bold"
-                            android:padding="@dimen/_20dp"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
                             android:gravity="center_vertical"
                             android:background="@drawable/edittext_background_box"
                             android:textColor="@color/primaryGreen"
                             android:textStyle="bold"
-                            android:textSize="@dimen/_18sp"/>
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cv_option_four"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_height="80dp"
                         app:cardCornerRadius="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_10dp"
                         app:cardUseCompatPadding="true"
@@ -315,16 +338,318 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:fontFamily="@font/inter_bold"
-                            android:padding="@dimen/_20dp"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
                             android:gravity="center_vertical"
                             android:background="@drawable/edittext_background_box"
                             android:textColor="@color/primaryGreen"
                             android:textStyle="bold"
-                            android:textSize="@dimen/_18sp"/>
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_option_five"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <TextView
+                            android:id="@+id/tv_option_five"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_background_box"
+                            android:textColor="@color/primaryGreen"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_option_six"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <TextView
+                            android:id="@+id/tv_option_six"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_background_box"
+                            android:textColor="@color/primaryGreen"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_option_seven"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <TextView
+                            android:id="@+id/tv_option_seven"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_background_box"
+                            android:textColor="@color/primaryGreen"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_option_eight"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <TextView
+                            android:id="@+id/tv_option_eight"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_background_box"
+                            android:textColor="@color/primaryGreen"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_option_nine"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <TextView
+                            android:id="@+id/tv_option_nine"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_background_box"
+                            android:textColor="@color/primaryGreen"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_option_ten"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <TextView
+                            android:id="@+id/tv_option_ten"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_background_box"
+                            android:textColor="@color/primaryGreen"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_option_eleven"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <TextView
+                            android:id="@+id/tv_option_eleven"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_background_box"
+                            android:textColor="@color/primaryGreen"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_option_twelve"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <TextView
+                            android:id="@+id/tv_option_twelve"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_background_box"
+                            android:textColor="@color/primaryGreen"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_option_thirteen"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <TextView
+                            android:id="@+id/tv_option_thirteen"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_background_box"
+                            android:textColor="@color/primaryGreen"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_option_fourteen"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <TextView
+                            android:id="@+id/tv_option_fourteen"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_background_box"
+                            android:textColor="@color/primaryGreen"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_option_fifteen"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <TextView
+                            android:id="@+id/tv_option_fifteen"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_background_box"
+                            android:textColor="@color/primaryGreen"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_16sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cv_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        app:cardUseCompatPadding="true"
+                        android:visibility="gone"
+                        app:rippleColor="@color/primaryGreen">
+
+                        <EditText
+                            android:id="@+id/et_others"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/inter_bold"
+                            android:paddingStart="@dimen/_20dp"
+                            android:paddingEnd="@dimen/_20dp"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/login_edittxt_background"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textSize="@dimen/_14sp" />
                     </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
             </ScrollView>
+
+            <Button
+                android:id="@+id/btnQuestionnaireContinue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/buttonBackground"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/_5dp"
+                android:layout_marginTop="@dimen/_5dp"
+                android:text="Continue"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_option_list"
@@ -337,4 +662,286 @@
 
     </RelativeLayout>
 
-</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/layoutResourcesHelp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="@dimen/_10dp"
+        android:visibility="gone">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="Resources"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_24sp"/>
+
+                    <ImageView
+                        android:id="@+id/btnResourceContinue"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="@dimen/_5dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_5dp"
+                        android:src="@mipmap/ic_action_close"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F2DFDF"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_10dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="Helpline Numbers"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_20sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="Always there to help you, no matter the timezone"
+                    android:textColor="#8E6B6B"
+                    android:textSize="@dimen/_16sp"
+                    android:layout_marginTop="@dimen/_5dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="+1-800-273-8255"
+                    android:textColor="@color/black"
+                    android:autoLink="phone"
+                    android:textSize="@dimen/_20sp"
+                    android:textColorLink="#830CDB"
+                    android:layout_marginTop="@dimen/_10dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="+1-212-673-3000"
+                    android:textColor="@color/black"
+                    android:autoLink="phone"
+                    android:textSize="@dimen/_20sp"
+                    android:textColorLink="#830CDB"
+                    android:layout_marginTop="@dimen/_10dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="+1-800-273-8255"
+                    android:textColor="@color/black"
+                    android:autoLink="phone"
+                    android:textColorLink="#830CDB"
+                    android:textSize="@dimen/_20sp"
+                    android:layout_marginTop="@dimen/_10dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="If you are in crisis, get immediate help:"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp"
+                    android:layout_marginTop="@dimen/_10dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginStart="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="\u2022 Call "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="@string/call_911"
+                        android:textColor="#830CDB"
+                        android:autoLink="phone"
+                        android:textSize="@dimen/_16sp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginStart="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="\u2022 "
+                        android:textColor="@color/black"
+                        android:autoLink="web"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="@string/crisis_lifeline"
+                        android:textColor="@color/black"
+                        android:autoLink="web"
+                        android:textColorLink="#830CDB"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginStart="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="\u2022 "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="@string/crisis_text_line"
+                        android:textColor="@color/black"
+                        android:textColorLink="#830CDB"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginStart="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="\u2022 "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="@string/disaster_distress_helpline"
+                        android:textColor="@color/black"
+                        android:textColorLink="#830CDB"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="LGBTQ+"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp"
+                    android:layout_marginTop="@dimen/_10dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginStart="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="\u2022 "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="@string/trans_lifeline"
+                        android:textColor="@color/black"
+                        android:textColorLink="#830CDB"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginStart="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="\u2022 "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="@string/the_trevor_project"
+                        android:textColor="@color/black"
+                        android:textColorLink="#830CDB"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+</FrameLayout>

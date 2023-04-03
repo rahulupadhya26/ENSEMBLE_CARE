@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Ensemble Care"
+            android:text="@string/app_name"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/white"
             android:textSize="@dimen/_32sp"
@@ -56,10 +56,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="-10dp"
             android:gravity="center"
-            android:text="Bringing Health Together"
+            android:text="Unifying Wellness"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/white"
-            android:textSize="@dimen/_16sp" />
+            android:textSize="@dimen/_18sp" />
 
     </LinearLayout>
 

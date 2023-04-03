@@ -109,10 +109,10 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/txtMindfulnessCarePlanAssignedBy"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="-5dp"
-                        android:text="Alexandar Howard"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_18sp"
@@ -128,9 +128,9 @@
                     android:padding="@dimen/_15dp">
 
                     <TextView
+                        android:id="@+id/txtMindfulnessCarePlanTaskAssigned"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Task assigned 1/2"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16sp" />
@@ -142,13 +142,14 @@
                         android:text="Calorie 740/2000"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/_16sp" />
+                        android:textSize="@dimen/_16sp"
+                        android:visibility="gone"/>
 
                     <TextView
+                        android:id="@+id/txtMindfulnessCarePlanCurrentDay"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="-5dp"
-                        android:text="Day 04/30"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16sp" />

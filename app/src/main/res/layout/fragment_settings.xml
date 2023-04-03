@@ -87,7 +87,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/user_pic" />
+                        android:src="@drawable/user_pic"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/txtUser"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:background="@drawable/square_background"
+                        android:textSize="@dimen/_34sp"
+                        android:textColor="@color/white"/>
 
                 </RelativeLayout>
 
@@ -711,7 +722,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ensemble Care"
+                    android:text="@string/app_name"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/primaryGreen"
                     android:textSize="@dimen/_20sp"
@@ -722,10 +733,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-5dp"
                     android:gravity="center"
-                    android:text="Bringing health together"
+                    android:text="Unifying Wellness"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="#38A387"
-                    android:textSize="@dimen/_10sp" />
+                    android:textSize="@dimen/_12sp" />
 
             </LinearLayout>
 

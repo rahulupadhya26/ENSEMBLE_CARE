@@ -14,10 +14,11 @@ import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnNutritionDashboardItemClickListener
 import com.app.selfcare.data.NutritionDashboard
+import com.app.selfcare.databinding.LayoutItemGoalBinding
+import com.app.selfcare.databinding.LayoutItemNutritionSliderBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import kotlinx.android.synthetic.main.layout_item_nutrition_slider.view.*
 
 class NutritionSliderAdapter(
     val context: Context,
@@ -27,30 +28,34 @@ class NutritionSliderAdapter(
 ) :
     RecyclerView.Adapter<NutritionSliderAdapter.SliderViewHolder>() {
 
-    class SliderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nutritionImage: ImageView = itemView.imgNutrition
-        val nutritionText: TextView = itemView.textNutrition
-        val nutritionPane:LinearLayout = itemView.layoutNutritionSliderPane
-    }
+    class SliderViewHolder(val binding: LayoutItemNutritionSliderBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SliderViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_nutrition_slider, parent, false)
-        return SliderViewHolder(v)
+        val binding = LayoutItemNutritionSliderBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_nutrition_slider, parent, false)*/
+        return SliderViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: SliderViewHolder, position: Int) {
-        val item = list[position]
-        Glide.with(context)
-            .load(BaseActivity.baseURL.dropLast(5) + item.image)
-            .transform(CenterCrop(), RoundedCorners(5))
-            .into(holder.nutritionImage)
-        holder.nutritionText.text = item.nutrition_name
-        if (position == list.size - 2) {
-            viewPager.post(runnable)
-        }
-        holder.nutritionPane.setOnClickListener {
-            adapterItemClickListener!!.onNutritionDashboardItemClicked(item)
+        holder.binding.apply {
+            val item = list[position]
+            Glide.with(context)
+                .load(BaseActivity.baseURL.dropLast(5) + item.image)
+                .transform(CenterCrop(), RoundedCorners(5))
+                .into(imgNutrition)
+            textNutrition.text = item.nutrition_name
+            if (position == list.size - 2) {
+                viewPager.post(runnable)
+            }
+            layoutNutritionSliderPane.setOnClickListener {
+                adapterItemClickListener!!.onNutritionDashboardItemClicked(item)
+            }
         }
     }
 

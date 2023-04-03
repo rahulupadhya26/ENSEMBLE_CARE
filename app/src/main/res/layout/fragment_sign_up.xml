@@ -102,7 +102,7 @@
                 android:layout_marginStart="@dimen/_10dp"
                 android:layout_marginTop="@dimen/_10dp"
                 android:layout_marginEnd="@dimen/_10dp"
-                android:text="We have sent you the verification code to your email. Please check your inbox or spam folder"
+                android:text="A verification code has been sent to the email associated with your account. Please check your inbox."
                 android:textAppearance="@style/fontfamily"
                 android:textColor="#666666"
                 android:textSize="@dimen/_18sp" />

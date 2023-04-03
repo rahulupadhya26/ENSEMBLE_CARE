@@ -2,7 +2,9 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,14 +16,14 @@ import com.app.selfcare.controller.OnConsentRoisViewItemClickListener
 import com.app.selfcare.data.ConsentRois
 import com.app.selfcare.data.ConsentRoisFormsNotify
 import com.app.selfcare.data.GroupAppointment
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentConsentsListBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_consents_list.*
-import kotlinx.android.synthetic.main.fragment_group_appointments.*
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.HttpException
@@ -42,6 +44,7 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener,
     // TODO: Rename and change types of parameters
     private var consentRoisFormsNotifyList: ArrayList<ConsentRoisFormsNotify>? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentConsentsListBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +52,15 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener,
             consentRoisFormsNotifyList = it.getParcelableArrayList(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentConsentsListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -62,7 +74,7 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener,
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        consentsRoisBack.setOnClickListener {
+        binding.consentsRoisBack.setOnClickListener {
             setBottomNavigation(null)
             setLayoutBottomNavigation(null)
             replaceFragmentNoBackStack(
@@ -75,7 +87,7 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener,
         //Appointments
         displayConsentsList()
 
-        consentsRefresh.setOnClickListener {
+        binding.consentsRefresh.setOnClickListener {
             displayConsentsList()
         }
     }
@@ -181,9 +193,9 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener,
                             }
 
                             if (consentRois.isNotEmpty()) {
-                                recyclerViewConsentsList.visibility = View.VISIBLE
-                                txtNoConsentList.visibility = View.GONE
-                                recyclerViewConsentsList.apply {
+                                binding.recyclerViewConsentsList.visibility = View.VISIBLE
+                                binding.txtNoConsentList.visibility = View.GONE
+                                binding.recyclerViewConsentsList.apply {
                                     layoutManager = LinearLayoutManager(
                                         mActivity!!,
                                         RecyclerView.VERTICAL,
@@ -196,8 +208,8 @@ class ConsentsListFragment : BaseFragment(), OnConsentRoisItemClickListener,
                                     )
                                 }
                             } else {
-                                recyclerViewConsentsList.visibility = View.GONE
-                                txtNoConsentList.visibility = View.VISIBLE
+                                binding.recyclerViewConsentsList.visibility = View.GONE
+                                binding.txtNoConsentList.visibility = View.VISIBLE
                             }
                         } catch (e: Exception) {
                             hideProgress()

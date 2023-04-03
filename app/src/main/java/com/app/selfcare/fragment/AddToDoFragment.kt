@@ -4,29 +4,20 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
-import com.app.selfcare.adapters.ToDoListAdapter
 import com.app.selfcare.data.CreateToDo
-import com.app.selfcare.data.PatientId
-import com.app.selfcare.data.ToDoData
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentAddToDoBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.DateUtils
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_add_to_do.*
-import kotlinx.android.synthetic.main.fragment_registration.*
-import kotlinx.android.synthetic.main.fragment_to_do.*
 import retrofit2.HttpException
-import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -45,6 +36,7 @@ class AddToDoFragment : BaseFragment() {
     private var param1: String? = null
     private var param2: String? = null
     private var selectedDateTime: String = ""
+    private lateinit var binding: FragmentAddToDoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +50,15 @@ class AddToDoFragment : BaseFragment() {
         return R.layout.fragment_add_to_do
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAddToDoBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,23 +67,35 @@ class AddToDoFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        addToDoBack.setOnClickListener {
-            popBackStack()
+        binding.addToDoBack.setOnClickListener {
+            if (getText(binding.editTxtToDoName).isNotEmpty()) {
+                if (getText(binding.editTextToDoDescription).isNotEmpty()) {
+                    if (selectedDateTime.isNotEmpty()) {
+                        addToDo()
+                    } else {
+                        popBackStack()
+                    }
+                } else {
+                    popBackStack()
+                }
+            } else {
+                popBackStack()
+            }
         }
 
-        btnAddToDo.setOnClickListener {
-            if (getText(editTxtToDoName).isNotEmpty()) {
-                if (getText(editTextToDoDescription).isNotEmpty()) {
+        binding.btnAddToDo.setOnClickListener {
+            if (getText(binding.editTxtToDoName).isNotEmpty()) {
+                if (getText(binding.editTextToDoDescription).isNotEmpty()) {
                     if (selectedDateTime.isNotEmpty()) {
                         addToDo()
                     } else {
                         displayMsg("Alert", "Select due date")
                     }
                 } else {
-                    setEditTextError(editTextToDoDescription, "Description cannot be blank")
+                    setEditTextError(binding.editTextToDoDescription, "Description cannot be blank")
                 }
             } else {
-                setEditTextError(editTxtToDoName, "Title cannot be blank")
+                setEditTextError(binding.editTxtToDoName, "Title cannot be blank")
             }
         }
 
@@ -98,11 +111,11 @@ class AddToDoFragment : BaseFragment() {
                 val sdf = SimpleDateFormat(myFormat)
                 selectedDateTime = sdf.format(cal.time)
                 val dateTime = DateUtils(sdf.format(cal.time) + " 00:00:00")
-                txtToDoSelectedDate.text =
+                binding.txtToDoSelectedDate.text =
                     dateTime.getDay() + " " + dateTime.getMonth() + " " + dateTime.getYear()
             }
 
-        layoutToDoSelectDate.setOnClickListener {
+        binding.layoutToDoSelectDate.setOnClickListener {
             val datePickerDialog = DatePickerDialog(
                 mActivity!!, dateSetListener,
                 cal.get(Calendar.YEAR),
@@ -123,8 +136,8 @@ class AddToDoFragment : BaseFragment() {
                         "PI0009",
                         CreateToDo(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
-                            getText(editTxtToDoName),
-                            getText(editTextToDoDescription),
+                            getText(binding.editTxtToDoName),
+                            getText(binding.editTextToDoDescription),
                             selectedDateTime!!,
                             false
                         ),

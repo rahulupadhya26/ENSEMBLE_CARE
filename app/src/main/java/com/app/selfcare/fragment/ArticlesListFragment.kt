@@ -1,25 +1,18 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.appcompat.app.AlertDialog
+import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.CompositePageTransformer
-import androidx.viewpager2.widget.MarginPageTransformer
-import androidx.viewpager2.widget.ViewPager2
 import com.app.selfcare.R
-import com.app.selfcare.adapters.DashboardArticlesAdapter
 import com.app.selfcare.adapters.NewsListAdapter
-import com.app.selfcare.adapters.NewsSliderAdapter
 import com.app.selfcare.controller.OnNewsItemClickListener
 import com.app.selfcare.data.Articles
-import com.app.selfcare.data.Podcast
-import com.app.selfcare.data.Video
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentNewsListBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
@@ -27,12 +20,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_dashboard.*
-import kotlinx.android.synthetic.main.fragment_news_list.*
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
-import kotlin.math.abs
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,6 +42,7 @@ class NewsListFragment : BaseFragment(), OnNewsItemClickListener {
     private var wellnessType: String? = null
     private var isFavourite: Boolean = false
     private var category: String? = null
+    private lateinit var binding: FragmentNewsListBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +52,15 @@ class NewsListFragment : BaseFragment(), OnNewsItemClickListener {
             isFavourite = it.getBoolean(ARG_PARAM3)
             category = it.getString(ARG_PARAM4)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentNewsListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -73,7 +73,7 @@ class NewsListFragment : BaseFragment(), OnNewsItemClickListener {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        articlesBack.setOnClickListener {
+        binding.articlesBack.setOnClickListener {
             popBackStack()
         }
 
@@ -107,6 +107,13 @@ class NewsListFragment : BaseFragment(), OnNewsItemClickListener {
                         getFavDetailArticleData()
                     } else {
                         getDetailArticleData("yoga_data/")
+                    }
+                }
+                Utils.WELLNESS_MUSIC -> {
+                    if (isFavourite) {
+                        getFavDetailArticleData()
+                    } else {
+                        getDetailArticleData("music_data/")
                     }
                 }
                 else -> {
@@ -187,7 +194,11 @@ class NewsListFragment : BaseFragment(), OnNewsItemClickListener {
 
     private fun displayArticles(articlesList: ArrayList<Articles>) {
         if (articlesList.isNotEmpty()) {
-            recyclerviewNewsList.apply {
+            binding.shimmerNewsList.stopShimmer()
+            binding.shimmerNewsList.visibility = View.GONE
+            binding.txtNoArticles.visibility = View.GONE
+            binding.recyclerviewNewsList.visibility = View.VISIBLE
+            binding.recyclerviewNewsList.apply {
                 layoutManager = GridLayoutManager(mActivity!!, 2)
                 adapter = NewsListAdapter(
                     mActivity!!,
@@ -195,16 +206,10 @@ class NewsListFragment : BaseFragment(), OnNewsItemClickListener {
                 )
             }
         } else {
-            val builder = AlertDialog.Builder(mActivity!!)
-            //builder.setIcon(R.drawable.work_in_progress)
-            builder.setTitle("Alert")
-            builder.setMessage("No articles found")
-            builder.setPositiveButton("OK") { dialog, which ->
-                dialog.dismiss()
-                popBackStack()
-            }
-            builder.setCancelable(false)
-            builder.show()
+            binding.shimmerNewsList.stopShimmer()
+            binding.shimmerNewsList.visibility = View.GONE
+            binding.recyclerviewNewsList.visibility = View.GONE
+            binding.txtNoArticles.visibility = View.VISIBLE
         }
     }
 

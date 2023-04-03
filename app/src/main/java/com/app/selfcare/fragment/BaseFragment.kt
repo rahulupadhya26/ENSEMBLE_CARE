@@ -29,36 +29,29 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.BaseActivity
-import com.app.selfcare.GroupVideoCall
 import com.app.selfcare.MainActivity
 import com.app.selfcare.R
-import com.app.selfcare.adapters.CarePlanDayListAdapter
 import com.app.selfcare.controller.IController
 import com.app.selfcare.controller.IFragment
 import com.app.selfcare.crypto.DecryptionImpl
 import com.app.selfcare.data.*
+import com.app.selfcare.databinding.DisplayImageBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.services.RequestInterface
+import com.app.selfcare.utils.NetworkConnection
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.display_image.*
-import kotlinx.android.synthetic.main.fragment_care_plan.*
-import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -67,7 +60,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.io.*
-import java.lang.reflect.Type
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -86,12 +78,16 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     protected val handler: Handler = Handler()
     protected var runnable: Runnable? = null
     var preference: SharedPreferences? = null
+    private lateinit var displayImageBinding: DisplayImageBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
         this.mActivity = mContext as MainActivity
         fragment = this
+        val builder: StrictMode.VmPolicy.Builder = StrictMode.VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build())
+        preference = PreferenceHelper.defaultPrefs(requireActivity())
     }
 
     override fun onCreateView(
@@ -101,9 +97,6 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         // Inflate the layout for this fragment
         if (root == null)
             root = inflater.inflate(getLayout(), container, false)
-        val builder: StrictMode.VmPolicy.Builder = StrictMode.VmPolicy.Builder()
-        StrictMode.setVmPolicy(builder.build())
-        preference = PreferenceHelper.defaultPrefs(requireActivity())
         return root
     }
 
@@ -359,6 +352,10 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
 
     fun getLayoutBottomNavigation(): RelativeLayout? {
         return mActivity!!.getLayoutBottomNavigation()
+    }
+
+    fun getNetworkInit(): NetworkConnection? {
+        return mActivity!!.getNetworkInit()
     }
 
     fun updateStatusBarColor(colorId: Int) {
@@ -678,25 +675,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                         hideProgress()
                         //displayToast("Error ${error.localizedMessage}")
                         if ((error as HttpException).code() == 401) {
-                            userLogin(
-                                preference!![PrefKeys.PREF_EMAIL]!!,
-                                preference!![PrefKeys.PREF_PASS]!!
-                            ) { result ->
-                                sendApptStatus(
-                                    apptId,
-                                    actualStartTime,
-                                    actualEndTime,
-                                    duration
-                                ) { response ->
-                                    if (response == "Success") {
-                                        replaceFragmentNoBackStack(
-                                            TherapistFeedbackFragment(),
-                                            R.id.layout_home,
-                                            TherapistFeedbackFragment.TAG
-                                        )
-                                    }
-                                }
-                            }
+                            clearCache()
                         } else {
                             displayAfterLoginErrorMsg(error)
                             popBackStack()
@@ -707,29 +686,19 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         handler.postDelayed(runnable!!, 1000)
     }
 
-    fun showImage(imageView: ImageView) {
-        val dialog = Dialog(requireActivity())
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(layoutInflater.inflate(R.layout.display_image, null))
-        dialog.setCanceledOnTouchOutside(true)
-        dialog.btnImageDialog.setOnClickListener {
-            dialog.dismiss()
-        }
-        dialog.imgView.setImageBitmap((imageView.drawable as BitmapDrawable).bitmap)
-        dialog.show()
-    }
-
     fun showImage(bitmapStr: String) {
         val dialog = Dialog(requireActivity())
         dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(layoutInflater.inflate(R.layout.display_image, null))
+        displayImageBinding = DisplayImageBinding.inflate(layoutInflater)
+        val view = displayImageBinding.root
+        dialog.setContentView(view)
         dialog.setCanceledOnTouchOutside(true)
-        dialog.btnImageDialog.setOnClickListener {
+        displayImageBinding.btnImageDialog.setOnClickListener {
             dialog.dismiss()
         }
         Glide.with(this)
             .load(File(bitmapStr))
-            .into(dialog.imgView)
+            .into(displayImageBinding.imgView)
         dialog.show()
     }
 
@@ -747,10 +716,11 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         builder.show()
     }
 
-    private fun clearCache() {
+    fun clearCache() {
         preference!![PrefKeys.PREF_IS_LOGGEDIN] = false
         getHeader().visibility = View.GONE
         swipeSliderEnable(false)
+        displayToast("You have logged out")
         replaceFragmentNoBackStack(LoginFragment(), R.id.layout_home, LoginFragment.TAG)
     }
 
@@ -1034,6 +1004,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         wellnessType: String,
         myCallback: (result: String?) -> Unit
     ) {
+        showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
@@ -1064,6 +1035,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                             }
                         } catch (e: Exception) {
                             hideProgress()
+                            e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->
@@ -1169,54 +1141,6 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                         } catch (e: Exception) {
                             hideProgress()
                             e.printStackTrace()
-                            displayToast("Something went wrong.. Please try after sometime")
-                        }
-                    }, { error ->
-                        hideProgress()
-                        //displayToast("Error ${error.localizedMessage}")
-                        if ((error as HttpException).code() == 401) {
-                            userLogin(
-                                preference!![PrefKeys.PREF_EMAIL]!!,
-                                preference!![PrefKeys.PREF_PASS]!!
-                            ) { result ->
-
-                            }
-                        } else {
-                            displayAfterLoginErrorMsg(error)
-                        }
-                    })
-            )
-        }
-        handler.postDelayed(runnable!!, 1000)
-    }
-
-    fun getResourceFavoriteData(myCallback: (result: String?) -> Unit) {
-        runnable = Runnable {
-            mCompositeDisposable.add(
-                getEncryptedRequestInterface()
-                    .getResourceFavoriteData(getAccessToken())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ result ->
-                        try {
-                            hideProgress()
-                            var responseBody = result.string()
-                            Log.d("Response Body", responseBody)
-                            val respBody = responseBody.split("|")
-                            val status = respBody[1]
-                            responseBody = respBody[0]
-                            if (status == "401") {
-                                userLogin(
-                                    preference!![PrefKeys.PREF_EMAIL]!!,
-                                    preference!![PrefKeys.PREF_PASS]!!
-                                ) { result ->
-
-                                }
-                            } else {
-                                myCallback.invoke(responseBody)
-                            }
-                        } catch (e: Exception) {
-                            hideProgress()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->
@@ -1392,6 +1316,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     }
 
     fun getDayWiseCarePlanData(dayNo: Int, myCallback: (result: String?) -> Unit) {
+        showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
@@ -1433,11 +1358,16 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
 
     fun getToken(appointment: GetAppointment, myCallback: (result: String?) -> Unit) {
         showProgress()
+        val id = if (appointment.is_group_appointment) {
+            appointment.group_appointment.id
+        } else {
+            appointment.appointment.appointment_id
+        }
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
                     .getToken(
-                        GetToken(appointment.appointment.appointment_id),
+                        GetToken(id),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -1463,6 +1393,50 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                                 preference!![PrefKeys.PREF_PASS]!!
                             ) { result ->
 
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun getGroupApptToken(appointment: GetAppointment, myCallback: (result: String?) -> Unit) {
+        showProgress()
+        val id = if (appointment.is_group_appointment) {
+            appointment.group_appointment.id
+        } else {
+            appointment.appointment.appointment_id
+        }
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getGroupApptToken(GetGroupApptToken(id), getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            myCallback.invoke(responseBody)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            //displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                clearCache()
                             }
                         } else {
                             displayAfterLoginErrorMsg(error)
@@ -1697,6 +1671,52 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                                 preference!![PrefKeys.PREF_PASS]!!
                             ) { result ->
 
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun cancelAppointment(appointment: GetAppointment, myCallback: (result: String?) -> Unit) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .cancelAppointment(
+                        CancelAppointment(
+                            preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
+                            appointment.appointment.appointment_id
+                        ), getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            myCallback.invoke(responseBody)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                clearCache()
                             }
                         } else {
                             displayAfterLoginErrorMsg(error)

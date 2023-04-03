@@ -98,6 +98,15 @@ object Utils {
     const val RECOMMENDED_ARTICLES = 2
     const val RECOMMENDED_PROVIDER_GOAL = 3
 
+    const val BOTTOM_NAV_DASHBOARD = 0
+    const val BOTTOM_NAV_COACH = 1
+    const val BOTTOM_NAV_WELLNESS = 2
+    const val BOTTOM_NAV_CRISIS = 3
+
+    var bottomNav = 0
+
+    var isLoggedInFirstTime = false
+
     var firstName = ""
     var middleName = ""
     var lastName = ""

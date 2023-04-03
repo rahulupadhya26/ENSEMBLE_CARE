@@ -39,7 +39,7 @@
                 android:id="@+id/txtProfDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Resources"
+                android:text="Podcast"
                 android:layout_centerInParent="true"
                 android:textAppearance="@style/fontfamily"
                 android:textColor="@color/white"

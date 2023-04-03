@@ -187,7 +187,6 @@
                 android:textSize="@dimen/_16sp"
                 android:textStyle="bold" />
 
-
             <View
                 android:id="@+id/view_btn"
                 android:layout_width="match_parent"

@@ -7,19 +7,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnPodcastItemClickListener
-import com.app.selfcare.data.Journal
 import com.app.selfcare.data.Podcast
+import com.app.selfcare.databinding.LayoutItemDashboardPodcastBinding
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import kotlinx.android.synthetic.main.layout_item_dashboard_podcast.view.*
 import kotlin.math.min
 
 class DashboardPodcastAdapter(
@@ -34,9 +31,14 @@ class DashboardPodcastAdapter(
         parent: ViewGroup,
         viewType: Int
     ): DashboardPodcastAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_dashboard_podcast, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemDashboardPodcastBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_dashboard_podcast, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -44,34 +46,31 @@ class DashboardPodcastAdapter(
         return min(list.size, limit)
     }
 
-    override fun onBindViewHolder(holder: DashboardPodcastAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        Glide.with(context).load(BaseActivity.baseURL.dropLast(5) + item.podcast_image)
-            .transform(CenterCrop(), RoundedCorners(5))
-            .into(holder.podcastImage)
-        holder.podcastTitle.text = item.name
-        if(wellness.isNotEmpty()) {
-            if (wellness == Utils.WELLNESS_NUTRITION) {
-                holder.podcastTitle.setTextColor(context.resources.getColor(R.color.black))
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            Glide.with(context).load(BaseActivity.baseURL.dropLast(5) + item.podcast_image)
+                .transform(CenterCrop(), RoundedCorners(5))
+                .into(imgPodcast)
+            podcastTitle.text = item.name
+            if (wellness.isNotEmpty()) {
+                if (wellness == Utils.WELLNESS_NUTRITION) {
+                    podcastTitle.setTextColor(context.resources.getColor(R.color.black))
+                } else {
+                    podcastTitle.setTextColor(context.resources.getColor(R.color.white))
+                }
             } else {
-                holder.podcastTitle.setTextColor(context.resources.getColor(R.color.white))
+                podcastTitle.setTextColor(context.resources.getColor(R.color.black))
             }
-        } else {
-            holder.podcastTitle.setTextColor(context.resources.getColor(R.color.black))
-        }
-        //holder.podcastArtist.text = item.artist
-        holder.podcastLayout.setOnClickListener {
-            adapterItemClickListener!!.onPodcastItemClicked(item)
+            //podcastArtist.text = item.artist
+            cardviewPodcast.setOnClickListener {
+                adapterItemClickListener!!.onPodcastItemClicked(item)
+            }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val podcastImage: ImageView = itemView.img_podcast
-        val podcastTitle: TextView = itemView.podcastTitle
-
-        //val podcastArtist: TextView = itemView.txt_podcast_artist
-        val podcastLayout: LinearLayout = itemView.cardview_podcast
-    }
+    inner class ViewHolder(val binding: LayoutItemDashboardPodcastBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     fun filterList(filteredNames: ArrayList<Podcast>) {
         this.list = filteredNames

@@ -3,11 +3,15 @@ package com.app.selfcare.fragment
 import android.graphics.*
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.data.AppointmentReq
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentConsentFormBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.CalenderUtils
@@ -15,7 +19,6 @@ import com.app.selfcare.utils.SignatureView
 import com.app.selfcare.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_consent_form.*
 import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
@@ -35,6 +38,7 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
     private var param1: String? = null
     private var param2: String? = null
     var bSigned: Boolean = false
+    private lateinit var binding: FragmentConsentFormBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +46,15 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentConsentFormBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -53,18 +66,18 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
         getHeader().visibility = View.GONE
         getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
-        layout_consent_letter.visibility = View.VISIBLE
-        layout_screenshot.visibility = View.GONE
+        binding.layoutConsentLetter.visibility = View.VISIBLE
+        binding.layoutScreenshot.visibility = View.GONE
 
-        signatureView.setOnSignedListener(this)
-        signatureView.clear()
-        btnConsentLetter.setOnClickListener {
+        binding.signatureView.setOnSignedListener(this)
+        binding.signatureView.clear()
+        binding.btnConsentLetter.setOnClickListener {
             if (bSigned) {
                 val screenshot: Bitmap =
                     takeScreenshotOfRootView(requireActivity().window.decorView.rootView)
-                img_screenshot.setImageBitmap(screenshot)
-                layout_consent_letter.visibility = View.GONE
-                layout_screenshot.visibility = View.VISIBLE
+                binding.imgScreenshot.setImageBitmap(screenshot)
+                binding.layoutConsentLetter.visibility = View.GONE
+                binding.layoutScreenshot.visibility = View.VISIBLE
                 //Call book appointment api
                 createAppointmentApi(
                     Utils.appointmentId,
@@ -78,11 +91,11 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
             }
         }
 
-        btn_clear.setOnClickListener {
-            signatureView.clear()
+        binding.btnClear.setOnClickListener {
+            binding.signatureView.clear()
         }
 
-        txt_screenshot_close.setOnClickListener {
+        binding.txtScreenshotClose.setOnClickListener {
             replaceFragment(
                 AppointCongratFragment(),
                 R.id.layout_home,
@@ -119,9 +132,9 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        txt_form_upload.text = "Uploading details to server"
+        binding.txtFormUpload.text = "Uploading details to server"
         getBackButton().visibility = View.GONE
-        txt_screenshot_close.visibility = View.VISIBLE
+        binding.txtScreenshotClose.visibility = View.VISIBLE
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
@@ -162,7 +175,7 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
                                 val description =
                                     "Type of Visit : " + Utils.selectedCommunicationMode + "\n" +
                                             "Time slot : " + Utils.aptScheduleTime
-                                txt_form_upload.text = "Form uploaded successfully"
+                                binding.txtFormUpload.text = "Form uploaded successfully"
                                 //val appointmentDate = DateUtils("$bookingDate 01:00:00")
                                 val durationData = resources.getStringArray(R.array.goal_duration)
                                 CalenderUtils.addEvent(
@@ -181,8 +194,8 @@ class ConsentFormFragment : BaseFragment(), SignatureView.OnSignedListener {
                                 )
                             } else {
                                 getBackButton().visibility = View.VISIBLE
-                                txt_screenshot_close.visibility = View.GONE
-                                txt_form_upload.text = "Failed to upload form"
+                                binding.txtScreenshotClose.visibility = View.GONE
+                                binding.txtFormUpload.text = "Failed to upload form"
                             }
                         } catch (e: Exception) {
                             hideProgress()

@@ -6,7 +6,9 @@ import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -14,13 +16,15 @@ import com.app.selfcare.R
 import com.app.selfcare.data.Register
 import com.app.selfcare.data.SendOtp
 import com.app.selfcare.data.VerifyOtp
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentSignUpBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.Utils
+import com.google.android.material.internal.ViewUtils.hideKeyboard
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_sign_up.*
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.HttpException
@@ -45,6 +49,7 @@ class SignUpFragment : BaseFragment() {
     private var param2: String? = null
     private var sid: String? = null
     var counter: CountDownTimer? = null
+    private lateinit var binding: FragmentSignUpBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +57,15 @@ class SignUpFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSignUpBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -67,33 +81,33 @@ class SignUpFragment : BaseFragment() {
         getSubTitle().text = ""
         updateStatusBarColor(R.color.initial_screen_background)
 
-        imgVerifyBack.setOnClickListener {
+        binding.imgVerifyBack.setOnClickListener {
             popBackStack()
         }
 
-        etOtp1.addTextChangedListener(GenericTextWatcher(etOtp2, etOtp1))
-        etOtp2.addTextChangedListener(GenericTextWatcher(etOtp3, etOtp1))
-        etOtp3.addTextChangedListener(GenericTextWatcher(etOtp4, etOtp2))
-        etOtp4.addTextChangedListener(GenericTextWatcher(etOtp4, etOtp3))
+        binding.etOtp1.addTextChangedListener(GenericTextWatcher(binding.etOtp2,binding.etOtp1))
+        binding.etOtp2.addTextChangedListener(GenericTextWatcher(binding.etOtp3, binding.etOtp1))
+        binding.etOtp3.addTextChangedListener(GenericTextWatcher(binding.etOtp4, binding.etOtp2))
+        binding.etOtp4.addTextChangedListener(GenericTextWatcher(binding.etOtp4, binding.etOtp3))
 
-        txtName.text = Utils.firstName + " " + Utils.lastName
-        txtEmail.text = Utils.email
-        txtPhoneNo.text = "Phone : " + formatNumbersAsCode(Utils.phoneNo)
+        binding.txtName.text = Utils.firstName + " " + Utils.lastName
+        binding.txtEmail.text = Utils.email
+        binding.txtPhoneNo.text = "Phone : " + formatNumbersAsCode(Utils.phoneNo)
 
-        resendBtnTimer.text = "00:45"
+        binding.resendBtnTimer.text = "00:45"
 
         getOtp(Utils.email, Utils.phoneNo)
 
-        resend.setOnClickListener {
+        binding.resend.setOnClickListener {
             getOtp(
                 Utils.email,
                 Utils.phoneNo
             )
         }
 
-        btn_verify_continue.setOnClickListener {
-            if (getText(etOtp1).isNotEmpty() && getText(etOtp2).isNotEmpty() &&
-                getText(etOtp3).isNotEmpty()
+        binding.btnVerifyContinue.setOnClickListener {
+            if (getText(binding.etOtp1).isNotEmpty() && getText(binding.etOtp2).isNotEmpty() &&
+                getText(binding.etOtp3).isNotEmpty()
             ) {
                 it.hideKeyboard()
                 verifyOtp()
@@ -102,7 +116,7 @@ class SignUpFragment : BaseFragment() {
             }
         }
 
-        txt_already_account.setOnClickListener {
+        binding.txtAlreadyAccount.setOnClickListener {
             for (i in 0 until mActivity!!.supportFragmentManager.backStackEntryCount) {
                 if (mActivity!!.getCurrentFragment() !is WelcomeFragment) {
                     popBackStack()
@@ -126,8 +140,8 @@ class SignUpFragment : BaseFragment() {
     @SuppressLint("SetTextI18n")
     private fun resendBtnTimer() {
         try {
-            if (resendBtnTimer != null) {
-                resend.visibility = View.GONE
+            if (binding.resendBtnTimer != null) {
+                binding.resend.visibility = View.GONE
             }
             counter = object : CountDownTimer(45000, 1000) {
                 // Callback function, fired on regular interval
@@ -138,8 +152,8 @@ class SignUpFragment : BaseFragment() {
                         val min = millisUntilFinished / 60000 % 60
                         val sec = millisUntilFinished / 1000 % 60
 
-                        if (resendBtnTimer != null) {
-                            resendBtnTimer.text = f.format(min) + ":" + f.format(sec)
+                        if (binding.resendBtnTimer != null) {
+                            binding.resendBtnTimer.text = f.format(min) + ":" + f.format(sec)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -150,9 +164,9 @@ class SignUpFragment : BaseFragment() {
                 // when the time is up
                 override fun onFinish() {
                     try {
-                        if (resendBtnTimer != null) {
-                            resend.visibility = View.VISIBLE
-                            resendBtnTimer.text = ""
+                        if (binding.resendBtnTimer != null) {
+                            binding.resend.visibility = View.VISIBLE
+                            binding.resendBtnTimer.text = ""
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -196,22 +210,22 @@ class SignUpFragment : BaseFragment() {
                             displayToast(jsonObj.getString("otp"))
                             when (jsonObj.getString("otp").length) {
                                 1 -> {
-                                    etOtp1.setText(jsonObj.getString("otp")[0].toString())
+                                    binding.etOtp1.setText(jsonObj.getString("otp")[0].toString())
                                 }
                                 2 -> {
-                                    etOtp1.setText(jsonObj.getString("otp")[0].toString())
-                                    etOtp2.setText(jsonObj.getString("otp")[1].toString())
+                                    binding.etOtp1.setText(jsonObj.getString("otp")[0].toString())
+                                    binding.etOtp2.setText(jsonObj.getString("otp")[1].toString())
                                 }
                                 3 -> {
-                                    etOtp1.setText(jsonObj.getString("otp")[0].toString())
-                                    etOtp2.setText(jsonObj.getString("otp")[1].toString())
-                                    etOtp3.setText(jsonObj.getString("otp")[2].toString())
+                                    binding.etOtp1.setText(jsonObj.getString("otp")[0].toString())
+                                    binding.etOtp2.setText(jsonObj.getString("otp")[1].toString())
+                                    binding.etOtp3.setText(jsonObj.getString("otp")[2].toString())
                                 }
                                 4 -> {
-                                    etOtp1.setText(jsonObj.getString("otp")[0].toString())
-                                    etOtp2.setText(jsonObj.getString("otp")[1].toString())
-                                    etOtp3.setText(jsonObj.getString("otp")[2].toString())
-                                    etOtp4.setText(jsonObj.getString("otp")[3].toString())
+                                    binding.etOtp1.setText(jsonObj.getString("otp")[0].toString())
+                                    binding.etOtp2.setText(jsonObj.getString("otp")[1].toString())
+                                    binding.etOtp3.setText(jsonObj.getString("otp")[2].toString())
+                                    binding.etOtp4.setText(jsonObj.getString("otp")[3].toString())
                                 }
                             }
                             resendBtnTimer()
@@ -233,7 +247,7 @@ class SignUpFragment : BaseFragment() {
     }
 
     private fun verifyOtp() {
-        val otp = getText(etOtp1) + getText(etOtp2) + getText(etOtp3) + getText(etOtp4)
+        val otp = getText(binding.etOtp1) + getText(binding.etOtp2) + getText(binding.etOtp3) + getText(binding.etOtp4)
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(

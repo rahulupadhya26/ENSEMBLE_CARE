@@ -84,53 +84,20 @@
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_20sp"
-                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginStart="@dimen/_15dp"
                     android:textStyle="bold" />
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5dp"
-                    android:paddingStart="@dimen/_10dp"
+                    android:paddingStart="@dimen/_5dp"
                     android:scrollbars="none">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/cardViewNutritionSalad"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            app:cardBackgroundColor="#F0F0F0"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:orientation="vertical">
-
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/salad" />
-
-                                <TextView
-                                    android:id="@+id/txtNutritionSalad"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:text="Salads"
-                                    android:textAppearance="@style/fontfamily"
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/_14sp" />
-
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cardViewNutritionBreakfast"
@@ -166,39 +133,6 @@
                         </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
-                            android:id="@+id/cardViewNutritionSmoothie"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            app:cardBackgroundColor="#F0F0F0"
-                            app:cardCornerRadius="@dimen/_10dp"
-                            app:cardElevation="@dimen/_5dp"
-                            app:cardUseCompatPadding="true">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:orientation="vertical">
-
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/smoothie" />
-
-                                <TextView
-                                    android:id="@+id/txtNutritionSmoothie"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:text="Smoothie"
-                                    android:textAppearance="@style/fontfamily"
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/_14sp" />
-
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
                             android:id="@+id/cardViewNutritionLunch"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
@@ -224,6 +158,72 @@
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:text="Lunch"
+                                    android:textAppearance="@style/fontfamily"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_14sp" />
+
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardViewNutritionSnacks"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            app:cardBackgroundColor="#F0F0F0"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/snacks" />
+
+                                <TextView
+                                    android:id="@+id/txtNutritionSnacks"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="Snacks"
+                                    android:textAppearance="@style/fontfamily"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_14sp" />
+
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardViewNutritionDinner"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            app:cardBackgroundColor="#F0F0F0"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            app:cardElevation="@dimen/_5dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:src="@drawable/dinner" />
+
+                                <TextView
+                                    android:id="@+id/txtNutritionDinner"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="Dinner"
                                     android:textAppearance="@style/fontfamily"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_14sp" />

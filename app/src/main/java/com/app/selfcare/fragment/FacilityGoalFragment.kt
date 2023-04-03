@@ -2,8 +2,10 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,14 +15,14 @@ import com.app.selfcare.adapters.PersonalGoalAdapter
 import com.app.selfcare.controller.OnGoalItemClickListener
 import com.app.selfcare.data.Goal
 import com.app.selfcare.data.Recommended
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentFacilityGoalBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_facility_goal.*
-import kotlinx.android.synthetic.main.fragment_personal_goal.*
 import retrofit2.HttpException
 import java.lang.Exception
 import java.lang.reflect.Type
@@ -40,6 +42,7 @@ class FacilityGoalFragment : BaseFragment(), OnGoalItemClickListener {
     // TODO: Rename and change types of parameters
     private var providerGoals: ArrayList<Goal>? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentFacilityGoalBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +50,15 @@ class FacilityGoalFragment : BaseFragment(), OnGoalItemClickListener {
             providerGoals = it.getParcelableArrayList(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentFacilityGoalBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -60,7 +72,7 @@ class FacilityGoalFragment : BaseFragment(), OnGoalItemClickListener {
         getSubTitle().visibility = View.GONE
         if (providerGoals != null && providerGoals!!.isNotEmpty()) {
             getBackButton().visibility = View.VISIBLE
-            txtProviderGoals.visibility = View.VISIBLE
+            binding.txtProviderGoals.visibility = View.VISIBLE
             displayProviderGoals(providerGoals!!)
         } else {
             getRecommendedData()
@@ -101,8 +113,8 @@ class FacilityGoalFragment : BaseFragment(), OnGoalItemClickListener {
                             }
                         } else {
                             //displayAfterLoginErrorMsg(error)
-                            recycler_view_providerGoalsList.visibility = View.GONE
-                            txtNoProviderGoals.visibility = View.VISIBLE
+                            binding.recyclerViewProviderGoalsList.visibility = View.GONE
+                            binding.txtNoProviderGoals.visibility = View.VISIBLE
                         }
                     })
             )
@@ -112,9 +124,9 @@ class FacilityGoalFragment : BaseFragment(), OnGoalItemClickListener {
 
     private fun displayProviderGoals(providerGoals: ArrayList<Goal>) {
         if (providerGoals.isNotEmpty()) {
-            recycler_view_providerGoalsList.visibility = View.VISIBLE
-            txtNoProviderGoals.visibility = View.GONE
-            recycler_view_providerGoalsList.apply {
+            binding.recyclerViewProviderGoalsList.visibility = View.VISIBLE
+            binding.txtNoProviderGoals.visibility = View.GONE
+            binding.recyclerViewProviderGoalsList.apply {
                 layoutManager = GridLayoutManager(mActivity!!, 2)
                 adapter = FacilityGoalAdapter(
                     mActivity!!,
@@ -122,8 +134,8 @@ class FacilityGoalFragment : BaseFragment(), OnGoalItemClickListener {
                 )
             }
         } else {
-            recycler_view_providerGoalsList.visibility = View.GONE
-            txtNoProviderGoals.visibility = View.VISIBLE
+            binding.recyclerViewProviderGoalsList.visibility = View.GONE
+            binding.txtNoProviderGoals.visibility = View.VISIBLE
         }
     }
 

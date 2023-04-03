@@ -1,32 +1,14 @@
 package com.app.selfcare.fragment
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.app.selfcare.GroupVideoCall
+import android.view.ViewGroup
 import com.app.selfcare.R
-import com.app.selfcare.adapters.ActivityCarePlanAdapter
 import com.app.selfcare.adapters.AppointmentTabAdapter
-import com.app.selfcare.adapters.AppointmentsAdapter
-import com.app.selfcare.controller.OnAppointmentItemClickListener
-import com.app.selfcare.data.*
-import com.app.selfcare.preference.PrefKeys
-import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.databinding.FragmentAppointmentsBinding
 import com.google.android.material.tabs.TabLayout
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_appointments.*
-import org.json.JSONObject
-import retrofit2.HttpException
-import java.lang.reflect.Type
-import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,6 +24,7 @@ class AppointmentsFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentAppointmentsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +32,15 @@ class AppointmentsFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAppointmentsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -62,29 +54,35 @@ class AppointmentsFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        appointmentsBack.setOnClickListener {
-            popBackStack()
+        binding.appointmentsBack.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
-        tabLayoutAppointmentList.removeAllTabs()
-        viewPagerAppointmentList.removeAllViewsInLayout()
-        tabLayoutAppointmentList.addTab(tabLayoutAppointmentList.newTab().setText("Today"))
-        tabLayoutAppointmentList.addTab(tabLayoutAppointmentList.newTab().setText("Upcoming"))
-        tabLayoutAppointmentList.addTab(tabLayoutAppointmentList.newTab().setText("Past"))
-        tabLayoutAppointmentList.tabGravity = TabLayout.GRAVITY_FILL
+        binding.tabLayoutAppointmentList.removeAllTabs()
+        binding.viewPagerAppointmentList.removeAllViewsInLayout()
+        binding.tabLayoutAppointmentList.addTab(binding.tabLayoutAppointmentList.newTab().setText("Today"))
+        binding.tabLayoutAppointmentList.addTab(binding.tabLayoutAppointmentList.newTab().setText("Upcoming"))
+        binding.tabLayoutAppointmentList.addTab(binding.tabLayoutAppointmentList.newTab().setText("Past"))
+        binding.tabLayoutAppointmentList.tabGravity = TabLayout.GRAVITY_FILL
         val adapter = AppointmentTabAdapter(
             requireActivity(), childFragmentManager,
-            tabLayoutAppointmentList.tabCount
+            binding.tabLayoutAppointmentList.tabCount
         )
-        viewPagerAppointmentList.adapter = adapter
-        viewPagerAppointmentList.addOnPageChangeListener(
+        binding.viewPagerAppointmentList.adapter = adapter
+        binding.viewPagerAppointmentList.addOnPageChangeListener(
             TabLayout.TabLayoutOnPageChangeListener(
-                tabLayoutAppointmentList
+                binding.tabLayoutAppointmentList
             )
         )
-        tabLayoutAppointmentList.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tabLayoutAppointmentList.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPagerAppointmentList.currentItem = tab.position
+                binding.viewPagerAppointmentList.currentItem = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}

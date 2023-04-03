@@ -1,27 +1,27 @@
 package com.app.selfcare.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.app.selfcare.GroupVideoCall
 import com.app.selfcare.R
 import com.app.selfcare.adapters.AppointmentsAdapter
 import com.app.selfcare.controller.OnAppointmentItemClickListener
 import com.app.selfcare.data.AppointmentPatientId
 import com.app.selfcare.data.GetAppointment
 import com.app.selfcare.data.GetAppointmentList
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentUpcomingAppointmentBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_today_appointment.*
-import kotlinx.android.synthetic.main.fragment_upcoming_appointment.*
-import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
 
@@ -39,6 +39,7 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentUpcomingAppointmentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +47,15 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentUpcomingAppointmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -67,19 +77,19 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
             val appointmentList: GetAppointmentList =
                 Gson().fromJson(response, appointmentType)
             if (appointmentList.upcoming.isNotEmpty()) {
-                recyclerViewUpcomingAppointmentList.visibility = View.VISIBLE
-                txtNoUpcomingAppointmentList.visibility = View.GONE
-                recyclerViewUpcomingAppointmentList.apply {
+                binding.recyclerViewUpcomingAppointmentList.visibility = View.VISIBLE
+                binding.txtNoUpcomingAppointmentList.visibility = View.GONE
+                binding.recyclerViewUpcomingAppointmentList.apply {
                     layoutManager =
                         LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
                     adapter = AppointmentsAdapter(
                         mActivity!!,
-                        appointmentList.upcoming, "", this@UpcomingAppointmentFragment
+                        appointmentList.upcoming, "Upcoming", this@UpcomingAppointmentFragment
                     )
                 }
             } else {
-                recyclerViewUpcomingAppointmentList.visibility = View.GONE
-                txtNoUpcomingAppointmentList.visibility = View.VISIBLE
+                binding.recyclerViewUpcomingAppointmentList.visibility = View.GONE
+                binding.txtNoUpcomingAppointmentList.visibility = View.VISIBLE
             }
         }
     }
@@ -97,6 +107,8 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
                     .subscribe({ result ->
                         try {
                             hideProgress()
+                            binding.shimmerUpcomingAppointmentList.stopShimmer()
+                            binding.shimmerUpcomingAppointmentList.visibility = View.GONE
                             var responseBody = result.string()
                             Log.d("Response Body", responseBody)
                             val respBody = responseBody.split("|")
@@ -105,6 +117,9 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
                             myCallback.invoke(responseBody)
                         } catch (e: Exception) {
                             hideProgress()
+                            binding.shimmerUpcomingAppointmentList.stopShimmer()
+                            binding.shimmerUpcomingAppointmentList.visibility = View.GONE
+                            e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->
@@ -117,6 +132,8 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
                                 getAppointmentList(myCallback)
                             }
                         } else {
+                            binding.shimmerUpcomingAppointmentList.stopShimmer()
+                            binding.shimmerUpcomingAppointmentList.visibility = View.GONE
                             displayAfterLoginErrorMsg(error)
                         }
                     })
@@ -151,6 +168,24 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
         appointment: GetAppointment,
         isStartAppointment: Boolean
     ) {
-
+        if (!isStartAppointment) {
+            val builder = AlertDialog.Builder(requireActivity())
+            builder.setTitle("Alert")
+            builder.setMessage("Do you really want to cancel this appointment?")
+            builder.setPositiveButton("Yes") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+                //Cancel the appointment
+                cancelAppointment(appointment) {
+                    displayUpcomingAppointments()
+                }
+            }
+            //performing cancel action
+            builder.setNeutralButton("Cancel") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
+            val alert = builder.create()
+            alert.setCancelable(false)
+            alert.show()
+        }
     }
 }

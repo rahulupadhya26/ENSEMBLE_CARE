@@ -3,14 +3,18 @@ package com.app.selfcare.fragment
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.adapters.FinalReviewAdapter
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentFinalReviewBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.DateUtils
@@ -18,7 +22,6 @@ import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import kotlinx.android.synthetic.main.fragment_final_review.*
 import java.io.File
 
 // TODO: Rename parameter arguments, choose names that match
@@ -35,6 +38,7 @@ class FinalReviewFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentFinalReviewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +46,15 @@ class FinalReviewFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentFinalReviewBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -56,76 +69,93 @@ class FinalReviewFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.screen_background_color)
 
-        finalReviewBack.setOnClickListener {
+        binding.finalReviewBack.setOnClickListener {
             popBackStack()
         }
 
-        txtFinalReviewTherapistName.text = Utils.providerName
-        txtFinalReviewTherapistType.text = Utils.providerType
+        binding.txtFinalReviewTherapistName.text = Utils.providerName
+        binding.txtFinalReviewTherapistType.text = Utils.providerType
 
         val appointmentDate = DateUtils(Utils.aptScheduleDate + " 00:00:00")
 
-        txtFinalReviewSelectedDate.text =
-            appointmentDate.getDay() + " " + appointmentDate.getFullMonthName()
+        binding.txtFinalReviewSelectedDate.text =
+            appointmentDate.getMonth() + " " +
+                    appointmentDate.getDay() + appointmentDate.getDayNumberSuffix(
+                appointmentDate.getDay().toInt()
+            ) + " " +
+                    appointmentDate.getYear()
 
-        txtFinalReviewSelectedTime.text = Utils.aptScheduleTime.dropLast(3)
+        binding.txtFinalReviewSelectedTime.text = Utils.aptScheduleTime.dropLast(3)
 
         Glide.with(requireActivity())
             .load(BaseActivity.baseURL.dropLast(5) + Utils.providerPhoto)
             .placeholder(R.drawable.doctor_img)
             .transform(CenterCrop(), RoundedCorners(5))
-            .into(imgFinalReviewTherapist)
+            .into(binding.imgFinalReviewTherapist)
 
-        if (Utils.selectedCommunicationMode == "Video") {
-            imgFinalReviewSelectedMode.setBackgroundResource(R.drawable.video)
-            imgFinalReviewSelectedMode.backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.primaryGreen
+        when (Utils.selectedCommunicationMode) {
+            "Video" -> {
+                binding.imgFinalReviewSelectedMode.setBackgroundResource(R.drawable.video)
+                binding.imgFinalReviewSelectedMode.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
                 )
-            )
-            txtFinalReviewSelectedMode.text = "Video Call"
-        } else {
-            imgFinalReviewSelectedMode.setBackgroundResource(R.drawable.telephone)
-            imgFinalReviewSelectedMode.backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.primaryGreen
+                binding.txtFinalReviewSelectedMode.text = "Video Call"
+            }
+            "Audio" -> {
+                binding.imgFinalReviewSelectedMode.setBackgroundResource(R.drawable.telephone)
+                binding.imgFinalReviewSelectedMode.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
                 )
-            )
-            txtFinalReviewSelectedMode.text = "Audio Call"
+                binding.txtFinalReviewSelectedMode.text = "Audio Call"
+            }
+            else -> {
+                binding.imgFinalReviewSelectedMode.setBackgroundResource(R.drawable.chat)
+                binding.imgFinalReviewSelectedMode.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
+                )
+                binding.txtFinalReviewSelectedMode.text = "Text"
+            }
         }
 
         if (getBitmapList().size > 0) {
-            layoutSelectedImageForReview.visibility = View.VISIBLE
+            binding.layoutSelectedImageForReview.visibility = View.VISIBLE
             when (getBitmapList().size) {
                 1 -> {
                     Glide.with(this)
                         .load(File(getBitmapList()[0]))
-                        .into(imgFinalReviewPrescriptionPic1)
+                        .into(binding.imgFinalReviewPrescriptionPic1)
                 }
                 2 -> {
                     Glide.with(this)
                         .load(File(getBitmapList()[0]))
-                        .into(imgFinalReviewPrescriptionPic1)
+                        .into(binding.imgFinalReviewPrescriptionPic1)
                     Glide.with(this)
                         .load(File(getBitmapList()[1]))
-                        .into(imgFinalReviewPrescriptionPic2)
+                        .into(binding.imgFinalReviewPrescriptionPic2)
                 }
                 3 -> {
                     Glide.with(this)
                         .load(File(getBitmapList()[0]))
-                        .into(imgFinalReviewPrescriptionPic1)
+                        .into(binding.imgFinalReviewPrescriptionPic1)
                     Glide.with(this)
                         .load(File(getBitmapList()[1]))
-                        .into(imgFinalReviewPrescriptionPic2)
+                        .into(binding.imgFinalReviewPrescriptionPic2)
                     Glide.with(this)
                         .load(File(getBitmapList()[2]))
-                        .into(imgFinalReviewPrescriptionPic3)
+                        .into(binding.imgFinalReviewPrescriptionPic3)
                 }
             }
         } else {
-            layoutSelectedImageForReview.visibility = View.GONE
+            binding.layoutSelectedImageForReview.visibility = View.GONE
         }
 
         val finalReviewList = ArrayList<String>()
@@ -154,7 +184,7 @@ class FinalReviewFragment : BaseFragment() {
         //finalReviewList.add("Medication - " + Utils.medication)
         //finalReviewList.add("Allergies - " + Utils.allergies)
 
-        recyclerViewFinalReview.apply {
+        binding.recyclerViewFinalReview.apply {
             layoutManager = LinearLayoutManager(
                 mActivity!!,
                 RecyclerView.VERTICAL,
@@ -166,15 +196,15 @@ class FinalReviewFragment : BaseFragment() {
             )
         }
 
-        btnFinalReview.setOnClickListener {
-            if (checkbox_terms_conditions.isChecked) {
+        binding.btnFinalReview.setOnClickListener {
+            if (binding.checkboxTermsConditions.isChecked) {
                 replaceFragment(
                     ConsentFormFragment(),
                     R.id.layout_home,
                     ConsentFormFragment.TAG
                 )
             } else {
-                displayMsg("Message","Please select terms and conditions for further procedure")
+                displayMsg("Message", "Please select terms and conditions for further procedure")
             }
         }
     }

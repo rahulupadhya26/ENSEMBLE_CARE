@@ -2,13 +2,14 @@ package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebViewClient
 import com.app.selfcare.R
 import com.app.selfcare.data.Articles
-import kotlinx.android.synthetic.main.fragment_news_detail.*
-import kotlinx.android.synthetic.main.fragment_podcast_detail.*
+import com.app.selfcare.databinding.FragmentNewsDetailBinding
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -26,6 +27,7 @@ class NewsDetailFragment : BaseFragment() {
     private var articles: Articles? = null
     private var wellnessType: String? = null
     private var isFavourite: Boolean = false
+    private lateinit var binding: FragmentNewsDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,15 @@ class NewsDetailFragment : BaseFragment() {
             articles = it.getParcelable(ARG_PARAM1)
             wellnessType = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentNewsDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -48,18 +59,18 @@ class NewsDetailFragment : BaseFragment() {
         updateStatusBarColor(R.color.white)
 
         if (articles!!.is_favourite) {
-            articlesDetailFav.setImageResource(R.drawable.favorite)
+            binding.articlesDetailFav.setImageResource(R.drawable.favorite)
         } else {
-            articlesDetailFav.setImageResource(R.drawable.favorite_outline)
+            binding.articlesDetailFav.setImageResource(R.drawable.favorite_outline)
         }
 
         isFavourite = articles!!.is_favourite
 
-        articlesDetailBack.setOnClickListener {
+        binding.articlesDetailBack.setOnClickListener {
             popBackStack()
         }
 
-        articlesDetailFav.setOnClickListener {
+        binding.articlesDetailFav.setOnClickListener {
             if (wellnessType!!.isNotEmpty()) {
                 sendFavoriteData(
                     articles!!.id,
@@ -68,18 +79,18 @@ class NewsDetailFragment : BaseFragment() {
                     wellnessType!!
                 ) {
                     if (!isFavourite) {
-                        articlesDetailFav.setImageResource(R.drawable.favorite)
+                        binding.articlesDetailFav.setImageResource(R.drawable.favorite)
                     } else {
-                        articlesDetailFav.setImageResource(R.drawable.favorite_outline)
+                        binding.articlesDetailFav.setImageResource(R.drawable.favorite_outline)
                     }
                     isFavourite = !isFavourite
                 }
             } else {
                 sendResourceFavoriteData(articles!!.id, "Article", !isFavourite) {
                     if (!isFavourite) {
-                        articlesDetailFav.setImageResource(R.drawable.favorite)
+                        binding.articlesDetailFav.setImageResource(R.drawable.favorite)
                     } else {
-                        articlesDetailFav.setImageResource(R.drawable.favorite_outline)
+                        binding.articlesDetailFav.setImageResource(R.drawable.favorite_outline)
                     }
                     isFavourite = !isFavourite
                 }
@@ -89,16 +100,16 @@ class NewsDetailFragment : BaseFragment() {
         try {
             // WebViewClient allows you to handle
             // onPageFinished and override Url loading.
-            newsWebview.webViewClient = WebViewClient()
+            binding.newsWebview.webViewClient = WebViewClient()
 
             // this will load the url of the website
-            newsWebview.loadUrl(articles!!.article_url)
+            binding.newsWebview.loadUrl(articles!!.article_url)
 
             // this will enable the javascript settings
-            newsWebview.settings.javaScriptEnabled = true
+            binding.newsWebview.settings.javaScriptEnabled = true
 
             // if you want to enable zoom feature
-            newsWebview.settings.setSupportZoom(true)
+            binding.newsWebview.settings.setSupportZoom(true)
         } catch (e: Exception) {
             e.printStackTrace()
         }

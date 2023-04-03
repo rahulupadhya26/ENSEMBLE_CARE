@@ -4,8 +4,10 @@ import android.app.Dialog
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,15 +18,16 @@ import com.app.selfcare.controller.OnItemTherapistImageClickListener
 import com.app.selfcare.controller.OnTherapistItemClickListener
 import com.app.selfcare.data.PatientId
 import com.app.selfcare.data.Therapist
+import com.app.selfcare.databinding.DialogSameDayAppointmentBinding
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentTherapistListBinding
 import com.app.selfcare.preference.PrefKeys
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_therapist_list.*
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.dialog_same_day_appointment.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import kotlin.collections.ArrayList
@@ -45,6 +48,7 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
     private var isRegister: Boolean? = null
     private var specialist: ArrayList<Therapist>? = null
     //var specialist: ArrayList<Therapist> = ArrayList()
+    private lateinit var binding: FragmentTherapistListBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +56,15 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
             isRegister = it.getBoolean(ARG_PARAM1)
             specialist = it.getParcelableArrayList(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentTherapistListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -65,21 +78,43 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.therapist_list_background)
 
-        therapistListBack.setOnClickListener {
+        binding.therapistListBack.setOnClickListener {
             popBackStack()
         }
 
-        btnConfirmDoctor.backgroundTintList = ColorStateList.valueOf(
+        /*btnConfirmDoctor.backgroundTintList = ColorStateList.valueOf(
             ContextCompat.getColor(
                 requireActivity(),
                 R.color.buttonBackground
             )
-        )
+        )*/
 
         //getTherapistList()
-        updatePhysiciansList(specialist!!)
+        if (specialist != null) {
+            if (specialist!!.isNotEmpty()) {
+                binding.layoutTherapistFound.visibility = View.VISIBLE
+                binding.layoutTherapistNotFound.visibility = View.GONE
+                updatePhysiciansList(specialist!!)
+            } else {
+                binding.layoutTherapistFound.visibility = View.GONE
+                binding.layoutTherapistNotFound.visibility = View.VISIBLE
+            }
+        } else {
+            binding.layoutTherapistFound.visibility = View.GONE
+            binding.layoutTherapistNotFound.visibility = View.VISIBLE
+        }
 
-        btnConfirmDoctor.setOnClickListener {
+        binding.btnTherapistGoToDashboard.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
+        }
+
+        /*btnConfirmDoctor.setOnClickListener {
             if (Utils.providerId.isNotEmpty() &&
                 Utils.providerPublicId.isNotEmpty() &&
                 Utils.providerType.isNotEmpty() &&
@@ -91,7 +126,7 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
                     TherapySelectionFragment.TAG
                 )
             }
-        }
+        }*/
     }
 
     private fun getTherapistList() {
@@ -145,7 +180,7 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
     }
 
     private fun updatePhysiciansList(specialists: ArrayList<Therapist>) {
-        recyclerViewTherapist.apply {
+        binding.recyclerViewTherapist.apply {
             layoutManager = LinearLayoutManager(
                 mActivity!!,
                 RecyclerView.VERTICAL,
@@ -191,6 +226,7 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
         Utils.aptScheduleTime = therapist.appointment.time_slot.starting_time
         Utils.appointmentId = therapist.appointment.appointment_id.toString()
         Utils.providerPhoto = therapist.photo
+        clearTempFormData()
         if (!therapist.appointment.on_sameday) {
             replaceFragment(
                 TherapistDetailFragment.newInstance(therapist),
@@ -203,8 +239,10 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
             dialog.setCanceledOnTouchOutside(false)
-            dialog.setContentView(R.layout.dialog_same_day_appointment)
-            dialog.cardViewSameDayApptYes.setOnClickListener {
+            val sameDayAppoint = DialogSameDayAppointmentBinding.inflate(layoutInflater)
+            val view = sameDayAppoint.root
+            dialog.setContentView(view)
+            sameDayAppoint.cardViewSameDayApptYes.setOnClickListener {
                 dialog.dismiss()
                 replaceFragment(
                     TherapistDetailFragment.newInstance(therapist),
@@ -212,7 +250,7 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
                     TherapistDetailFragment.TAG
                 )
             }
-            dialog.cardViewSameDayApptNo.setOnClickListener {
+            sameDayAppoint.cardViewSameDayApptNo.setOnClickListener {
                 dialog.dismiss()
             }
             dialog.show()
@@ -225,7 +263,7 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
         Utils.providerType = therapist.doctor_type
         Utils.providerName =
             therapist.first_name + " " + therapist.middle_name + " " + therapist.last_name
-        btnConfirmDoctor.backgroundTintList =
-            ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+        /*btnConfirmDoctor.backgroundTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))*/
     }
 }

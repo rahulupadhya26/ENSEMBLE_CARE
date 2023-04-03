@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">EnsembleCare</string>
     <string name="parental_consent">Parental Consent Form</string>
-    <string name="thank_you_for_filling_the_assessment">Thank you for filling\nthe questionnaire</string>
+    <string name="thank_you_for_filling_the_assessment">Thank you for\ncompleting the survey</string>
     <string name="appreciate_text_after_assessment">I really appreciate your effort and the time you devoted to filling the assessment. Your answers will help us improve our services for you.</string>
     <string name="first_name">First Name</string>
     <string name="middle_name">Middle Name</string>
     <string name="last_name">Last Name</string>
     <string name="ssn">SSN</string>
     <string name="vob_verified">Congratulations! You have been subscribed to Plus</string>
+    <string name="call_911"><u>911</u></string>
+    <string name="crisis_lifeline"><a href="https://988lifeline.org/">988 Suicide &amp; Crisis Lifeline</a> (formerly known as the National Suicide Prevention Lifeline): <a href="tel:988">988</a> or English or Spanish, or <a href="https://988lifeline.org/chat/">Lifeline Chat</a>. TTY users can use their preferred relay service or dial <a href="tel:711">711</a> then <a href="tel:988">988</a>.</string>
+    <string name="crisis_text_line">Crisis Text Line: Text <font color='#830CDB'>SIGNS</font> to <font color='#830CDB'>741741</font> for 24/7, anonymous, free crisis counseling</string>
+    <string name="disaster_distress_helpline"><a href="https://www.samhsa.gov/disaster-preparedness">Disaster Distress Helpline</a>: CALL or TEXT <a href="tel:1-800-985-5990">1-800-985-5990</a> (press 2 for Spanish)</string>
+    <string name="trans_lifeline"><a href="https://translifeline.org/">Trans Lifeline</a>: <a href="tel:1-877-565-8860">1-877-565-8860</a> (para español presiona el 2)</string>
+    <string name="the_trevor_project">The Trevor Project’s <a href="https://www.thetrevorproject.org/get-help/">TrevorLifeline</a>: <a href="tel:1-866-488-7386">1-866-488-7386</a></string>
+    <string name="ensemblecare">EnsembleCare</string>
 </resources>

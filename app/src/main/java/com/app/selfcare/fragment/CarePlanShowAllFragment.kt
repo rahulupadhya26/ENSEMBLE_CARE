@@ -1,16 +1,18 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import com.app.selfcare.R
 import com.app.selfcare.calendar.CalendarChangesObserver
 import com.app.selfcare.calendar.CalendarViewManager
 import com.app.selfcare.calendar.SingleRowCalendarAdapter
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentCarePlanShowAllBinding
 import com.app.selfcare.selection.CalendarSelectionManager
 import com.app.selfcare.utils.DateUtil
-import kotlinx.android.synthetic.main.calendar_item.view.*
-import kotlinx.android.synthetic.main.fragment_care_plan_show_all.*
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -29,6 +31,7 @@ class CarePlanShowAllFragment : BaseFragment() {
     private var param2: String? = null
     private val calendar = Calendar.getInstance()
     private var currentMonth = 0
+    private lateinit var binding: FragmentCarePlanShowAllBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +39,15 @@ class CarePlanShowAllFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCarePlanShowAllBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -48,7 +60,7 @@ class CarePlanShowAllFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        carePlanShowAllBack.setOnClickListener {
+        binding.carePlanShowAllBack.setOnClickListener {
             popBackStack()
         }
 
@@ -99,8 +111,8 @@ class CarePlanShowAllFragment : BaseFragment() {
             ) {
                 // using this method we can bind data to calendar view
                 // good practice is if all views in layout have same IDs in all item views
-                holder.itemView.tv_date_calendar_item.text = DateUtil.getDayNumber(date)
-                holder.itemView.tv_day_calendar_item.text = DateUtil.getDay3LettersName(date)
+                /*holder.itemView.tv_date_calendar_item.text = DateUtil.getDayNumber(date)
+                holder.itemView.tv_day_calendar_item.text = DateUtil.getDay3LettersName(date)*/
             }
         }
 
@@ -154,7 +166,7 @@ class CarePlanShowAllFragment : BaseFragment() {
         }
 
         // here we init our calendar, also you can set more properties if you haven't specified in XML layout
-        val singleRowCalendar = carePlanCalendar.apply {
+        val singleRowCalendar = binding.carePlanCalendar.apply {
             calendarViewManager = myCalendarViewManager
             calendarChangesObserver = myCalendarChangesObserver
             calendarSelectionManager = mySelectionManager
@@ -162,14 +174,14 @@ class CarePlanShowAllFragment : BaseFragment() {
             init()
         }
 
-        btnRight.setOnClickListener {
+        binding.btnRight.setOnClickListener {
             //tvDay.text = ""
             //selectedTimeSlot = ""
             //layoutTimeSlotSelection.visibility = View.GONE
             singleRowCalendar.setDates(getDatesOfNextMonth())
         }
 
-        btnLeft.setOnClickListener {
+        binding.btnLeft.setOnClickListener {
             /*tvDay.text = ""
             selectedTimeSlot = ""
             layoutTimeSlotSelection.visibility = View.GONE*/

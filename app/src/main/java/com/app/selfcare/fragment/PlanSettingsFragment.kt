@@ -11,6 +11,8 @@ import com.app.selfcare.R
 import com.app.selfcare.data.PatientId
 import com.app.selfcare.data.PlanSettingsData
 import com.app.selfcare.data.Therapist
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentPlanSettingsBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.DateUtils
@@ -18,8 +20,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_plan.*
-import kotlinx.android.synthetic.main.fragment_plan_settings.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
@@ -39,6 +39,7 @@ class PlanSettingsFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentPlanSettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +47,15 @@ class PlanSettingsFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPlanSettingsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -65,23 +75,23 @@ class PlanSettingsFragment : BaseFragment() {
     }
 
     private fun onClickEvents() {
-        planSettingsBack.setOnClickListener {
+        binding.planSettingsBack.setOnClickListener {
             popBackStack()
         }
 
-        layoutPlanUpgrade.setOnClickListener {
+        binding.layoutPlanUpgrade.setOnClickListener {
 
         }
 
-        layoutChangePaymentMethod.setOnClickListener {
+        binding.layoutChangePaymentMethod.setOnClickListener {
 
         }
 
-        layoutInsurancePay.setOnClickListener {
+        binding.layoutInsurancePay.setOnClickListener {
 
         }
 
-        layoutEmployeeAssistedProgram.setOnClickListener {
+        binding.layoutEmployeeAssistedProgram.setOnClickListener {
 
         }
     }
@@ -108,29 +118,34 @@ class PlanSettingsFragment : BaseFragment() {
                             val planSettingsObj: PlanSettingsData =
                                 Gson().fromJson(responseBody, planSettingsType)
 
+                            binding.txtPlanSettingName.text =
+                                planSettingsObj.current_subscription.plan_detail
+                            binding.planSettingsAddon.visibility = View.GONE
                             when (planSettingsObj.current_subscription.plan_detail) {
                                 "Plus+Addon" -> {
-                                    planSettingsAddon.visibility = View.VISIBLE
-                                    txtPlanSettingPlanPrice.text =
-                                        "$" + (planSettingsObj.current_subscription.price - 20) + ".00"
-                                    txtPlanSettingAddonPrice.text = "$20.00"
+                                    binding.txtPlanSettingPlanPrice.text =
+                                        "$" + (planSettingsObj.current_subscription.price) + ".00"
+                                    binding.txtPlanSettingAddonPrice.text = "$20.00"
                                 }
                                 "Premium+Addon" -> {
-                                    planSettingsAddon.visibility = View.VISIBLE
-                                    txtPlanSettingPlanPrice.text =
-                                        "$" + (planSettingsObj.current_subscription.price - 20) + ".00"
-                                    txtPlanSettingAddonPrice.text = "$20.00"
+                                    binding.txtPlanSettingPlanPrice.text =
+                                        "$" + (planSettingsObj.current_subscription.price) + ".00"
+                                    binding.txtPlanSettingAddonPrice.text = "$20.00"
                                 }
                                 "Plus" -> {
-                                    planSettingsAddon.visibility = View.GONE
-                                    txtPlanSettingPlanPrice.text =
-                                        "$" + (planSettingsObj.current_subscription.price - 20) + ".00"
+                                    binding.txtPlanSettingPlanPrice.text =
+                                        "$" + (planSettingsObj.current_subscription.price) + ".00"
                                 }
                                 "Premium" -> {
-                                    planSettingsAddon.visibility = View.GONE
-                                    txtPlanSettingPlanPrice.text =
-                                        "$" + (planSettingsObj.current_subscription.price - 20) + ".00"
+                                    binding.txtPlanSettingPlanPrice.text =
+                                        "$" + (planSettingsObj.current_subscription.price) + ".00"
                                 }
+                            }
+
+                            if (planSettingsObj.has_addon) {
+                                binding.planSettingsAddon.visibility = View.VISIBLE
+                                binding.txtPlanSettingAddonPrice.text =
+                                    "$" + planSettingsObj.add_on.price + ".00"
                             }
 
                             val date: Calendar = Calendar.getInstance()

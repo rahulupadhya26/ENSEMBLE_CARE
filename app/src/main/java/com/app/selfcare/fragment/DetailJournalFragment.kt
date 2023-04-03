@@ -4,37 +4,29 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
-import android.text.Html
 import android.text.TextWatcher
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.appcompat.view.menu.MenuBuilder
-import androidx.appcompat.view.menu.MenuPopupHelper
-import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.controller.IOnBackPressed
 import com.app.selfcare.data.Journal
 import com.app.selfcare.data.UpdateJournal
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentDetailJournalBinding
+import com.app.selfcare.databinding.JournalMenuBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.DateUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_create_journal.*
-import kotlinx.android.synthetic.main.fragment_detail_journal.*
-import kotlinx.android.synthetic.main.journal_menu.view.*
-import kotlinx.android.synthetic.main.layout_item_appointments.view.*
 import retrofit2.HttpException
-import java.lang.reflect.Field
-import java.lang.reflect.Method
 import java.util.*
 import kotlin.math.abs
 
@@ -54,12 +46,22 @@ class DetailJournalFragment : BaseFragment(), IOnBackPressed {
     private var journal: Journal? = null
     private var userHasChanged = false
     private var popup: PopupWindow? = null
+    private lateinit var binding: FragmentDetailJournalBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             journal = it.getParcelable(ARG_PARAM1)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentDetailJournalBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -78,10 +80,10 @@ class DetailJournalFragment : BaseFragment(), IOnBackPressed {
 
         showPopUp()
 
-        detailJournalBack.setOnClickListener {
+        binding.detailJournalBack.setOnClickListener {
             if (userHasChanged) {
-                if (getText(txt_journal_title).isNotEmpty()) {
-                    if (getText(txt_journal_desc).isNotEmpty()) {
+                if (getText(binding.txtJournalTitle).isNotEmpty()) {
+                    if (getText(binding.txtJournalDesc).isNotEmpty()) {
                         //Call create journal api
                         updateJournal()
                     } else {
@@ -97,16 +99,16 @@ class DetailJournalFragment : BaseFragment(), IOnBackPressed {
             }
         }
 
-        txt_journal_desc.movementMethod = ScrollingMovementMethod()
+        binding.txtJournalDesc.movementMethod = ScrollingMovementMethod()
         val journalDate = DateUtils(journal!!.journal_date + " " + journal!!.journal_time)
-        detailJournalDateTime.text = journalDate.getDay() + " " +
+        binding.detailJournalDateTime.text = journalDate.getDay() + " " +
                 journalDate.getFullMonthName() + " " +
                 journalDate.getYear() + " at " +
                 journalDate.getTimeWithFormat().uppercase()
         /*txt_journal_date.text =
             Html.fromHtml("<b>Date</b> : " + journalDate.getDay() + " " + journalDate.getMonth() + " " + journalDate.getYear())*/
-        txt_journal_title.setText(journal!!.name)
-        txt_journal_desc.setText(journal!!.description)
+        binding.txtJournalTitle.setText(journal!!.name)
+        binding.txtJournalDesc.setText(journal!!.description)
 
         /*if (DateMethods().isToday(journalDate.mDate)) {
             txt_journal_title.isEnabled = true
@@ -116,11 +118,11 @@ class DetailJournalFragment : BaseFragment(), IOnBackPressed {
             txt_journal_desc.isEnabled = false
         }*/
 
-        detailJournalMenu.setOnClickListener {
-            popup!!.showAsDropDown(detailJournalMenu, -400, 0)
+        binding.detailJournalMenu.setOnClickListener {
+            popup!!.showAsDropDown(binding.detailJournalMenu, -400, 0)
         }
 
-        txt_journal_title.addTextChangedListener(object : TextWatcher {
+        binding.txtJournalTitle.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -138,7 +140,7 @@ class DetailJournalFragment : BaseFragment(), IOnBackPressed {
 
         })
 
-        txt_journal_desc.addTextChangedListener(object : TextWatcher {
+        binding.txtJournalDesc.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -166,8 +168,8 @@ class DetailJournalFragment : BaseFragment(), IOnBackPressed {
                         "PI0017",
                         UpdateJournal(
                             journal!!.id,
-                            getText(txt_journal_title),
-                            getText(txt_journal_desc)
+                            getText(binding.txtJournalTitle),
+                            getText(binding.txtJournalDesc)
                         ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -206,11 +208,12 @@ class DetailJournalFragment : BaseFragment(), IOnBackPressed {
 
     @SuppressLint("RestrictedApi")
     private fun showPopUp() {
-        val inflater: LayoutInflater =
-            requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val v: View = inflater.inflate(R.layout.journal_menu, null)
-        val layoutJournalShare: LinearLayout = v.layoutJournalShare
-        val layoutJournalDelete: LinearLayout = v.layoutJournalDelete
+        val journalMenu = JournalMenuBinding.inflate(layoutInflater)
+        /*val inflater: LayoutInflater =
+            requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater*/
+        val v: View = journalMenu.root
+        val layoutJournalShare: LinearLayout = journalMenu.layoutJournalShare
+        val layoutJournalDelete: LinearLayout = journalMenu.layoutJournalDelete
         popup = PopupWindow(v, 500, RelativeLayout.LayoutParams.WRAP_CONTENT, true)
         popup!!.contentView.setOnClickListener {
             popup!!.dismiss()

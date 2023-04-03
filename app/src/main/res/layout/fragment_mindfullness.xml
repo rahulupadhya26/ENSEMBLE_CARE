@@ -294,7 +294,8 @@
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_16sp"
-                                android:textStyle="bold" />
+                                android:maxLines="2"
+                                android:ellipsize="end" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -353,7 +354,8 @@
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_16sp"
-                                android:textStyle="bold" />
+                                android:maxLines="2"
+                                android:ellipsize="end" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -433,7 +435,7 @@
                                         android:layout_height="match_parent"
                                         android:foreground="#40000000"
                                         android:scaleType="centerCrop"
-                                        android:src="@drawable/spiritual" />
+                                        android:src="@drawable/focused" />
 
                                     <TextView
                                         android:id="@+id/txtSpiritual"
@@ -441,7 +443,8 @@
                                         android:layout_height="match_parent"
                                         android:layout_alignParentBottom="true"
                                         android:gravity="center"
-                                        android:text="Spiritual"
+                                        android:text="Improved Focus"
+                                        android:padding="@dimen/_5dp"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="@color/white"
                                         android:textSize="@dimen/_20sp"
@@ -490,7 +493,8 @@
                                         android:layout_height="match_parent"
                                         android:layout_alignParentBottom="true"
                                         android:gravity="center"
-                                        android:text="Movement"
+                                        android:text="Mantra Meditation"
+                                        android:padding="@dimen/_5dp"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="#FFFFFF"
                                         android:textSize="@dimen/_20sp"
@@ -538,7 +542,7 @@
                                         android:layout_height="match_parent"
                                         android:foreground="#40000000"
                                         android:scaleType="centerCrop"
-                                        android:src="@drawable/focused" />
+                                        android:src="@drawable/transcendental" />
 
                                     <TextView
                                         android:id="@+id/txtFocused"
@@ -546,7 +550,8 @@
                                         android:layout_height="match_parent"
                                         android:layout_alignParentBottom="true"
                                         android:gravity="center"
-                                        android:text="Focused"
+                                        android:text="Transcendental Awareness"
+                                        android:padding="@dimen/_5dp"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="@color/white"
                                         android:textSize="@dimen/_20sp"
@@ -587,7 +592,7 @@
                                         android:layout_height="match_parent"
                                         android:foreground="#40000000"
                                         android:scaleType="centerCrop"
-                                        android:src="@drawable/progressive" />
+                                        android:src="@drawable/visualization" />
 
                                     <TextView
                                         android:id="@+id/txtProgressive"
@@ -595,7 +600,8 @@
                                         android:layout_height="match_parent"
                                         android:layout_alignParentBottom="true"
                                         android:gravity="center"
-                                        android:text="Progressive"
+                                        android:text="Visualising Abundance"
+                                        android:padding="@dimen/_5dp"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="#FFFFFF"
                                         android:textSize="@dimen/_20sp"
@@ -643,7 +649,7 @@
                                         android:layout_height="match_parent"
                                         android:foreground="#40000000"
                                         android:scaleType="centerCrop"
-                                        android:src="@drawable/mantra" />
+                                        android:src="@drawable/nature" />
 
                                     <TextView
                                         android:id="@+id/txtMantra"
@@ -651,7 +657,8 @@
                                         android:layout_height="match_parent"
                                         android:layout_alignParentBottom="true"
                                         android:gravity="center"
-                                        android:text="Mantra"
+                                        android:text="Guided Imagery"
+                                        android:padding="@dimen/_5dp"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="@color/white"
                                         android:textSize="@dimen/_20sp"
@@ -666,7 +673,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/layoutTranscendental"
+                        android:id="@+id/layoutLovingKindness"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
@@ -691,16 +698,15 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:foreground="#40000000"
-                                        android:scaleType="centerCrop"
-                                        android:src="@drawable/transcendental" />
+                                        android:scaleType="centerCrop" />
 
                                     <TextView
-                                        android:id="@+id/txtTranscendental"
+                                        android:id="@+id/txtLovingKindness"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_alignParentBottom="true"
                                         android:gravity="center"
-                                        android:text="Transcendental"
+                                        android:text="Loving Kindness"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="#FFFFFF"
                                         android:textSize="@dimen/_20sp"
@@ -719,7 +725,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:weightSum="1"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/layoutVisualization"

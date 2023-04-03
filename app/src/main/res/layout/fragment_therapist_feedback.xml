@@ -33,7 +33,7 @@
             android:layout_marginStart="@dimen/_15dp"
             android:layout_marginTop="-5dp"
             android:layout_marginEnd="@dimen/_15dp"
-            android:text="We aim to provide the best for our customer. We need your help in doing so."
+            android:text="Our goal is to deliver exceptional service to our customers, and we would appreciate your feedback to improve our service offering."
             android:textAppearance="@style/fontfamily"
             android:textColor="#A49393"
             android:textSize="@dimen/_16sp" />
@@ -109,7 +109,7 @@
                 android:layout_marginStart="@dimen/_15dp"
                 android:layout_marginTop="-5dp"
                 android:layout_marginEnd="@dimen/_15dp"
-                android:text="Provide a feedback related to therapist, session or application."
+                android:text="Provide a feedback related to therapist, session."
                 android:textAppearance="@style/fontfamily"
                 android:textColor="#A49393"
                 android:textSize="@dimen/_16sp" />

@@ -1,8 +1,10 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -11,9 +13,10 @@ import com.app.selfcare.adapters.CarePlanMusicTaskListAdapter
 import com.app.selfcare.controller.OnCarePlanDayItemClickListener
 import com.app.selfcare.data.CareDayIndividualTaskDetail
 import com.app.selfcare.data.DayWiseCarePlan
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentMusicCarePlanBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.fragment_music_care_plan.*
 import java.lang.reflect.Type
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,6 +34,7 @@ class MusicCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener {
     private var musicCarePlanDayNumber: Int = 0
     private var param2: String? = null
     private var selectedDayNo: Int = 0
+    private lateinit var binding: FragmentMusicCarePlanBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +42,15 @@ class MusicCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener {
             musicCarePlanDayNumber = it.getInt(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentMusicCarePlanBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -51,7 +64,7 @@ class MusicCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
         selectedDayNo = musicCarePlanDayNumber
-        carePlanMusicBack.setOnClickListener {
+        binding.carePlanMusicBack.setOnClickListener {
             popBackStack()
         }
     }
@@ -63,7 +76,7 @@ class MusicCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener {
             val dayWiseCarePlan: DayWiseCarePlan =
                 Gson().fromJson(response, dayWiseCarePlanType)
 
-            recyclerViewCarePlanMusicDayList.apply {
+            binding.recyclerViewCarePlanMusicDayList.apply {
                 layoutManager = LinearLayoutManager(
                     requireActivity(), RecyclerView.HORIZONTAL, false
                 )
@@ -77,7 +90,7 @@ class MusicCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener {
     }
 
     private fun updateMusicTodayTasks(musicTaskDetails: ArrayList<CareDayIndividualTaskDetail>) {
-        recyclerViewCarePlanMusicTask.apply {
+        binding.recyclerViewCarePlanMusicTask.apply {
             layoutManager = LinearLayoutManager(
                 requireActivity(), RecyclerView.VERTICAL, false
             )

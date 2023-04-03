@@ -2,8 +2,10 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -13,13 +15,14 @@ import com.app.selfcare.controller.OnAssessmentItemClickListener
 import com.app.selfcare.data.Assessments
 import com.app.selfcare.data.Journal
 import com.app.selfcare.data.PatientId
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentMyAssessmentsBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_my_assessments.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.util.ArrayList
@@ -38,6 +41,7 @@ class MyAssessmentsFragment : BaseFragment(), OnAssessmentItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentMyAssessmentsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +49,15 @@ class MyAssessmentsFragment : BaseFragment(), OnAssessmentItemClickListener {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentMyAssessmentsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -81,9 +94,9 @@ class MyAssessmentsFragment : BaseFragment(), OnAssessmentItemClickListener {
                                 object : TypeToken<ArrayList<Assessments?>?>() {}.type
                             assessmentLists = Gson().fromJson(responseBody, assessmentList)
                             if (assessmentLists.isNotEmpty()) {
-                                recyclerViewAssessments.visibility = View.VISIBLE
-                                txt_no_assessments.visibility = View.GONE
-                                recyclerViewAssessments.apply {
+                                binding.recyclerViewAssessments.visibility = View.VISIBLE
+                                binding.txtNoAssessments.visibility = View.GONE
+                                binding.recyclerViewAssessments.apply {
                                     layoutManager = LinearLayoutManager(
                                         mActivity!!,
                                         RecyclerView.VERTICAL,
@@ -95,8 +108,8 @@ class MyAssessmentsFragment : BaseFragment(), OnAssessmentItemClickListener {
                                     )
                                 }
                             } else {
-                                recyclerViewAssessments.visibility = View.GONE
-                                txt_no_assessments.visibility = View.VISIBLE
+                                binding.recyclerViewAssessments.visibility = View.GONE
+                                binding.txtNoAssessments.visibility = View.VISIBLE
                             }
                         } catch (e: Exception) {
                             hideProgress()

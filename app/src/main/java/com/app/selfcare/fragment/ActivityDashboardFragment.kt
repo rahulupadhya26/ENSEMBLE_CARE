@@ -1,12 +1,12 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import com.app.selfcare.R
-import kotlinx.android.synthetic.main.fragment_activity_dashboard.*
+import com.app.selfcare.databinding.FragmentActivityDashboardBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +22,7 @@ class ActivityDashboardFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentActivityDashboardBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +30,15 @@ class ActivityDashboardFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentActivityDashboardBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -44,7 +54,7 @@ class ActivityDashboardFragment : BaseFragment() {
         /*drinkWaterProgress.maxProgress = 100.0
         drinkWaterProgress.setCurrentProgress(74.0)*/
 
-        txtActivityShowAll.setOnClickListener {
+        binding.txtActivityShowAll.setOnClickListener {
             /*replaceFragment(
                 ActivityShowAllFragment(),
                 R.id.layout_home,
@@ -52,7 +62,7 @@ class ActivityDashboardFragment : BaseFragment() {
             )*/
         }
 
-        txtGoalShowAll.setOnClickListener {
+        binding.txtGoalShowAll.setOnClickListener {
             /*replaceFragment(
                 ActivityShowAllFragment(),
                 R.id.layout_home,
@@ -60,7 +70,7 @@ class ActivityDashboardFragment : BaseFragment() {
             )*/
         }
 
-        activityCreateGoal.setOnClickListener {
+        binding.activityCreateGoal.setOnClickListener {
             /*replaceFragment(
                 ActivityCreateGoalFragment(),
                 R.id.layout_home,
@@ -68,7 +78,7 @@ class ActivityDashboardFragment : BaseFragment() {
             )*/
         }
 
-        cardViewActivityDrinkWater.setOnClickListener {
+        binding.cardViewActivityDrinkWater.setOnClickListener {
             /*replaceFragment(
                 ActivityGoalDetailFragment(),
                 R.id.layout_home,
@@ -76,7 +86,7 @@ class ActivityDashboardFragment : BaseFragment() {
             )*/
         }
 
-        drinkWaterProgress.setProgress(74.0,100.0)
+        binding.drinkWaterProgress.setProgress(74.0, 100.0)
     }
 
     companion object {
@@ -97,6 +107,7 @@ class ActivityDashboardFragment : BaseFragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_activity_dashboard"
     }
 }

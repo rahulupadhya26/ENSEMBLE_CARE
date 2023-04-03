@@ -9,20 +9,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.selfcare.CallActivity
 import com.app.selfcare.GroupVideoCall
 import com.app.selfcare.R
 import com.app.selfcare.adapters.AppointmentsAdapter
 import com.app.selfcare.controller.OnAppointmentItemClickListener
 import com.app.selfcare.data.AppointmentPatientId
+import com.app.selfcare.data.ConstantApp
 import com.app.selfcare.data.GetAppointment
 import com.app.selfcare.data.GetAppointmentList
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentTodayAppointmentBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_today_appointment.*
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
@@ -41,6 +44,7 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentTodayAppointmentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +52,15 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentTodayAppointmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -69,9 +82,9 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
             val appointmentList: GetAppointmentList =
                 Gson().fromJson(response, appointmentType)
             if (appointmentList.today.isNotEmpty()) {
-                recyclerViewTodayAppointmentList.visibility = View.VISIBLE
-                txtNoTodayAppointmentList.visibility = View.GONE
-                recyclerViewTodayAppointmentList.apply {
+                binding.recyclerViewTodayAppointmentList.visibility = View.VISIBLE
+                binding.txtNoTodayAppointmentList.visibility = View.GONE
+                binding.recyclerViewTodayAppointmentList.apply {
                     layoutManager =
                         LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
                     adapter = AppointmentsAdapter(
@@ -80,8 +93,8 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
                     )
                 }
             } else {
-                recyclerViewTodayAppointmentList.visibility = View.GONE
-                txtNoTodayAppointmentList.visibility = View.VISIBLE
+                binding.recyclerViewTodayAppointmentList.visibility = View.GONE
+                binding.txtNoTodayAppointmentList.visibility = View.VISIBLE
             }
         }
     }
@@ -99,6 +112,8 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
                     .subscribe({ result ->
                         try {
                             hideProgress()
+                            binding.shimmerTodayAppointmentList.stopShimmer()
+                            binding.shimmerTodayAppointmentList.visibility = View.GONE
                             var responseBody = result.string()
                             Log.d("Response Body", responseBody)
                             val respBody = responseBody.split("|")
@@ -107,6 +122,9 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
                             myCallback.invoke(responseBody)
                         } catch (e: Exception) {
                             hideProgress()
+                            binding.shimmerTodayAppointmentList.stopShimmer()
+                            binding.shimmerTodayAppointmentList.visibility = View.GONE
+                            e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->
@@ -119,6 +137,8 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
                                 getAppointmentList(myCallback)
                             }
                         } else {
+                            binding.shimmerTodayAppointmentList.stopShimmer()
+                            binding.shimmerTodayAppointmentList.visibility = View.GONE
                             displayAfterLoginErrorMsg(error)
                         }
                     })
@@ -156,35 +176,76 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
         if (isStartAppointment) {
             try {
                 if (appointment.is_group_appointment) {
-                    val intent = Intent(requireActivity(), GroupVideoCall::class.java)
-                    intent.putExtra("token", appointment.rtc_token)
-                    intent.putExtra("channelName", appointment.channel_name)
-                    startActivity(intent)
-                    requireActivity().overridePendingTransition(0, 0)
+                    getGroupApptToken(appointment) { response ->
+                        val jsonObj = JSONObject(response)
+                        val rtcToken = jsonObj.getString("rtc_token")
+                        val rtmToken = jsonObj.getString("rtm_token")
+                        val channelName = jsonObj.getString("channel_name")
+                        if (appointment.is_group_appointment) {
+                            val i = Intent(requireActivity(), CallActivity::class.java)
+                            val bundle = Bundle()
+                            bundle.putString(ConstantApp.ACTION_KEY_ID,
+                                appointment.group_appointment.id.toString()
+                            )
+                            bundle.putString(ConstantApp.ACTION_KEY_FNAME, appointment.doctor_first_name)
+                            bundle.putString(ConstantApp.ACTION_KEY_LNAME, appointment.doctor_last_name)
+                            bundle.putString(ConstantApp.ACTION_KEY_TOKEN, rtcToken)
+                            bundle.putString(ConstantApp.ACTION_KEY_RTM, rtmToken)
+                            bundle.putString(ConstantApp.ACTION_KEY_CHANNEL_NAME, channelName)
+                            i.putExtras(bundle)
+                            startActivity(i)
+                            requireActivity().overridePendingTransition(0, 0)
+                            /*val intent = Intent(requireActivity(), GroupVideoCall::class.java)
+                            intent.putExtra("token", rtcToken)
+                            intent.putExtra("channelName", channelName)
+                            startActivity(intent)
+                            requireActivity().overridePendingTransition(0, 0)*/
+                            /*clearPreviousFragmentStack()
+                            replaceFragmentNoBackStack(
+                                GroupVideoCallFragment.newInstance(
+                                    rtcToken,
+                                    channelName
+                                ), R.id.layout_home, GroupVideoCallFragment.TAG
+                            )*/
+                        }
+                    }
                 } else {
                     getToken(appointment) { response ->
                         val jsonObj = JSONObject(response)
                         val rtcToken = jsonObj.getString("rtc_token")
                         val rtmToken = jsonObj.getString("rtm_token")
                         val channelName = jsonObj.getString("channel_name")
-                        if (appointment.is_group_appointment) {
-                            val intent = Intent(requireActivity(), GroupVideoCall::class.java)
-                            intent.putExtra("token", rtcToken)
-                            intent.putExtra("channelName", channelName)
-                            startActivity(intent)
-                            requireActivity().overridePendingTransition(0, 0)
-                        } else {
-                            //Start video call
-                            replaceFragment(
-                                VideoCallFragment.newInstance(
-                                    appointment,
-                                    rtcToken,
-                                    rtmToken,
-                                    channelName
-                                ),
-                                R.id.layout_home,
-                                VideoCallFragment.TAG
-                            )
+                        if (!appointment.is_group_appointment) {
+                            when (appointment.appointment.type_of_visit) {
+                                "Text" -> {
+                                    clearPreviousFragmentStack()
+                                    //Start video call
+                                    replaceFragmentNoBackStack(
+                                        TextAppointmentFragment.newInstance(
+                                            appointment,
+                                            rtcToken,
+                                            rtmToken,
+                                            channelName
+                                        ),
+                                        R.id.layout_home,
+                                        TextAppointmentFragment.TAG
+                                    )
+                                }
+                                else -> {
+                                    clearPreviousFragmentStack()
+                                    //Start video call
+                                    replaceFragmentNoBackStack(
+                                        VideoCallFragment.newInstance(
+                                            appointment,
+                                            rtcToken,
+                                            rtmToken,
+                                            channelName
+                                        ),
+                                        R.id.layout_home,
+                                        VideoCallFragment.TAG
+                                    )
+                                }
+                            }
                         }
                     }
                 }

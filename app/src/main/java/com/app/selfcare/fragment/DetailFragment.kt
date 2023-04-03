@@ -5,8 +5,11 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,15 +21,20 @@ import com.app.selfcare.controller.OnPodcastItemClickListener
 import com.app.selfcare.data.Articles
 import com.app.selfcare.data.Podcast
 import com.app.selfcare.data.Video
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentDetailBinding
+import com.app.selfcare.preference.PrefKeys
+import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.fragment_detail.*
-import kotlinx.android.synthetic.main.fragment_resources.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
+import retrofit2.HttpException
 import java.lang.reflect.Type
 import kotlin.collections.ArrayList
 
@@ -49,6 +57,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
     private var articlesLists: ArrayList<Articles> = arrayListOf()
     private var isFavouriteVideo1: Boolean = false
     private var isFavouriteVideo2: Boolean = false
+    private lateinit var binding: FragmentDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +65,15 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
             category = it.getString(ARG_PARAM1)
             wellnessType = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -69,47 +87,76 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        txtDetailTitle.text = category!!
+        binding.txtDetailTitle.text = category!!
 
         onClickEvents()
 
+        binding.layoutShimmerDetailDisplayVideos.startShimmer()
+        binding.layoutShimmerDetailDisplayVideos.visibility = View.VISIBLE
+        binding.shimmerDetailPodcast.startShimmer()
+        binding.shimmerDetailPodcast.visibility = View.VISIBLE
+        binding.layoutShimmerDetailDisplayArticles.startShimmer()
+        binding.layoutShimmerDetailDisplayArticles.visibility = View.VISIBLE
+        binding.detailSearch.visibility = View.VISIBLE
+        binding.cardViewDetailNoVideos.visibility = View.GONE
+        binding.cardViewDetailNoArticles.visibility = View.GONE
+        binding.cardViewDetailNoPodcasts.visibility = View.GONE
+
         when (wellnessType!!) {
             Utils.WELLNESS_EXERCISE -> {
-                imgDetailBackground.setImageResource(R.drawable.exercise_background)
+                binding.imgDetailBackground.setImageResource(R.drawable.exercise_background)
                 updateStatusBarColor(R.color.primaryGreen)
                 changeComponentColor(R.color.white)
-                detailFavImg1.setImageResource(R.drawable.favourite_white)
-                detailFavImg2.setImageResource(R.drawable.favourite_white)
+                binding.detailFavImg1.setImageResource(R.drawable.favourite_white)
+                binding.detailFavImg2.setImageResource(R.drawable.favourite_white)
+                binding.layoutPodcastDetailData.visibility = View.VISIBLE
+                binding.txtDetailArticlesTitle.text = "Articles"
                 getExerciseDetail()
             }
             Utils.WELLNESS_NUTRITION -> {
-                imgDetailBackground.setColorFilter(resources.getColor(R.color.white))
+                binding.imgDetailBackground.setColorFilter(resources.getColor(R.color.white))
                 updateStatusBarColor(R.color.white)
                 changeComponentColor(R.color.black)
-                detailFavImg1.setImageResource(R.drawable.favorite_outline)
-                detailFavImg2.setImageResource(R.drawable.favorite_outline)
+                binding.detailFavImg1.setImageResource(R.drawable.favorite_outline)
+                binding.detailFavImg2.setImageResource(R.drawable.favorite_outline)
+                binding.layoutPodcastDetailData.visibility = View.GONE
+                binding.txtDetailArticlesTitle.text = "Recipes"
                 getNutritionDetail()
             }
             Utils.WELLNESS_MINDFULNESS -> {
-                imgDetailBackground.setImageResource(R.drawable.mindfulness_back_img)
+                binding.imgDetailBackground.setImageResource(R.drawable.mindfulness_back_img)
                 //frameLayoutDetail.background = resources.getDrawable(R.drawable.mindfulness_back_img)
                 updateStatusBarColor(R.color.primaryGreen)
                 changeComponentColor(R.color.white)
-                detailFavImg1.setImageResource(R.drawable.favourite_white)
-                detailFavImg2.setImageResource(R.drawable.favourite_white)
+                binding.detailFavImg1.setImageResource(R.drawable.favourite_white)
+                binding.detailFavImg2.setImageResource(R.drawable.favourite_white)
+                binding.layoutPodcastDetailData.visibility = View.VISIBLE
+                binding.txtDetailArticlesTitle.text = "Articles"
                 getMindfulnessDetail()
             }
             Utils.WELLNESS_YOGA -> {
-                imgDetailBackground.setImageResource(R.drawable.yoga_background)
+                binding.imgDetailBackground.setImageResource(R.drawable.yoga_background)
                 updateStatusBarColor(R.color.yoga_status_bar)
                 changeComponentColor(R.color.white)
-                detailFavImg1.setImageResource(R.drawable.favourite_white)
-                detailFavImg2.setImageResource(R.drawable.favourite_white)
+                binding.detailFavImg1.setImageResource(R.drawable.favourite_white)
+                binding.detailFavImg2.setImageResource(R.drawable.favourite_white)
+                binding.layoutPodcastDetailData.visibility = View.VISIBLE
+                binding.txtDetailArticlesTitle.text = "Articles"
                 getYogaDetail()
+            }
+            Utils.WELLNESS_MUSIC -> {
+                binding.imgDetailBackground.setImageResource(R.drawable.music_background)
+                updateStatusBarColor(R.color.music_status_bar)
+                changeComponentColor(R.color.white)
+                binding.detailFavImg1.setImageResource(R.drawable.favourite_white)
+                binding.detailFavImg2.setImageResource(R.drawable.favourite_white)
+                binding.layoutPodcastDetailData.visibility = View.VISIBLE
+                binding.txtDetailArticlesTitle.text = "Articles"
+                getMusicDetail()
             }
         }
 
-        detailSearch.addTextChangedListener(object : TextWatcher {
+        binding.detailSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
             }
 
@@ -123,37 +170,37 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
     }
 
     private fun changeComponentColor(componentColor: Int) {
-        detailBack.imageTintList = ColorStateList.valueOf(
+        binding.detailBack.imageTintList = ColorStateList.valueOf(
             ContextCompat.getColor(
                 requireActivity(),
                 componentColor
             )
         )
-        txtDetailTitle.setTextColor(resources.getColor(componentColor))
-        txtDetailVideosTitle.setTextColor(resources.getColor(componentColor))
-        txtDetailVideoSeeAll.setTextColor(resources.getColor(componentColor))
-        detailVideoTitle1.setTextColor(resources.getColor(componentColor))
-        detailVideoDesc1.setTextColor(resources.getColor(componentColor))
-        detailFavTitle1.setTextColor(resources.getColor(componentColor))
-        detailVideoTitle2.setTextColor(resources.getColor(componentColor))
-        detailVideoDesc2.setTextColor(resources.getColor(componentColor))
-        detailFavTitle2.setTextColor(resources.getColor(componentColor))
-        txtDetailPodcastTitle.setTextColor(resources.getColor(componentColor))
-        txtDetailPodcastSeeAll.setTextColor(resources.getColor(componentColor))
-        txtDetailArticlesTitle.setTextColor(resources.getColor(componentColor))
-        txtDetailArticleSeeAll.setTextColor(resources.getColor(componentColor))
-        detailArticleTitle1.setTextColor(resources.getColor(componentColor))
-        detailArticleTitle2.setTextColor(resources.getColor(componentColor))
-        detailArticleTitle3.setTextColor(resources.getColor(componentColor))
-        detailArticleTitle4.setTextColor(resources.getColor(componentColor))
+        binding.txtDetailTitle.setTextColor(resources.getColor(componentColor))
+        binding.txtDetailVideosTitle.setTextColor(resources.getColor(componentColor))
+        binding.txtDetailVideoSeeAll.setTextColor(resources.getColor(componentColor))
+        binding.detailVideoTitle1.setTextColor(resources.getColor(componentColor))
+        binding.detailVideoDesc1.setTextColor(resources.getColor(componentColor))
+        binding.detailFavTitle1.setTextColor(resources.getColor(componentColor))
+        binding.detailVideoTitle2.setTextColor(resources.getColor(componentColor))
+        binding.detailVideoDesc2.setTextColor(resources.getColor(componentColor))
+        binding.detailFavTitle2.setTextColor(resources.getColor(componentColor))
+        binding.txtDetailPodcastTitle.setTextColor(resources.getColor(componentColor))
+        binding.txtDetailPodcastSeeAll.setTextColor(resources.getColor(componentColor))
+        binding.txtDetailArticlesTitle.setTextColor(resources.getColor(componentColor))
+        binding.txtDetailArticleSeeAll.setTextColor(resources.getColor(componentColor))
+        binding.detailArticleTitle1.setTextColor(resources.getColor(componentColor))
+        binding.detailArticleTitle2.setTextColor(resources.getColor(componentColor))
+        binding.detailArticleTitle3.setTextColor(resources.getColor(componentColor))
+        binding.detailArticleTitle4.setTextColor(resources.getColor(componentColor))
     }
 
     private fun onClickEvents() {
-        detailBack.setOnClickListener {
+        binding.detailBack.setOnClickListener {
             popBackStack()
         }
 
-        imgDetailFav.setOnClickListener {
+        binding.imgDetailFav.setOnClickListener {
             replaceFragment(
                 FavoriteFragment.newInstance(wellnessType!!),
                 R.id.layout_home,
@@ -161,7 +208,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
             )
         }
 
-        txtDetailVideoSeeAll.setOnClickListener {
+        binding.txtDetailVideoSeeAll.setOnClickListener {
             replaceFragment(
                 VideosListFragment.newInstance(arrayListOf(), wellnessType!!, false, category!!),
                 R.id.layout_home,
@@ -169,14 +216,14 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
             )
         }
 
-        txtDetailPodcastSeeAll.setOnClickListener {
+        binding.txtDetailPodcastSeeAll.setOnClickListener {
             replaceFragment(
                 PodcastFragment.newInstance(arrayListOf(), wellnessType!!, false, category!!),
                 R.id.layout_home, PodcastFragment.TAG
             )
         }
 
-        txtDetailArticleSeeAll.setOnClickListener {
+        binding.txtDetailArticleSeeAll.setOnClickListener {
             replaceFragment(
                 NewsListFragment.newInstance(arrayListOf(), wellnessType!!, false, category!!),
                 R.id.layout_home, NewsListFragment.TAG
@@ -184,11 +231,94 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
         }
     }
 
+    private fun fetchDetailData(
+        type: String,
+        category: String,
+        myCallback: (result: String?) -> Unit
+    ) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getDetailData(type, category, getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            binding.layoutShimmerDetailDisplayVideos.stopShimmer()
+                            binding.layoutShimmerDetailDisplayVideos.visibility = View.GONE
+                            binding.shimmerDetailPodcast.stopShimmer()
+                            binding.shimmerDetailPodcast.visibility = View.GONE
+                            binding.layoutShimmerDetailDisplayArticles.stopShimmer()
+                            binding.layoutShimmerDetailDisplayArticles.visibility = View.GONE
+                            binding.detailSearch.visibility = View.VISIBLE
+                            binding.cardViewDetailNoVideos.visibility = View.GONE
+                            binding.cardViewDetailNoArticles.visibility = View.GONE
+                            binding.cardViewDetailNoPodcasts.visibility = View.GONE
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                userLogin(
+                                    preference!![PrefKeys.PREF_EMAIL]!!,
+                                    preference!![PrefKeys.PREF_PASS]!!
+                                ) { result ->
+                                    clearCache()
+                                }
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            binding.layoutShimmerDetailDisplayVideos.stopShimmer()
+                            binding.layoutShimmerDetailDisplayVideos.visibility = View.GONE
+                            binding.shimmerDetailPodcast.stopShimmer()
+                            binding.shimmerDetailPodcast.visibility = View.GONE
+                            binding.layoutShimmerDetailDisplayArticles.stopShimmer()
+                            binding.layoutShimmerDetailDisplayArticles.visibility = View.GONE
+                            binding.detailSearch.visibility = View.GONE
+                            binding.cardViewDetailNoVideos.visibility = View.VISIBLE
+                            binding.cardViewDetailNoArticles.visibility = View.VISIBLE
+                            binding.cardViewDetailNoPodcasts.visibility = View.VISIBLE
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                clearCache()
+                            }
+                        } else {
+                            binding.layoutShimmerDetailDisplayVideos.stopShimmer()
+                            binding.layoutShimmerDetailDisplayVideos.visibility = View.GONE
+                            binding.shimmerDetailPodcast.stopShimmer()
+                            binding.shimmerDetailPodcast.visibility = View.GONE
+                            binding.layoutShimmerDetailDisplayArticles.stopShimmer()
+                            binding.layoutShimmerDetailDisplayArticles.visibility = View.GONE
+                            binding.detailSearch.visibility = View.GONE
+                            binding.cardViewDetailNoVideos.visibility = View.VISIBLE
+                            binding.cardViewDetailNoArticles.visibility = View.VISIBLE
+                            binding.cardViewDetailNoPodcasts.visibility = View.VISIBLE
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
     private fun getExerciseDetail() {
         videoLists = arrayListOf()
         podcastLists = arrayListOf()
         articlesLists = arrayListOf()
-        getDetailData("exercise_data/", category!!) { response ->
+        fetchDetailData("exercise_data/", category!!) { response ->
             val jsonObj = JSONObject(response)
 
             val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
@@ -209,7 +339,8 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
         videoLists = arrayListOf()
         podcastLists = arrayListOf()
         articlesLists = arrayListOf()
-        getDetailData("nutrition_data/", category!!) { response ->
+        fetchDetailData("nutrition_data/", category!!) { response ->
+
             val jsonObj = JSONObject(response)
 
             val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
@@ -230,7 +361,8 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
         videoLists = arrayListOf()
         podcastLists = arrayListOf()
         articlesLists = arrayListOf()
-        getDetailData("mindfulness_data/", category!!) { response ->
+        fetchDetailData("mindfulness_data/", category!!) { response ->
+
             val jsonObj = JSONObject(response)
 
             val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
@@ -251,7 +383,28 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
         videoLists = arrayListOf()
         podcastLists = arrayListOf()
         articlesLists = arrayListOf()
-        getDetailData("yoga_data/", category!!) { response ->
+        fetchDetailData("yoga_data/", category!!) { response ->
+            val jsonObj = JSONObject(response)
+
+            val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
+            videoLists = Gson().fromJson(jsonObj.getString("videos"), videoList)
+            displayVideoList(videoLists)
+
+            val podcastList: Type = object : TypeToken<ArrayList<Podcast?>?>() {}.type
+            podcastLists = Gson().fromJson(jsonObj.getString("podcasts"), podcastList)
+            displayPodcastList(podcastLists)
+
+            val articleList: Type = object : TypeToken<ArrayList<Articles?>?>() {}.type
+            articlesLists = Gson().fromJson(jsonObj.getString("articles"), articleList)
+            displayArticleList(articlesLists)
+        }
+    }
+
+    private fun getMusicDetail() {
+        videoLists = arrayListOf()
+        podcastLists = arrayListOf()
+        articlesLists = arrayListOf()
+        fetchDetailData("music_data/", category!!) { response ->
             val jsonObj = JSONObject(response)
 
             val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
@@ -270,62 +423,62 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
 
     private fun displayVideoList(videoList: ArrayList<Video>) {
         if (videoList.isNotEmpty()) {
-            layoutDetailDisplayVideos.visibility = View.VISIBLE
-            cardViewDetailNoVideos.visibility = View.GONE
+            binding.layoutDetailDisplayVideos.visibility = View.VISIBLE
+            binding.cardViewDetailNoVideos.visibility = View.GONE
             if (videoList.size == 1) {
                 isFavouriteVideo1 = videoList[0].is_favourite
-                layoutDetailVideoList1.visibility = View.VISIBLE
-                setVideoImage(videoList[0], detailVideoBanner1)
-                detailVideoTitle1.text = videoList[0].name
-                detailVideoDesc1.text = videoList[0].description
+                binding.layoutDetailVideoList1.visibility = View.VISIBLE
+                setVideoImage(videoList[0], binding.detailVideoBanner1)
+                binding.detailVideoTitle1.text = videoList[0].name
+                binding.detailVideoDesc1.text = videoList[0].description
                 if (videoList[0].is_favourite) {
-                    detailFavImg1.setImageResource(R.drawable.favorite)
-                    detailFavTitle1.text = "Added to favorites"
+                    binding.detailFavImg1.setImageResource(R.drawable.favorite)
+                    binding.detailFavTitle1.text = "Added to favorites"
                 } else {
                     if (wellnessType == Utils.WELLNESS_NUTRITION) {
-                        detailFavImg1.setImageResource(R.drawable.favorite_outline)
+                        binding.detailFavImg1.setImageResource(R.drawable.favorite_outline)
                     } else {
-                        detailFavImg1.setImageResource(R.drawable.favourite_white)
+                        binding.detailFavImg1.setImageResource(R.drawable.favourite_white)
                     }
-                    detailFavTitle1.text = "Add to favorites"
+                    binding.detailFavTitle1.text = "Add to favorites"
                 }
-                layoutDetailVideoList2.visibility = View.GONE
+                binding.layoutDetailVideoList2.visibility = View.GONE
             } else if (videoList.size >= 2) {
                 isFavouriteVideo2 = videoList[1].is_favourite
-                layoutDetailVideoList1.visibility = View.VISIBLE
-                setVideoImage(videoList[0], detailVideoBanner1)
-                detailVideoTitle1.text = videoList[0].name
-                detailVideoDesc1.text = videoList[0].description
+                binding.layoutDetailVideoList1.visibility = View.VISIBLE
+                setVideoImage(videoList[0], binding.detailVideoBanner1)
+                binding.detailVideoTitle1.text = videoList[0].name
+                binding.detailVideoDesc1.text = videoList[0].description
                 if (videoList[0].is_favourite) {
-                    detailFavImg1.setImageResource(R.drawable.favorite)
-                    detailFavTitle1.text = "Added to favorites"
+                    binding.detailFavImg1.setImageResource(R.drawable.favorite)
+                    binding.detailFavTitle1.text = "Added to favorites"
                 } else {
                     if (wellnessType == Utils.WELLNESS_NUTRITION) {
-                        detailFavImg1.setImageResource(R.drawable.favorite_outline)
+                        binding.detailFavImg1.setImageResource(R.drawable.favorite_outline)
                     } else {
-                        detailFavImg1.setImageResource(R.drawable.favourite_white)
+                        binding.detailFavImg1.setImageResource(R.drawable.favourite_white)
                     }
-                    detailFavTitle1.text = "Add to favorites"
+                    binding.detailFavTitle1.text = "Add to favorites"
                 }
 
-                layoutDetailVideoList2.visibility = View.VISIBLE
-                setVideoImage(videoList[1], detailVideoBanner2)
-                detailVideoTitle2.text = videoList[1].name
-                detailVideoDesc2.text = videoList[1].description
+                binding.layoutDetailVideoList2.visibility = View.VISIBLE
+                setVideoImage(videoList[1], binding.detailVideoBanner2)
+                binding.detailVideoTitle2.text = videoList[1].name
+                binding.detailVideoDesc2.text = videoList[1].description
                 if (videoList[1].is_favourite) {
-                    detailFavImg2.setImageResource(R.drawable.favorite)
-                    detailFavTitle2.text = "Added to favorites"
+                    binding.detailFavImg2.setImageResource(R.drawable.favorite)
+                    binding.detailFavTitle2.text = "Added to favorites"
                 } else {
                     if (wellnessType == Utils.WELLNESS_NUTRITION) {
-                        detailFavImg2.setImageResource(R.drawable.favorite_outline)
+                        binding.detailFavImg2.setImageResource(R.drawable.favorite_outline)
                     } else {
-                        detailFavImg2.setImageResource(R.drawable.favourite_white)
+                        binding.detailFavImg2.setImageResource(R.drawable.favourite_white)
                     }
-                    detailFavTitle2.text = "Add to favorites"
+                    binding.detailFavTitle2.text = "Add to favorites"
                 }
             }
 
-            cardViewDetailVideo1.setOnClickListener {
+            binding.cardViewDetailVideo1.setOnClickListener {
                 replaceFragment(
                     VideoDetailFragment.newInstance(videoList[0]),
                     R.id.layout_home,
@@ -333,7 +486,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewDetailVideo2.setOnClickListener {
+            binding.cardViewDetailVideo2.setOnClickListener {
                 replaceFragment(
                     VideoDetailFragment.newInstance(videoList[1]),
                     R.id.layout_home,
@@ -341,7 +494,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            detailLayoutFav1.setOnClickListener {
+            binding.detailLayoutFav1.setOnClickListener {
                 sendFavoriteData(
                     videoList[0].id,
                     "Video",
@@ -349,22 +502,22 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                     wellnessType!!
                 ) {
                     if (!isFavouriteVideo1) {
-                        detailFavImg1.setImageResource(R.drawable.favorite)
-                        detailFavTitle1.text = "Added to favorites"
+                        binding.detailFavImg1.setImageResource(R.drawable.favorite)
+                        binding.detailFavTitle1.text = "Added to favorites"
                     } else {
                         if (wellnessType == Utils.WELLNESS_NUTRITION) {
-                            detailFavImg1.setImageResource(R.drawable.favorite_outline)
+                            binding.detailFavImg1.setImageResource(R.drawable.favorite_outline)
                         } else {
-                            detailFavImg1.setImageResource(R.drawable.favourite_white)
+                            binding.detailFavImg1.setImageResource(R.drawable.favourite_white)
                         }
-                        detailFavTitle1.text = "Removed from favorites"
+                        binding.detailFavTitle1.text = "Removed from favorites"
                     }
 
                     isFavouriteVideo1 = !isFavouriteVideo1
                 }
             }
 
-            detailLayoutFav2.setOnClickListener {
+            binding.detailLayoutFav2.setOnClickListener {
                 sendFavoriteData(
                     videoList[1].id,
                     "Video",
@@ -372,22 +525,22 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                     wellnessType!!
                 ) {
                     if (!isFavouriteVideo2) {
-                        detailFavImg2.setImageResource(R.drawable.favorite)
-                        detailFavTitle2.text = "Added to favorites"
+                        binding.detailFavImg2.setImageResource(R.drawable.favorite)
+                        binding.detailFavTitle2.text = "Added to favorites"
                     } else {
                         if (wellnessType == Utils.WELLNESS_NUTRITION) {
-                            detailFavImg2.setImageResource(R.drawable.favorite_outline)
+                            binding.detailFavImg2.setImageResource(R.drawable.favorite_outline)
                         } else {
-                            detailFavImg2.setImageResource(R.drawable.favourite_white)
+                            binding.detailFavImg2.setImageResource(R.drawable.favourite_white)
                         }
-                        detailFavTitle2.text = "Removed from favorites"
+                        binding.detailFavTitle2.text = "Removed from favorites"
                     }
                     isFavouriteVideo2 = !isFavouriteVideo2
                 }
             }
         } else {
-            layoutDetailDisplayVideos.visibility = View.GONE
-            cardViewDetailNoVideos.visibility = View.VISIBLE
+            binding.layoutDetailDisplayVideos.visibility = View.GONE
+            binding.cardViewDetailNoVideos.visibility = View.VISIBLE
         }
     }
 
@@ -404,9 +557,9 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
 
     private fun displayPodcastList(podcastList: ArrayList<Podcast>) {
         if (podcastList.isNotEmpty()) {
-            recyclerViewDetailPodcast.visibility = View.VISIBLE
-            cardViewDetailNoPodcasts.visibility = View.GONE
-            recyclerViewDetailPodcast.apply {
+            binding.recyclerViewDetailPodcast.visibility = View.VISIBLE
+            binding.cardViewDetailNoPodcasts.visibility = View.GONE
+            binding.recyclerViewDetailPodcast.apply {
                 layoutManager = LinearLayoutManager(mActivity!!, RecyclerView.HORIZONTAL, false)
                 adapter =
                     DashboardPodcastAdapter(
@@ -417,66 +570,66 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                     )
             }
         } else {
-            recyclerViewDetailPodcast.visibility = View.GONE
-            cardViewDetailNoPodcasts.visibility = View.VISIBLE
+            binding.recyclerViewDetailPodcast.visibility = View.GONE
+            binding.cardViewDetailNoPodcasts.visibility = View.VISIBLE
         }
     }
 
     private fun displayArticleList(articleList: ArrayList<Articles>) {
         if (articleList.isNotEmpty()) {
-            layoutDetailDisplayArticles.visibility = View.VISIBLE
-            cardViewDetailNoArticles.visibility = View.GONE
+            binding.layoutDetailDisplayArticles.visibility = View.VISIBLE
+            binding.cardViewDetailNoArticles.visibility = View.GONE
             if (articleList.size == 1) {
-                layoutDetailArticleList1.visibility = View.VISIBLE
-                cardViewDetailArticle1.visibility = View.VISIBLE
-                detailArticleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], detailArticleBanner1)
-                cardViewDetailArticle2.visibility = View.GONE
-                layoutDetailArticleList2.visibility = View.GONE
-                cardViewDetailArticle3.visibility = View.GONE
-                cardViewDetailArticle4.visibility = View.GONE
+                binding.layoutDetailArticleList1.visibility = View.VISIBLE
+                binding.cardViewDetailArticle1.visibility = View.VISIBLE
+                binding.detailArticleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.detailArticleBanner1)
+                binding.cardViewDetailArticle2.visibility = View.GONE
+                binding.layoutDetailArticleList2.visibility = View.GONE
+                binding.cardViewDetailArticle3.visibility = View.GONE
+                binding.cardViewDetailArticle4.visibility = View.GONE
             } else if (articleList.size == 2) {
-                layoutDetailArticleList1.visibility = View.VISIBLE
-                cardViewDetailArticle1.visibility = View.VISIBLE
-                detailArticleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], detailArticleBanner1)
-                cardViewDetailArticle2.visibility = View.VISIBLE
-                detailArticleTitle2.text = articleList[1].name
-                setArticleImage(articleList[1], detailArticleBanner2)
-                layoutDetailArticleList2.visibility = View.GONE
-                cardViewDetailArticle3.visibility = View.GONE
-                cardViewDetailArticle4.visibility = View.GONE
+                binding.layoutDetailArticleList1.visibility = View.VISIBLE
+                binding.cardViewDetailArticle1.visibility = View.VISIBLE
+                binding.detailArticleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.detailArticleBanner1)
+                binding.cardViewDetailArticle2.visibility = View.VISIBLE
+                binding.detailArticleTitle2.text = articleList[1].name
+                setArticleImage(articleList[1], binding.detailArticleBanner2)
+                binding.layoutDetailArticleList2.visibility = View.GONE
+                binding.cardViewDetailArticle3.visibility = View.GONE
+                binding.cardViewDetailArticle4.visibility = View.GONE
             } else if (articleList.size == 3) {
-                layoutDetailArticleList1.visibility = View.VISIBLE
-                cardViewDetailArticle1.visibility = View.VISIBLE
-                detailArticleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], detailArticleBanner1)
-                cardViewDetailArticle2.visibility = View.VISIBLE
-                detailArticleTitle2.text = articleList[1].name
-                setArticleImage(articleList[1], detailArticleBanner2)
-                layoutDetailArticleList2.visibility = View.VISIBLE
-                cardViewDetailArticle3.visibility = View.VISIBLE
-                detailArticleTitle3.text = articleList[2].name
-                setArticleImage(articleList[2], detailArticleBanner3)
-                cardViewDetailArticle4.visibility = View.GONE
+                binding.layoutDetailArticleList1.visibility = View.VISIBLE
+                binding.cardViewDetailArticle1.visibility = View.VISIBLE
+                binding.detailArticleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.detailArticleBanner1)
+                binding.cardViewDetailArticle2.visibility = View.VISIBLE
+                binding.detailArticleTitle2.text = articleList[1].name
+                setArticleImage(articleList[1], binding.detailArticleBanner2)
+                binding.layoutDetailArticleList2.visibility = View.VISIBLE
+                binding.cardViewDetailArticle3.visibility = View.VISIBLE
+                binding.detailArticleTitle3.text = articleList[2].name
+                setArticleImage(articleList[2], binding.detailArticleBanner3)
+                binding.cardViewDetailArticle4.visibility = View.GONE
             } else if (articleList.size >= 4) {
-                layoutDetailArticleList1.visibility = View.VISIBLE
-                cardViewDetailArticle1.visibility = View.VISIBLE
-                detailArticleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], detailArticleBanner1)
-                cardViewDetailArticle2.visibility = View.VISIBLE
-                detailArticleTitle2.text = articleList[1].name
-                setArticleImage(articleList[1], detailArticleBanner2)
-                layoutDetailArticleList2.visibility = View.VISIBLE
-                cardViewDetailArticle3.visibility = View.VISIBLE
-                detailArticleTitle3.text = articleList[2].name
-                setArticleImage(articleList[2], detailArticleBanner3)
-                cardViewDetailArticle4.visibility = View.VISIBLE
-                detailArticleTitle4.text = articleList[3].name
-                setArticleImage(articleList[3], detailArticleBanner4)
+                binding.layoutDetailArticleList1.visibility = View.VISIBLE
+                binding.cardViewDetailArticle1.visibility = View.VISIBLE
+                binding.detailArticleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.detailArticleBanner1)
+                binding.cardViewDetailArticle2.visibility = View.VISIBLE
+                binding.detailArticleTitle2.text = articleList[1].name
+                setArticleImage(articleList[1], binding.detailArticleBanner2)
+                binding.layoutDetailArticleList2.visibility = View.VISIBLE
+                binding.cardViewDetailArticle3.visibility = View.VISIBLE
+                binding.detailArticleTitle3.text = articleList[2].name
+                setArticleImage(articleList[2], binding.detailArticleBanner3)
+                binding.cardViewDetailArticle4.visibility = View.VISIBLE
+                binding.detailArticleTitle4.text = articleList[3].name
+                setArticleImage(articleList[3], binding.detailArticleBanner4)
             }
 
-            cardViewDetailArticle1.setOnClickListener {
+            binding.cardViewDetailArticle1.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[0], wellnessType!!),
                     R.id.layout_home,
@@ -484,7 +637,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewDetailArticle2.setOnClickListener {
+            binding.cardViewDetailArticle2.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[1], wellnessType!!),
                     R.id.layout_home,
@@ -492,7 +645,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewDetailArticle3.setOnClickListener {
+            binding.cardViewDetailArticle3.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[2], wellnessType!!),
                     R.id.layout_home,
@@ -500,7 +653,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewDetailArticle4.setOnClickListener {
+            binding.cardViewDetailArticle4.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[3], wellnessType!!),
                     R.id.layout_home,
@@ -508,8 +661,8 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
         } else {
-            layoutDetailDisplayArticles.visibility = View.GONE
-            cardViewDetailNoArticles.visibility = View.VISIBLE
+            binding.layoutDetailDisplayArticles.visibility = View.GONE
+            binding.cardViewDetailNoArticles.visibility = View.VISIBLE
         }
     }
 
@@ -543,24 +696,24 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
         }
 
         if (filteredVideos.isNotEmpty()) {
-            layoutVideoDetailData.visibility = View.VISIBLE
+            binding.layoutVideoDetailData.visibility = View.VISIBLE
             displayVideoList(filteredVideos)
         } else {
             if (text.length < 2) {
                 displayVideoList(videoLists)
             } else {
-                layoutVideoDetailData.visibility = View.GONE
+                binding.layoutVideoDetailData.visibility = View.GONE
             }
         }
 
         if (filteredPodcasts.isNotEmpty()) {
-            layoutPodcastDetailData.visibility = View.VISIBLE
+            binding.layoutPodcastDetailData.visibility = View.VISIBLE
             val adapter = DashboardPodcastAdapter(
                 mActivity!!,
                 podcastLists, this, wellnessType!!
             )
             adapter.filterList(filteredPodcasts)
-            recyclerViewDetailPodcast.adapter = adapter
+            binding.recyclerViewDetailPodcast.adapter = adapter
         } else {
             if (text.length < 2) {
                 val adapter = DashboardPodcastAdapter(
@@ -568,27 +721,27 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                     podcastLists, this, wellnessType!!
                 )
                 adapter.filterList(filteredPodcasts)
-                recyclerViewDetailPodcast.adapter = adapter
+                binding.recyclerViewDetailPodcast.adapter = adapter
             } else {
-                layoutPodcastDetailData.visibility = View.GONE
+                binding.layoutPodcastDetailData.visibility = View.GONE
             }
         }
 
         if (filteredArticles.isNotEmpty()) {
-            layoutArticleDetailData.visibility = View.VISIBLE
+            binding.layoutArticleDetailData.visibility = View.VISIBLE
             displayArticleList(filteredArticles)
         } else {
             if (text.length < 2) {
                 displayArticleList(articlesLists)
             } else {
-                layoutArticleDetailData.visibility = View.GONE
+                binding.layoutArticleDetailData.visibility = View.GONE
             }
         }
     }
 
     override fun onPause() {
         super.onPause()
-        detailSearch.setText("")
+        binding.detailSearch.setText("")
     }
 
     companion object {

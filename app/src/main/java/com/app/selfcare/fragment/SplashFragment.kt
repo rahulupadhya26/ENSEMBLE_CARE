@@ -4,23 +4,23 @@ package com.app.selfcare.fragment
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.data.ConsentRoisFormsNotify
 import com.app.selfcare.data.NotifyStatus
 import com.app.selfcare.data.PlanDetails
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentSplashBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_dashboard.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.lang.reflect.Type
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,9 +36,19 @@ class SplashFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentSplashBinding
 
     override fun getLayout(): Int {
         return R.layout.fragment_splash
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSplashBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +62,7 @@ class SplashFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
-
+        Utils.bottomNav = Utils.BOTTOM_NAV_DASHBOARD
         Handler().postDelayed(Runnable { // This method will be executed once the timer is over
             if (preference!![PrefKeys.PREF_USER_ID, ""]!!.isNotEmpty()) {
                 if (preference!![PrefKeys.PREF_IS_LOGGEDIN, false]!!) {

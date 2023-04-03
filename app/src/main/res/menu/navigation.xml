@@ -7,16 +7,13 @@
 
     <item
         android:id="@+id/navigation_activity"
-        android:icon="@drawable/activity"
         android:title="Activity"/>
 
     <item
         android:id="@+id/navigation_personal_trainer"
-        android:icon="@drawable/personal_trainer"
         android:title="Coaches"/>
 
     <item
         android:id="@+id/navigation_crisis"
-        android:icon="@drawable/crisis"
         android:title="Crisis"/>
 </menu>

@@ -3,18 +3,21 @@ package com.app.selfcare.fragment
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.app.selfcare.R
 import com.app.selfcare.data.CreatePersonalGoal
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentActivityCreateGoalBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.CalenderUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_activity_create_goal.*
 import retrofit2.HttpException
 import java.lang.Exception
 import java.text.SimpleDateFormat
@@ -38,6 +41,7 @@ class ActivityCreateGoalFragment : BaseFragment() {
     private var durationData: Array<String>? = null
     private var selectedGoalType: String = ""
     private var goalTypeData: Array<String>? = null
+    private lateinit var binding: FragmentActivityCreateGoalBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +49,15 @@ class ActivityCreateGoalFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentActivityCreateGoalBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -57,7 +70,7 @@ class ActivityCreateGoalFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        activityCreateGoalBack.setOnClickListener {
+        binding.activityCreateGoalBack.setOnClickListener {
             popBackStack()
         }
 
@@ -68,7 +81,7 @@ class ActivityCreateGoalFragment : BaseFragment() {
         val cal = Calendar.getInstance()
         //cal.add(Calendar.DAY_OF_YEAR, 1)
         val formattedDate = sdf.format(cal.time)
-        txtActivityGoalDate.text = formattedDate
+        binding.txtActivityGoalDate.text = formattedDate
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { views, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
@@ -77,10 +90,10 @@ class ActivityCreateGoalFragment : BaseFragment() {
 
                 val myFormat = "MM/dd/yyyy" // mention the format you need
                 val sdf = SimpleDateFormat(myFormat)
-                txtActivityGoalDate.text = sdf.format(cal.time)
+                binding.txtActivityGoalDate.text = sdf.format(cal.time)
             }
 
-        txtActivityGoalDate.setOnClickListener {
+        binding.txtActivityGoalDate.setOnClickListener {
             val datePickerDialog = DatePickerDialog(
                 mActivity!!, dateSetListener,
                 cal.get(Calendar.YEAR),
@@ -92,9 +105,9 @@ class ActivityCreateGoalFragment : BaseFragment() {
             datePickerDialog.show()
         }
 
-        btnActivityGoalStart.setOnClickListener {
-            if (isValidText(editTextActivityGoalTitle)) {
-                if (isValidText(editTextActivityGoalDesc)) {
+        binding.btnActivityGoalStart.setOnClickListener {
+            if (isValidText(binding.editTextActivityGoalTitle)) {
+                if (isValidText(binding.editTextActivityGoalDesc)) {
                     if (selectedGoalType.isNotEmpty()) {
                         if (selectedDuration.isNotEmpty()) {
                             createPersonalGoal()
@@ -105,10 +118,10 @@ class ActivityCreateGoalFragment : BaseFragment() {
                         displayMsg("Alert", "Select the type.")
                     }
                 } else {
-                    setEditTextError(editTextActivityGoalDesc, "Enter the Goal Description")
+                    setEditTextError(binding.editTextActivityGoalDesc, "Enter the Goal Description")
                 }
             } else {
-                setEditTextError(editTextActivityGoalTitle, "Enter the Goal Title")
+                setEditTextError(binding.editTextActivityGoalTitle, "Enter the Goal Title")
             }
         }
     }
@@ -124,21 +137,21 @@ class ActivityCreateGoalFragment : BaseFragment() {
         /*val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             requireActivity(), android.R.layout.simple_spinner_dropdown_item, durationData!!
         )*/
-        spinnerActivityGoalType.adapter = adapter
+        binding.spinnerActivityGoalType.adapter = adapter
 
-        spinnerActivityGoalType.onItemSelectedListener = object :
+        binding.spinnerActivityGoalType.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
                 view: View, position: Int, id: Long
             ) {
                 selectedGoalType = goalTypeData!![position]
-                if(selectedGoalType == goalTypeData!![0]){
-                    layoutActivityGoalDuration.visibility = View.VISIBLE
-                    layoutActivityGoalDate.visibility = View.GONE
+                if (selectedGoalType == goalTypeData!![0]) {
+                    binding.layoutActivityGoalDuration.visibility = View.VISIBLE
+                    binding.layoutActivityGoalDate.visibility = View.GONE
                 } else {
-                    layoutActivityGoalDuration.visibility = View.GONE
-                    layoutActivityGoalDate.visibility = View.VISIBLE
+                    binding.layoutActivityGoalDuration.visibility = View.GONE
+                    binding.layoutActivityGoalDate.visibility = View.VISIBLE
                 }
             }
 
@@ -165,9 +178,9 @@ class ActivityCreateGoalFragment : BaseFragment() {
         /*val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             requireActivity(), android.R.layout.simple_spinner_dropdown_item, durationData!!
         )*/
-        spinnerActivityGoalDuration.adapter = adapter
+        binding.spinnerActivityGoalDuration.adapter = adapter
 
-        spinnerActivityGoalDuration.onItemSelectedListener = object :
+        binding.spinnerActivityGoalDuration.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
@@ -204,10 +217,10 @@ class ActivityCreateGoalFragment : BaseFragment() {
                     .createPersonalGoalData(
                         "PI0010",
                         CreatePersonalGoal(
-                            getText(editTextActivityGoalTitle),
-                            getText(editTextActivityGoalDesc),
+                            getText(binding.editTextActivityGoalTitle),
+                            getText(binding.editTextActivityGoalDesc),
                             "Personal",
-                            txtActivityGoalDate.text.toString(),
+                            binding.txtActivityGoalDate.text.toString(),
                             durationPos,
                             selectedGoalType,
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!
@@ -226,9 +239,9 @@ class ActivityCreateGoalFragment : BaseFragment() {
                             if (status == "201") {
                                 CalenderUtils.addEvent(
                                     requireActivity(),
-                                    txtActivityGoalDate.text.toString() + " 00:00:00",
-                                    getText(editTextActivityGoalTitle),
-                                    getText(editTextActivityGoalDesc),
+                                    binding.txtActivityGoalDate.text.toString() + " 00:00:00",
+                                    getText(binding.editTextActivityGoalTitle),
+                                    getText(binding.editTextActivityGoalDesc),
                                     selectedDuration, "30", "9", 5
                                 )
                                 popBackStack()
@@ -279,6 +292,7 @@ class ActivityCreateGoalFragment : BaseFragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_activity_create_goal"
     }
 }

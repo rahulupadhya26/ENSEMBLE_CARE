@@ -7,9 +7,10 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.SurfaceView
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -22,10 +23,12 @@ import com.app.selfcare.BuildConfig
 import com.app.selfcare.R
 import com.app.selfcare.adapters.MessageAdapter
 import com.app.selfcare.controller.OnMessageClickListener
-import com.app.selfcare.data.Appointment
 import com.app.selfcare.data.GetAppointment
 import com.app.selfcare.data.MessageBean
 import com.app.selfcare.data.MessageListBean
+import com.app.selfcare.databinding.DialogOnlineChatBinding
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentVideoCallBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.realTimeMessaging.ChatManager
@@ -34,18 +37,12 @@ import com.app.selfcare.utils.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
 import io.agora.rtc2.RtcEngine
 import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtm.*
-import kotlinx.android.synthetic.main.dialog_online_chat.view.*
-import kotlinx.android.synthetic.main.fragment_settings.*
-import kotlinx.android.synthetic.main.fragment_video_call.*
-import java.text.MessageFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -120,6 +117,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
     private var running = false
 
     private var wasRunning = false
+    private lateinit var binding: FragmentVideoCallBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,6 +127,15 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             RTM_TOKEN = it.getString(ARG_PARAM3)
             CHANNEL_NAME = it.getString(ARG_PARAM4)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentVideoCallBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -146,11 +153,11 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         //TOKEN = appointment!!.rtc_token
 
         if (appointment!!.appointment.type_of_visit == "Video") {
-            videoCallLayout.visibility = View.VISIBLE
-            audioCallLayout.visibility = View.GONE
+            binding.videoCallLayout.visibility = View.VISIBLE
+            binding.audioCallLayout.visibility = View.GONE
         } else {
-            audioCallLayout.visibility = View.VISIBLE
-            videoCallLayout.visibility = View.GONE
+            binding.audioCallLayout.visibility = View.VISIBLE
+            binding.videoCallLayout.visibility = View.GONE
             try {
                 val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
                 if (photo.isNotEmpty()) {
@@ -158,12 +165,12 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
                         .load(BaseActivity.baseURL.dropLast(5) + photo)
                         .placeholder(R.drawable.user_pic)
                         .transform(CenterCrop(), RoundedCorners(5))
-                        .into(imgUserLargeImage)
+                        .into(binding.imgUserLargeImage)
                     Glide.with(requireActivity())
                         .load(BaseActivity.baseURL.dropLast(5) + photo)
                         .placeholder(R.drawable.user_pic)
                         .transform(CenterCrop(), RoundedCorners(5))
-                        .into(imgUserSmallImage)
+                        .into(binding.imgUserSmallImage)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -177,26 +184,26 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             requestPermission(PERMISSION_REQUEST_ID)
         }
 
-        txtUserNameVideo.text =
+        binding.txtUserNameVideo.text =
             appointment!!.doctor_first_name + " " + appointment!!.doctor_last_name
         /*preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]*/
 
-        txtUserNameAudio.text =
+        binding.txtUserNameAudio.text =
             appointment!!.doctor_first_name + " " + appointment!!.doctor_last_name
         /*preference!![PrefKeys.PREF_FNAME, ""] + " " + preference!![PrefKeys.PREF_LNAME, ""]*/
 
-        buttonAudioCall.setOnClickListener {
+        binding.buttonAudioCall.setOnClickListener {
             if (mEndCall) {
                 startCall()
                 mEndCall = false
-                buttonAudioCall.setImageResource(R.drawable.btn_endcall)
-                buttonAudioMute.visibility = View.VISIBLE
+                binding.buttonAudioCall.setImageResource(R.drawable.btn_endcall)
+                binding.buttonAudioMute.visibility = View.VISIBLE
             } else {
                 endVideoCall()
             }
         }
 
-        buttonAudioMute.setOnClickListener {
+        binding.buttonAudioMute.setOnClickListener {
             mMuted = !mMuted
             rtcEngine.muteLocalAudioStream(mMuted)
             val res: Int = if (mMuted) {
@@ -204,10 +211,10 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             } else {
                 R.drawable.btn_unmute
             }
-            buttonAudioMute.setImageResource(res)
+            binding.buttonAudioMute.setImageResource(res)
         }
 
-        buttonAudioChat.setOnClickListener {
+        binding.buttonAudioChat.setOnClickListener {
             if (createPostDialog != null) {
                 createPostDialog!!.show()
             } else {
@@ -215,13 +222,13 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             }
         }
 
-        buttonCall.setOnClickListener {
+        binding.buttonCall.setOnClickListener {
             if (mEndCall) {
                 startCall()
                 mEndCall = false
-                buttonCall.setImageResource(R.drawable.btn_endcall)
-                buttonMute.visibility = View.VISIBLE
-                buttonSwitchCamera.visibility = View.VISIBLE
+                binding.buttonCall.setImageResource(R.drawable.btn_endcall)
+                binding.buttonMute.visibility = View.VISIBLE
+                binding.buttonSwitchCamera.visibility = View.VISIBLE
             } else {
                 endVideoCall()
                 /*mEndCall = true
@@ -231,11 +238,11 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             }
         }
 
-        buttonSwitchCamera.setOnClickListener {
+        binding.buttonSwitchCamera.setOnClickListener {
             rtcEngine.switchCamera()
         }
 
-        buttonSwitchVideo.setOnClickListener {
+        binding.buttonSwitchVideo.setOnClickListener {
             mVideoDisabled = !mVideoDisabled
             val res: Int = if (mVideoDisabled) {
                 rtcEngine.disableVideo()
@@ -244,10 +251,10 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
                 rtcEngine.enableVideo()
                 R.mipmap.ic_video_enabled
             }
-            buttonSwitchVideo.setImageResource(res)
+            binding.buttonSwitchVideo.setImageResource(res)
         }
 
-        buttonChat.setOnClickListener {
+        binding.buttonChat.setOnClickListener {
             //Navigate to chat screen
             //displayToast("Screen under construction...")
             if (createPostDialog != null) {
@@ -261,7 +268,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             )*/
         }
 
-        buttonMute.setOnClickListener {
+        binding.buttonMute.setOnClickListener {
             mMuted = !mMuted
             rtcEngine.muteLocalAudioStream(mMuted)
             val res: Int = if (mMuted) {
@@ -269,7 +276,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             } else {
                 R.drawable.btn_unmute
             }
-            buttonMute.setImageResource(res)
+            binding.buttonMute.setImageResource(res)
         }
     }
 
@@ -282,11 +289,13 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             val nextMonthDate = SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(date.time)
             val endTime = DateUtils(nextMonthDate)
             actualEndTime = endTime.getTime()
-            duration = txtUserAudioTime.text.toString()
+            duration = binding.txtUserAudioTime.text.toString()
             endCall()
             Utils.rtmLoggedIn = false
-            sendApptStatus(appointment!!.appointment.appointment_id.toString(),
-            actualStartTime!!, actualEndTime!!, duration!!){
+            sendApptStatus(
+                appointment!!.appointment.appointment_id.toString(),
+                actualStartTime!!, actualEndTime!!, duration!!
+            ) {
                 clearPreviousFragmentStack()
                 replaceFragmentNoBackStack(
                     TherapistFeedbackFragment.newInstance(appointment!!.appointment.appointment_id.toString()),
@@ -363,10 +372,6 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
     private fun initRtcEngine() {
         try {
             rtcEngine = RtcEngine.create(requireActivity(), BuildConfig.appId, mRtcEventHandler)
-            // For a live streaming scenario, set the channel profile as BROADCASTING.
-            rtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING)
-            // Set the client role as BORADCASTER or AUDIENCE according to the scenario.
-            rtcEngine.setClientRole(Constants.CLIENT_ROLE_BROADCASTER)
 
             mChatManager = SelfCareApplication.instance.getChatManager()
             mRtmClient = mChatManager!!.getRtmClient()
@@ -382,7 +387,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         try {
             localView = RtcEngine.CreateRendererView(requireActivity())
             localView!!.setZOrderMediaOverlay(true)
-            localVideoView.addView(localView)
+            binding.localVideoView.addView(localView)
             // Set the local video view.
             rtcEngine.setupLocalVideo(VideoCanvas(localView, VideoCanvas.RENDER_MODE_HIDDEN, 0))
         } catch (e: Exception) {
@@ -392,11 +397,11 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
 
     private fun setupRemoteVideoView(uid: Int) {
         try {
-            if (remoteVideoView.childCount > 1) {
+            if (binding.remoteVideoView.childCount > 1) {
                 return
             }
             remoteView = RtcEngine.CreateRendererView(requireActivity())
-            remoteVideoView.addView(remoteView)
+            binding.remoteVideoView.addView(remoteView)
             rtcEngine.setupRemoteVideo(VideoCanvas(remoteView, VideoCanvas.RENDER_MODE_FIT, uid))
         } catch (e: Exception) {
             e.printStackTrace()
@@ -430,6 +435,9 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
             // Join a channel with a token.
             //TOKEN = "0060583a41d1d7a40fbbed542383e62f45dIABbaILOTT/XIkPDxZxq4BIpXJUx3HLRv6Shgvu7MetK4cBbkbR857iyIgBmT/kB9+XxYgQAAQCHovBiAgCHovBiAwCHovBiBACHovBi"
             //CHANNEL ="45bae49f-f580-4730-bf85-409a5d166d25"
+            /*val options = ChannelMediaOptions()
+            options.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION
+            options.clientRoleType = Constants.CLIENT_ROLE_AUDIENCE*/
             rtcEngine.joinChannel(RTC_TOKEN, CHANNEL_NAME, "", 0)
             running = true
             val date: Calendar = Calendar.getInstance()
@@ -457,7 +465,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
     private fun removeLocalVideo() {
         try {
             if (localView != null) {
-                localVideoView.removeView(localView)
+                binding.localVideoView.removeView(localView)
             }
             localView = null
         } catch (e: Exception) {
@@ -470,7 +478,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
     private fun removeRemoteVideo() {
         try {
             if (remoteView != null) {
-                remoteVideoView.removeView(remoteView)
+                binding.remoteVideoView.removeView(remoteView)
             }
             remoteView = null
         } catch (e: Exception) {
@@ -554,15 +562,17 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         }
     }
 
-    private var onlineChatView: View? = null
+    private lateinit var onlineChatView: DialogOnlineChatBinding
 
     fun openOnlineChatWindow() {
         createPostDialog = BottomSheetDialog(mContext!!)
-        onlineChatView = requireActivity().layoutInflater.inflate(
+        /*onlineChatView = requireActivity().layoutInflater.inflate(
             R.layout.dialog_online_chat, null
-        )
+        )*/
         //onlineChatView!!.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-        createPostDialog!!.setContentView(onlineChatView!!)
+        onlineChatView = DialogOnlineChatBinding.inflate(layoutInflater)
+        val view = onlineChatView.root
+        createPostDialog!!.setContentView(view)
         createPostDialog!!.behavior.peekHeight =
             Resources.getSystem().displayMetrics.heightPixels
         createPostDialog!!.setCanceledOnTouchOutside(false)
@@ -659,11 +669,12 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         } else {
             mChannelName = targetName
             mChannelMemberCount = 1
-            onlineChatView!!.txtTherapistChatName.text = MessageFormat.format(
+            onlineChatView!!.txtTherapistChatName.text = mChannelName
+            /*onlineChatView!!.txtTherapistChatName.text = MessageFormat.format(
                 "{0}({1})",
                 mChannelName,
                 mChannelMemberCount
-            )
+            )*/
             createAndJoinChannel()
         }
         runOnUiThread {
@@ -890,7 +901,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
     private fun refreshChannelTitle() {
         val titleFormat = getString(R.string.channel_title)
         val title = String.format(titleFormat, mChannelName, mChannelMemberCount)
-        onlineChatView!!.txtTherapistChatName.text = title
+        onlineChatView!!.txtTherapistChatName.text = mChannelName
     }
 
     private fun showToast(text: String) {
@@ -961,11 +972,11 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
                     )
 
                 // Set the text view text.
-                if (txtUserVideoTime != null) {
-                    txtUserVideoTime.text = time
+                if (binding.txtUserVideoTime != null) {
+                    binding.txtUserVideoTime.text = time
                 }
-                if (txtUserAudioTime != null) {
-                    txtUserAudioTime.text = time
+                if (binding.txtUserAudioTime != null) {
+                    binding.txtUserAudioTime.text = time
                 }
 
                 // If running is true, increment the

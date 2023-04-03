@@ -1,85 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/therapist_list_background"
     android:orientation="vertical"
     tools:context=".fragment.TherapistListFragment">
 
-    <ImageView
-        android:id="@+id/therapistListBack"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:padding="@dimen/_5dp"
-        android:src="@drawable/journal_resource_back"
-        app:tint="@color/primaryGreen" />
-
     <LinearLayout
+        android:id="@+id/layoutTherapistFound"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginStart="@dimen/_10dp"
-        android:layout_marginEnd="@dimen/_10dp"
-        android:layout_marginBottom="@dimen/_10dp"
-        android:layout_above="@+id/btnConfirmDoctor"
-        android:layout_below="@+id/therapistListBack">
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create an appointment"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/primaryGreen"
-            android:textSize="@dimen/_24sp"
-            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/therapistListBack"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:padding="@dimen/_5dp"
+            android:src="@drawable/journal_resource_back"
+            app:tint="@color/primaryGreen" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select your provider"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/primaryGreen"
-            android:textSize="@dimen/_18sp"
-            android:layout_marginTop="@dimen/_5dp"
-            android:textStyle="bold" />
-
-        <androidx.recyclerview.widget.RecyclerView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recyclerViewTherapist"/>
+            android:layout_above="@+id/btnConfirmDoctor"
+            android:layout_below="@+id/therapistListBack"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create an appointment"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5dp"
+                android:text="Select your provider"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/primaryGreen"
+                android:textSize="@dimen/_18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewTherapist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnConfirmDoctor"
-        style="@style/buttonBackground"
+    <LinearLayout
+        android:id="@+id/layoutTherapistNotFound"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="@dimen/_30dp"
-        android:layout_marginEnd="@dimen/_30dp"
-        android:layout_marginBottom="@dimen/_10dp"
-        android:text="Confirm Provider"
-        android:visibility="gone"
-        app:backgroundTint="@color/buttonBackground" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
 
-    <Button
-        android:id="@+id/btnConfirmDoctorDisabled"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_30dp"
-        android:layout_marginEnd="@dimen/_30dp"
-        android:layout_marginBottom="@dimen/_5dp"
-        android:textAppearance="@style/fontfamily"
-        android:layout_alignParentBottom="true"
-        android:textSize="@dimen/_18sp"
-        android:textStyle="bold"
-        android:text="Confirm doctor"
-        android:padding="@dimen/_10dp"
-        android:backgroundTint="#89848C"
-        android:visibility="gone"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5dp"
+            android:text="We will match you with an appropriate therapist and get back to you"
+            android:gravity="center"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/localBackground"
+            android:textSize="@dimen/_18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="@dimen/_30dp"
+            android:layout_marginEnd="@dimen/_30dp"/>
+
+        <Button
+            android:id="@+id/btnTherapistGoToDashboard"
+            style="@style/buttonBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go to dashboard" />
+
+    </LinearLayout>
 
 </RelativeLayout>

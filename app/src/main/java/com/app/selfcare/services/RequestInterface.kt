@@ -24,7 +24,7 @@ interface RequestInterface {
     ): Single<ResponseBody>
 
     @GET("questionnaire_list")
-    fun getAllQuestionnaire(@Query("therapy") therapy: String): Single<ResponseBody>
+    fun getAllQuestionnaire(@Query("new") therapy: String): Single<ResponseBody>
 
     @POST("questionarie")
     fun sendAnswers(
@@ -33,7 +33,10 @@ interface RequestInterface {
     ): Single<ResponseBody>
 
     @POST("questionnaire_submit")
-    fun sendAllAnswers(@Body answer: SendAnswer): Single<ResponseBody>
+    fun sendAllAnswers(
+        @Query("new") new: String,
+        @Body answer: SendAnswer
+    ): Single<ResponseBody>
 
     @POST("verify_employee/")
     fun verifyEmp(@Body employee: Employee): Single<ResponseBody>
@@ -129,7 +132,8 @@ interface RequestInterface {
 
     @HTTP(method = "DELETE", path = "delete/", hasBody = true)
     fun deleteData(
-        @Query("table_id") table_id: String, @Body dataId: DataId,
+        @Query("table_id") table_id: String,
+        @Body dataId: DataId,
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 
@@ -220,6 +224,12 @@ interface RequestInterface {
     @POST("get_agora_token/")
     fun getToken(
         @Body list: GetToken,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("get_agora_token/")
+    fun getGroupApptToken(
+        @Body list: GetGroupApptToken,
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 
@@ -415,10 +425,84 @@ interface RequestInterface {
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 
+    @POST("create/")
+    fun sendMindfulnessCarePlanPendingTask(
+        @Query("table_id") table_id: String,
+        @Body mindfulnessCarePlan: MindfulnessCarePlan,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
     @PUT("update/")
     fun updateNotificationStatus(
         @Query("table_id") table_id: String,
         @Body notifyStatus: NotifyStatus,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @HTTP(method = "DELETE", path = "delete/", hasBody = true)
+    fun sendYogaCarePlanDeleteTask(
+        @Query("table_id") table_id: String,
+        @Body removeCarePlan: RemoveCarePlan,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @HTTP(method = "DELETE", path = "delete/", hasBody = true)
+    fun sendNutritionCarePlanDeleteTask(
+        @Query("table_id") table_id: String,
+        @Body removeCarePlan: RemoveCarePlan,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @HTTP(method = "DELETE", path = "delete/", hasBody = true)
+    fun sendExerciseCarePlanDeleteTask(
+        @Query("table_id") table_id: String,
+        @Body removeCarePlan: RemoveCarePlan,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @HTTP(method = "DELETE", path = "delete/", hasBody = true)
+    fun sendMindfulnessCarePlanDeleteTask(
+        @Query("table_id") table_id: String,
+        @Body removeCarePlan: RemoveCarePlan,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @GET("patient/music_data/")
+    fun getMusicDashboardData(
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @GET("select_all")
+    fun getEventData(
+        @Query("table_id") table_id: String,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("select/")
+    fun getEventDetail(
+        @Query("table_id") table_id: String,
+        @Body fetchCareBuddyDetail: FetchCareBuddyDetail,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("select/")
+    fun getCareBuddyData(
+        @Query("table_id") table_id: String,
+        @Body fetchCareBuddyList: FetchCareBuddyList,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("select/")
+    fun fetchCareBuddyDetail(
+        @Query("table_id") table_id: String,
+        @Body fetchCareBuddyDetail: FetchCareBuddyDetail,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("create/")
+    fun createCareBuddyData(
+        @Query("table_id") table_id: String,
+        @Body addCareBuddy: AddCareBuddy,
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 }

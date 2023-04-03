@@ -16,6 +16,8 @@ import com.app.selfcare.controller.OnNewsItemClickListener
 import com.app.selfcare.controller.OnPodcastItemClickListener
 import com.app.selfcare.controller.OnVideoItemClickListener
 import com.app.selfcare.data.*
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentRecommendedDataBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.AudioStream
@@ -23,8 +25,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_dashboard.*
-import kotlinx.android.synthetic.main.fragment_recommended_data.*
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
@@ -47,6 +47,7 @@ class RecommendedDataFragment : BaseFragment(),
     private var param2: String? = null
     private var mediaPlayer: MediaPlayer? = null
     private var recommended: Recommended = Recommended()
+    private lateinit var binding: FragmentRecommendedDataBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +55,15 @@ class RecommendedDataFragment : BaseFragment(),
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRecommendedDataBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -68,7 +78,7 @@ class RecommendedDataFragment : BaseFragment(),
 
         getRecommendedData()
 
-        txtViewAllRecommendedVideos.setOnClickListener {
+        binding.txtViewAllRecommendedVideos.setOnClickListener {
             /*if (recommended.videos.isNotEmpty()) {
                 replaceFragment(
                     VideosListFragment.newInstance(recommended.videos, ""),
@@ -80,7 +90,7 @@ class RecommendedDataFragment : BaseFragment(),
             }*/
         }
 
-        txtViewAllRecommendedProviderGoals.setOnClickListener {
+        binding.txtViewAllRecommendedProviderGoals.setOnClickListener {
             if (recommended.provider_goals.isNotEmpty()) {
                 replaceFragment(
                     FacilityGoalFragment.newInstance(recommended.provider_goals, ""),
@@ -131,10 +141,10 @@ class RecommendedDataFragment : BaseFragment(),
                             }
                         } else {
                             displayAfterLoginErrorMsg(error)
-                            txtNoRecommendedVideos.visibility = View.VISIBLE
-                            txtNoRecommendedPodcast.visibility = View.VISIBLE
-                            txtNoRecommendedArticles.visibility = View.VISIBLE
-                            txtNoRecommendedProviderGoals.visibility = View.VISIBLE
+                            binding.txtNoRecommendedVideos.visibility = View.VISIBLE
+                            binding.txtNoRecommendedPodcast.visibility = View.VISIBLE
+                            binding.txtNoRecommendedArticles.visibility = View.VISIBLE
+                            binding.txtNoRecommendedProviderGoals.visibility = View.VISIBLE
                         }
                     })
             )
@@ -168,9 +178,9 @@ class RecommendedDataFragment : BaseFragment(),
 
     private fun displayPodcasts(recommended: Recommended) {
         if (recommended.podcasts.isNotEmpty()) {
-            recyclerViewRecommendedPodcasts.visibility = View.VISIBLE
-            txtNoRecommendedPodcast.visibility = View.GONE
-            recyclerViewRecommendedPodcasts.apply {
+            binding.recyclerViewRecommendedPodcasts.visibility = View.VISIBLE
+            binding.txtNoRecommendedPodcast.visibility = View.GONE
+            binding.recyclerViewRecommendedPodcasts.apply {
                 layoutManager =
                     LinearLayoutManager(
                         mActivity!!,
@@ -185,16 +195,16 @@ class RecommendedDataFragment : BaseFragment(),
                     )
             }
         } else {
-            recyclerViewRecommendedPodcasts.visibility = View.GONE
-            txtNoRecommendedPodcast.visibility = View.VISIBLE
+            binding.recyclerViewRecommendedPodcasts.visibility = View.GONE
+            binding.txtNoRecommendedPodcast.visibility = View.VISIBLE
         }
     }
 
     private fun displayArticles(recommended: Recommended) {
         if (recommended.articles.isNotEmpty()) {
-            recyclerViewRecommendedArticles.visibility = View.VISIBLE
-            txtNoRecommendedArticles.visibility = View.GONE
-            recyclerViewRecommendedArticles.apply {
+            binding.recyclerViewRecommendedArticles.visibility = View.VISIBLE
+            binding.txtNoRecommendedArticles.visibility = View.GONE
+            binding.recyclerViewRecommendedArticles.apply {
                 layoutManager =
                     LinearLayoutManager(
                         mActivity!!,
@@ -209,16 +219,16 @@ class RecommendedDataFragment : BaseFragment(),
                     )
             }
         } else {
-            recyclerViewRecommendedArticles.visibility = View.GONE
-            txtNoRecommendedArticles.visibility = View.VISIBLE
+            binding.recyclerViewRecommendedArticles.visibility = View.GONE
+            binding.txtNoRecommendedArticles.visibility = View.VISIBLE
         }
     }
 
     private fun displayProviderGoals(recommended: Recommended) {
         if (recommended.provider_goals.isNotEmpty()) {
-            recyclerViewRecommendedProviderGoals.visibility = View.VISIBLE
-            txtNoRecommendedProviderGoals.visibility = View.GONE
-            recyclerViewRecommendedProviderGoals.apply {
+            binding.recyclerViewRecommendedProviderGoals.visibility = View.VISIBLE
+            binding.txtNoRecommendedProviderGoals.visibility = View.GONE
+            binding.recyclerViewRecommendedProviderGoals.apply {
                 layoutManager =
                     LinearLayoutManager(
                         mActivity!!,
@@ -233,8 +243,8 @@ class RecommendedDataFragment : BaseFragment(),
                     )
             }
         } else {
-            recyclerViewRecommendedProviderGoals.visibility = View.GONE
-            txtNoRecommendedProviderGoals.visibility = View.VISIBLE
+            binding.recyclerViewRecommendedProviderGoals.visibility = View.GONE
+            binding.txtNoRecommendedProviderGoals.visibility = View.VISIBLE
         }
     }
 

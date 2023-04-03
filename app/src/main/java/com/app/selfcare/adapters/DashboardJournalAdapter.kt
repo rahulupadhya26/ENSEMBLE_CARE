@@ -9,10 +9,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.app.selfcare.R
 import com.app.selfcare.controller.OnJournalItemClickListener
 import com.app.selfcare.data.Journal
-import kotlinx.android.synthetic.main.layout_item_dashboard_journal.view.*
+import com.app.selfcare.databinding.LayoutItemDashboardJournalBinding
 import kotlin.math.min
 
 class DashboardJournalAdapter(
@@ -25,9 +24,14 @@ class DashboardJournalAdapter(
         parent: ViewGroup,
         viewType: Int
     ): DashboardJournalAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_dashboard_journal, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemDashboardJournalBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_dashboard_journal, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -36,28 +40,23 @@ class DashboardJournalAdapter(
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: DashboardJournalAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        holder.journalDuration.text = item.journal_date
-        holder.createdJournalDate.text = item.created_on
-        holder.journalTitle.text = item.name
-        holder.journalDesc.text = item.description
-        holder.journalDate.text = item.journal_date
-        holder.journalDelete.setOnClickListener {
-            adapterItemClickListener!!.onJournalItemClicked(item, true)
-        }
-        holder.journalLayout.setOnClickListener {
-            adapterItemClickListener!!.onJournalItemClicked(item, false)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            journalDuration.text = item.journal_date
+            txtCreatedJournalDate.text = item.created_on
+            txtJournalTitle.text = item.name
+            txtJournalDesc.text = item.description
+            txtJournalDate.text = item.journal_date
+            imgDeleteJournal.setOnClickListener {
+                adapterItemClickListener!!.onJournalItemClicked(item, true)
+            }
+            cardViewJournal.setOnClickListener {
+                adapterItemClickListener!!.onJournalItemClicked(item, false)
+            }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val journalDuration: TextView = itemView.journalDuration
-        val journalTitle: TextView = itemView.txtJournalTitle
-        val journalDesc: TextView = itemView.txtJournalDesc
-        val journalDate: TextView = itemView.txtJournalDate
-        val createdJournalDate: TextView = itemView.txtCreatedJournalDate
-        val journalDelete: ImageView = itemView.imgDeleteJournal
-        val journalLayout: CardView = itemView.cardViewJournal
-    }
+    inner class ViewHolder(val binding: LayoutItemDashboardJournalBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

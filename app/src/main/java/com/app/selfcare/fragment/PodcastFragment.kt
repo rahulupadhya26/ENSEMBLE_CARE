@@ -14,6 +14,8 @@ import com.app.selfcare.controller.OnPodcastItemClickListener
 import com.app.selfcare.data.Articles
 import com.app.selfcare.data.Podcast
 import com.app.selfcare.data.Video
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentPodcastBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.AudioStream
@@ -22,7 +24,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_podcast.*
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
@@ -46,6 +47,7 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
     private var mediaPlayer: MediaPlayer? = null
     private var isFavourite: Boolean = false
     private var category: String? = null
+    private lateinit var binding: FragmentPodcastBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +57,15 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
             isFavourite = it.getBoolean(ARG_PARAM3)
             category = it.getString(ARG_PARAM4)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPodcastBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -69,7 +80,7 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
         updateStatusBarColor(R.color.white)
         mediaPlayer = MediaPlayer()
 
-        podcastsBack.setOnClickListener {
+        binding.podcastsBack.setOnClickListener {
             popBackStack()
         }
 
@@ -107,6 +118,13 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
                         getFavDetailPodcastData()
                     } else {
                         getDetailPodcastData("yoga_data/")
+                    }
+                }
+                Utils.WELLNESS_MUSIC -> {
+                    if (isFavourite) {
+                        getFavDetailPodcastData()
+                    } else {
+                        getDetailPodcastData("music_data/")
                     }
                 }
                 else -> {
@@ -179,10 +197,12 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
 
     private fun displayPodcasts(podcasts: ArrayList<Podcast>) {
         if (podcasts.isNotEmpty()) {
-            txtNoPodcasts.visibility = View.GONE
-            recyclerViewPodcastList.visibility = View.VISIBLE
+            binding.shimmerPodcastList.stopShimmer()
+            binding.shimmerPodcastList.visibility = View.GONE
+            binding.txtNoPodcasts.visibility = View.GONE
+            binding.recyclerViewPodcastList.visibility = View.VISIBLE
             val noOfColumns = calculateNoOfColumns(requireActivity(), 120F)
-            recyclerViewPodcastList.apply {
+            binding.recyclerViewPodcastList.apply {
                 layoutManager = GridLayoutManager(
                     mActivity!!,
                     noOfColumns
@@ -193,8 +213,10 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
         } else {
-            txtNoPodcasts.visibility = View.VISIBLE
-            recyclerViewPodcastList.visibility = View.GONE
+            binding.shimmerPodcastList.stopShimmer()
+            binding.shimmerPodcastList.visibility = View.GONE
+            binding.txtNoPodcasts.visibility = View.VISIBLE
+            binding.recyclerViewPodcastList.visibility = View.GONE
         }
     }
 

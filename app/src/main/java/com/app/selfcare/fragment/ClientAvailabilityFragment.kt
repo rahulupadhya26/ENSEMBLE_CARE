@@ -2,8 +2,10 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.selfcare.R
 import com.app.selfcare.adapters.ClientAvailabilityAdapter
@@ -11,13 +13,14 @@ import com.app.selfcare.controller.OnClickListener
 import com.app.selfcare.data.AvailabilityData
 import com.app.selfcare.data.ClientAvailability
 import com.app.selfcare.data.Therapist
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentClientAvailabilityBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_client_availability.*
 import retrofit2.HttpException
 import java.lang.Exception
 import java.lang.reflect.Type
@@ -39,6 +42,7 @@ class ClientAvailabilityFragment : BaseFragment(), OnClickListener {
     private var param2: String? = null
     private var clientAvailability: ArrayList<String> = ArrayList()
     private var preferTime: ArrayList<String> = ArrayList()
+    private lateinit var binding: FragmentClientAvailabilityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +50,15 @@ class ClientAvailabilityFragment : BaseFragment(), OnClickListener {
             isRegister = it.getBoolean(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentClientAvailabilityBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -63,12 +76,12 @@ class ClientAvailabilityFragment : BaseFragment(), OnClickListener {
         preferTime = arrayListOf()
 
         if (isRegister!!) {
-            clientAvailabilityBack.visibility = View.GONE
+            binding.clientAvailabilityBack.visibility = View.GONE
         } else {
-            clientAvailabilityBack.visibility = View.VISIBLE
+            binding.clientAvailabilityBack.visibility = View.VISIBLE
         }
 
-        clientAvailabilityBack.setOnClickListener {
+        binding.clientAvailabilityBack.setOnClickListener {
             setBottomNavigation(null)
             setLayoutBottomNavigation(null)
             replaceFragmentNoBackStack(
@@ -93,17 +106,17 @@ class ClientAvailabilityFragment : BaseFragment(), OnClickListener {
         val noOfColumns = calculateNoOfColumns(requireActivity(), 150F)
 
         val layoutManager1 = GridLayoutManager(requireActivity(), noOfColumns)
-        recyclerviewAvailability.setHasFixedSize(false)
-        recyclerviewAvailability.layoutManager = layoutManager1
-        recyclerviewAvailability.adapter =
+        binding.recyclerviewAvailability.setHasFixedSize(false)
+        binding.recyclerviewAvailability.layoutManager = layoutManager1
+        binding.recyclerviewAvailability.adapter =
             ClientAvailabilityAdapter(mActivity!!, availability, this)
 
         val layoutManager2 = GridLayoutManager(requireActivity(), noOfColumns)
-        recyclerviewTimeSlots.setHasFixedSize(false)
-        recyclerviewTimeSlots.layoutManager = layoutManager2
-        recyclerviewTimeSlots.adapter = ClientAvailabilityAdapter(mActivity!!, preferredTime, this)
+        binding.recyclerviewTimeSlots.setHasFixedSize(false)
+        binding.recyclerviewTimeSlots.layoutManager = layoutManager2
+        binding.recyclerviewTimeSlots.adapter = ClientAvailabilityAdapter(mActivity!!, preferredTime, this)
 
-        btnAvailability.setOnClickListener {
+        binding.btnAvailability.setOnClickListener {
             if (clientAvailability.isNotEmpty()) {
                 if (preferTime.isNotEmpty()) {
                     getClientAvailability()

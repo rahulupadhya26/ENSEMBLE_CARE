@@ -2,20 +2,18 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import com.app.selfcare.R
-import com.app.selfcare.data.Employee
 import com.app.selfcare.data.SendEmail
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentResetPasswordBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
-import com.app.selfcare.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_register_part_c.*
-import kotlinx.android.synthetic.main.fragment_reset_password.*
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.Exception
@@ -34,6 +32,7 @@ class ResetPasswordFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentResetPasswordBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +40,15 @@ class ResetPasswordFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentResetPasswordBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -54,20 +62,20 @@ class ResetPasswordFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        resetPasswordBack.setOnClickListener {
+        binding.resetPasswordBack.setOnClickListener {
             popBackStack()
         }
 
-        btnSendInstruction.setOnClickListener {
-            if(isValidEmail(resetPasswordEmail)){
+        binding.btnSendInstruction.setOnClickListener {
+            if(isValidEmail(binding.resetPasswordEmail)){
                 //Call Api
                 sendEmail()
             } else {
-                setEditTextError(resetPasswordEmail,"Enter valid Email Address")
+                setEditTextError(binding.resetPasswordEmail,"Enter valid Email Address")
             }
         }
 
-        layoutResetPasswordHelp.setOnClickListener {
+        binding.layoutResetPasswordHelp.setOnClickListener {
 
         }
     }
@@ -77,7 +85,7 @@ class ResetPasswordFragment : BaseFragment() {
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .sendEmail(SendEmail(getText(resetPasswordEmail)), getAccessToken())
+                    .sendEmail(SendEmail(getText(binding.resetPasswordEmail)), getAccessToken())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -92,7 +100,7 @@ class ResetPasswordFragment : BaseFragment() {
                             val token = jsonObj.getString("token")
                             displayToast(token)
                             replaceFragment(
-                                CheckEmailFragment.newInstance(getText(resetPasswordEmail), token),
+                                CheckEmailFragment.newInstance(getText(binding.resetPasswordEmail), token),
                                 R.id.layout_home,
                                 CheckEmailFragment.TAG
                             )

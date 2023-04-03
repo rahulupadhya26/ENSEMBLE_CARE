@@ -2,20 +2,15 @@ package com.app.selfcare.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.BaseActivity
-import com.app.selfcare.R
 import com.app.selfcare.controller.OnPodcastItemClickListener
 import com.app.selfcare.data.Podcast
+import com.app.selfcare.databinding.LayoutItemPodcastListBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import kotlinx.android.synthetic.main.layout_item_podcast_list.view.*
 
 class PodcastListAdapter(
     val context: Context,
@@ -27,30 +22,31 @@ class PodcastListAdapter(
         parent: ViewGroup,
         viewType: Int
     ): PodcastListAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_podcast_list, parent, false)
-        return ViewHolder(v)
+        val binding =
+            LayoutItemPodcastListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_podcast_list, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
-    override fun onBindViewHolder(holder: PodcastListAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        holder.podcastListTitle.text = item.name
-        Glide.with(context)
-            .load(BaseActivity.baseURL.dropLast(5) + item.podcast_image)
-            .transform(CenterCrop(), RoundedCorners(5))
-            .into(holder.podcastImage)
-        holder.podcastLayout.setOnClickListener {
-            adapterItemClickListener!!.onPodcastItemClicked(item)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            podcastListTitle.text = item.name
+            Glide.with(context)
+                .load(BaseActivity.baseURL.dropLast(5) + item.podcast_image)
+                .transform(CenterCrop(), RoundedCorners(5))
+                .into(imgPodcast)
+            cardviewPodcast.setOnClickListener {
+                adapterItemClickListener!!.onPodcastItemClicked(item)
+            }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val podcastImage: ImageView = itemView.img_podcast
-        val podcastListTitle: TextView = itemView.podcastListTitle
-        val podcastLayout: CardView = itemView.cardviewPodcast
-    }
+    inner class ViewHolder(val binding: LayoutItemPodcastListBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

@@ -1,9 +1,12 @@
 package com.app.selfcare.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -11,17 +14,15 @@ import com.app.selfcare.adapters.CarePlanDayListAdapter
 import com.app.selfcare.adapters.CarePlanYogaTaskListAdapter
 import com.app.selfcare.controller.OnCarePlanDayItemClickListener
 import com.app.selfcare.controller.OnCarePlanPendingTaskItemClickListener
-import com.app.selfcare.data.CareDayIndividualTaskDetail
-import com.app.selfcare.data.DayWiseCarePlan
-import com.app.selfcare.data.ExerciseCarePlan
-import com.app.selfcare.data.YogaCarePlan
+import com.app.selfcare.data.*
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentYogaCarePlanBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_yoga_care_plan.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
@@ -45,6 +46,7 @@ class YogaCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
     private var param2: String? = null
     private var selectedDayNo: Int = 0
     private lateinit var dayWiseCarePlan: DayWiseCarePlan
+    private lateinit var binding: FragmentYogaCarePlanBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +54,15 @@ class YogaCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
             yogaCarePlanDayNumber = it.getInt(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentYogaCarePlanBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -65,18 +76,23 @@ class YogaCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
         selectedDayNo = yogaCarePlanDayNumber
-        carePlanYogaBack.setOnClickListener {
+        binding.carePlanYogaBack.setOnClickListener {
             popBackStack()
         }
         getYogaCarePlanTaskDetails(selectedDayNo)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getYogaCarePlanTaskDetails(dayNumber: Int) {
         getDayWiseCarePlanData(dayNumber) { response ->
             val dayWiseCarePlanType: Type = object : TypeToken<DayWiseCarePlan?>() {}.type
             dayWiseCarePlan = Gson().fromJson(response, dayWiseCarePlanType)
-
-            recyclerViewCarePlanYogaDayList.apply {
+            binding.txtYogaCarePlanAssignedBy.text = dayWiseCarePlan.coach.name
+            binding.txtYogaCarePlanTaskAssigned.text = "Task assigned " +
+                    dayWiseCarePlan.plan.task_completed.completed + "/" + dayWiseCarePlan.plan.task_completed.total
+            binding.txtYogaCarePlanCurrentDay.text = "Day " +
+                    dayNumber.toString() + "/" + dayWiseCarePlan.total_days
+            binding.recyclerViewCarePlanYogaDayList.apply {
                 layoutManager = LinearLayoutManager(
                     requireActivity(), RecyclerView.HORIZONTAL, false
                 )
@@ -90,7 +106,7 @@ class YogaCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
     }
 
     private fun updateYogaTodayTasks(yogaTaskDetails: ArrayList<CareDayIndividualTaskDetail>) {
-        recyclerViewCarePlanYogaTask.apply {
+        binding.recyclerViewCarePlanYogaTask.apply {
             layoutManager = LinearLayoutManager(
                 requireActivity(), RecyclerView.VERTICAL, false
             )
@@ -154,6 +170,51 @@ class YogaCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
         handler.postDelayed(runnable!!, 1000)
     }
 
+    private fun sendCarePlanRemoveYogaTask(detail: CareDayIndividualTaskDetail) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendYogaCarePlanDeleteTask(
+                        "PI0050",
+                        RemoveCarePlan(
+                            detail.task_input_id
+                        ),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            getYogaCarePlanTaskDetails(selectedDayNo)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                sendCarePlanRemoveYogaTask(detail)
+                            }
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -181,7 +242,13 @@ class YogaCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
         getYogaCarePlanTaskDetails(selectedDayNo)
     }
 
-    override fun onCarePlanPendingTaskItemClickListener(careDayIndividualTaskDetail: CareDayIndividualTaskDetail) {
-        sendCarePlanPendingYogaTask(careDayIndividualTaskDetail)
+    override fun onCarePlanPendingTaskItemClickListener(
+        careDayIndividualTaskDetail: CareDayIndividualTaskDetail,
+        isCompleted: Boolean
+    ) {
+        if (isCompleted)
+            sendCarePlanPendingYogaTask(careDayIndividualTaskDetail)
+        else
+            sendCarePlanRemoveYogaTask(careDayIndividualTaskDetail)
     }
 }

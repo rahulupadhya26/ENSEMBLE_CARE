@@ -4,21 +4,23 @@ import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.app.selfcare.R
 import com.app.selfcare.data.*
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentAssessmentDataBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_assessment_data.*
-import kotlinx.android.synthetic.main.fragment_my_assessments.*
 import org.json.JSONObject
 import org.json.JSONStringer
 import retrofit2.HttpException
@@ -44,6 +46,7 @@ class AssessmentDataFragment : BaseFragment(), View.OnClickListener {
     private var count: Int = 0
     private var submitAssessment = JSONObject()
     private var selectedAnswerValueSum: Int = 0
+    private lateinit var binding: FragmentAssessmentDataBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +54,15 @@ class AssessmentDataFragment : BaseFragment(), View.OnClickListener {
             assessment = it.getParcelable(ARG_PARAM1)
             type = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAssessmentDataBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -63,11 +75,11 @@ class AssessmentDataFragment : BaseFragment(), View.OnClickListener {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        tvAssessmentOptionOne.setOnClickListener(this)
-        tvAssessmentOptionTwo.setOnClickListener(this)
-        tvAssessmentOptionThree.setOnClickListener(this)
-        tvAssessmentOptionFour.setOnClickListener(this)
-        tvAssessmentOptionFive.setOnClickListener(this)
+        binding.tvAssessmentOptionOne.setOnClickListener(this)
+        binding.tvAssessmentOptionTwo.setOnClickListener(this)
+        binding.tvAssessmentOptionThree.setOnClickListener(this)
+        binding.tvAssessmentOptionFour.setOnClickListener(this)
+        binding.tvAssessmentOptionFive.setOnClickListener(this)
 
         submitAssessment.put("patient", preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt())
         submitAssessment.put("assign_assessment", assessment!!.id)
@@ -128,80 +140,80 @@ class AssessmentDataFragment : BaseFragment(), View.OnClickListener {
     private fun setQuestionAnswer() {
         val questionCount = assessmentQuestions.size
         val answerCount = assessmentAnswers.size
-        assessmentProgressBar.max = questionCount
-        assessmentProgressBar.progress = count
+        binding.assessmentProgressBar.max = questionCount
+        binding.assessmentProgressBar.progress = count
         defaultOptionsView()
-        tvCurrentAssessmentQuestion.text = assessmentQuestions[count].question
+        binding.tvCurrentAssessmentQuestion.text = assessmentQuestions[count].question
         when (answerCount) {
             2 -> {
-                tvAssessmentOptionOne.text = assessmentAnswers[0].answer
-                tvAssessmentOptionTwo.text = assessmentAnswers[1].answer
-                tvAssessmentOptionThree.visibility = View.GONE
-                tvAssessmentOptionFour.visibility = View.GONE
-                tvAssessmentOptionFive.visibility = View.GONE
+                binding.tvAssessmentOptionOne.text = assessmentAnswers[0].answer
+                binding.tvAssessmentOptionTwo.text = assessmentAnswers[1].answer
+                binding.tvAssessmentOptionThree.visibility = View.GONE
+                binding.tvAssessmentOptionFour.visibility = View.GONE
+                binding.tvAssessmentOptionFive.visibility = View.GONE
             }
             3 -> {
-                tvAssessmentOptionOne.text = assessmentAnswers[0].answer
-                tvAssessmentOptionTwo.text = assessmentAnswers[1].answer
-                tvAssessmentOptionThree.text = assessmentAnswers[2].answer
-                tvAssessmentOptionThree.visibility = View.VISIBLE
-                tvAssessmentOptionFour.visibility = View.GONE
-                tvAssessmentOptionFive.visibility = View.GONE
+                binding.tvAssessmentOptionOne.text = assessmentAnswers[0].answer
+                binding.tvAssessmentOptionTwo.text = assessmentAnswers[1].answer
+                binding.tvAssessmentOptionThree.text = assessmentAnswers[2].answer
+                binding.tvAssessmentOptionThree.visibility = View.VISIBLE
+                binding.tvAssessmentOptionFour.visibility = View.GONE
+                binding.tvAssessmentOptionFive.visibility = View.GONE
             }
             4 -> {
-                tvAssessmentOptionOne.text = assessmentAnswers[0].answer
-                tvAssessmentOptionTwo.text = assessmentAnswers[1].answer
-                tvAssessmentOptionThree.text = assessmentAnswers[2].answer
-                tvAssessmentOptionFour.text = assessmentAnswers[3].answer
-                tvAssessmentOptionThree.visibility = View.VISIBLE
-                tvAssessmentOptionFour.visibility = View.VISIBLE
-                tvAssessmentOptionFive.visibility = View.GONE
+                binding.tvAssessmentOptionOne.text = assessmentAnswers[0].answer
+                binding.tvAssessmentOptionTwo.text = assessmentAnswers[1].answer
+                binding.tvAssessmentOptionThree.text = assessmentAnswers[2].answer
+                binding.tvAssessmentOptionFour.text = assessmentAnswers[3].answer
+                binding.tvAssessmentOptionThree.visibility = View.VISIBLE
+                binding.tvAssessmentOptionFour.visibility = View.VISIBLE
+                binding.tvAssessmentOptionFive.visibility = View.GONE
             }
             5 -> {
-                tvAssessmentOptionOne.text = assessmentAnswers[0].answer
-                tvAssessmentOptionTwo.text = assessmentAnswers[1].answer
-                tvAssessmentOptionThree.text = assessmentAnswers[2].answer
-                tvAssessmentOptionFour.text = assessmentAnswers[3].answer
-                tvAssessmentOptionFive.text = assessmentAnswers[4].answer
-                tvAssessmentOptionThree.visibility = View.VISIBLE
-                tvAssessmentOptionFour.visibility = View.VISIBLE
-                tvAssessmentOptionFive.visibility = View.VISIBLE
+                binding.tvAssessmentOptionOne.text = assessmentAnswers[0].answer
+                binding.tvAssessmentOptionTwo.text = assessmentAnswers[1].answer
+                binding.tvAssessmentOptionThree.text = assessmentAnswers[2].answer
+                binding.tvAssessmentOptionFour.text = assessmentAnswers[3].answer
+                binding.tvAssessmentOptionFive.text = assessmentAnswers[4].answer
+                binding.tvAssessmentOptionThree.visibility = View.VISIBLE
+                binding.tvAssessmentOptionFour.visibility = View.VISIBLE
+                binding.tvAssessmentOptionFive.visibility = View.VISIBLE
             }
         }
 
         when (count) {
             0 -> {
-                tvStartText.text = "Let's get started.."
+                binding.tvStartText.text = "Let's get started.."
             }
             1 -> {
-                tvStartText.text = "Keep going.."
+                binding.tvStartText.text = "Keep going.."
             }
             2 -> {
-                tvStartText.text = "Bit more.."
+                binding.tvStartText.text = "Bit more.."
             }
             3 -> {
-                tvStartText.text = "Little more.."
+                binding.tvStartText.text = "Little more.."
             }
             4 -> {
-                tvStartText.text = "You're doing great.."
+                binding.tvStartText.text = "You're doing great.."
             }
             else -> {
-                tvStartText.text = "Few more.."
+                binding.tvStartText.text = "Few more.."
             }
         }
         if (count == assessmentQuestions.size - 1) {
-            tvStartText.text = "And we are done..."
+            binding.tvStartText.text = "And we are done..."
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun defaultOptionsView() {
         val options = ArrayList<TextView>()
-        options.add(0, tvAssessmentOptionOne)
-        options.add(1, tvAssessmentOptionTwo)
-        options.add(2, tvAssessmentOptionThree)
-        options.add(3, tvAssessmentOptionFour)
-        options.add(4, tvAssessmentOptionFive)
+        options.add(0, binding.tvAssessmentOptionOne)
+        options.add(1, binding.tvAssessmentOptionTwo)
+        options.add(2, binding.tvAssessmentOptionThree)
+        options.add(3, binding.tvAssessmentOptionFour)
+        options.add(4, binding.tvAssessmentOptionFive)
 
         for (option in options) {
             option.setTextColor(requireActivity().getColor(R.color.secondary_text))
@@ -295,7 +307,7 @@ class AssessmentDataFragment : BaseFragment(), View.OnClickListener {
         when (v!!.id) {
             R.id.tvAssessmentOptionOne -> {
                 selectedOptionsView(
-                    tvAssessmentOptionOne,
+                    binding.tvAssessmentOptionOne,
                     assessmentAnswers[0].id,
                     assessmentQuestions[count].id,
                     assessmentAnswers[0].value
@@ -303,7 +315,7 @@ class AssessmentDataFragment : BaseFragment(), View.OnClickListener {
             }
             R.id.tvAssessmentOptionTwo -> {
                 selectedOptionsView(
-                    tvAssessmentOptionTwo,
+                    binding.tvAssessmentOptionTwo,
                     assessmentAnswers[1].id,
                     assessmentQuestions[count].id,
                     assessmentAnswers[1].value
@@ -311,7 +323,7 @@ class AssessmentDataFragment : BaseFragment(), View.OnClickListener {
             }
             R.id.tvAssessmentOptionThree -> {
                 selectedOptionsView(
-                    tvAssessmentOptionThree,
+                    binding.tvAssessmentOptionThree,
                     assessmentAnswers[2].id,
                     assessmentQuestions[count].id,
                     assessmentAnswers[2].value
@@ -319,7 +331,7 @@ class AssessmentDataFragment : BaseFragment(), View.OnClickListener {
             }
             R.id.tvAssessmentOptionFour -> {
                 selectedOptionsView(
-                    tvAssessmentOptionFour,
+                    binding.tvAssessmentOptionFour,
                     assessmentAnswers[3].id,
                     assessmentQuestions[count].id,
                     assessmentAnswers[3].value
@@ -327,7 +339,7 @@ class AssessmentDataFragment : BaseFragment(), View.OnClickListener {
             }
             R.id.tvAssessmentOptionFive -> {
                 selectedOptionsView(
-                    tvAssessmentOptionFive,
+                    binding.tvAssessmentOptionFive,
                     assessmentAnswers[4].id,
                     assessmentQuestions[count].id,
                     assessmentAnswers[4].value

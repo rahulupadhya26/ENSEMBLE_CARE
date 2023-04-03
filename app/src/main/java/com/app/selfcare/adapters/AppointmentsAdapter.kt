@@ -16,11 +16,12 @@ import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnAppointmentItemClickListener
 import com.app.selfcare.data.GetAppointment
+import com.app.selfcare.databinding.LayoutItemAppointmentsBinding
+import com.app.selfcare.databinding.LayoutItemGoalBinding
 import com.app.selfcare.utils.DateUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import kotlinx.android.synthetic.main.layout_item_appointments.view.*
 
 class AppointmentsAdapter(
     val context: Context,
@@ -34,9 +35,14 @@ class AppointmentsAdapter(
         parent: ViewGroup,
         viewType: Int
     ): AppointmentsAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_appointments, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemAppointmentsBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_appointments, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -44,23 +50,26 @@ class AppointmentsAdapter(
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: AppointmentsAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
         if (item.is_group_appointment) {
-            holder.therapistName.text =
+            holder.binding.txtTherapistName.text =
                 if (item.meeting_title == null) "Group Appointment" else item.meeting_title
-            holder.therapyType.text = item.doctor_first_name + " " + item.doctor_last_name
+            holder.binding.txtAppointmentTherapistType.text = item.doctor_first_name + " " + item.doctor_last_name
             val dateTime = DateUtils(item.group_appointment.date + " " + "00:00:00")
-            holder.appointmentDateTime.text =
+            holder.binding.txtAppointmentDateTime.text =
                 dateTime.getCurrentDay() + ", " +
                         dateTime.getDay() + " " +
                         dateTime.getMonth() + " at " +
                         item.group_appointment.time + " " + item.group_appointment.select_am_or_pm
         } else {
-            holder.therapistName.text = item.doctor_first_name + " " + item.doctor_last_name
-            holder.therapyType.text = item.doctor_designation
-            val dateTime = DateUtils(item.appointment.booking_date + " " + "00:00:00")
-            holder.appointmentDateTime.text =
+            holder.binding.txtTherapistName.text = item.doctor_first_name + " " + item.doctor_last_name
+            holder.binding.txtAppointmentTherapistType.text = item.doctor_designation
+            var dateTime = DateUtils(item.appointment.date + " " + "00:00:00")
+            if (item.appointment.booking_date != null) {
+                dateTime = DateUtils(item.appointment.booking_date + " " + "00:00:00")
+            }
+            holder.binding.txtAppointmentDateTime.text =
                 dateTime.getCurrentDay() + ", " +
                         dateTime.getDay() + " " +
                         dateTime.getMonth() + " at " +
@@ -69,67 +78,89 @@ class AppointmentsAdapter(
         }
 
         if (!item.is_group_appointment) {
-            if (item.appointment.type_of_visit == "Video") {
-                holder.appointmentCall.setImageResource(R.drawable.video)
-                holder.appointmentCall.imageTintList =
-                    ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primaryGreen))
-            } else {
-                holder.appointmentCall.setImageResource(R.drawable.telephone)
-                holder.appointmentCall.imageTintList =
-                    ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primaryGreen))
+            when (item.appointment.type_of_visit) {
+                "Video" -> {
+                    holder.binding.appointmentCall.setImageResource(R.drawable.video)
+                    holder.binding.appointmentCall.imageTintList =
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.primaryGreen
+                            )
+                        )
+                }
+                "Audio" -> {
+                    holder.binding.appointmentCall.setImageResource(R.drawable.telephone)
+                    holder.binding.appointmentCall.imageTintList =
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.primaryGreen
+                            )
+                        )
+                }
+                else -> {
+                    holder.binding.appointmentCall.setImageResource(R.drawable.chat)
+                    holder.binding.appointmentCall.imageTintList =
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.primaryGreen
+                            )
+                        )
+                }
             }
         } else {
-            holder.appointmentCall.setImageResource(R.drawable.telephone)
-            holder.appointmentCall.imageTintList =
+            holder.binding.appointmentCall.setImageResource(R.drawable.video)
+            holder.binding.appointmentCall.imageTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primaryGreen))
         }
 
         if (item.is_group_appointment) {
-            holder.therapyImage.visibility = View.GONE
-            holder.groupAppointmentImg.visibility = View.VISIBLE
+            holder.binding.appointListImgUser.visibility = View.GONE
+            holder.binding.appointListGroupImg.visibility = View.VISIBLE
         } else {
-            holder.therapyImage.visibility = View.VISIBLE
-            holder.groupAppointmentImg.visibility = View.GONE
+            holder.binding.appointListImgUser.visibility = View.VISIBLE
+            holder.binding.appointListGroupImg.visibility = View.GONE
             Glide.with(context).load(BaseActivity.baseURL.dropLast(5) + item.doctor_photo)
-                .placeholder(R.drawable.doctor_icon)
+                .placeholder(R.drawable.doctor_img)
                 .transform(CenterCrop(), RoundedCorners(5))
-                .into(holder.therapyImage)
+                .into(holder.binding.appointListImgUser)
         }
 
-        when (item.appointment.status) {
-            5 -> {
-                holder.layoutAppointmentDateTime.visibility = View.GONE
-                holder.txtMissedByProviderOrYou.visibility = View.GONE
-                holder.txtCancelledAppt.visibility = View.VISIBLE
-            }
-            6 -> {
-                holder.layoutAppointmentDateTime.visibility = View.GONE
-                holder.txtCancelledAppt.visibility = View.GONE
-                holder.txtMissedByProviderOrYou.visibility = View.VISIBLE
-            }
-            else -> {
-                holder.txtCancelledAppt.visibility = View.GONE
-                holder.txtMissedByProviderOrYou.visibility = View.GONE
-                holder.layoutAppointmentDateTime.visibility = View.VISIBLE
+        if (!item.is_group_appointment) {
+            when (item.appointment.status) {
+                5 -> {
+                    holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
+                    holder.binding.txtCancelledAppt.visibility = View.VISIBLE
+                }
+                6 -> {
+                    holder.binding.txtCancelledAppt.visibility = View.GONE
+                    holder.binding.txtMissedByProviderOrYou.visibility = View.VISIBLE
+                }
+                else -> {
+                    holder.binding.txtCancelledAppt.visibility = View.GONE
+                    holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
+                }
             }
         }
 
-        holder.startAppointment.setOnClickListener {
+        if (appointmentType == "Upcoming") {
+            holder.binding.imgCancelAppointment.visibility = View.VISIBLE
+        }
+
+        holder.binding.cardViewAppointmentItem.setOnClickListener {
             if (appointmentType == "Today")
                 adapterItemClickListener!!.onAppointmentItemClickListener(item, true)
         }
+
+        holder.binding.imgCancelAppointment.setOnClickListener {
+            if (appointmentType == "Upcoming") {
+                adapterItemClickListener!!.onAppointmentItemClickListener(item, false)
+            }
+        }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val appointmentDateTime: TextView = itemView.txtAppointmentDateTime
-        val therapistName: TextView = itemView.txtTherapistName
-        val therapyType: TextView = itemView.txtAppointmentTherapistType
-        val therapyImage: ImageView = itemView.appointListImgUser
-        val groupAppointmentImg: ImageView = itemView.appointListGroupImg
-        val appointmentCall: ImageView = itemView.appointmentCall
-        val startAppointment: CardView = itemView.cardViewAppointmentItem
-        val layoutAppointmentDateTime: LinearLayout = itemView.layoutAppointmentDateTime
-        val txtCancelledAppt: TextView = itemView.txtCancelledAppt
-        val txtMissedByProviderOrYou: TextView = itemView.txtMissedByProviderOrYou
-    }
+    inner class ViewHolder(val binding: LayoutItemAppointmentsBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

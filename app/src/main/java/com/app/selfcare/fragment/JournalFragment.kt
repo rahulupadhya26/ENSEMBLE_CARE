@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,13 +18,14 @@ import com.app.selfcare.adapters.JournalListAdapter
 import com.app.selfcare.controller.OnJournalItemClickListener
 import com.app.selfcare.data.Journal
 import com.app.selfcare.data.PatientId
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentJournalBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_journal.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
@@ -49,6 +52,7 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
     private var journalWeeksLists: ArrayList<Journal> = arrayListOf()
     private var adapter: JournalListAdapter? = null
     private var adapter2: JournalListAdapter? = null
+    private lateinit var binding: FragmentJournalBinding
 
     @SuppressLint("SimpleDateFormat")
     private var sdf = SimpleDateFormat(
@@ -65,6 +69,15 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentJournalBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun getLayout(): Int {
         return R.layout.fragment_journal
     }
@@ -78,11 +91,17 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
 
         currentDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(Date())
 
-        journalListBack.setOnClickListener {
-            popBackStack()
+        binding.journalListBack.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
-        et_search.addTextChangedListener(object : TextWatcher {
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
             }
 
@@ -95,38 +114,38 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
             }
         })
 
-        rl_expanded_list_last_week.visibility = View.GONE
-        iv_compress_one.rotation = -90f
+        binding.rlExpandedListLastWeek.visibility = View.GONE
+        binding.ivCompressOne.rotation = -90f
 
         getJournalsData()
 
-        ll_previous_7_days.setOnClickListener {
+        binding.llPrevious7Days.setOnClickListener {
             if (isPlay) {
-                rl_expanded_list.visibility = View.GONE
-                iv_compress.rotation = -90f
+                binding.rlExpandedList.visibility = View.GONE
+                binding.ivCompress.rotation = -90f
             } else {
-                rl_expanded_list.visibility = View.VISIBLE
-                iv_compress.rotation = 0.3f
-                rl_expanded_list_last_week.visibility = View.GONE
-                iv_compress_one.rotation = -90f
+                binding.rlExpandedList.visibility = View.VISIBLE
+                binding.ivCompress.rotation = 0.3f
+                binding.rlExpandedListLastWeek.visibility = View.GONE
+                binding.ivCompressOne.rotation = -90f
             }
             isPlay = !isPlay
         }
 
-        ll_previous_months.setOnClickListener {
+        binding.llPreviousMonths.setOnClickListener {
             if (isPlay) {
-                rl_expanded_list_last_week.visibility = View.GONE
-                iv_compress_one.rotation = -90f
+                binding.rlExpandedListLastWeek.visibility = View.GONE
+                binding.ivCompressOne.rotation = -90f
             } else {
-                rl_expanded_list_last_week.visibility = View.VISIBLE
-                iv_compress_one.rotation = 0.3f
-                rl_expanded_list.visibility = View.GONE
-                iv_compress.rotation = -90f
+                binding.rlExpandedListLastWeek.visibility = View.VISIBLE
+                binding.ivCompressOne.rotation = 0.3f
+                binding.rlExpandedList.visibility = View.GONE
+                binding.ivCompress.rotation = -90f
             }
             isPlay = !isPlay
         }
 
-        fabCreateJournalBtn.setOnClickListener {
+        binding.fabCreateJournalBtn.setOnClickListener {
             replaceFragment(
                 CreateJournalFragment(),
                 R.id.layout_home,
@@ -163,8 +182,8 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                             journalLists = Gson().fromJson(responseBody, journalList)
 
                             if (journalLists.isNotEmpty()) {
-                                layoutJournalData.visibility = View.VISIBLE
-                                txt_no_journal.visibility = View.GONE
+                                binding.layoutJournalData.visibility = View.VISIBLE
+                                binding.txtNoJournal.visibility = View.GONE
 
                                 for (i in 0 until journalLists.size) {
                                     val d1 = sdf.parse(journalLists[i].journal_date)
@@ -177,16 +196,16 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                                     val mDifferenceDates = mDifference / (24 * 60 * 60 * 1000)
                                     val mDayDifference = mDifferenceDates.toString()
                                     if (mDayDifference.toInt() <= 7) {
-                                        recyclerViewJournalList.visibility = View.VISIBLE
+                                        binding.recyclerViewJournalList.visibility = View.VISIBLE
                                         journalPrevious7DaysLists.add(journalLists[i])
                                     }
                                     if (mDayDifference.toInt() > 7) {
                                         journalWeeksLists.add(journalLists[i])
-                                        ll_previous_months.visibility = View.VISIBLE
+                                        binding.llPreviousMonths.visibility = View.VISIBLE
                                     }
                                 }
 
-                                recyclerViewJournalList.apply {
+                                binding.recyclerViewJournalList.apply {
                                     layoutManager = StaggeredGridLayoutManager(
                                         2,
                                         RecyclerView.VERTICAL,
@@ -196,7 +215,7 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                                         journalPrevious7DaysLists, this@JournalFragment
                                     )
                                 }
-                                recyclerViewJournalList_last_week.apply {
+                                binding.recyclerViewJournalListLastWeek.apply {
                                     layoutManager = StaggeredGridLayoutManager(
                                         2,
                                         RecyclerView.VERTICAL,
@@ -219,8 +238,8 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                                     )
                                 }*/
                             } else {
-                                layoutJournalData.visibility = View.GONE
-                                txt_no_journal.visibility = View.VISIBLE
+                                binding.layoutJournalData.visibility = View.GONE
+                                binding.txtNoJournal.visibility = View.VISIBLE
                             }
                         } catch (e: Exception) {
                             hideProgress()
@@ -252,9 +271,9 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
         }
 
         if (text.isEmpty()) {
-            ll_previous_7_days.visibility = View.VISIBLE
-            ll_previous_months.visibility = View.VISIBLE
-            recyclerViewJournalList_last_week.visibility = View.VISIBLE
+            binding.llPrevious7Days.visibility = View.VISIBLE
+            binding.llPreviousMonths.visibility = View.VISIBLE
+            binding.recyclerViewJournalListLastWeek.visibility = View.VISIBLE
             journalPrevious7DaysLists = arrayListOf()
             journalWeeksLists = arrayListOf()
             for (i in 0 until journalLists.size) {
@@ -268,15 +287,15 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                 val mDifferenceDates = mDifference / (24 * 60 * 60 * 1000)
                 val mDayDifference = mDifferenceDates.toString()
                 if (mDayDifference.toInt() <= 7) {
-                    recyclerViewJournalList.visibility = View.VISIBLE
+                    binding.recyclerViewJournalList.visibility = View.VISIBLE
                     journalPrevious7DaysLists.add(journalLists[i])
                 }
                 if (mDayDifference.toInt() > 7) {
                     journalWeeksLists.add(journalLists[i])
-                    ll_previous_months.visibility = View.VISIBLE
+                    binding.llPreviousMonths.visibility = View.VISIBLE
                 }
             }
-            recyclerViewJournalList.apply {
+            binding.recyclerViewJournalList.apply {
                 layoutManager = StaggeredGridLayoutManager(
                     2,
                     RecyclerView.VERTICAL,
@@ -286,7 +305,7 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                     journalPrevious7DaysLists, this@JournalFragment
                 )
             }
-            recyclerViewJournalList_last_week.apply {
+            binding.recyclerViewJournalListLastWeek.apply {
                 layoutManager = StaggeredGridLayoutManager(
                     2,
                     RecyclerView.VERTICAL,
@@ -297,15 +316,15 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                 )
             }
         } else {
-            ll_previous_7_days.visibility = View.GONE
-            ll_previous_months.visibility = View.GONE
-            recyclerViewJournalList_last_week.visibility = View.GONE
+            binding.llPrevious7Days.visibility = View.GONE
+            binding.llPreviousMonths.visibility = View.GONE
+            binding.recyclerViewJournalListLastWeek.visibility = View.GONE
             adapter = JournalListAdapter(
                 mActivity!!,
                 journalLists, this@JournalFragment
             )
             adapter!!.filterList(filteredNames)
-            recyclerViewJournalList.adapter = adapter
+            binding.recyclerViewJournalList.adapter = adapter
         }
     }
 

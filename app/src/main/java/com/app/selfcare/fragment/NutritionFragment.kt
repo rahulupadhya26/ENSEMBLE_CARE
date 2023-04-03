@@ -3,8 +3,10 @@ package com.app.selfcare.fragment
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -16,6 +18,8 @@ import com.app.selfcare.controller.OnNutritionDashboardItemClickListener
 import com.app.selfcare.data.ExerciseDashboard
 import com.app.selfcare.data.Nutrition
 import com.app.selfcare.data.NutritionDashboard
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentNutritionBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
@@ -26,8 +30,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_exercise.*
-import kotlinx.android.synthetic.main.fragment_nutrition.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import kotlin.math.abs
@@ -47,6 +49,7 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
     private var param1: String? = null
     private var param2: String? = null
     private var sliderHandler = Handler()
+    private lateinit var binding: FragmentNutritionBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +57,15 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentNutritionBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -67,11 +79,17 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        nutritionBack.setOnClickListener {
-            popBackStack()
+        binding.nutritionBack.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
-        nutritionFav.setOnClickListener {
+        binding.nutritionFav.setOnClickListener {
             replaceFragment(
                 FavoriteFragment.newInstance(Utils.WELLNESS_NUTRITION),
                 R.id.layout_home,
@@ -79,10 +97,10 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
             )
         }
 
-        cardViewNutritionSalad.setOnClickListener {
+        binding.cardViewNutritionSnacks.setOnClickListener {
             replaceFragment(
                 DetailFragment.newInstance(
-                    txtNutritionSalad.text.toString(),
+                    binding.txtNutritionSnacks.text.toString(),
                     Utils.WELLNESS_NUTRITION
                 ),
                 R.id.layout_home,
@@ -90,10 +108,10 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
             )
         }
 
-        cardViewNutritionBreakfast.setOnClickListener {
+        binding.cardViewNutritionBreakfast.setOnClickListener {
             replaceFragment(
                 DetailFragment.newInstance(
-                    txtNutritionBreakfast.text.toString(),
+                    binding.txtNutritionBreakfast.text.toString(),
                     Utils.WELLNESS_NUTRITION
                 ),
                 R.id.layout_home,
@@ -101,10 +119,10 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
             )
         }
 
-        cardViewNutritionSmoothie.setOnClickListener {
+        binding.cardViewNutritionDinner.setOnClickListener {
             replaceFragment(
                 DetailFragment.newInstance(
-                    txtNutritionSmoothie.text.toString(),
+                    binding.txtNutritionDinner.text.toString(),
                     Utils.WELLNESS_NUTRITION
                 ),
                 R.id.layout_home,
@@ -112,10 +130,10 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
             )
         }
 
-        cardViewNutritionLunch.setOnClickListener {
+        binding.cardViewNutritionLunch.setOnClickListener {
             replaceFragment(
                 DetailFragment.newInstance(
-                    txtNutritionLunch.text.toString(),
+                    binding.txtNutritionLunch.text.toString(),
                     Utils.WELLNESS_NUTRITION
                 ),
                 R.id.layout_home,
@@ -149,16 +167,16 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
                                 Gson().fromJson(responseBody, nutritionDashboardDataType)
 
                             if (nutritionDashboardDataList.isNotEmpty()) {
-                                viewPagerNutritionSlider.adapter =
+                                binding.viewPagerNutritionSlider.adapter =
                                     NutritionSliderAdapter(
                                         mActivity!!,
-                                        nutritionDashboardDataList, viewPagerNutritionSlider, this
+                                        nutritionDashboardDataList, binding.viewPagerNutritionSlider, this
                                     )
 
-                                viewPagerNutritionSlider.clipToPadding = false
-                                viewPagerNutritionSlider.clipChildren = false
-                                viewPagerNutritionSlider.offscreenPageLimit = 3
-                                viewPagerNutritionSlider.getChildAt(0).overScrollMode =
+                                binding.viewPagerNutritionSlider.clipToPadding = false
+                                binding.viewPagerNutritionSlider.clipChildren = false
+                                binding.viewPagerNutritionSlider.offscreenPageLimit = 3
+                                binding.viewPagerNutritionSlider.getChildAt(0).overScrollMode =
                                     RecyclerView.OVER_SCROLL_NEVER
 
                                 val compositePageTransform = CompositePageTransformer()
@@ -167,9 +185,9 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
                                     val r: Float = 1 - abs(position)
                                     page.scaleY = 0.85f + r * 0.15f
                                 }
-                                viewPagerNutritionSlider.setPageTransformer(compositePageTransform)
+                                binding.viewPagerNutritionSlider.setPageTransformer(compositePageTransform)
 
-                                viewPagerNutritionSlider.registerOnPageChangeCallback(object :
+                                binding.viewPagerNutritionSlider.registerOnPageChangeCallback(object :
                                     ViewPager2.OnPageChangeCallback() {
                                     override fun onPageSelected(position: Int) {
                                         super.onPageSelected(position)
@@ -179,48 +197,48 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
                                 })
 
                                 if (nutritionDashboardDataList.size == 1) {
-                                    cardViewNutritionCard1.visibility = View.VISIBLE
-                                    txtNutrition1.text =
+                                    binding.cardViewNutritionCard1.visibility = View.VISIBLE
+                                    binding.txtNutrition1.text =
                                         nutritionDashboardDataList[0].nutrition_name
-                                    txtNutritionTimeTaken1.text =
+                                    binding.txtNutritionTimeTaken1.text =
                                         nutritionDashboardDataList[0].time_taken
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + nutritionDashboardDataList[0].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgNutrition1)
+                                        .into(binding.imgNutrition1)
 
-                                    cardViewNutritionCard2.visibility = View.GONE
+                                    binding.cardViewNutritionCard2.visibility = View.GONE
                                 } else if (nutritionDashboardDataList.size >= 2) {
-                                    cardViewNutritionCard1.visibility = View.VISIBLE
-                                    txtNutrition1.text =
+                                    binding.cardViewNutritionCard1.visibility = View.VISIBLE
+                                    binding.txtNutrition1.text =
                                         nutritionDashboardDataList[0].nutrition_name
-                                    txtNutritionTimeTaken1.text =
+                                    binding.txtNutritionTimeTaken1.text =
                                         nutritionDashboardDataList[0].time_taken
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + nutritionDashboardDataList[0].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgNutrition1)
+                                        .into(binding.imgNutrition1)
 
-                                    cardViewNutritionCard2.visibility = View.VISIBLE
-                                    txtNutrition2.text =
+                                    binding.cardViewNutritionCard2.visibility = View.VISIBLE
+                                    binding.txtNutrition2.text =
                                         nutritionDashboardDataList[1].nutrition_name
-                                    txtNutritionTimeTaken2.text =
+                                    binding.txtNutritionTimeTaken2.text =
                                         nutritionDashboardDataList[1].time_taken
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + nutritionDashboardDataList[1].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgNutrition2)
+                                        .into(binding.imgNutrition2)
                                 }
                             } else {
-                                cardViewNutritionCard1.visibility = View.GONE
-                                cardViewNutritionCard2.visibility = View.GONE
+                                binding.cardViewNutritionCard1.visibility = View.GONE
+                                binding.cardViewNutritionCard2.visibility = View.GONE
                             }
 
-                            cardViewNutritionCard1.setOnClickListener {
+                            binding.cardViewNutritionCard1.setOnClickListener {
                                 displayRespectiveScreen(nutritionDashboardDataList[0])
                             }
 
-                            cardViewNutritionCard2.setOnClickListener {
+                            binding.cardViewNutritionCard2.setOnClickListener {
                                 displayRespectiveScreen(nutritionDashboardDataList[1])
                             }
 
@@ -247,7 +265,7 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
     }
 
     private val sliderRunnable: Runnable = Runnable {
-        viewPagerNutritionSlider.currentItem = viewPagerNutritionSlider.currentItem + 1
+        binding.viewPagerNutritionSlider.currentItem = binding.viewPagerNutritionSlider.currentItem + 1
     }
 
     override fun onPause() {

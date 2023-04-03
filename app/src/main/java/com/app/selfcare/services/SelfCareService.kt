@@ -280,7 +280,7 @@ class SelfCareService : Service() {
         httpClient.addInterceptor(encryptionInterceptor)
         httpClient.addInterceptor(decryptionInterceptor)
         return Retrofit.Builder()
-            .baseUrl("http://18.217.173.1/api/").client(httpClient.build())
+            .baseUrl("https://ensemblecare.csardent.com/api/").client(httpClient.build())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(RequestInterface::class.java)

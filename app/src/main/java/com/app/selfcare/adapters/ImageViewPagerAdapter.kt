@@ -34,7 +34,6 @@ class ImageViewPagerAdapter(
         val ivImages = view.findViewById<ImageView>(R.id.displayImageView)
 
         Glide.with(context).load(BaseActivity.baseURL.dropLast(5) + imageList[position])
-            .transform(CenterCrop(), RoundedCorners(5))
             .into(ivImages)
 
 

@@ -46,7 +46,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ensemble Care"
+                    android:text="@string/app_name"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/primaryGreen"
                     android:textSize="@dimen/_24sp"
@@ -55,7 +55,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bringing Health Together"
+                    android:text="Unifying Wellness"
                     android:layout_marginTop="-5dp"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="#38A387"

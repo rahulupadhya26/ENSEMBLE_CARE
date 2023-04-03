@@ -2,8 +2,10 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.selfcare.R
 import com.app.selfcare.adapters.AppointmentsAdapter
@@ -11,14 +13,14 @@ import com.app.selfcare.controller.OnAppointmentItemClickListener
 import com.app.selfcare.data.AppointmentPatientId
 import com.app.selfcare.data.GetAppointment
 import com.app.selfcare.data.GetAppointmentList
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentPastAppointmentBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_past_appointment.*
-import kotlinx.android.synthetic.main.fragment_upcoming_appointment.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 
@@ -36,6 +38,7 @@ class PastAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentPastAppointmentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,15 @@ class PastAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPastAppointmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -64,9 +76,9 @@ class PastAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener {
             val appointmentList: GetAppointmentList =
                 Gson().fromJson(response, appointmentType)
             if (appointmentList.past.isNotEmpty()) {
-                recyclerViewPastAppointmentList.visibility = View.VISIBLE
-                txtNoPastAppointmentList.visibility = View.GONE
-                recyclerViewPastAppointmentList.apply {
+                binding.recyclerViewPastAppointmentList.visibility = View.VISIBLE
+                binding.txtNoPastAppointmentList.visibility = View.GONE
+                binding.recyclerViewPastAppointmentList.apply {
                     layoutManager =
                         LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
                     adapter = AppointmentsAdapter(
@@ -75,8 +87,8 @@ class PastAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener {
                     )
                 }
             } else {
-                recyclerViewPastAppointmentList.visibility = View.GONE
-                txtNoPastAppointmentList.visibility = View.VISIBLE
+                binding.recyclerViewPastAppointmentList.visibility = View.GONE
+                binding.txtNoPastAppointmentList.visibility = View.VISIBLE
             }
         }
     }
@@ -94,6 +106,8 @@ class PastAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener {
                     .subscribe({ result ->
                         try {
                             hideProgress()
+                            binding.shimmerPastAppointmentList.stopShimmer()
+                            binding.shimmerPastAppointmentList.visibility = View.GONE
                             var responseBody = result.string()
                             Log.d("Response Body", responseBody)
                             val respBody = responseBody.split("|")
@@ -102,6 +116,9 @@ class PastAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener {
                             myCallback.invoke(responseBody)
                         } catch (e: Exception) {
                             hideProgress()
+                            binding.shimmerPastAppointmentList.stopShimmer()
+                            binding.shimmerPastAppointmentList.visibility = View.GONE
+                            e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
                     }, { error ->
@@ -114,6 +131,8 @@ class PastAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener {
                                 getAppointmentList(myCallback)
                             }
                         } else {
+                            binding.shimmerPastAppointmentList.stopShimmer()
+                            binding.shimmerPastAppointmentList.visibility = View.GONE
                             displayAfterLoginErrorMsg(error)
                         }
                     })

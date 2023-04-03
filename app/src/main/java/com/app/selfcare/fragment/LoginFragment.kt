@@ -1,12 +1,16 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.app.selfcare.R
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentLoginBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
-import kotlinx.android.synthetic.main.fragment_login.*
 import com.app.selfcare.preference.PreferenceHelper.set
+import com.app.selfcare.utils.Utils
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,6 +27,7 @@ class LoginFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +35,15 @@ class LoginFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -44,12 +58,12 @@ class LoginFragment : BaseFragment() {
         getSubTitle().text = ""
 
         if (preference!![PrefKeys.PREF_IS_REMEMBER_ME, false]!!) {
-            checkBoxKeepMeSignedIn.isChecked = true
-            edit_username.setText(preference!![PrefKeys.PREF_EMAIL, ""]!!)
-            edit_password.setText(preference!![PrefKeys.PREF_PASS, ""]!!)
+            binding.checkBoxKeepMeSignedIn.isChecked = true
+            binding.editUsername.setText(preference!![PrefKeys.PREF_EMAIL, ""]!!)
+            binding.editPassword.setText(preference!![PrefKeys.PREF_PASS, ""]!!)
         }
 
-        loginBack.setOnClickListener {
+        binding.loginBack.setOnClickListener {
             replaceFragmentNoBackStack(
                 WelcomeFragment(),
                 R.id.layout_home,
@@ -57,7 +71,7 @@ class LoginFragment : BaseFragment() {
             )
         }
 
-        loginForgotPassword.setOnClickListener {
+        binding.loginForgotPassword.setOnClickListener {
             replaceFragment(
                 ResetPasswordFragment(),
                 R.id.layout_home,
@@ -65,11 +79,12 @@ class LoginFragment : BaseFragment() {
             )
         }
 
-        btn_login.setOnClickListener {
-            if (getText(edit_username).isNotEmpty()) {
-                if (getText(edit_password).isNotEmpty()) {
-                    userLogin(getText(edit_username), getText(edit_password)) { result ->
-                        preference!![PrefKeys.PREF_IS_REMEMBER_ME] = checkBoxKeepMeSignedIn.isChecked
+        binding.btnLogin.setOnClickListener {
+            if (getText(binding.editUsername).isNotEmpty()) {
+                if (getText(binding.editPassword).isNotEmpty()) {
+                    userLogin(getText(binding.editUsername), getText(binding.editPassword)) { result ->
+                        Utils.isLoggedInFirstTime = true
+                        preference!![PrefKeys.PREF_IS_REMEMBER_ME] = binding.checkBoxKeepMeSignedIn.isChecked
                         setBottomNavigation(null)
                         setLayoutBottomNavigation(null)
                         replaceFragmentNoBackStack(
@@ -79,14 +94,14 @@ class LoginFragment : BaseFragment() {
                         )
                     }
                 } else {
-                    setEditTextError(edit_password, "Password cannot be blank.")
+                    setEditTextError(binding.editPassword, "Password cannot be blank.")
                 }
             } else {
-                setEditTextError(edit_username, "Email Id cannot be blank.")
+                setEditTextError(binding.editUsername, "Email Id cannot be blank.")
             }
         }
 
-        layoutLoginBottom.setOnClickListener {
+        binding.layoutLoginBottom.setOnClickListener {
             replaceFragment(CarouselFragment(), R.id.layout_home, CarouselFragment.TAG)
         }
     }

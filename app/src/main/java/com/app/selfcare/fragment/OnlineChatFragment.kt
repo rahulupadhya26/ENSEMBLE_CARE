@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,12 +19,13 @@ import com.app.selfcare.data.Appointment
 import com.app.selfcare.data.GetAppointment
 import com.app.selfcare.data.MessageBean
 import com.app.selfcare.data.MessageListBean
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentOnlineChatBinding
 import com.app.selfcare.realTimeMessaging.ChatManager
 import com.app.selfcare.services.SelfCareApplication
 import com.app.selfcare.utils.MessageUtil
 import com.app.selfcare.utils.Utils
 import io.agora.rtm.*
-import kotlinx.android.synthetic.main.fragment_online_chat.*
 import java.text.MessageFormat
 
 // TODO: Rename parameter arguments, choose names that match
@@ -52,6 +55,7 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
 
     private val mMessageBeanList: ArrayList<MessageBean> = ArrayList()
     private var mMessageAdapter: MessageAdapter? = null
+    private lateinit var binding: FragmentOnlineChatBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +63,15 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
             appointment = it.getParcelable(ARG_PARAM1)
             targetName = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentOnlineChatBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -71,22 +84,22 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
         getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
 
-        relativeLayoutSend.setOnClickListener {
-            val msg: String = getText(editTextMessage)
+        binding.relativeLayoutSend.setOnClickListener {
+            val msg: String = getText(binding.editTextMessage)
             if (msg != "") {
                 val message = mRtmClient!!.createMessage()
                 message.text = msg
                 val messageBean = MessageBean(appointment!!.appointment.appointment_id.toString(), message, true)
                 mMessageBeanList.add(messageBean)
                 mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
-                chatMessageList.scrollToPosition(mMessageBeanList.size - 1)
+                binding.chatMessageList.scrollToPosition(mMessageBeanList.size - 1)
                 if (mIsPeerToPeerMode) {
                     sendPeerMessage(message)
                 } else {
                     sendChannelMessage(message)
                 }
             }
-            editTextMessage.setText("")
+            binding.editTextMessage.setText("")
         }
 
         mChatManager = SelfCareApplication.instance.getChatManager()
@@ -102,7 +115,7 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
         mIsPeerToPeerMode = false
         if (mIsPeerToPeerMode) {
             mPeerId = targetName!!
-            txtTherapistChatName.text = mPeerId
+            binding.txtTherapistChatName.text = mPeerId
 
             // load history chat records
             val messageListBean = MessageUtil.getExistMessageListBean(mPeerId)
@@ -119,7 +132,7 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
         } else {
             mChannelName = targetName!!
             mChannelMemberCount = 1
-            txtTherapistChatName.text = MessageFormat.format(
+            binding.txtTherapistChatName.text = MessageFormat.format(
                 "{0}({1})",
                 mChannelName,
                 mChannelMemberCount
@@ -130,8 +143,8 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
             val layoutManager = LinearLayoutManager(requireActivity())
             layoutManager.orientation = RecyclerView.VERTICAL
             mMessageAdapter = MessageAdapter(requireActivity(), mMessageBeanList, this)
-            chatMessageList.layoutManager = layoutManager
-            chatMessageList.adapter = mMessageAdapter
+            binding.chatMessageList.layoutManager = layoutManager
+            binding.chatMessageList.adapter = mMessageAdapter
         }
     }
 
@@ -305,7 +318,7 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
                     messageBean.setBackground(getMessageColor(peerId))
                     mMessageBeanList.add(messageBean)
                     mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
-                    chatMessageList.scrollToPosition(mMessageBeanList.size - 1)
+                    binding.chatMessageList.scrollToPosition(mMessageBeanList.size - 1)
                 } else {
                     MessageUtil.addMessageBean(peerId, message)
                 }
@@ -331,7 +344,7 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
                 messageBean.setBackground(getMessageColor(account))
                 mMessageBeanList.add(messageBean)
                 mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
-                chatMessageList.scrollToPosition(mMessageBeanList.size - 1)
+                binding.chatMessageList.scrollToPosition(mMessageBeanList.size - 1)
             }
         }
 
@@ -362,7 +375,7 @@ class OnlineChatFragment : BaseFragment(), OnMessageClickListener {
     private fun refreshChannelTitle() {
         val titleFormat = getString(R.string.channel_title)
         val title = String.format(titleFormat, mChannelName, mChannelMemberCount)
-        txtTherapistChatName.text = title
+        binding.txtTherapistChatName.text = title
     }
 
     private fun showToast(text: String) {

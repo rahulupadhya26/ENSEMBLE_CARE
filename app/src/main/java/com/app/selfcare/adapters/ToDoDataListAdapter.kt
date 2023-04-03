@@ -5,16 +5,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnToDoItemClickListener
 import com.app.selfcare.data.ToDoData
-import com.app.selfcare.utils.DateMethods
+import com.app.selfcare.databinding.LayoutItemTodoDataListBinding
 import com.app.selfcare.utils.DateUtils
-import kotlinx.android.synthetic.main.layout_item_todo_data_list.view.*
 
 class ToDoDataListAdapter(
     private val context: Context,
@@ -27,9 +24,14 @@ class ToDoDataListAdapter(
         parent: ViewGroup,
         viewType: Int
     ): ToDoDataListAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_todo_data_list, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemTodoDataListBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_todo_data_list, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -37,51 +39,61 @@ class ToDoDataListAdapter(
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: ToDoDataListAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        holder.radioButtonToDo.text = item.title
-        holder.txtToDoDesc.text = item.description
-        val endDate = DateUtils(item.end_date + " 00:00:00")
-        val toDoUpdatedDate = DateUtils(item.updated_on.replace("-", " "))
-        if (DateMethods().isToday(endDate.mDate)) {
-            holder.txtToDoDate.text =
-                endDate.getDay() + " " + endDate.getMonth() + " " + endDate.getYear()
-        } else {
-            holder.txtToDoDate.text =
-                toDoUpdatedDate.getDay() + " " + toDoUpdatedDate.getMonth() + " " + toDoUpdatedDate.getYear() + ", " + toDoUpdatedDate.getTime()
-        }
-        if (item.is_completed) {
-            holder.radioButtonToDo.isChecked = true
-            holder.radioButtonToDo.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.toDoCompletedTxtColor
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            radioButtonToDo.text = item.title
+            txtToDoTitle.text = item.title
+            txtToDoDesc.text = item.description
+            val endDate = DateUtils(item.end_date + " 00:00:00")
+            val toDoUpdatedDate = DateUtils(item.updated_on.replace("-", " "))
+            /*if (DateMethods().isToday(endDate.mDate)) {
+                txtToDoDate.text =
+                    endDate.getDay() + " " + endDate.getMonth() + " " + endDate.getYear()
+            } else {
+                txtToDoDate.text =
+                    toDoUpdatedDate.getDay() + " " + toDoUpdatedDate.getMonth() + " " + toDoUpdatedDate.getYear() + ", " + toDoUpdatedDate.getTime()
+            }*/
+            if (item.is_completed) {
+                txtToDoCompleted.visibility = View.VISIBLE
+                layoutCompletedToDo.visibility = View.VISIBLE
+                radioButtonToDo.visibility = View.GONE
+                radioButtonToDo.isChecked = true
+                txtToDoDate.text =
+                    toDoUpdatedDate.getDay() + " " + toDoUpdatedDate.getMonth() + " " + toDoUpdatedDate.getYear() + ", " + toDoUpdatedDate.getTime()
+                radioButtonToDo.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.toDoCompletedTxtColor
+                    )
                 )
-            )
-            holder.txtToDoDesc.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.toDoCompletedTxtColor
+                txtToDoDesc.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.toDoCompletedTxtColor
+                    )
                 )
-            )
-            holder.txtToDoDate.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.toDoCompletedTxtColor
+                txtToDoDate.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.toDoCompletedTxtColor
+                    )
                 )
-            )
-        } else {
-            holder.radioButtonToDo.isChecked = false
-        }
+            } else {
+                txtToDoDate.text =
+                    endDate.getDay() + " " + endDate.getMonth() + " " + endDate.getYear()
+                txtToDoCompleted.visibility = View.GONE
+                radioButtonToDo.isChecked = false
+                layoutCompletedToDo.visibility = View.GONE
+                radioButtonToDo.visibility = View.VISIBLE
+            }
 
-        holder.radioButtonToDo.setOnClickListener {
-            adapterItemClick.onToDoItemClickListener(item)
+            radioButtonToDo.setOnClickListener {
+                adapterItemClick.onToDoItemClickListener(item)
+            }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val radioButtonToDo: RadioButton = itemView.radioButtonToDo
-        val txtToDoDesc: TextView = itemView.txtToDoDesc
-        val txtToDoDate: TextView = itemView.txtToDoDate
-    }
+    inner class ViewHolder(val binding: LayoutItemTodoDataListBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

@@ -2,8 +2,10 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -12,13 +14,14 @@ import com.app.selfcare.controller.OnToDoItemClickListener
 import com.app.selfcare.data.PatientId
 import com.app.selfcare.data.ToDoData
 import com.app.selfcare.data.UpdateToDo
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentToDoBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_to_do.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 
@@ -36,6 +39,7 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentToDoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,15 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentToDoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -62,11 +75,17 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
     }
 
     private fun onClickEvents() {
-        toDoBack.setOnClickListener {
-            popBackStack()
+        binding.toDoBack.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
-        imgToDoAdd.setOnClickListener {
+        binding.imgToDoAdd.setOnClickListener {
             replaceFragment(
                 AddToDoFragment(),
                 R.id.layout_home,
@@ -101,8 +120,8 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
                                 Gson().fromJson(responseBody, toDoType)
 
                             if (toDoList.isNotEmpty()) {
-                                txtNoToDoList.visibility = View.GONE
-                                recyclerViewToDoDateDateList.visibility = View.VISIBLE
+                                binding.txtNoToDoList.visibility = View.GONE
+                                binding.recyclerViewToDoDateDateList.visibility = View.VISIBLE
                                 val sortedList =
                                     toDoList.sortedWith(
                                         compareByDescending<ToDoData> { it.created_on }.then(
@@ -111,7 +130,7 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
 
                                 val toDoMap = sortedList.groupBy { it.created_on.dropLast(9) }
 
-                                recyclerViewToDoDateDateList.apply {
+                                binding.recyclerViewToDoDateDateList.apply {
                                     layoutManager = LinearLayoutManager(
                                         requireActivity(), RecyclerView.VERTICAL, false
                                     )
@@ -123,8 +142,8 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
                                     )
                                 }
                             } else {
-                                txtNoToDoList.visibility = View.VISIBLE
-                                recyclerViewToDoDateDateList.visibility = View.GONE
+                                binding.txtNoToDoList.visibility = View.VISIBLE
+                                binding.recyclerViewToDoDateDateList.visibility = View.GONE
                             }
                         } catch (e: Exception) {
                             hideProgress()

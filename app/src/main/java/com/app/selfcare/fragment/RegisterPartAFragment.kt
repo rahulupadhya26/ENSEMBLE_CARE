@@ -1,20 +1,13 @@
 package com.app.selfcare.fragment
 
-import android.app.DatePickerDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import com.app.selfcare.R
-import com.app.selfcare.utils.Utils
-import kotlinx.android.synthetic.main.fragment_register_part_a.*
-import kotlinx.android.synthetic.main.fragment_registration.*
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentRegisterPartABinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,6 +25,7 @@ class RegisterPartAFragment : BaseFragment() {
     private var param2: String? = null
     var selectedGender: String? = null
     var genderData: Array<String>? = null
+    private lateinit var binding: FragmentRegisterPartABinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +33,15 @@ class RegisterPartAFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRegisterPartABinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {

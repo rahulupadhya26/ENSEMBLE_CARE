@@ -22,6 +22,7 @@
                 android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewYogaCompletedTask"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_margin="@dimen/_5dp"

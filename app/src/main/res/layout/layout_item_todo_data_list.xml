@@ -1,43 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/txtToDoCompleted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginTop="@dimen/_5dp"
+            android:text="Completed"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
         <RadioButton
             android:id="@+id/radioButtonToDo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/_8dp"
             android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
             android:textSize="@dimen/_20sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            android:paddingStart="@dimen/_8dp"/>
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/layoutCompletedToDo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_8dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imgToDoCompleted"
+                android:layout_width="@dimen/_20dp"
+                android:layout_height="@dimen/_20dp"
+                android:src="@drawable/done_plan"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/txtToDoTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/imgToDoCompleted"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/toDoCompletedTxtColor"
+                android:textSize="@dimen/_20sp"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/_10dp"/>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/txtToDoDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/fontfamily"
-            android:textSize="@dimen/_14sp"
-            android:layout_marginTop="-10dp"
-            android:textColor="#5F6368"
             android:layout_marginStart="40dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginEnd="@dimen/_20dp"
             android:maxLines="3"
-            android:layout_marginEnd="@dimen/_20dp"/>
+            android:textAppearance="@style/fontfamily"
+            android:textColor="#5F6368"
+            android:textSize="@dimen/_14sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
-            android:orientation="horizontal"
             android:layout_marginTop="@dimen/_5dp"
-            android:layout_marginBottom="@dimen/_10dp">
+            android:layout_marginBottom="@dimen/_10dp"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/_20dp"
@@ -49,21 +89,21 @@
                 android:id="@+id/txtToDoDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_5dp"
                 android:textAppearance="@style/fontfamily"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_16sp"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/_5dp" />
+                android:textSize="@dimen/_16sp" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#DFCACA"
             android:layout_marginStart="@dimen/_30dp"
             android:layout_marginEnd="@dimen/_30dp"
-            android:layout_marginBottom="@dimen/_5dp"/>
+            android:layout_marginBottom="@dimen/_5dp"
+            android:background="#DFCACA" />
 
     </LinearLayout>
 

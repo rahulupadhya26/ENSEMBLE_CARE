@@ -2,8 +2,10 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -11,13 +13,14 @@ import com.app.selfcare.adapters.CarePlanDayAdapter
 import com.app.selfcare.controller.OnCarePlanDayWiseItemClickListener
 import com.app.selfcare.data.CareDay
 import com.app.selfcare.data.CarePlans
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentCarePlanDashboardBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_care_plan_dashboard.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 
@@ -35,6 +38,7 @@ class CarePlanDashboardFragment : BaseFragment(), OnCarePlanDayWiseItemClickList
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentCarePlanDashboardBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +46,15 @@ class CarePlanDashboardFragment : BaseFragment(), OnCarePlanDayWiseItemClickList
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCarePlanDashboardBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -61,7 +74,6 @@ class CarePlanDashboardFragment : BaseFragment(), OnCarePlanDayWiseItemClickList
     }
 
     private fun getCarePlanDayData() {
-        showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
@@ -70,6 +82,8 @@ class CarePlanDashboardFragment : BaseFragment(), OnCarePlanDayWiseItemClickList
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         try {
+                            binding.shimmerCarePlanDashboard.stopShimmer()
+                            binding.shimmerCarePlanDashboard.visibility = View.GONE
                             hideProgress()
                             var responseBody = result.string()
                             Log.d("Response Body", responseBody)
@@ -80,9 +94,9 @@ class CarePlanDashboardFragment : BaseFragment(), OnCarePlanDayWiseItemClickList
                                 object : TypeToken<CarePlans?>() {}.type
                             val carePlanList: CarePlans =
                                 Gson().fromJson(responseBody, carePlanType)
-                            recyclerViewCarePlanDashboard.visibility = View.VISIBLE
-                            txtNoCarePlanAssigned.visibility = View.GONE
-                            recyclerViewCarePlanDashboard.apply {
+                            binding.recyclerViewCarePlanDashboard.visibility = View.VISIBLE
+                            binding.txtNoCarePlanAssigned.visibility = View.GONE
+                            binding.recyclerViewCarePlanDashboard.apply {
                                 layoutManager = LinearLayoutManager(
                                     requireActivity(), RecyclerView.VERTICAL, false
                                 )
@@ -93,8 +107,10 @@ class CarePlanDashboardFragment : BaseFragment(), OnCarePlanDayWiseItemClickList
                             }
                         } catch (e: Exception) {
                             hideProgress()
-                            recyclerViewCarePlanDashboard.visibility = View.GONE
-                            txtNoCarePlanAssigned.visibility = View.VISIBLE
+                            binding.shimmerCarePlanDashboard.stopShimmer()
+                            binding.shimmerCarePlanDashboard.visibility = View.GONE
+                            binding.recyclerViewCarePlanDashboard.visibility = View.GONE
+                            binding.txtNoCarePlanAssigned.visibility = View.VISIBLE
                             e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
@@ -109,8 +125,10 @@ class CarePlanDashboardFragment : BaseFragment(), OnCarePlanDayWiseItemClickList
                                 getCarePlanDayData()
                             }
                         } else {
-                            recyclerViewCarePlanDashboard.visibility = View.GONE
-                            txtNoCarePlanAssigned.visibility = View.VISIBLE
+                            binding.shimmerCarePlanDashboard.stopShimmer()
+                            binding.shimmerCarePlanDashboard.visibility = View.GONE
+                            binding.recyclerViewCarePlanDashboard.visibility = View.GONE
+                            binding.txtNoCarePlanAssigned.visibility = View.VISIBLE
                             //displayAfterLoginErrorMsg(error)
                         }
                     })
@@ -142,7 +160,8 @@ class CarePlanDashboardFragment : BaseFragment(), OnCarePlanDayWiseItemClickList
     }
 
     override fun onCarePlanDayWiseItemClickListener(carePlans: CarePlans, careDay: CareDay) {
-        replaceFragment(
+        clearPreviousFragmentStack()
+        replaceFragmentNoBackStack(
             CarePlanFragment.newInstance(carePlans, careDay),
             R.id.layout_home,
             CarePlanFragment.TAG

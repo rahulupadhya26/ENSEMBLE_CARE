@@ -3,17 +3,20 @@ package com.app.selfcare.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.data.Therapist
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentTherapistDetailBinding
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import kotlinx.android.synthetic.main.fragment_therapist_detail.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,6 +33,7 @@ class TherapistDetailFragment : BaseFragment() {
     private var therapist: Therapist? = null
     private var param2: String? = null
     private var descriptionLineCount = 0
+    private lateinit var binding: FragmentTherapistDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +41,15 @@ class TherapistDetailFragment : BaseFragment() {
             therapist = it.getParcelable(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentTherapistDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -52,18 +65,18 @@ class TherapistDetailFragment : BaseFragment() {
         getSubTitle().text = ""
         updateStatusBarColor(R.color.white)
 
-        txtTherapistName.text =
+        binding.txtTherapistName.text =
             therapist!!.first_name + " " + therapist!!.middle_name + " " + therapist!!.last_name
-        therapistType.text = therapist!!.doctor_type
-        txtTherapyDescription.text = therapist!!.description
+        binding.therapistType.text = therapist!!.doctor_type
+        binding.txtTherapyDescription.text = therapist!!.description
 
         Glide.with(requireActivity())
             .load(BaseActivity.baseURL.dropLast(5) + therapist!!.photo)
             .placeholder(R.drawable.doctor_img)
             .transform(CenterCrop(), RoundedCorners(5))
-            .into(imgTherapistDetail)
+            .into(binding.imgTherapistDetail)
 
-        img_back.setOnClickListener {
+        binding.imgBack.setOnClickListener {
             popBackStack()
         }
 
@@ -73,26 +86,26 @@ class TherapistDetailFragment : BaseFragment() {
         //scrollTherapyDescription.setOnTouchListener(this)
         //scrollTherapyDescription.viewTreeObserver.addOnScrollChangedListener(this)
 
-        txtTherapyDescription.viewTreeObserver.addOnGlobalLayoutListener(object :
+        binding.txtTherapyDescription.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                txtTherapyDescription.viewTreeObserver.removeOnGlobalLayoutListener(this);
-                descriptionLineCount = txtTherapyDescription.layout.lineCount
+                binding.txtTherapyDescription.viewTreeObserver.removeOnGlobalLayoutListener(this);
+                descriptionLineCount = binding.txtTherapyDescription.layout.lineCount
                 if (descriptionLineCount < 10) {
-                    txtReadMore.visibility = View.GONE
+                    binding.txtReadMore.visibility = View.GONE
                 } else {
-                    txtReadMore.visibility = View.VISIBLE
+                    binding.txtReadMore.visibility = View.VISIBLE
                 }
             }
         })
 
 
-        txtReadMore.setOnClickListener {
-            txtReadMore.visibility = View.GONE
-            txtTherapyDescription.movementMethod = ScrollingMovementMethod()
+        binding.txtReadMore.setOnClickListener {
+            binding.txtReadMore.visibility = View.GONE
+            binding.txtTherapyDescription.movementMethod = ScrollingMovementMethod()
         }
 
-        btnConfirmDoctorDetail.setOnClickListener {
+        binding.btnConfirmDoctorDetail.setOnClickListener {
             if (Utils.providerId.isNotEmpty() &&
                 Utils.providerType.isNotEmpty() &&
                 Utils.providerName.isNotEmpty()
@@ -109,69 +122,69 @@ class TherapistDetailFragment : BaseFragment() {
     private fun displayRating(rating: String) {
         when (rating) {
             "1" -> {
-                detailFilledStar1.visibility = View.VISIBLE
-                detailEmptyStar1.visibility = View.VISIBLE
-                detailEmptyStar2.visibility = View.VISIBLE
-                detailEmptyStar3.visibility = View.VISIBLE
-                detailEmptyStar4.visibility = View.VISIBLE
+                binding.detailFilledStar1.visibility = View.VISIBLE
+                binding.detailEmptyStar1.visibility = View.VISIBLE
+                binding.detailEmptyStar2.visibility = View.VISIBLE
+                binding.detailEmptyStar3.visibility = View.VISIBLE
+                binding.detailEmptyStar4.visibility = View.VISIBLE
 
-                detailFilledStar2.visibility = View.GONE
-                detailFilledStar3.visibility = View.GONE
-                detailFilledStar4.visibility = View.GONE
-                detailFilledStar5.visibility = View.GONE
-                detailEmptyStar5.visibility = View.GONE
+                binding.detailFilledStar2.visibility = View.GONE
+                binding.detailFilledStar3.visibility = View.GONE
+                binding.detailFilledStar4.visibility = View.GONE
+                binding.detailFilledStar5.visibility = View.GONE
+                binding.detailEmptyStar5.visibility = View.GONE
             }
             "2" -> {
-                detailFilledStar1.visibility = View.VISIBLE
-                detailFilledStar2.visibility = View.VISIBLE
-                detailEmptyStar1.visibility = View.VISIBLE
-                detailEmptyStar2.visibility = View.VISIBLE
-                detailEmptyStar3.visibility = View.VISIBLE
+                binding.detailFilledStar1.visibility = View.VISIBLE
+                binding.detailFilledStar2.visibility = View.VISIBLE
+                binding.detailEmptyStar1.visibility = View.VISIBLE
+                binding.detailEmptyStar2.visibility = View.VISIBLE
+                binding.detailEmptyStar3.visibility = View.VISIBLE
 
-                detailFilledStar3.visibility = View.GONE
-                detailFilledStar4.visibility = View.GONE
-                detailFilledStar5.visibility = View.GONE
-                detailEmptyStar4.visibility = View.GONE
-                detailEmptyStar5.visibility = View.GONE
+                binding.detailFilledStar3.visibility = View.GONE
+                binding.detailFilledStar4.visibility = View.GONE
+                binding.detailFilledStar5.visibility = View.GONE
+                binding.detailEmptyStar4.visibility = View.GONE
+                binding.detailEmptyStar5.visibility = View.GONE
             }
             "3" -> {
-                detailFilledStar1.visibility = View.VISIBLE
-                detailFilledStar2.visibility = View.VISIBLE
-                detailFilledStar3.visibility = View.VISIBLE
-                detailEmptyStar1.visibility = View.VISIBLE
-                detailEmptyStar2.visibility = View.VISIBLE
+                binding.detailFilledStar1.visibility = View.VISIBLE
+                binding.detailFilledStar2.visibility = View.VISIBLE
+                binding.detailFilledStar3.visibility = View.VISIBLE
+                binding.detailEmptyStar1.visibility = View.VISIBLE
+                binding.detailEmptyStar2.visibility = View.VISIBLE
 
-                detailFilledStar4.visibility = View.GONE
-                detailFilledStar5.visibility = View.GONE
-                detailEmptyStar3.visibility = View.GONE
-                detailEmptyStar4.visibility = View.GONE
-                detailEmptyStar5.visibility = View.GONE
+                binding.detailFilledStar4.visibility = View.GONE
+                binding.detailFilledStar5.visibility = View.GONE
+                binding.detailEmptyStar3.visibility = View.GONE
+                binding.detailEmptyStar4.visibility = View.GONE
+                binding.detailEmptyStar5.visibility = View.GONE
             }
             "4" -> {
-                detailFilledStar1.visibility = View.VISIBLE
-                detailFilledStar2.visibility = View.VISIBLE
-                detailFilledStar3.visibility = View.VISIBLE
-                detailFilledStar4.visibility = View.VISIBLE
-                detailEmptyStar1.visibility = View.VISIBLE
+                binding.detailFilledStar1.visibility = View.VISIBLE
+                binding.detailFilledStar2.visibility = View.VISIBLE
+                binding.detailFilledStar3.visibility = View.VISIBLE
+                binding.detailFilledStar4.visibility = View.VISIBLE
+                binding.detailEmptyStar1.visibility = View.VISIBLE
 
-                detailFilledStar5.visibility = View.GONE
-                detailEmptyStar2.visibility = View.GONE
-                detailEmptyStar3.visibility = View.GONE
-                detailEmptyStar4.visibility = View.GONE
-                detailEmptyStar5.visibility = View.GONE
+                binding.detailFilledStar5.visibility = View.GONE
+                binding.detailEmptyStar2.visibility = View.GONE
+                binding.detailEmptyStar3.visibility = View.GONE
+                binding.detailEmptyStar4.visibility = View.GONE
+                binding.detailEmptyStar5.visibility = View.GONE
             }
             "5" -> {
-                detailFilledStar1.visibility = View.VISIBLE
-                detailFilledStar2.visibility = View.VISIBLE
-                detailFilledStar3.visibility = View.VISIBLE
-                detailFilledStar4.visibility = View.VISIBLE
-                detailFilledStar5.visibility = View.VISIBLE
+                binding.detailFilledStar1.visibility = View.VISIBLE
+                binding.detailFilledStar2.visibility = View.VISIBLE
+                binding.detailFilledStar3.visibility = View.VISIBLE
+                binding.detailFilledStar4.visibility = View.VISIBLE
+                binding.detailFilledStar5.visibility = View.VISIBLE
 
-                detailEmptyStar1.visibility = View.GONE
-                detailEmptyStar2.visibility = View.GONE
-                detailEmptyStar3.visibility = View.GONE
-                detailEmptyStar4.visibility = View.GONE
-                detailEmptyStar5.visibility = View.GONE
+                binding.detailEmptyStar1.visibility = View.GONE
+                binding.detailEmptyStar2.visibility = View.GONE
+                binding.detailEmptyStar3.visibility = View.GONE
+                binding.detailEmptyStar4.visibility = View.GONE
+                binding.detailEmptyStar5.visibility = View.GONE
             }
         }
     }

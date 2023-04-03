@@ -4,8 +4,11 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,16 +20,20 @@ import com.app.selfcare.controller.OnPodcastItemClickListener
 import com.app.selfcare.data.Articles
 import com.app.selfcare.data.Podcast
 import com.app.selfcare.data.Video
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentFavoriteBinding
+import com.app.selfcare.preference.PrefKeys
+import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.fragment_detail.*
-import kotlinx.android.synthetic.main.fragment_favorite.*
-import kotlinx.android.synthetic.main.fragment_resources.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
+import retrofit2.HttpException
 import java.lang.reflect.Type
 
 // TODO: Rename parameter arguments, choose names that match
@@ -46,6 +53,7 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
     private var videoLists: ArrayList<Video> = arrayListOf()
     private var podcastLists: ArrayList<Podcast> = arrayListOf()
     private var articlesLists: ArrayList<Articles> = arrayListOf()
+    private lateinit var binding: FragmentFavoriteBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +61,15 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
             wellnessType = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -69,28 +86,33 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
 
         when (wellnessType!!) {
             Utils.WELLNESS_EXERCISE -> {
-                imgFavBackground.setImageResource(R.drawable.exercise_background)
+                binding.imgFavBackground.setImageResource(R.drawable.exercise_background)
                 updateStatusBarColor(R.color.primaryGreen)
                 changeComponentColor(R.color.white)
             }
             Utils.WELLNESS_NUTRITION -> {
-                imgFavBackground.setColorFilter(resources.getColor(R.color.white))
+                binding.imgFavBackground.setColorFilter(resources.getColor(R.color.white))
                 updateStatusBarColor(R.color.white)
                 changeComponentColor(R.color.black)
             }
             Utils.WELLNESS_MINDFULNESS -> {
-                imgFavBackground.setImageResource(R.drawable.mindfulness_back_img)
+                binding.imgFavBackground.setImageResource(R.drawable.mindfulness_back_img)
                 //frameLayoutDetail.background = resources.getDrawable(R.drawable.mindfulness_back_img)
                 updateStatusBarColor(R.color.primaryGreen)
                 changeComponentColor(R.color.white)
             }
             Utils.WELLNESS_YOGA -> {
-                imgFavBackground.setImageResource(R.drawable.yoga_background)
+                binding.imgFavBackground.setImageResource(R.drawable.yoga_background)
                 updateStatusBarColor(R.color.yoga_status_bar)
                 changeComponentColor(R.color.white)
             }
+            Utils.WELLNESS_MUSIC -> {
+                binding.imgFavBackground.setImageResource(R.drawable.music_background)
+                updateStatusBarColor(R.color.music_status_bar)
+                changeComponentColor(R.color.white)
+            }
             else -> {
-                imgFavBackground.setColorFilter(resources.getColor(R.color.white))
+                binding.imgFavBackground.setColorFilter(resources.getColor(R.color.white))
                 updateStatusBarColor(R.color.white)
                 changeComponentColor(R.color.black)
             }
@@ -98,7 +120,7 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
 
         getFavouriteDetails()
 
-        favSearch.addTextChangedListener(object : TextWatcher {
+        binding.favSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
             }
 
@@ -112,38 +134,38 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
     }
 
     private fun changeComponentColor(componentColor: Int) {
-        favBack.imageTintList = ColorStateList.valueOf(
+        binding.favBack.imageTintList = ColorStateList.valueOf(
             ContextCompat.getColor(
                 requireActivity(),
                 componentColor
             )
         )
-        txtFavTitle.setTextColor(resources.getColor(componentColor))
-        favSearch.setHintTextColor(resources.getColor(componentColor))
-        txtFavVideosTitle.setTextColor(resources.getColor(componentColor))
-        txtFavVideoSeeAll.setTextColor(resources.getColor(componentColor))
-        favVideoTitle1.setTextColor(resources.getColor(componentColor))
-        favVideoDesc1.setTextColor(resources.getColor(componentColor))
-        favFavTitle1.setTextColor(resources.getColor(componentColor))
-        favVideoTitle2.setTextColor(resources.getColor(componentColor))
-        favVideoDesc2.setTextColor(resources.getColor(componentColor))
-        favFavTitle2.setTextColor(resources.getColor(componentColor))
-        txtFavPodcastTitle.setTextColor(resources.getColor(componentColor))
-        txtFavPodcastSeeAll.setTextColor(resources.getColor(componentColor))
-        txtFavArticlesTitle.setTextColor(resources.getColor(componentColor))
-        txtFavArticleSeeAll.setTextColor(resources.getColor(componentColor))
-        favArticleTitle1.setTextColor(resources.getColor(componentColor))
-        favArticleTitle2.setTextColor(resources.getColor(componentColor))
-        favArticleTitle3.setTextColor(resources.getColor(componentColor))
-        favArticleTitle4.setTextColor(resources.getColor(componentColor))
+        binding.txtFavTitle.setTextColor(resources.getColor(componentColor))
+        binding.favSearch.setHintTextColor(resources.getColor(componentColor))
+        binding.txtFavVideosTitle.setTextColor(resources.getColor(componentColor))
+        binding.txtFavVideoSeeAll.setTextColor(resources.getColor(componentColor))
+        binding.favVideoTitle1.setTextColor(resources.getColor(componentColor))
+        binding.favVideoDesc1.setTextColor(resources.getColor(componentColor))
+        binding.favFavTitle1.setTextColor(resources.getColor(componentColor))
+        binding.favVideoTitle2.setTextColor(resources.getColor(componentColor))
+        binding.favVideoDesc2.setTextColor(resources.getColor(componentColor))
+        binding.favFavTitle2.setTextColor(resources.getColor(componentColor))
+        binding.txtFavPodcastTitle.setTextColor(resources.getColor(componentColor))
+        binding.txtFavPodcastSeeAll.setTextColor(resources.getColor(componentColor))
+        binding.txtFavArticlesTitle.setTextColor(resources.getColor(componentColor))
+        binding.txtFavArticleSeeAll.setTextColor(resources.getColor(componentColor))
+        binding.favArticleTitle1.setTextColor(resources.getColor(componentColor))
+        binding.favArticleTitle2.setTextColor(resources.getColor(componentColor))
+        binding.favArticleTitle3.setTextColor(resources.getColor(componentColor))
+        binding.favArticleTitle4.setTextColor(resources.getColor(componentColor))
     }
 
     private fun onClickEvents() {
-        favBack.setOnClickListener {
+        binding.favBack.setOnClickListener {
             popBackStack()
         }
 
-        txtFavVideoSeeAll.setOnClickListener {
+        binding.txtFavVideoSeeAll.setOnClickListener {
             replaceFragment(
                 VideosListFragment.newInstance(arrayListOf(), wellnessType!!, true, ""),
                 R.id.layout_home,
@@ -151,14 +173,14 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
             )
         }
 
-        txtFavPodcastSeeAll.setOnClickListener {
+        binding.txtFavPodcastSeeAll.setOnClickListener {
             replaceFragment(
                 PodcastFragment.newInstance(arrayListOf(), wellnessType!!, true, ""),
                 R.id.layout_home, PodcastFragment.TAG
             )
         }
 
-        txtFavArticleSeeAll.setOnClickListener {
+        binding.txtFavArticleSeeAll.setOnClickListener {
             replaceFragment(
                 NewsListFragment.newInstance(arrayListOf(), wellnessType!!, true, ""),
                 R.id.layout_home, NewsListFragment.TAG
@@ -166,12 +188,164 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
         }
     }
 
+    private fun fetchFavoriteData(wellnessType: String, myCallback: (result: String?) -> Unit) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getFavoriteData(wellnessType + "_favourites", getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            binding.layoutShimmerFavDisplayVideos.stopShimmer()
+                            binding.layoutShimmerFavDisplayVideos.visibility = View.GONE
+                            binding.shimmerFavPodcast.stopShimmer()
+                            binding.shimmerFavPodcast.visibility = View.GONE
+                            binding.layoutShimmerFavDisplayArticles.stopShimmer()
+                            binding.layoutShimmerFavDisplayArticles.visibility = View.GONE
+                            binding.favSearch.visibility = View.VISIBLE
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                userLogin(
+                                    preference!![PrefKeys.PREF_EMAIL]!!,
+                                    preference!![PrefKeys.PREF_PASS]!!
+                                ) { result ->
+                                    clearCache()
+                                }
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            binding.layoutShimmerFavDisplayVideos.stopShimmer()
+                            binding.layoutShimmerFavDisplayVideos.visibility = View.GONE
+                            binding.shimmerFavPodcast.stopShimmer()
+                            binding.shimmerFavPodcast.visibility = View.GONE
+                            binding.layoutShimmerFavDisplayArticles.stopShimmer()
+                            binding.layoutShimmerFavDisplayArticles.visibility = View.GONE
+                            binding.favSearch.visibility = View.GONE
+                            binding.cardViewFavNoVideos.visibility = View.VISIBLE
+                            binding.cardViewFavNoArticles.visibility = View.VISIBLE
+                            binding.cardViewFavNoPodcasts.visibility = View.VISIBLE
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                clearCache()
+                            }
+                        } else {
+                            binding.layoutShimmerFavDisplayVideos.stopShimmer()
+                            binding.layoutShimmerFavDisplayVideos.visibility = View.GONE
+                            binding.shimmerFavPodcast.stopShimmer()
+                            binding.shimmerFavPodcast.visibility = View.GONE
+                            binding.layoutShimmerFavDisplayArticles.stopShimmer()
+                            binding.layoutShimmerFavDisplayArticles.visibility = View.GONE
+                            binding.favSearch.visibility = View.GONE
+                            binding.cardViewFavNoVideos.visibility = View.VISIBLE
+                            binding.cardViewFavNoArticles.visibility = View.VISIBLE
+                            binding.cardViewFavNoPodcasts.visibility = View.VISIBLE
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    private fun getResourceFavoriteData(myCallback: (result: String?) -> Unit) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getResourceFavoriteData(getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            binding.layoutShimmerFavDisplayVideos.stopShimmer()
+                            binding.layoutShimmerFavDisplayVideos.visibility = View.GONE
+                            binding.shimmerFavPodcast.stopShimmer()
+                            binding.shimmerFavPodcast.visibility = View.GONE
+                            binding.layoutShimmerFavDisplayArticles.stopShimmer()
+                            binding.layoutShimmerFavDisplayArticles.visibility = View.GONE
+                            binding.favSearch.visibility = View.VISIBLE
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                userLogin(
+                                    preference!![PrefKeys.PREF_EMAIL]!!,
+                                    preference!![PrefKeys.PREF_PASS]!!
+                                ) { result ->
+
+                                }
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            binding.layoutShimmerFavDisplayVideos.stopShimmer()
+                            binding.layoutShimmerFavDisplayVideos.visibility = View.GONE
+                            binding.shimmerFavPodcast.stopShimmer()
+                            binding.shimmerFavPodcast.visibility = View.GONE
+                            binding.layoutShimmerFavDisplayArticles.stopShimmer()
+                            binding.layoutShimmerFavDisplayArticles.visibility = View.GONE
+                            binding.favSearch.visibility = View.GONE
+                            binding.cardViewFavNoVideos.visibility = View.VISIBLE
+                            binding.cardViewFavNoArticles.visibility = View.VISIBLE
+                            binding.cardViewFavNoPodcasts.visibility = View.VISIBLE
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+
+                            }
+                        } else {
+                            binding.layoutShimmerFavDisplayVideos.stopShimmer()
+                            binding.layoutShimmerFavDisplayVideos.visibility = View.GONE
+                            binding.shimmerFavPodcast.stopShimmer()
+                            binding.shimmerFavPodcast.visibility = View.GONE
+                            binding.layoutShimmerFavDisplayArticles.stopShimmer()
+                            binding.layoutShimmerFavDisplayArticles.visibility = View.GONE
+                            binding.favSearch.visibility = View.GONE
+                            binding.cardViewFavNoVideos.visibility = View.VISIBLE
+                            binding.cardViewFavNoArticles.visibility = View.VISIBLE
+                            binding.cardViewFavNoPodcasts.visibility = View.VISIBLE
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
     private fun getFavouriteDetails() {
         videoLists = arrayListOf()
         podcastLists = arrayListOf()
         articlesLists = arrayListOf()
         if(wellnessType!!.isNotEmpty()) {
-            getFavoriteData(wellnessType!!) { response ->
+            fetchFavoriteData(wellnessType!!) { response ->
                 val jsonObj = JSONObject(response)
 
                 val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
@@ -207,60 +381,60 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
 
     private fun displayVideoList(videoList: ArrayList<Video>) {
         if (videoList.isNotEmpty()) {
-            layoutFavDisplayVideos.visibility = View.VISIBLE
-            cardViewFavNoVideos.visibility = View.GONE
+            binding.layoutFavDisplayVideos.visibility = View.VISIBLE
+            binding.cardViewFavNoVideos.visibility = View.GONE
             if (videoList.size == 1) {
-                layoutFavVideoList1.visibility = View.VISIBLE
-                setVideoImage(videoList[0], favVideoBanner1)
-                favVideoTitle1.text = videoList[0].name
-                favVideoDesc1.text = videoList[0].description
+                binding.layoutFavVideoList1.visibility = View.VISIBLE
+                setVideoImage(videoList[0], binding.favVideoBanner1)
+                binding.favVideoTitle1.text = videoList[0].name
+                binding.favVideoDesc1.text = videoList[0].description
                 if (videoList[0].is_favourite) {
-                    favFavImg1.setImageResource(R.drawable.favorite)
-                    favFavTitle1.text = "Added to favorites"
+                    binding.favFavImg1.setImageResource(R.drawable.favorite)
+                    binding.favFavTitle1.text = "Added to favorites"
                 } else {
                     if (wellnessType == Utils.WELLNESS_NUTRITION) {
-                        favFavImg1.setImageResource(R.drawable.favorite_outline)
+                        binding.favFavImg1.setImageResource(R.drawable.favorite_outline)
                     } else {
-                        favFavImg1.setImageResource(R.drawable.favourite_white)
+                        binding.favFavImg1.setImageResource(R.drawable.favourite_white)
                     }
-                    favFavTitle1.text = "Add to favorites"
+                    binding.favFavTitle1.text = "Add to favorites"
                 }
-                layoutFavVideoList2.visibility = View.GONE
+                binding.layoutFavVideoList2.visibility = View.GONE
             } else if (videoList.size >= 2) {
-                layoutFavVideoList1.visibility = View.VISIBLE
-                setVideoImage(videoList[0], favVideoBanner1)
-                favVideoTitle1.text = videoList[0].name
-                favVideoDesc1.text = videoList[0].description
+                binding.layoutFavVideoList1.visibility = View.VISIBLE
+                setVideoImage(videoList[0], binding.favVideoBanner1)
+                binding.favVideoTitle1.text = videoList[0].name
+                binding.favVideoDesc1.text = videoList[0].description
                 if (videoList[0].is_favourite) {
-                    favFavImg1.setImageResource(R.drawable.favorite)
-                    favFavTitle1.text = "Added to favorites"
+                    binding.favFavImg1.setImageResource(R.drawable.favorite)
+                    binding.favFavTitle1.text = "Added to favorites"
                 } else {
                     if (wellnessType == Utils.WELLNESS_NUTRITION) {
-                        favFavImg1.setImageResource(R.drawable.favorite_outline)
+                        binding.favFavImg1.setImageResource(R.drawable.favorite_outline)
                     } else {
-                        favFavImg1.setImageResource(R.drawable.favourite_white)
+                        binding.favFavImg1.setImageResource(R.drawable.favourite_white)
                     }
-                    favFavTitle1.text = "Add to favorites"
+                    binding.favFavTitle1.text = "Add to favorites"
                 }
 
-                layoutFavVideoList2.visibility = View.VISIBLE
-                setVideoImage(videoList[1], favVideoBanner2)
-                favVideoTitle2.text = videoList[1].name
-                favVideoDesc2.text = videoList[1].description
+                binding.layoutFavVideoList2.visibility = View.VISIBLE
+                setVideoImage(videoList[1], binding.favVideoBanner2)
+                binding.favVideoTitle2.text = videoList[1].name
+                binding.favVideoDesc2.text = videoList[1].description
                 if (videoList[1].is_favourite) {
-                    favFavImg2.setImageResource(R.drawable.favorite)
-                    favFavTitle2.text = "Added to favorites"
+                    binding.favFavImg2.setImageResource(R.drawable.favorite)
+                    binding.favFavTitle2.text = "Added to favorites"
                 } else {
                     if (wellnessType == Utils.WELLNESS_NUTRITION) {
-                        favFavImg2.setImageResource(R.drawable.favorite_outline)
+                        binding.favFavImg2.setImageResource(R.drawable.favorite_outline)
                     } else {
-                        favFavImg2.setImageResource(R.drawable.favourite_white)
+                        binding.favFavImg2.setImageResource(R.drawable.favourite_white)
                     }
-                    favFavTitle2.text = "Add to favorites"
+                    binding.favFavTitle2.text = "Add to favorites"
                 }
             }
 
-            cardViewFavVideo1.setOnClickListener {
+            binding.cardViewFavVideo1.setOnClickListener {
                 replaceFragment(
                     VideoDetailFragment.newInstance(videoList[0]),
                     R.id.layout_home,
@@ -268,7 +442,7 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewFavVideo2.setOnClickListener {
+            binding.cardViewFavVideo2.setOnClickListener {
                 replaceFragment(
                     VideoDetailFragment.newInstance(videoList[1]),
                     R.id.layout_home,
@@ -276,7 +450,7 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            favLayoutFav1.setOnClickListener {
+            binding.favLayoutFav1.setOnClickListener {
                 if(wellnessType!!.isNotEmpty()) {
                     sendFavoriteData(
                         videoList[0].id,
@@ -293,7 +467,7 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
                 }
             }
 
-            favLayoutFav2.setOnClickListener {
+            binding.favLayoutFav2.setOnClickListener {
                 if(wellnessType!!.isNotEmpty()) {
                     sendFavoriteData(
                         videoList[1].id,
@@ -310,8 +484,8 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
                 }
             }
         } else {
-            layoutFavDisplayVideos.visibility = View.GONE
-            cardViewFavNoVideos.visibility = View.VISIBLE
+            binding.layoutFavDisplayVideos.visibility = View.GONE
+            binding.cardViewFavNoVideos.visibility = View.VISIBLE
         }
     }
 
@@ -329,9 +503,9 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
 
     private fun displayPodcastList(podcastList: ArrayList<Podcast>) {
         if (podcastList.isNotEmpty()) {
-            recyclerViewFavPodcast.visibility = View.VISIBLE
-            cardViewFavNoPodcasts.visibility = View.GONE
-            recyclerViewFavPodcast.apply {
+            binding.recyclerViewFavPodcast.visibility = View.VISIBLE
+            binding.cardViewFavNoPodcasts.visibility = View.GONE
+            binding.recyclerViewFavPodcast.apply {
                 layoutManager = LinearLayoutManager(mActivity!!, RecyclerView.HORIZONTAL, false)
                 adapter =
                     DashboardPodcastAdapter(
@@ -342,66 +516,66 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
                     )
             }
         } else {
-            recyclerViewFavPodcast.visibility = View.GONE
-            cardViewFavNoPodcasts.visibility = View.VISIBLE
+            binding.recyclerViewFavPodcast.visibility = View.GONE
+            binding.cardViewFavNoPodcasts.visibility = View.VISIBLE
         }
     }
 
     private fun displayArticleList(articleList: ArrayList<Articles>) {
         if (articleList.isNotEmpty()) {
-            layoutFavDisplayArticles.visibility = View.VISIBLE
-            cardViewFavNoArticles.visibility = View.GONE
+            binding.layoutFavDisplayArticles.visibility = View.VISIBLE
+            binding.cardViewFavNoArticles.visibility = View.GONE
             if (articleList.size == 1) {
-                layoutFavArticleList1.visibility = View.VISIBLE
-                cardViewFavArticle1.visibility = View.VISIBLE
-                favArticleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], favArticleBanner1)
-                cardViewFavArticle2.visibility = View.GONE
-                layoutFavArticleList2.visibility = View.GONE
-                cardViewFavArticle3.visibility = View.GONE
-                cardViewFavArticle4.visibility = View.GONE
+                binding.layoutFavArticleList1.visibility = View.VISIBLE
+                binding.cardViewFavArticle1.visibility = View.VISIBLE
+                binding.favArticleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.favArticleBanner1)
+                binding.cardViewFavArticle2.visibility = View.GONE
+                binding.layoutFavArticleList2.visibility = View.GONE
+                binding.cardViewFavArticle3.visibility = View.GONE
+                binding.cardViewFavArticle4.visibility = View.GONE
             } else if (articleList.size == 2) {
-                layoutFavArticleList1.visibility = View.VISIBLE
-                cardViewFavArticle1.visibility = View.VISIBLE
-                favArticleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], favArticleBanner1)
-                cardViewFavArticle2.visibility = View.VISIBLE
-                favArticleTitle2.text = articleList[1].name
-                setArticleImage(articleList[1], favArticleBanner2)
-                layoutFavArticleList2.visibility = View.GONE
-                cardViewFavArticle3.visibility = View.GONE
-                cardViewFavArticle4.visibility = View.GONE
+                binding.layoutFavArticleList1.visibility = View.VISIBLE
+                binding.cardViewFavArticle1.visibility = View.VISIBLE
+                binding.favArticleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.favArticleBanner1)
+                binding.cardViewFavArticle2.visibility = View.VISIBLE
+                binding.favArticleTitle2.text = articleList[1].name
+                setArticleImage(articleList[1], binding.favArticleBanner2)
+                binding.layoutFavArticleList2.visibility = View.GONE
+                binding.cardViewFavArticle3.visibility = View.GONE
+                binding.cardViewFavArticle4.visibility = View.GONE
             } else if (articleList.size == 3) {
-                layoutFavArticleList1.visibility = View.VISIBLE
-                cardViewFavArticle1.visibility = View.VISIBLE
-                favArticleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], favArticleBanner1)
-                cardViewFavArticle2.visibility = View.VISIBLE
-                favArticleTitle2.text = articleList[1].name
-                setArticleImage(articleList[1], favArticleBanner2)
-                layoutFavArticleList2.visibility = View.VISIBLE
-                cardViewFavArticle3.visibility = View.VISIBLE
-                favArticleTitle3.text = articleList[2].name
-                setArticleImage(articleList[2], favArticleBanner3)
-                cardViewFavArticle4.visibility = View.GONE
+                binding.layoutFavArticleList1.visibility = View.VISIBLE
+                binding.cardViewFavArticle1.visibility = View.VISIBLE
+                binding.favArticleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.favArticleBanner1)
+                binding.cardViewFavArticle2.visibility = View.VISIBLE
+                binding.favArticleTitle2.text = articleList[1].name
+                setArticleImage(articleList[1], binding.favArticleBanner2)
+                binding.layoutFavArticleList2.visibility = View.VISIBLE
+                binding.cardViewFavArticle3.visibility = View.VISIBLE
+                binding.favArticleTitle3.text = articleList[2].name
+                setArticleImage(articleList[2], binding.favArticleBanner3)
+                binding.cardViewFavArticle4.visibility = View.GONE
             } else if (articleList.size >= 4) {
-                layoutFavArticleList1.visibility = View.VISIBLE
-                cardViewFavArticle1.visibility = View.VISIBLE
-                favArticleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], favArticleBanner1)
-                cardViewFavArticle2.visibility = View.VISIBLE
-                favArticleTitle2.text = articleList[1].name
-                setArticleImage(articleList[1], favArticleBanner2)
-                layoutFavArticleList2.visibility = View.VISIBLE
-                cardViewFavArticle3.visibility = View.VISIBLE
-                favArticleTitle3.text = articleList[2].name
-                setArticleImage(articleList[2], favArticleBanner3)
-                cardViewFavArticle4.visibility = View.VISIBLE
-                favArticleTitle4.text = articleList[3].name
-                setArticleImage(articleList[3], favArticleBanner4)
+                binding.layoutFavArticleList1.visibility = View.VISIBLE
+                binding.cardViewFavArticle1.visibility = View.VISIBLE
+                binding.favArticleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.favArticleBanner1)
+                binding.cardViewFavArticle2.visibility = View.VISIBLE
+                binding.favArticleTitle2.text = articleList[1].name
+                setArticleImage(articleList[1], binding.favArticleBanner2)
+                binding.layoutFavArticleList2.visibility = View.VISIBLE
+                binding.cardViewFavArticle3.visibility = View.VISIBLE
+                binding.favArticleTitle3.text = articleList[2].name
+                setArticleImage(articleList[2], binding.favArticleBanner3)
+                binding.cardViewFavArticle4.visibility = View.VISIBLE
+                binding.favArticleTitle4.text = articleList[3].name
+                setArticleImage(articleList[3], binding.favArticleBanner4)
             }
 
-            cardViewFavArticle1.setOnClickListener {
+            binding.cardViewFavArticle1.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[0], wellnessType!!),
                     R.id.layout_home,
@@ -409,7 +583,7 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewFavArticle2.setOnClickListener {
+            binding.cardViewFavArticle2.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[1], wellnessType!!),
                     R.id.layout_home,
@@ -417,7 +591,7 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewFavArticle3.setOnClickListener {
+            binding.cardViewFavArticle3.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[2], wellnessType!!),
                     R.id.layout_home,
@@ -425,7 +599,7 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewFavArticle4.setOnClickListener {
+            binding.cardViewFavArticle4.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[3], wellnessType!!),
                     R.id.layout_home,
@@ -433,8 +607,8 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
         } else {
-            layoutFavDisplayArticles.visibility = View.GONE
-            cardViewFavNoArticles.visibility = View.VISIBLE
+            binding.layoutFavDisplayArticles.visibility = View.GONE
+            binding.cardViewFavNoArticles.visibility = View.VISIBLE
         }
     }
 
@@ -468,24 +642,24 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
         }
 
         if (filteredVideos.isNotEmpty()) {
-            layoutVideoFavData.visibility = View.VISIBLE
+            binding.layoutVideoFavData.visibility = View.VISIBLE
             displayVideoList(filteredVideos)
         } else {
             if (text.length < 2) {
                 displayVideoList(videoLists)
             } else {
-                layoutVideoFavData.visibility = View.GONE
+                binding.layoutVideoFavData.visibility = View.GONE
             }
         }
 
         if (filteredPodcasts.isNotEmpty()) {
-            layoutPodcastFavData.visibility = View.VISIBLE
+            binding.layoutPodcastFavData.visibility = View.VISIBLE
             val adapter = DashboardPodcastAdapter(
                 mActivity!!,
                 podcastLists, this, wellnessType!!
             )
             adapter.filterList(filteredPodcasts)
-            recyclerViewFavPodcast.adapter = adapter
+            binding.recyclerViewFavPodcast.adapter = adapter
         } else {
             if (text.length < 2) {
                 val adapter = DashboardPodcastAdapter(
@@ -493,27 +667,27 @@ class FavoriteFragment : BaseFragment(), OnPodcastItemClickListener {
                     podcastLists, this, wellnessType!!
                 )
                 adapter.filterList(filteredPodcasts)
-                recyclerViewFavPodcast.adapter = adapter
+                binding.recyclerViewFavPodcast.adapter = adapter
             } else {
-                layoutPodcastFavData.visibility = View.GONE
+                binding.layoutPodcastFavData.visibility = View.GONE
             }
         }
 
         if (filteredArticles.isNotEmpty()) {
-            layoutArticleFavData.visibility = View.VISIBLE
+            binding.layoutArticleFavData.visibility = View.VISIBLE
             displayArticleList(filteredArticles)
         } else {
             if (text.length < 2) {
                 displayArticleList(articlesLists)
             } else {
-                layoutArticleFavData.visibility = View.GONE
+                binding.layoutArticleFavData.visibility = View.GONE
             }
         }
     }
 
     override fun onPause() {
         super.onPause()
-        favSearch.setText("")
+        binding.favSearch.setText("")
     }
 
     companion object {

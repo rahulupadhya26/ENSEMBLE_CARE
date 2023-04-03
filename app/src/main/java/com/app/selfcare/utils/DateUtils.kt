@@ -11,7 +11,7 @@ class DateUtils(date: String?) {
         mDate = SimpleDateFormat("MM/dd/yyyy' 'HH:mm:ss", Locale.getDefault()).parse(date!!)
     }
 
-    fun getSimpleFormattedDate():String{
+    fun getSimpleFormattedDate(): String {
         return SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(mDate!!.time)
     }
 
@@ -21,6 +21,10 @@ class DateUtils(date: String?) {
 
     fun getDay(): String {
         return SimpleDateFormat("dd", Locale.getDefault()).format(mDate!!.time)
+    }
+
+    fun getDay3LettersName(): String {
+        return SimpleDateFormat("EE", Locale.getDefault()).format(mDate!!.time)
     }
 
     fun getCurrentDay(): String {

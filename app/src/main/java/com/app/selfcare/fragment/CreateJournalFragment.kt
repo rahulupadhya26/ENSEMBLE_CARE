@@ -1,23 +1,22 @@
 package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
-import android.app.DatePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import java.text.SimpleDateFormat
 import java.util.*
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import com.app.selfcare.R
 import com.app.selfcare.data.CreateJournal
+import com.app.selfcare.databinding.FragmentCreateJournalBinding
 import com.app.selfcare.preference.PrefKeys
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_create_journal.*
 import com.app.selfcare.preference.PreferenceHelper.get
-import com.app.selfcare.utils.DateUtil
 import com.app.selfcare.utils.DateUtils
-import com.app.selfcare.utils.Utils
 import retrofit2.HttpException
 import java.lang.Exception
 
@@ -38,6 +37,7 @@ class CreateJournalFragment : BaseFragment() {
     private var param2: String? = null
     var createdJournalDate: String? = null
     var createdJournalTime: String? = null
+    private lateinit var binding: FragmentCreateJournalBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +45,15 @@ class CreateJournalFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCreateJournalBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -65,12 +74,12 @@ class CreateJournalFragment : BaseFragment() {
         val timeSdf = SimpleDateFormat(myTimeFormat)
         val cal = Calendar.getInstance()
         val formattedDate = sdf.format(cal.time)
-        txtJournalDate.setText(formattedDate)
+        binding.editTextJournalDate.setText(formattedDate)
         createdJournalDate = formattedDate
         val formattedTIme = timeSdf.format(cal.time)
         createdJournalTime = formattedTIme
         val journalCurrentDateTime = DateUtils("$formattedDate $formattedTIme")
-        currentJournalDateTime.text =
+        binding.currentJournalDateTime.text =
             journalCurrentDateTime.getDay() + " " +
                     journalCurrentDateTime.getFullMonthName() + " " +
                     journalCurrentDateTime.getYear() + " at " +
@@ -99,9 +108,9 @@ class CreateJournalFragment : BaseFragment() {
             popBackStack()
         }*/
 
-        createJournalBack.setOnClickListener {
-            if (getText(edit_txt_journal_title).isNotEmpty()) {
-                if (getText(edit_txt_journal).isNotEmpty()) {
+        binding.createJournalBack.setOnClickListener {
+            if (getText(binding.editTxtJournalTitle).isNotEmpty()) {
+                if (getText(binding.editTxtJournal).isNotEmpty()) {
                     //Call create journal api
                     createJournal()
                 } else {
@@ -123,10 +132,10 @@ class CreateJournalFragment : BaseFragment() {
                     .createJournalData(
                         "PI0017",
                         CreateJournal(
-                            getText(edit_txt_journal_title),
-                            getText(edit_txt_journal),
+                            getText(binding.editTxtJournalTitle),
+                            getText(binding.editTxtJournal),
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!,
-                            getText(txtJournalDate),
+                            getText(binding.editTextJournalDate),
                             createdJournalTime!!
                         ), getAccessToken()
                     )

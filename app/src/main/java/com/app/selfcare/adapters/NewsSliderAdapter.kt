@@ -3,16 +3,12 @@ package com.app.selfcare.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.app.selfcare.R
 import com.app.selfcare.controller.OnNewsItemClickListener
 import com.app.selfcare.data.Articles
-import kotlinx.android.synthetic.main.layout_item_news_slider.view.*
+import com.app.selfcare.databinding.LayoutItemNewsSliderBinding
 
 class NewsSliderAdapter(
     val context: Context,
@@ -22,29 +18,29 @@ class NewsSliderAdapter(
 ) :
     RecyclerView.Adapter<NewsSliderAdapter.SliderViewHolder>() {
 
-    class SliderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val newsTitle: TextView = itemView.txtNewsTitle
-        val newsLink: TextView = itemView.txtNewsLink
-        val newsPubDate: TextView = itemView.txtPubDate
-        val newsPane: CardView = itemView.newsSlide
-    }
+    class SliderViewHolder(val binding: LayoutItemNewsSliderBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SliderViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_news_slider, parent, false)
-        return SliderViewHolder(v)
+        val binding =
+            LayoutItemNewsSliderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_news_slider, parent, false)*/
+        return SliderViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: SliderViewHolder, position: Int) {
-        val item = list[position]
-        holder.newsTitle.text = item.name
-        holder.newsLink.text = item.article_url
-        holder.newsPubDate.text = item.published_date
-        if (position == list.size - 2) {
-            viewPager.post(runnable)
-        }
-        holder.newsPane.setOnClickListener {
-            adapterItemClickListener!!.onNewsItemClicked(item)
+        holder.binding.apply {
+            val item = list[position]
+            txtNewsTitle.text = item.name
+            txtNewsLink.text = item.article_url
+            txtPubDate.text = item.published_date
+            if (position == list.size - 2) {
+                viewPager.post(runnable)
+            }
+            newsSlide.setOnClickListener {
+                adapterItemClickListener!!.onNewsItemClicked(item)
+            }
         }
     }
 

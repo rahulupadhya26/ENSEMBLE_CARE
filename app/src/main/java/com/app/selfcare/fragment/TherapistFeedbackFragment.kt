@@ -1,20 +1,20 @@
 package com.app.selfcare.fragment
 
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.RatingBar
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.data.Feedback
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentTherapistFeedbackBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_therapist_feedback.*
 import retrofit2.HttpException
 
 // TODO: Rename parameter arguments, choose names that match
@@ -33,6 +33,7 @@ class TherapistFeedbackFragment : BaseFragment() {
     private var param2: String? = null
     private var therapistFeedbackRating: String? = null
     private var serviceFeedbackRating: String? = null
+    private lateinit var binding: FragmentTherapistFeedbackBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +41,15 @@ class TherapistFeedbackFragment : BaseFragment() {
             apptId = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentTherapistFeedbackBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -52,23 +62,23 @@ class TherapistFeedbackFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        ratingBarTherapistRating.onRatingBarChangeListener =
+        binding.ratingBarTherapistRating.onRatingBarChangeListener =
             RatingBar.OnRatingBarChangeListener { p0, p1, p2 ->
                 therapistFeedbackRating = p1.toString()
             }
 
-        ratingBarServiceRating.onRatingBarChangeListener =
+        binding.ratingBarServiceRating.onRatingBarChangeListener =
             RatingBar.OnRatingBarChangeListener { p0, p1, p2 ->
                 serviceFeedbackRating = p1.toString()
             }
 
-        btnTherapistFeedback.setOnClickListener {
+        binding.btnTherapistFeedback.setOnClickListener {
             if (serviceFeedbackRating != null) {
                 if (therapistFeedbackRating != null) {
-                    if (getText(editTxtTherapistFeedback).isNotEmpty()) {
+                    if (getText(binding.editTxtTherapistFeedback).isNotEmpty()) {
                         sendFeedback()
                     } else {
-                        setEditTextError(editTxtTherapistFeedback, "Please provide feedback")
+                        setEditTextError(binding.editTxtTherapistFeedback, "Please provide feedback")
                     }
                 } else {
                     displayMsg("Alert", "Please provide therapist rating")
@@ -90,7 +100,7 @@ class TherapistFeedbackFragment : BaseFragment() {
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
                             apptId!!.toInt(),
                             therapistFeedbackRating!!.toDouble(),
-                            getText(editTxtTherapistFeedback),
+                            getText(binding.editTxtTherapistFeedback),
                             serviceFeedbackRating!!.toDouble(),
                             ""
                         ), getAccessToken()

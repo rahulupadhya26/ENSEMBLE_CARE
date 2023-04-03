@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">Ensemble Care</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">EnsembleCare</string>
 
     <string name="txt_hint_search">Enter text to search</string>
     <string name="txt_lbl_get_started">Get Started</string>
@@ -50,7 +50,7 @@
     <string name="parent_name">Parent Name</string>
     <string name="relationship">Relationship</string>
     <string name="contact_number">Contact Number</string>
-    <string name="thank_you_for_filling_the_assessment">Thank you for filling\nthe questionnaire</string>
+    <string name="thank_you_for_filling_the_assessment">Thank you for\ncompleting the survey</string>
     <string name="appreciate_text_after_assessment">I really appreciate your effort and the time you devoted to filling the assessment. Your answers will help us improve our services for you.</string>
     <string name="thank_you">Thank you.</string>
     <string name="let_us_know_about_you">Tell us about you</string>
@@ -62,8 +62,10 @@
     <string name="dob">DOB</string>
     <string name="you_are_done">You are done!</string>
     <string name="resend_the_code"><u>Resend the code</u></string>
-    <string name="register_part_2">I hereby agree to abide by the <font color='#5C2E7E'><u>terms and conditions</u></font> provided by Ensemblecare</string>
-    <string name="covered_self_pay">I hereby agree to abide by the <font color='#5C2E7E'><u>terms and conditions</u></font> provided by Ensemblecare for SelfPay</string>
+    <string name="register_part_2">I hereby acknowledge and agree to abide by the <font color='#5C2E7E'><u>terms and conditions</u></font> set forth by EnsembleCare.</string>
+    <string name="covered_self_pay">I hereby acknowledge and agree to abide by the <font color='#5C2E7E'><u>terms and conditions</u></font> set forth by EnsembleCare.</string>
+    <string name="covered_eap">I hereby acknowledge and agree to abide by the <font color='#5C2E7E'><u>terms and conditions</u></font> set forth by EnsembleCare.</string>
+    <string name="covered_insurance">I hereby acknowledge and agree to abide by the <font color='#5C2E7E'><u>terms and conditions</u></font> set forth by EnsembleCare.</string>
     <string name="consent_imp">Why is consent important? Read about it <font color='#5C2E7E'><u>here</u></font></string>
     <string name="billed_monthly_terms_apply">Billed Monthly. <font color='#830CDB'><u>Terms apply</u></font></string>
     <string name="billed_quarterly_terms_apply">Billed Quarterly. <font color='#830CDB'><u>Terms apply</u></font></string>
@@ -71,7 +73,17 @@
     <string name="plan_by_subscribing">By subscribing, you agree to <font color='#830CDB'><u>our terms</u></font>.</string>
     <string name="vob_verified"><font color='#5C2E7E'><b>Congratulations!</b></font> You have been subscribed to <b>Plus</b> plan</string>
 
+    <string name="bit_rate_value_with_unit">%d kbps</string>
+    <string name="frame_rate_value_with_unit">%d fps</string>
+    <string name="call_911"><u>911</u></string>
+    <string name="crisis_lifeline"><a href="https://988lifeline.org/">988 Suicide &amp; Crisis Lifeline</a> (formerly known as the National Suicide Prevention Lifeline): <a href="tel:988">988</a> or English or Spanish, or <a href="https://988lifeline.org/chat/">Lifeline Chat</a>. TTY users can use their preferred relay service or dial <a href="tel:711">711</a> then <a href="tel:988">988</a>.</string>
+    <string name="crisis_text_line">Crisis Text Line: Text <font color='#830CDB'>SIGNS</font> to <font color='#830CDB'>741741</font> for 24/7, anonymous, free crisis counseling</string>
+    <string name="disaster_distress_helpline"><a href="https://www.samhsa.gov/disaster-preparedness">Disaster Distress Helpline</a>: CALL or TEXT <a href="tel:1-800-985-5990">1-800-985-5990</a> (press 2 for Spanish)</string>
+    <string name="trans_lifeline"><a href="https://translifeline.org/">Trans Lifeline</a>: <a href="tel:1-877-565-8860">1-877-565-8860</a> (para español presiona el 2)</string>
+    <string name="the_trevor_project">The Trevor Project’s <a href="https://www.thetrevorproject.org/get-help/">TrevorLifeline</a>: <a href="tel:1-866-488-7386">1-866-488-7386</a></string>
+
     <string-array name="gender">
+        <item>Gender</item>
         <item>Prefer not to say</item>
         <item>Male</item>
         <item>Female</item>
@@ -79,6 +91,7 @@
     </string-array>
 
     <string-array name="preferred_language">
+        <item>Language</item>
         <item>English</item>
         <item>Spanish</item>
         <item>Chinese</item>
@@ -92,16 +105,37 @@
     </string-array>
 
     <string-array name="employer_type">
-        <item>SelfPay</item>
+        <item>Self Pay</item>
         <item>Health Insurance Coverage</item>
-        <item>Employer Assisted Program (EAP)</item>
+        <item>EAP(Employer Assisted Program)</item>
     </string-array>
 
     <string-array name="relationship">
+        <item>Relation</item>
         <item>Father</item>
         <item>Mother</item>
-        <item>Siblings</item>
-        <item>Other</item>
+        <item>Sister-in-Law</item>
+        <item>Stepfather</item>
+        <item>Stepmother</item>
+        <item>Stepdaughter</item>
+        <item>Stepson</item>
+        <item>Stepbrother</item>
+        <item>Stepsister</item>
+        <item>Partner</item>
+        <item>Legal Guardian</item>
+        <item>Aunt</item>
+        <item>Brother</item>
+        <item>Cousin</item>
+        <item>Daughter</item>
+        <item>Son</item>
+        <item>Grandfather</item>
+        <item>Grandmother</item>
+        <item>Spouse</item>
+        <item>Niece</item>
+        <item>Nephew</item>
+        <item>Mother-in-Law</item>
+        <item>Father-in-Law</item>
+        <item>Brother-in-Law</item>
     </string-array>
 
     <string-array name="martialStatus">
@@ -147,8 +181,32 @@
         <item>Evening</item>
     </string-array>
 
+    <string-array name="string_array_resolutions" tools:ignore="ExtraTranslation">
+        <item>160x120</item>
+        // 120P
+        <item>320x180</item>
+        // 180P
+        <item>320x240</item>
+        // 240P
+        <item>640x360</item>
+        // 360P
+        <item>640x480</item>
+        // 480P
+        <item>1280x720</item>
+        // 720P
+    </string-array>
+
+    <string-array name="string_array_frame_rate" tools:ignore="ExtraTranslation">
+        <item>1</item>
+        <item>7</item>
+        <item>10</item>
+        <item>15</item>
+        // the default one
+        <item>24</item>
+        <item>30</item>
+    </string-array>
+
     <string-array name="insurance_name">
-        <item>Select Insurance Company</item>
         <item>AARP</item>
         <item>Aetna</item>
         <item>American Family Insurance</item>

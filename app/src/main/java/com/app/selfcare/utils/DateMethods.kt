@@ -1,5 +1,8 @@
 package com.app.selfcare.utils
 
+import android.annotation.SuppressLint
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 
 class DateMethods {
@@ -243,6 +246,20 @@ class DateMethods {
         if (d1 == null) return d2
         if (d2 == null) return d1
         return if (d1.before(d2)) d1 else d2
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun checkTimings(time: String, endTime: String): Boolean {
+        val pattern = "HH:mm"
+        val sdf = SimpleDateFormat(pattern)
+        try {
+            val date1: Date = sdf.parse(time)
+            val date2: Date = sdf.parse(endTime)
+            return date1.after(date2)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        return false
     }
 
     /** The maximum date possible.  */

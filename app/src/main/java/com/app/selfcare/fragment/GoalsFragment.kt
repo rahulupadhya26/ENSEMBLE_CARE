@@ -1,14 +1,15 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import com.app.selfcare.R
 import com.app.selfcare.adapters.GoalsAdapter
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentGoalsBinding
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.fragment_goals.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,6 +25,7 @@ class GoalsFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentGoalsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +33,15 @@ class GoalsFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentGoalsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -43,24 +54,24 @@ class GoalsFragment : BaseFragment() {
         getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
 
-        tabLayoutGoals.removeAllTabs()
-        viewPagerGoals.removeAllViewsInLayout()
-        tabLayoutGoals.addTab(tabLayoutGoals.newTab().setText("PERSONAL"))
-        tabLayoutGoals.addTab(tabLayoutGoals.newTab().setText("PROVIDER"))
-        tabLayoutGoals.tabGravity = TabLayout.GRAVITY_FILL
+        binding.tabLayoutGoals.removeAllTabs()
+        binding.viewPagerGoals.removeAllViewsInLayout()
+        binding.tabLayoutGoals.addTab(binding.tabLayoutGoals.newTab().setText("PERSONAL"))
+        binding.tabLayoutGoals.addTab(binding.tabLayoutGoals.newTab().setText("PROVIDER"))
+        binding.tabLayoutGoals.tabGravity = TabLayout.GRAVITY_FILL
         val adapter = GoalsAdapter(
             requireActivity(), childFragmentManager,
-            tabLayoutGoals.tabCount
+            binding.tabLayoutGoals.tabCount
         )
-        viewPagerGoals.adapter = adapter
-        viewPagerGoals.addOnPageChangeListener(
+        binding.viewPagerGoals.adapter = adapter
+        binding.viewPagerGoals.addOnPageChangeListener(
             TabLayout.TabLayoutOnPageChangeListener(
-                tabLayoutGoals
+                binding.tabLayoutGoals
             )
         )
-        tabLayoutGoals.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tabLayoutGoals.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPagerGoals.currentItem = tab.position
+                binding.viewPagerGoals.currentItem = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}

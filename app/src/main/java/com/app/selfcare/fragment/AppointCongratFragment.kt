@@ -3,11 +3,15 @@ package com.app.selfcare.fragment
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentAppointCongratBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.DateUtils
@@ -15,7 +19,6 @@ import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import kotlinx.android.synthetic.main.fragment_appoint_congrat.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,6 +34,7 @@ class AppointCongratFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentAppointCongratBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +42,15 @@ class AppointCongratFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAppointCongratBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -52,37 +65,44 @@ class AppointCongratFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
 
         try {
-            text_final_fname.text =
+            binding.textFinalFname.text =
                 "Hi, " + preference!![PrefKeys.PREF_FNAME, ""]!! + " " +
                         preference!![PrefKeys.PREF_LNAME, ""]!!
 
-            txtAppointedTherapistName.text = Utils.providerName
-            txtAppointedTherapistType.text = Utils.providerType
+            binding.txtAppointedTherapistName.text = Utils.providerName
+            binding.txtAppointedTherapistType.text = Utils.providerType
 
             val appointmentDate = DateUtils(Utils.aptScheduleDate + " 00:00:00")
 
-            text_appointment_date_time.text = appointmentDate.getDay() + " " +
+            binding.textAppointmentDateTime.text = appointmentDate.getDay() + " " +
                     appointmentDate.getFullMonthName() + " at " + Utils.aptScheduleTime.dropLast(3)
 
             Glide.with(requireActivity())
                 .load(BaseActivity.baseURL.dropLast(5) + Utils.providerPhoto)
                 .placeholder(R.drawable.doctor_img)
                 .transform(CenterCrop(), RoundedCorners(5))
-                .into(imgAppointCongrats)
+                .into(binding.imgAppointCongrats)
 
-            if (Utils.selectedCommunicationMode == "Video") {
-                appointedMode.setBackgroundResource(R.drawable.video)
-                appointedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
-            } else {
-                appointedMode.setBackgroundResource(R.drawable.telephone)
-                appointedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+            when (Utils.selectedCommunicationMode) {
+                "Video" -> {
+                    binding.appointedMode.setBackgroundResource(R.drawable.video)
+                    binding.appointedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+                }
+                "Audio" -> {
+                    binding.appointedMode.setBackgroundResource(R.drawable.telephone)
+                    binding.appointedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+                }
+                else -> {
+                    binding.appointedMode.setBackgroundResource(R.drawable.chat)
+                    binding.appointedMode.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.primaryGreen))
+                }
             }
 
-            layoutAppointCongratsScreenshot.setOnClickListener {
+            binding.layoutAppointCongratsScreenshot.setOnClickListener {
                 takeScreenshot()
             }
 
-            btn_go_to_dashboard.setOnClickListener {
+            binding.btnGoToDashboard.setOnClickListener {
                 navigateToHomeScreen()
                 /*replaceFragmentNoBackStack(
                     BottomNavigationFragment(),

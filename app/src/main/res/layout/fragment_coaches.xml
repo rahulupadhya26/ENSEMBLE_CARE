@@ -418,7 +418,6 @@
                                     android:textAppearance="@style/fontfamily"
                                     android:textColor="@color/white"
                                     android:textSize="@dimen/_16sp"
-                                    android:text="Recommended"
                                     android:textStyle="bold"/>
 
                                 <TextView
@@ -426,7 +425,6 @@
                                     android:layout_height="wrap_content"
                                     android:textAppearance="@style/fontfamily"
                                     android:textColor="@color/white"
-                                    android:text="Beautiful Quote"
                                     android:textSize="@dimen/_14sp"/>
 
                             </LinearLayout>

@@ -5,21 +5,18 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.TranslateAnimation
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.app.selfcare.R
 import com.app.selfcare.controller.OnDocumentItemClickListener
 import com.app.selfcare.controller.OnDocumentsConsentRoisViewItemClickListener
 import com.app.selfcare.data.Documents
-import com.app.selfcare.data.ToDoData
+import com.app.selfcare.databinding.LayoutItemDocumentListBinding
 import com.app.selfcare.utils.DateMethods
 import com.app.selfcare.utils.DateUtils
-import kotlinx.android.synthetic.main.layout_item_document_list.view.*
 
 class DocumentListAdapter(
     val context: Context,
@@ -35,9 +32,14 @@ class DocumentListAdapter(
         parent: ViewGroup,
         viewType: Int
     ): DocumentListAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_document_list, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemDocumentListBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_document_list, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -45,76 +47,75 @@ class DocumentListAdapter(
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: DocumentListAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        val getDate = DateUtils(item.date + " 00:00:00")
-        val isToday = DateMethods().isToday(getDate.mDate)
-        if (isToday) {
-            holder.txtDocumentDay.text = "Today"
-        } else {
-            holder.txtDocumentDay.text = getDate.getDay() + " " + getDate.getMonth()
-        }
-        if (item.Appointment != null) {
-            if (item.Appointment[0].consents.isNotEmpty()) {
-                holder.layoutDocumentAppointmentConsent.visibility = View.VISIBLE
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            val getDate = DateUtils(item.date + " 00:00:00")
+            val isToday = DateMethods().isToday(getDate.mDate)
+            if (isToday) {
+                txtDocumentDay.text = "Today"
+            } else {
+                txtDocumentDay.text = getDate.getDay() + " " + getDate.getMonth()
             }
-            if (item.Appointment[0].insurance.isNotEmpty()) {
-                holder.layoutDocumentInsurance.visibility = View.VISIBLE
-            }
-            if (item.Appointment[0].prescriptions.isNotEmpty()) {
-                holder.layoutDocumentAppointmentPrescription.visibility = View.VISIBLE
+            if (item.Appointment != null) {
+                if (item.Appointment[0].consents.isNotEmpty()) {
+                    layoutDocumentAppointmentConsent.visibility = View.VISIBLE
+                }
+                if (item.Appointment[0].insurance.isNotEmpty()) {
+                    layoutDocumentInsurance.visibility = View.VISIBLE
+                }
+                if (item.Appointment[0].prescriptions.isNotEmpty()) {
+                    layoutDocumentAppointmentPrescription.visibility = View.GONE
+                }
+
+                layoutDocumentAppointmentPrescription.setOnClickListener {
+                    adapterItem.onDocumentItemClickListener(
+                        item.Appointment[0].prescriptions,
+                        "Prescriptions"
+                    )
+                }
+
+                layoutDocumentAppointmentConsent.setOnClickListener {
+                    adapterItem.onDocumentItemClickListener(
+                        item.Appointment[0].consents,
+                        "Consents"
+                    )
+                }
+
+                layoutDocumentInsurance.setOnClickListener {
+                    adapterItem.onDocumentItemClickListener(
+                        item.Appointment[0].insurance,
+                        "Insurance"
+                    )
+                }
             }
 
-            holder.layoutDocumentAppointmentPrescription.setOnClickListener {
-                adapterItem.onDocumentItemClickListener(
-                    item.Appointment[0].prescriptions,
-                    "Prescriptions"
+            if (item.Consents != null) {
+                layoutDocumentConsentsRoisList.visibility = View.VISIBLE
+                val childLayoutManager = LinearLayoutManager(
+                    recyclerViewConsentsRoisView.context,
+                    LinearLayoutManager.VERTICAL,
+                    false
                 )
-            }
+                childLayoutManager.initialPrefetchItemCount = 4
+                recyclerViewConsentsRoisView.apply {
+                    layoutManager = childLayoutManager
+                    adapter =
+                        ConsentsRoisViewAdapter(context, item.Consents, adapterConsentRoisItem)
+                    setRecycledViewPool(viewPool)
+                }
 
-            holder.layoutDocumentAppointmentConsent.setOnClickListener {
-                adapterItem.onDocumentItemClickListener(item.Appointment[0].consents, "Consents")
-            }
-
-            holder.layoutDocumentInsurance.setOnClickListener {
-                adapterItem.onDocumentItemClickListener(item.Appointment[0].insurance, "Insurance")
-            }
-        }
-
-        if (item.Consents != null) {
-            holder.layoutDocumentConsentsRoisList.visibility = View.VISIBLE
-            val childLayoutManager = LinearLayoutManager(
-                holder.recyclerViewConsentsRoisView.context,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
-            childLayoutManager.initialPrefetchItemCount = 4
-            holder.recyclerViewConsentsRoisView.apply {
-                layoutManager = childLayoutManager
-                adapter =
-                    ConsentsRoisViewAdapter(context, item.Consents, adapterConsentRoisItem)
-                setRecycledViewPool(viewPool)
-            }
-
-            holder.layoutDocumentConsentsRois.setOnClickListener {
-                if (holder.recyclerViewConsentsRoisView.isVisible) {
-                    holder.recyclerViewConsentsRoisView.visibility = View.GONE
-                } else {
-                    holder.recyclerViewConsentsRoisView.visibility = View.VISIBLE
+                layoutDocumentConsentsRois.setOnClickListener {
+                    if (recyclerViewConsentsRoisView.isVisible) {
+                        recyclerViewConsentsRoisView.visibility = View.GONE
+                    } else {
+                        recyclerViewConsentsRoisView.visibility = View.VISIBLE
+                    }
                 }
             }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val txtDocumentDay: TextView = itemView.txtDocumentDay
-        val layoutDocumentAppointmentPrescription: RelativeLayout = itemView.layoutDocumentAppointmentPrescription
-        val layoutDocumentAppointmentConsent: RelativeLayout =
-            itemView.layoutDocumentAppointmentConsent
-        val layoutDocumentItem: LinearLayout = itemView.layoutDocumentItem
-        val layoutDocumentInsurance: RelativeLayout = itemView.layoutDocumentInsurance
-        val recyclerViewConsentsRoisView: RecyclerView = itemView.recyclerViewConsentsRoisView
-        val layoutDocumentConsentsRois: RelativeLayout = itemView.layoutDocumentConsentsRois
-        val layoutDocumentConsentsRoisList: LinearLayout = itemView.layoutDocumentConsentsRoisList
-    }
+    inner class ViewHolder(val binding: LayoutItemDocumentListBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

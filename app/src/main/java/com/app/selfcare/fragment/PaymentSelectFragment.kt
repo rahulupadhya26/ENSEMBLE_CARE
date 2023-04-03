@@ -3,10 +3,14 @@ package com.app.selfcare.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.data.*
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentPaymentSelectBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.DateUtils
@@ -16,7 +20,6 @@ import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_payment_select.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -49,6 +52,7 @@ class PaymentSelectFragment : BaseFragment() {
     private var planPrice: Int = 0
     private var addOnPrice: Int = 0
     private var selectedPaymentMethod: Int = 1
+    private lateinit var binding: FragmentPaymentSelectBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +61,15 @@ class PaymentSelectFragment : BaseFragment() {
             addOn = it.getParcelable(ARG_PARAM2)
             planType = it.getString(ARG_PARAM3)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPaymentSelectBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -72,59 +85,59 @@ class PaymentSelectFragment : BaseFragment() {
         getSubTitle().text = ""
         updateStatusBarColor(R.color.white)
 
-        paymentSectionBack.setOnClickListener {
+        binding.paymentSectionBack.setOnClickListener {
             popBackStack()
         }
 
-        txtPaymentPlanName.text = plan!!.name + " plan"
+        binding.txtPaymentPlanName.text = plan!!.name + " plan"
 
         when (planType) {
             "Monthly" -> {
-                txtPlanCheckOutSubTitle.text =
+                binding.txtPlanCheckOutSubTitle.text =
                     "$" + plan!!.monthly_price + " - Billed Monthly"
-                txtPaymentPlanPrice.text = "$" + plan!!.monthly_price
+                binding.txtPaymentPlanPrice.text = "$" + plan!!.monthly_price
                 planPrice = plan!!.monthly_price.toInt()
             }
             "Quarterly" -> {
-                txtPlanCheckOutSubTitle.text =
+                binding.txtPlanCheckOutSubTitle.text =
                     "$" + plan!!.quarterly_price + " - Billed Quarterly"
-                txtPaymentPlanPrice.text = "$" + (plan!!.quarterly_price.toInt() * 3)
+                binding.txtPaymentPlanPrice.text = "$" + (plan!!.quarterly_price.toInt() * 3)
                 planPrice = plan!!.quarterly_price.toInt() * 3
             }
             "Annually" -> {
-                txtPlanCheckOutSubTitle.text =
+                binding.txtPlanCheckOutSubTitle.text =
                     "$" + plan!!.annually_price + " - Billed Annually"
-                txtPaymentPlanPrice.text = "$" + (plan!!.annually_price.toInt() * 12)
+                binding.txtPaymentPlanPrice.text = "$" + (plan!!.annually_price.toInt() * 12)
                 planPrice = plan!!.annually_price.toInt() * 12
             }
         }
 
         var addOnPrice = 0
         if (addOn == null) {
-            layoutAddOnService.visibility = View.GONE
+            binding.layoutAddOnService.visibility = View.GONE
         } else {
-            layoutAddOnService.visibility = View.VISIBLE
-            txtAddonCheckOutSubTitle.text =
+            binding.layoutAddOnService.visibility = View.VISIBLE
+            binding.txtAddonCheckOutSubTitle.text =
                 "$" + addOn!!.monthly_price + " - Billed Monthly"
-            txtPaymentAddOnPrice.text = "$" + addOn!!.monthly_price
+            binding.txtPaymentAddOnPrice.text = "$" + addOn!!.monthly_price
             addOnPrice = addOn!!.monthly_price.toInt()
         }
 
-        txtPaymentTotalPrice.text = "$" + (planPrice + addOnPrice)
+        binding.txtPaymentTotalPrice.text = "$" + (planPrice + addOnPrice)
 
-        cardViewSelfPay.setOnClickListener {
-            imgInsurancePaySelected.visibility = View.GONE
-            imgInsurancePayUnSelected.visibility = View.VISIBLE
-            imgSelfPaySelected.visibility = View.VISIBLE
-            imgSelfPayUnSelected.visibility = View.GONE
+        binding.cardViewSelfPay.setOnClickListener {
+            binding.imgInsurancePaySelected.visibility = View.GONE
+            binding.imgInsurancePayUnSelected.visibility = View.VISIBLE
+            binding.imgSelfPaySelected.visibility = View.VISIBLE
+            binding.imgSelfPayUnSelected.visibility = View.GONE
             selectedPaymentMethod = 1
         }
 
-        cardViewInsurance.setOnClickListener {
-            imgInsurancePaySelected.visibility = View.VISIBLE
-            imgInsurancePayUnSelected.visibility = View.GONE
-            imgSelfPaySelected.visibility = View.GONE
-            imgSelfPayUnSelected.visibility = View.VISIBLE
+        binding.cardViewInsurance.setOnClickListener {
+            binding.imgInsurancePaySelected.visibility = View.VISIBLE
+            binding.imgInsurancePayUnSelected.visibility = View.GONE
+            binding.imgSelfPaySelected.visibility = View.GONE
+            binding.imgSelfPayUnSelected.visibility = View.VISIBLE
             selectedPaymentMethod = 2
         }
 
@@ -144,7 +157,7 @@ class PaymentSelectFragment : BaseFragment() {
             onPaymentResult(paymentSheetResult!!)
         }
 
-        btnPaymentSection.setOnClickListener {
+        binding.btnPaymentSection.setOnClickListener {
             if (selectedPaymentMethod == 1) {
                 getSelfPayDetails()
             } else {

@@ -448,7 +448,7 @@
                                         android:layout_height="match_parent"
                                         android:layout_alignParentBottom="true"
                                         android:gravity="center"
-                                        android:text="Back Pain"
+                                        android:text="Stress Relieving"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="#FFFFFF"
                                         android:textSize="@dimen/_20sp"
@@ -504,7 +504,7 @@
                                         android:layout_height="match_parent"
                                         android:layout_alignParentBottom="true"
                                         android:gravity="center"
-                                        android:text="Hair Growth"
+                                        android:text="Sleep Better"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="@color/white"
                                         android:textSize="@dimen/_20sp"
@@ -553,7 +553,7 @@
                                         android:layout_height="match_parent"
                                         android:layout_alignParentBottom="true"
                                         android:gravity="center"
-                                        android:text="Stress"
+                                        android:text="Aid Digestion"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="#FFFFFF"
                                         android:textSize="@dimen/_20sp"
@@ -609,7 +609,7 @@
                                         android:layout_height="match_parent"
                                         android:layout_alignParentBottom="true"
                                         android:gravity="center"
-                                        android:text="Diabetes"
+                                        android:text="Improve Posture"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="@color/white"
                                         android:textSize="@dimen/_20sp"
@@ -658,7 +658,7 @@
                                         android:layout_height="match_parent"
                                         android:layout_alignParentBottom="true"
                                         android:gravity="center"
-                                        android:text="Constipation"
+                                        android:text="Energise"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="#FFFFFF"
                                         android:textSize="@dimen/_20sp"
@@ -747,7 +747,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Best Suited Workout"
+                            android:text="Best suited Workout and Yoga plan"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="#F0D74F"
                             android:textSize="@dimen/_14sp" />
@@ -768,7 +768,7 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="80dp"
+                            android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:background="@drawable/add_on_price_background_border"
                             android:layout_marginTop="@dimen/_5dp"
@@ -785,12 +785,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="vertical"
+                                    android:layout_centerVertical="true"
                                     android:layout_toStartOf="@+id/cardViewAddOnSubscribe">
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
+                                        android:orientation="horizontal"
+                                        android:layout_gravity="center">
 
                                         <TextView
                                             android:id="@+id/txtAddOnPrice"
@@ -804,20 +806,12 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="$19.99 / Month"
+                                            android:text="$20 / Month"
                                             android:textAppearance="@style/fontfamily"
                                             android:textColor="@color/white"
                                             android:textSize="@dimen/_20sp" />
 
                                     </LinearLayout>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="automatic renewal"
-                                        android:textAppearance="@style/fontfamily"
-                                        android:textColor="#FAFF00"
-                                        android:textSize="@dimen/_16sp" />
 
                                 </LinearLayout>
                                 <androidx.cardview.widget.CardView

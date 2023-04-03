@@ -1,21 +1,16 @@
 package com.app.selfcare.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.InputMethodManager
+import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
-import com.app.selfcare.data.VerifyOtp
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_check_email.*
-import kotlinx.android.synthetic.main.fragment_sign_up.*
-import retrofit2.HttpException
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentCheckEmailBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,6 +26,7 @@ class CheckEmailFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var emailID: String? = null
     private var token: String? = null
+    private lateinit var binding: FragmentCheckEmailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +34,15 @@ class CheckEmailFragment : BaseFragment() {
             emailID = it.getString(ARG_PARAM1)
             token = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCheckEmailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -51,25 +56,25 @@ class CheckEmailFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        resetPasswordVerifyBack.setOnClickListener {
+        binding.resetPasswordVerifyBack.setOnClickListener {
             popBackStack()
         }
 
-        txtVerifyEmailId.text = emailID!!
+        binding.txtVerifyEmailId.text = emailID!!
 
-        resetPassCode1.addTextChangedListener(GenericTextWatcher(resetPassCode2, resetPassCode1))
-        resetPassCode2.addTextChangedListener(GenericTextWatcher(resetPassCode3, resetPassCode1))
-        resetPassCode3.addTextChangedListener(GenericTextWatcher(resetPassCode4, resetPassCode2))
-        resetPassCode4.addTextChangedListener(GenericTextWatcher(resetPassCode5, resetPassCode3))
-        resetPassCode5.addTextChangedListener(GenericTextWatcher(resetPassCode5, resetPassCode4))
+        binding.resetPassCode1.addTextChangedListener(GenericTextWatcher(binding.resetPassCode2, binding.resetPassCode1))
+        binding.resetPassCode2.addTextChangedListener(GenericTextWatcher(binding.resetPassCode3, binding.resetPassCode1))
+        binding.resetPassCode3.addTextChangedListener(GenericTextWatcher(binding.resetPassCode4, binding.resetPassCode2))
+        binding.resetPassCode4.addTextChangedListener(GenericTextWatcher(binding.resetPassCode5, binding.resetPassCode3))
+        binding.resetPassCode5.addTextChangedListener(GenericTextWatcher(binding.resetPassCode5, binding.resetPassCode4))
 
-        btnResetPasswordVerify.setOnClickListener {
+        binding.btnResetPasswordVerify.setOnClickListener {
             val enteredToken =
-                getText(resetPassCode1) +
-                        getText(resetPassCode2) +
-                        getText(resetPassCode3) +
-                        getText(resetPassCode4) +
-                        getText(resetPassCode5)
+                getText(binding.resetPassCode1) +
+                        getText(binding.resetPassCode2) +
+                        getText(binding.resetPassCode3) +
+                        getText(binding.resetPassCode4) +
+                        getText(binding.resetPassCode5)
             if (enteredToken == token!!) {
                 replaceFragment(
                     PasswordFragment.newInstance(emailID!!, token!!),
@@ -81,7 +86,7 @@ class CheckEmailFragment : BaseFragment() {
             }
         }
 
-        txtCheckEmailLogin.setOnClickListener {
+        binding.txtCheckEmailLogin.setOnClickListener {
             replaceFragmentNoBackStack(
                 LoginFragment(),
                 R.id.layout_home,
@@ -89,7 +94,7 @@ class CheckEmailFragment : BaseFragment() {
             )
         }
 
-        layoutTryAnotherEmailAddress.setOnClickListener {
+        binding.layoutTryAnotherEmailAddress.setOnClickListener {
             popBackStack()
         }
 

@@ -3,17 +3,20 @@ package com.app.selfcare.fragment
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentSettingsBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import kotlinx.android.synthetic.main.fragment_settings.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +32,7 @@ class SettingsFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentSettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +40,15 @@ class SettingsFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -51,10 +64,10 @@ class SettingsFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        txtSettingsUserName.text = preference!![PrefKeys.PREF_FNAME, ""] + " " +
+        binding.txtSettingsUserName.text = preference!![PrefKeys.PREF_FNAME, ""] + " " +
                 preference!![PrefKeys.PREF_LNAME, ""]
 
-        txtSettingsEmailId.text = preference!![PrefKeys.PREF_EMAIL, ""]
+        binding.txtSettingsEmailId.text = preference!![PrefKeys.PREF_EMAIL, ""]
 
         onClickEvents()
 
@@ -62,7 +75,7 @@ class SettingsFragment : BaseFragment() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun onClickEvents() {
-        settingsBack.setOnClickListener {
+        binding.settingsBack.setOnClickListener {
             setBottomNavigation(null)
             setLayoutBottomNavigation(null)
             replaceFragmentNoBackStack(
@@ -72,7 +85,7 @@ class SettingsFragment : BaseFragment() {
             )
         }
 
-        layoutAccountSettings.setOnClickListener {
+        binding.layoutAccountSettings.setOnClickListener {
             replaceFragment(
                 ProfileFragment(),
                 R.id.layout_home,
@@ -80,7 +93,7 @@ class SettingsFragment : BaseFragment() {
             )
         }
 
-        layoutPlanMethod.setOnClickListener {
+        binding.layoutPlanMethod.setOnClickListener {
             replaceFragment(
                 PlanSettingsFragment(),
                 R.id.layout_home,
@@ -88,7 +101,7 @@ class SettingsFragment : BaseFragment() {
             )
         }
 
-        layoutNotificationSetting.setOnClickListener {
+        binding.layoutNotificationSetting.setOnClickListener {
             replaceFragment(
                 NotificationSettingsFragment(),
                 R.id.layout_home,
@@ -96,25 +109,34 @@ class SettingsFragment : BaseFragment() {
             )
         }
 
-        txtLogout.setOnClickListener {
+        binding.txtLogout.setOnClickListener {
             displayConfirmPopup()
         }
 
-        imgUser.setOnClickListener {
+        /*imgUser.setOnClickListener {
             showImage(imgUser)
-        }
+        }*/
     }
 
     override fun onResume() {
         super.onResume()
         try {
             val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
-            if (photo.isNotEmpty()) {
+            if (photo != "null" && photo.isNotEmpty()) {
+                binding.imgUser.visibility = View.VISIBLE
+                binding.txtUser.visibility = View.GONE
                 Glide.with(requireActivity())
                     .load(BaseActivity.baseURL.dropLast(5) + photo)
                     .placeholder(R.drawable.user_pic)
                     .transform(CenterCrop(), RoundedCorners(5))
-                    .into(imgUser)
+                    .into(binding.imgUser)
+            } else {
+                binding.imgUser.visibility = View.GONE
+                binding.txtUser.visibility = View.VISIBLE
+                val userTxt = preference!![PrefKeys.PREF_FNAME, ""]!!
+                if (userTxt.isNotEmpty()) {
+                    binding.txtUser.text = userTxt.substring(0, 1).uppercase()
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()

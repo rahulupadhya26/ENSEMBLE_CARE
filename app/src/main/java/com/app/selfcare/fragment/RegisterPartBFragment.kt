@@ -1,31 +1,26 @@
 package com.app.selfcare.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.telephony.PhoneNumberUtils
 import android.text.Editable
 import android.text.SpannableString
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
-import com.app.selfcare.data.Employee
 import com.app.selfcare.data.Register
 import com.app.selfcare.data.UserDetails
+import com.app.selfcare.databinding.FragmentRegisterPartBBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.dialog_picture_option.view.*
-import kotlinx.android.synthetic.main.fragment_final_review.*
-import kotlinx.android.synthetic.main.fragment_register_part_b.*
-import kotlinx.android.synthetic.main.fragment_register_part_c.*
-import kotlinx.android.synthetic.main.fragment_registration.*
 import retrofit2.HttpException
 import java.lang.Exception
 import java.util.*
@@ -44,6 +39,7 @@ class RegisterPartBFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentRegisterPartBBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +47,15 @@ class RegisterPartBFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRegisterPartBBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -68,15 +73,15 @@ class RegisterPartBFragment : BaseFragment() {
         if (preference!![PrefKeys.PREF_REG, ""]!!.isNotEmpty()) {
             val register =
                 Gson().fromJson(preference!![PrefKeys.PREF_REG, ""]!!, Register::class.java)
-            etSignUpMailId.setText(register.email)
-            etSignUpPhoneNo.setText(register.phone_0)
-            etSignUpPass.setText(register.password1)
-            etSignUpConfirmPass.setText(register.password2)
+            binding.etSignUpMailId.setText(register.email)
+            binding.etSignUpPhoneNo.setText(register.phone_0)
+            binding.etSignUpPass.setText(register.password1)
+            binding.etSignUpConfirmPass.setText(register.password2)
         }
 
-        etSignUpMailId.requestFocus()
+        binding.etSignUpMailId.requestFocus()
 
-        etSignUpPhoneNo.addTextChangedListener(object : PhoneNumberFormattingTextWatcher("US") {
+        binding.etSignUpPhoneNo.addTextChangedListener(object : PhoneNumberFormattingTextWatcher("US") {
             private var mFormatting = false
             private var mAfter = 0
 
@@ -101,8 +106,8 @@ class RegisterPartBFragment : BaseFragment() {
             }
         })
 
-        checkboxRegisterTermsConditions.addClickableLink(
-            "I hereby agree to abide by the terms and conditions provider by EnsembleCare",
+        binding.checkboxRegisterTermsConditions.addClickableLink(
+            "I hereby acknowledge and agree to abide by the terms and conditions set forth by EnsembleCare.",
             SpannableString("terms and conditions")
         ) {
             val createRegisterTermsConditions = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
@@ -116,28 +121,28 @@ class RegisterPartBFragment : BaseFragment() {
             createRegisterTermsConditions.show()
         }
 
-        imgRegister2Back.setOnClickListener {
+        binding.imgRegister2Back.setOnClickListener {
             popBackStack()
         }
 
-        btnRegisterB.setOnClickListener {
-            if (getText(etSignUpMailId).isNotEmpty()) {
-                if (isValidEmail(etSignUpMailId)) {
-                    if (getText(etSignUpPhoneNo).isNotEmpty()) {
-                        if (getText(etSignUpPhoneNo).replace("-", "").length == 10) {
-                            if (getText(etSignUpPass).isNotEmpty()) {
-                                if (getText(etSignUpConfirmPass).isNotEmpty()) {
-                                    if (getText(etSignUpPass) == getText(etSignUpConfirmPass)) {
-                                        if (isValidPasswordFormat(getText(etSignUpPass))) {
-                                            if (!(getText(etSignUpPass).contains(Utils.firstName) ||
-                                                        getText(etSignUpPass).contains(Utils.lastName) ||
-                                                        getText(etSignUpPass).contains(
+        binding.btnRegisterB.setOnClickListener {
+            if (getText(binding.etSignUpMailId).isNotEmpty()) {
+                if (isValidEmail(binding.etSignUpMailId)) {
+                    if (getText(binding.etSignUpPhoneNo).isNotEmpty()) {
+                        if (getText(binding.etSignUpPhoneNo).replace("-", "").length == 10) {
+                            if (getText(binding.etSignUpPass).isNotEmpty()) {
+                                if (getText(binding.etSignUpConfirmPass).isNotEmpty()) {
+                                    if (getText(binding.etSignUpPass) == getText(binding.etSignUpConfirmPass)) {
+                                        if (isValidPasswordFormat(getText(binding.etSignUpPass))) {
+                                            if (!(getText(binding.etSignUpPass).contains(Utils.firstName) ||
+                                                        getText(binding.etSignUpPass).contains(Utils.lastName) ||
+                                                        getText(binding.etSignUpPass).contains(
                                                             getText(
-                                                                etSignUpMailId
+                                                                binding.etSignUpMailId
                                                             )
                                                         ))
                                             ) {
-                                                if (checkboxRegisterTermsConditions.isChecked) {
+                                                if (binding.checkboxRegisterTermsConditions.isChecked) {
                                                     validateUserDetails()
                                                 } else {
                                                     displayMsg(
@@ -147,13 +152,13 @@ class RegisterPartBFragment : BaseFragment() {
                                                 }
                                             } else {
                                                 setEditTextError(
-                                                    etSignUpPass,
+                                                    binding.etSignUpPass,
                                                     "Password should not contain name or email"
                                                 )
                                             }
                                         } else {
                                             setEditTextError(
-                                                etSignUpPass,
+                                                binding.etSignUpPass,
                                                 "Password must be contain at least 9 characters, " +
                                                         "1 uppercase, 1 lowercase, alphanumeric, special characters " +
                                                         "and should not contain whitespaces."
@@ -164,37 +169,37 @@ class RegisterPartBFragment : BaseFragment() {
                                     }
                                 } else {
                                     setEditTextError(
-                                        etSignUpConfirmPass,
+                                        binding.etSignUpConfirmPass,
                                         "Confirm password cannot be blank"
                                     )
                                 }
                             } else {
                                 setEditTextError(
-                                    etSignUpPass,
+                                    binding.etSignUpPass,
                                     "Password cannot be blank"
                                 )
                             }
                         } else {
                             setEditTextError(
-                                etSignUpPhoneNo,
+                                binding.etSignUpPhoneNo,
                                 "Enter valid phone number"
                             )
                         }
                     } else {
                         setEditTextError(
-                            etSignUpPhoneNo,
+                            binding.etSignUpPhoneNo,
                             "Phone number cannot be blank"
                         )
                     }
                 } else {
                     setEditTextError(
-                        etSignUpMailId,
+                        binding.etSignUpMailId,
                         "Enter valid Mail Id"
                     )
                 }
             } else {
                 setEditTextError(
-                    etSignUpMailId,
+                    binding.etSignUpMailId,
                     "Email ID cannot be blank"
                 )
             }
@@ -208,8 +213,8 @@ class RegisterPartBFragment : BaseFragment() {
                 getEncryptedRequestInterface()
                     .verifyUserDetail(
                         UserDetails(
-                            getText(etSignUpMailId),
-                            getText(etSignUpPhoneNo)
+                            getText(binding.etSignUpMailId),
+                            getText(binding.etSignUpPhoneNo)
                         )
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -223,10 +228,10 @@ class RegisterPartBFragment : BaseFragment() {
                             val status = respBody[1]
                             responseBody = respBody[0].replace("\"", "")
                             if (status == "200") {
-                                Utils.email = getText(etSignUpMailId)
-                                Utils.phoneNo = getText(etSignUpPhoneNo).replace("-", "")
-                                Utils.pass = getText(etSignUpPass)
-                                Utils.confirmPass = getText(etSignUpConfirmPass)
+                                Utils.email = getText(binding.etSignUpMailId)
+                                Utils.phoneNo = getText(binding.etSignUpPhoneNo).replace("-", "")
+                                Utils.pass = getText(binding.etSignUpPass)
+                                Utils.confirmPass = getText(binding.etSignUpConfirmPass)
                                 replaceFragment(
                                     SignUpFragment(),
                                     R.id.layout_home,

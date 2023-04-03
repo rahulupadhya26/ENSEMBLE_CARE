@@ -10,8 +10,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.data.CareDayIndividualTaskDetail
+import com.app.selfcare.databinding.LayoutItemCarePlanMusicTaskBinding
+import com.app.selfcare.databinding.LayoutItemGoalBinding
 import com.skydoves.progressview.ProgressView
-import kotlinx.android.synthetic.main.layout_item_care_plan_music_task.view.*
 
 class CarePlanMusicTaskListAdapter(
     private val context: Context,
@@ -25,9 +26,10 @@ class CarePlanMusicTaskListAdapter(
         parent: ViewGroup,
         viewType: Int
     ): CarePlanMusicTaskListAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_care_plan_music_task, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemCarePlanMusicTaskBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_care_plan_music_task, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -35,77 +37,64 @@ class CarePlanMusicTaskListAdapter(
     }
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
-    override fun onBindViewHolder(holder: CarePlanMusicTaskListAdapter.ViewHolder, position: Int) {
-        val item = list[position]
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
 
-        holder.txtMusicCompletedTaskTitle.text = item.duration
-        holder.txtMusicCompletedTaskSubTitle.text = item.task_detail.details.name
+            txtMusicCompletedTaskTitle.text = item.duration
+            txtMusicCompletedTaskSubTitle.text = item.task_detail.details.name
 
-        holder.txtMusicPendingTaskTitle.text = item.duration
-        holder.txtMusicPendingTaskSubTitle.text = item.task_detail.details.name
+            txtMusicPendingTaskTitle.text = item.duration
+            txtMusicPendingTaskSubTitle.text = item.task_detail.details.name
 
-        holder.txtMusicPendingLaterTaskTitle.text = item.duration
-        holder.txtMusicPendingLaterTaskSubTitle.text = item.task_detail.details.name
+            txtMusicPendingLaterTaskTitle.text = item.duration
+            txtMusicPendingLaterTaskSubTitle.text = item.task_detail.details.name
 
-        if (item.is_completed) {
-            holder.layoutMusicPendingTask.visibility = View.GONE
-            holder.layoutMusicPendingLaterTask.visibility = View.GONE
-            holder.layoutMusicCompletedTask.visibility = View.VISIBLE
-            if ((position + 1) < list.size) {
-                holder.progressMusicCompletedTask.visibility = View.VISIBLE
-                if (list[position + 1].is_completed) {
-                    holder.progressMusicCompletedTask.progress = 50.0F
-                }
-            } else {
-                holder.progressMusicCompletedTask.visibility = View.GONE
-            }
-        }
-
-        if (pos == -1) {
-            if (!item.is_completed) {
-                holder.layoutMusicPendingLaterTask.visibility = View.GONE
-                holder.layoutMusicCompletedTask.visibility = View.GONE
-                holder.layoutMusicPendingTask.visibility = View.VISIBLE
+            if (item.is_completed) {
+                layoutMusicPendingTask.visibility = View.GONE
+                layoutMusicPendingLaterTask.visibility = View.GONE
+                layoutMusicCompletedTask.visibility = View.VISIBLE
                 if ((position + 1) < list.size) {
-                    holder.progressMusicPendingTask.visibility = View.VISIBLE
-                    pos = position + 1
+                    progressMusicCompletedTask.visibility = View.VISIBLE
+                    if (list[position + 1].is_completed) {
+                        progressMusicCompletedTask.progress = 50.0F
+                    }
                 } else {
-                    holder.progressMusicPendingTask.visibility = View.GONE
+                    progressMusicCompletedTask.visibility = View.GONE
                 }
             }
-        }
 
-        if (pos == position) {
-            pos = position + 1
-            holder.layoutMusicCompletedTask.visibility = View.GONE
-            holder.layoutMusicPendingTask.visibility = View.GONE
-            holder.layoutMusicPendingLaterTask.visibility = View.VISIBLE
-            if (pos < list.size) {
-                holder.progressMusicPendingLaterTask.visibility = View.VISIBLE
-            } else {
-                holder.progressMusicPendingLaterTask.visibility = View.GONE
+            if (pos == -1) {
+                if (!item.is_completed) {
+                    layoutMusicPendingLaterTask.visibility = View.GONE
+                    layoutMusicCompletedTask.visibility = View.GONE
+                    layoutMusicPendingTask.visibility = View.VISIBLE
+                    if ((position + 1) < list.size) {
+                        progressMusicPendingTask.visibility = View.VISIBLE
+                        pos = position + 1
+                    } else {
+                        progressMusicPendingTask.visibility = View.GONE
+                    }
+                }
+            }
+
+            if (pos == position) {
+                pos = position + 1
+                layoutMusicCompletedTask.visibility = View.GONE
+                layoutMusicPendingTask.visibility = View.GONE
+                layoutMusicPendingLaterTask.visibility = View.VISIBLE
+                if (pos < list.size) {
+                    progressMusicPendingLaterTask.visibility = View.VISIBLE
+                } else {
+                    progressMusicPendingLaterTask.visibility = View.GONE
+                }
+            }
+
+            layoutMusicPendingTask.setOnClickListener {
+                //
             }
         }
-
-        holder.layoutMusicPendingTask.setOnClickListener {
-            //
-        }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val layoutMusicCompletedTask: LinearLayout = itemView.layoutMusicCompletedTask
-        val progressMusicCompletedTask: ProgressView = itemView.progressMusicCompletedTask
-        val txtMusicCompletedTaskTitle: TextView = itemView.txtMusicCompletedTaskTitle
-        val txtMusicCompletedTaskSubTitle: TextView = itemView.txtMusicCompletedTaskSubTitle
-
-        val layoutMusicPendingTask: LinearLayout = itemView.layoutMusicPendingTask
-        val progressMusicPendingTask: ProgressView = itemView.progressMusicPendingTask
-        val txtMusicPendingTaskTitle: TextView = itemView.txtMusicPendingTaskTitle
-        val txtMusicPendingTaskSubTitle: TextView = itemView.txtMusicPendingTaskSubTitle
-
-        val layoutMusicPendingLaterTask: LinearLayout = itemView.layoutMusicPendingLaterTask
-        val progressMusicPendingLaterTask: ProgressView = itemView.progressMusicPendingLaterTask
-        val txtMusicPendingLaterTaskTitle: TextView = itemView.txtMusicPendingLaterTaskTitle
-        val txtMusicPendingLaterTaskSubTitle: TextView = itemView.txtMusicPendingLaterTaskSubTitle
-    }
+    inner class ViewHolder(val binding: LayoutItemCarePlanMusicTaskBinding) : RecyclerView.ViewHolder(binding.root)
 }

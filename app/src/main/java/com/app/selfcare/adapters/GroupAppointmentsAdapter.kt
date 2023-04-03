@@ -3,16 +3,11 @@ package com.app.selfcare.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.app.selfcare.R
 import com.app.selfcare.controller.OnGroupAppointmentItemClickListener
 import com.app.selfcare.data.GroupAppointment
-import com.app.selfcare.utils.DateUtils
-import kotlinx.android.synthetic.main.layout_item_group_appointments.view.*
+import com.app.selfcare.databinding.LayoutItemGroupAppointmentsBinding
 
 class GroupAppointmentsAdapter(
     val context: Context,
@@ -25,9 +20,14 @@ class GroupAppointmentsAdapter(
         parent: ViewGroup,
         viewType: Int
     ): GroupAppointmentsAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_group_appointments, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemGroupAppointmentsBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_group_appointments, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -35,15 +35,11 @@ class GroupAppointmentsAdapter(
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: GroupAppointmentsAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
 
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val appointmentDateTime: TextView = itemView.groupAppointmentDateTime
-        val therapistName: TextView = itemView.txtGroupTherapistName
-        val therapyType: TextView = itemView.txtGroupTherapistType
-        val startAppointment: CardView = itemView.startGroupAppointment
-    }
+    inner class ViewHolder(val binding: LayoutItemGroupAppointmentsBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.ViewCareBuddyFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5dp">
+
+            <ImageView
+                android:id="@+id/viewCareBuddyBack"
+                android:layout_width="@dimen/_40dp"
+                android:layout_height="@dimen/_40dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/_5dp"
+                android:padding="@dimen/_5dp"
+                android:src="@drawable/journal_resource_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="CareBuddy"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="#38A387"
+                android:textSize="@dimen/_20sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_horizontal"
+                    app:cardCornerRadius="40dp"
+                    android:layout_marginBottom="@dimen/_15dp">
+
+                    <ImageView
+                        android:id="@+id/imgCareBuddyImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/txtCareBuddyFirstLetterName"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAppearance="@style/fontfamily"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/_24sp"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:background="#E7A1A1"
+                        android:visibility="gone"/>
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/txtCareBuddyName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtCareBuddyRelative"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="#938888"
+                    android:textSize="@dimen/_12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:layout_margin="@dimen/_20dp"
+                    android:padding="@dimen/_10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="@dimen/_5dp"
+                        android:layout_marginEnd="@dimen/_5dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_10dp"
+                            android:paddingBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Name"
+                                android:gravity="center"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp" />
+
+                            <TextView
+                                android:id="@+id/txtCareBuddyFullName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_alignParentEnd="true"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#7D6363"
+                                android:textSize="@dimen/_12sp" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#E9DCDC"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_10dp"
+                            android:paddingBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Gender"
+                                android:gravity="center"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp" />
+
+                            <TextView
+                                android:id="@+id/txtCareBuddyGender"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_alignParentEnd="true"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#7D6363"
+                                android:textSize="@dimen/_12sp" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#E9DCDC"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_10dp"
+                            android:paddingBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Email"
+                                android:gravity="center"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp" />
+
+                            <TextView
+                                android:id="@+id/txtCareBuddyEmail"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_alignParentEnd="true"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#7D6363"
+                                android:textSize="@dimen/_12sp" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#E9DCDC"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_10dp"
+                            android:paddingBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Phone"
+                                android:gravity="center"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp" />
+
+                            <TextView
+                                android:id="@+id/txtCareBuddyPhoneNumber"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_alignParentEnd="true"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#7D6363"
+                                android:textSize="@dimen/_12sp" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#E9DCDC"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_10dp"
+                            android:paddingBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Relation"
+                                android:gravity="center"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp" />
+
+                            <TextView
+                                android:id="@+id/txtCareBuddyRela"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_alignParentEnd="true"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#7D6363"
+                                android:textSize="@dimen/_12sp" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:layout_margin="@dimen/_20dp"
+                    android:padding="@dimen/_10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="@dimen/_5dp"
+                        android:layout_marginEnd="@dimen/_5dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_10dp"
+                            android:paddingBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Address 1"
+                                android:gravity="center"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp" />
+
+                            <TextView
+                                android:id="@+id/txtCareBuddyAddress1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_alignParentEnd="true"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#7D6363"
+                                android:textSize="@dimen/_12sp" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#E9DCDC"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_10dp"
+                            android:paddingBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Address 2"
+                                android:gravity="center"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp" />
+
+                            <TextView
+                                android:id="@+id/txtCareBuddyAddress2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_alignParentEnd="true"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#7D6363"
+                                android:textSize="@dimen/_12sp" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#E9DCDC"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_10dp"
+                            android:paddingBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Country"
+                                android:gravity="center"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp" />
+
+                            <TextView
+                                android:id="@+id/txtCareBuddyCountry"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_alignParentEnd="true"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#7D6363"
+                                android:textSize="@dimen/_12sp" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#E9DCDC"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_10dp"
+                            android:paddingBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="State"
+                                android:gravity="center"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp" />
+
+                            <TextView
+                                android:id="@+id/txtCareBuddyState"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_alignParentEnd="true"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#7D6363"
+                                android:textSize="@dimen/_12sp" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#E9DCDC"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_10dp"
+                            android:paddingBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="City"
+                                android:gravity="center"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp" />
+
+                            <TextView
+                                android:id="@+id/txtCareBuddyCity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_alignParentEnd="true"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#7D6363"
+                                android:textSize="@dimen/_12sp" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#E9DCDC"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_10dp"
+                            android:paddingBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Zip code"
+                                android:gravity="center"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp" />
+
+                            <TextView
+                                android:id="@+id/txtCareBuddyZipCode"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_alignParentEnd="true"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#7D6363"
+                                android:textSize="@dimen/_12sp" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+</FrameLayout>

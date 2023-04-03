@@ -3,12 +3,12 @@ package com.app.selfcare.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.core.content.ContextCompat
+import android.view.ViewGroup
 import com.app.selfcare.R
-import kotlinx.android.synthetic.main.fragment_congrats_user.*
+import com.app.selfcare.databinding.FragmentCongratsUserBinding
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -27,6 +27,7 @@ class CongratsUserFragment : BaseFragment() {
     private var param1: String? = null
     private var param2: String? = null
     private var counter: CountDownTimer? = null
+    private lateinit var binding: FragmentCongratsUserBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +35,15 @@ class CongratsUserFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCongratsUserBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -66,7 +76,7 @@ class CongratsUserFragment : BaseFragment() {
                 val min = millisUntilFinished / 60000 % 60
                 val sec = millisUntilFinished / 1000 % 60
 
-                txtTimer.text = "continuing in " + f.format(sec) + " sec..."
+                binding.txtTimer.text = "continuing in " + f.format(sec) + " sec..."
             }
 
             // Callback function, fired

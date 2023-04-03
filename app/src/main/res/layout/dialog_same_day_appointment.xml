@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/fontfamily"
-            android:text="We see that you already have an appointment for today"
+            android:text="We see that you already have an appointment on this date"
             android:textSize="@dimen/_16sp"
             android:textColor="@color/black"
             android:layout_marginTop="@dimen/_10dp"

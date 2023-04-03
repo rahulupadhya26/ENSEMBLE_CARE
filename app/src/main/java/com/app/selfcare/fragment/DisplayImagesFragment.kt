@@ -7,7 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.app.selfcare.R
 import com.app.selfcare.adapters.ImageViewPagerAdapter
-import kotlinx.android.synthetic.main.fragment_display_images.*
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentDisplayImagesBinding
 import me.relex.circleindicator.CircleIndicator
 
 // TODO: Rename parameter arguments, choose names that match
@@ -26,6 +27,7 @@ class DisplayImagesFragment : BaseFragment() {
     private var title: String? = null
     lateinit var viewPagerAdapter: ImageViewPagerAdapter
     lateinit var indicator: CircleIndicator
+    private lateinit var binding: FragmentDisplayImagesBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,15 @@ class DisplayImagesFragment : BaseFragment() {
             imageList = it.getStringArrayList(ARG_PARAM1)
             title = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentDisplayImagesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -46,17 +57,17 @@ class DisplayImagesFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        documentDisplayImageBack.setOnClickListener {
+        binding.documentDisplayImageBack.setOnClickListener {
             popBackStack()
         }
 
-        txtDisplayImageTitle.text = title
+        binding.txtDisplayImageTitle.text = title
 
         imageList!!.let {
             viewPagerAdapter = ImageViewPagerAdapter(requireContext(), it)
-            viewPager.adapter = viewPagerAdapter
+            binding.viewPager.adapter = viewPagerAdapter
             indicator = requireView().findViewById(R.id.displayImageIndicator) as CircleIndicator
-            indicator.setViewPager(viewPager)
+            indicator.setViewPager(binding.viewPager)
         }
     }
 

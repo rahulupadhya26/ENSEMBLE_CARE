@@ -8,13 +8,17 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.data.*
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentInsuranceBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
@@ -23,7 +27,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_insurance.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import kotlin.math.abs
@@ -46,9 +49,9 @@ class InsuranceFragment : BaseFragment() {
     private var type: String? = ""
     private var selectedPrimaryInsuranceName: String = ""
     private var primaryInsuranceNameData: Array<String>? = null
-    private var selectedSecondaryInsuranceName: String = ""
+    private var selectedSecondaryInsuranceName: String = "Select Insurance Company"
     private var secondaryInsuranceNameData: Array<String>? = null
-    private var selectedPharmacyInsuranceName: String = ""
+    private var selectedPharmacyInsuranceName: String = "Select Insurance Company"
     private var pharmacyInsuranceNameData: Array<String>? = null
     private var isPrimaryInsuranceAvailable: Boolean = false
     private var isSecondaryInsuranceAvailable: Boolean = false
@@ -58,6 +61,7 @@ class InsuranceFragment : BaseFragment() {
     private var isPharmacyInsuranceVisible: Boolean = false
     private var isSecondaryInsuranceUserChange: Boolean = false
     private var isPharmacyInsuranceUserChange: Boolean = false
+    private lateinit var binding: FragmentInsuranceBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +70,15 @@ class InsuranceFragment : BaseFragment() {
             addOn = it.getParcelable(ARG_PARAM2)
             type = it.getString(ARG_PARAM3)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentInsuranceBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -91,61 +104,60 @@ class InsuranceFragment : BaseFragment() {
         isSecondaryInsuranceUserChange = false
         isPharmacyInsuranceUserChange = false
 
-        layoutSecondaryInsuranceDetails.visibility = View.GONE
-        layoutPharmacyInsuranceDetails.visibility = View.GONE
-        imgSecondaryDownIcon.rotation = -90f
-        imgPharmacyDownIcon.rotation = -90f
-
         if (plan != null) {
-            txtInsurancePlanName.visibility = View.VISIBLE
+            binding.txtInsurancePlanName.visibility = View.VISIBLE
             if (addOn == null) {
                 when (type) {
                     "Monthly" -> {
-                        txtInsurancePlanName.text =
+                        binding.txtInsurancePlanName.text =
                             "Plan Name: " + plan!!.name + "($" + plan!!.monthly_price + "/" + type!! + ")"
                     }
                     "Quarterly" -> {
-                        txtInsurancePlanName.text =
+                        binding.txtInsurancePlanName.text =
                             "Plan Name: " + plan!!.name + "($" + plan!!.quarterly_price + "/" + type!! + ")"
                     }
                     "Annually" -> {
-                        txtInsurancePlanName.text =
+                        binding.txtInsurancePlanName.text =
                             "Plan Name: " + plan!!.name + "($" + plan!!.annually_price + "/" + type!! + ")"
                     }
                 }
             } else {
                 when (type) {
                     "Monthly" -> {
-                        txtInsurancePlanName.text =
+                        binding.txtInsurancePlanName.text =
                             "Plan Name: " + plan!!.name + "+Addon ($" + (plan!!.monthly_price.toInt() + addOn!!.monthly_price.toInt()) + "/" + type!! + ")"
                     }
                     "Quarterly" -> {
-                        txtInsurancePlanName.text =
+                        binding.txtInsurancePlanName.text =
                             "Plan Name: " + plan!!.name + "+Addon ($" + (plan!!.quarterly_price.toInt() + addOn!!.monthly_price.toInt()) + "/" + type!! + ")"
                     }
                     "Annually" -> {
-                        txtInsurancePlanName.text =
+                        binding.txtInsurancePlanName.text =
                             "Plan Name: " + plan!!.name + "+Addon ($" + (plan!!.annually_price.toInt() + addOn!!.monthly_price.toInt()) + "/" + type!! + ")"
                     }
                 }
             }
         } else {
-            txtInsurancePlanName.visibility = View.INVISIBLE
+            binding.txtInsurancePlanName.visibility = View.INVISIBLE
         }
 
         primaryInsuranceNameSpinner()
         secondaryInsuranceNameSpinner()
         pharmacyInsuranceNameSpinner()
 
-        imgInsuranceBack.setOnClickListener {
+        binding.imgInsuranceBack.setOnClickListener {
             popBackStack()
         }
 
-        btnInsuranceDetails.setOnClickListener {
+        binding.btnInsuranceDetails.setOnClickListener {
             if (checkPrimaryInsuranceData()) {
-                if (isSecondaryInsuranceUserChange && selectedSecondaryInsuranceName != "Select Insurance Company") {
+                if (isSecondaryInsuranceUserChange || binding.spinnerSecondaryInsuranceCompany.text.toString()
+                        .trim().isNotEmpty()
+                ) {
                     if (checkSecondaryInsuranceData()) {
-                        if (isPharmacyInsuranceUserChange && selectedPharmacyInsuranceName != "Select Insurance Company") {
+                        if (isPharmacyInsuranceUserChange || binding.spinnerPharmacyInsuranceCompany.text.toString()
+                                .trim().isNotEmpty()
+                        ) {
                             if (checkPharmacyInsuranceData()) {
                                 verifyPrimaryInsuranceApi()
                                 verifySecondaryInsuranceApi()
@@ -166,7 +178,9 @@ class InsuranceFragment : BaseFragment() {
                             "Please fill the necessary details"
                         )
                     }
-                } else if (isPharmacyInsuranceUserChange && selectedPharmacyInsuranceName != "Select Insurance Company") {
+                } else if (isPharmacyInsuranceUserChange || binding.spinnerPharmacyInsuranceCompany.text.toString()
+                        .trim().isNotEmpty()
+                ) {
                     if (checkPharmacyInsuranceData()) {
                         verifyPrimaryInsuranceApi()
                         verifyPharmacyInsuranceApi()
@@ -182,7 +196,32 @@ class InsuranceFragment : BaseFragment() {
             }
         }
 
-        imgPrimaryInsurancePic.setOnClickListener {
+        binding.cardViewPrimaryInsurance1.setOnClickListener {
+            captureImage(binding.imgInsurancePic1, "Insurance")
+        }
+
+        binding.cardViewPrimaryInsurance2.setOnClickListener {
+            captureImage(binding.imgInsurancePic2, "Insurance")
+        }
+
+        binding.cardViewSecondaryInsurance1.setOnClickListener {
+            captureImage(binding.imgSecondaryInsurancePic1, "Insurance")
+        }
+
+        binding.cardViewSecondaryInsurance2.setOnClickListener {
+            captureImage(binding.imgSecondaryInsurancePic2, "Insurance")
+        }
+
+        binding.cardViewPharmacyInsurance1.setOnClickListener {
+            captureImage(binding.imgPharmacyInsurancePic1, "Insurance")
+        }
+
+        binding.cardViewPharmacyInsurance2.setOnClickListener {
+            captureImage(binding.imgPharmacyInsurancePic2, "Insurance")
+        }
+
+
+        /*imgPrimaryInsurancePic.setOnClickListener {
             showImage(imgPrimaryInsurancePic)
         }
 
@@ -209,50 +248,50 @@ class InsuranceFragment : BaseFragment() {
             captureImage(imgPharmacyInsurancePic, "Insurance")
         }
 
-        /*imgInsurancePicClear.setOnClickListener {
+        *//*imgInsurancePicClear.setOnClickListener {
             imgInsurancePic.setImageDrawable(null)
             imgInsurancePic.setImageResource(R.drawable.health_insurance)
         }*/
 
-        layoutPrimaryInsurance.setOnClickListener {
+        binding.layoutPrimaryInsurance.setOnClickListener {
             if (isPrimaryInsuranceVisible) {
-                layoutPrimaryInsuranceDetails.visibility = View.GONE
-                imgPrimaryDownIcon.rotation = -90f
+                binding.layoutPrimaryInsuranceDetails.visibility = View.GONE
+                binding.imgPrimaryDownIcon.rotation = -90f
             } else {
-                layoutPrimaryInsuranceDetails.visibility = View.VISIBLE
-                imgPrimaryDownIcon.rotation = 0.3f
+                binding.layoutPrimaryInsuranceDetails.visibility = View.VISIBLE
+                binding.imgPrimaryDownIcon.rotation = 0.3f
             }
             isPrimaryInsuranceVisible = !isPrimaryInsuranceVisible
         }
 
-        layoutSecondaryInsurance.setOnClickListener {
+        binding.layoutSecondaryInsurance.setOnClickListener {
             if (isSecondaryInsuranceVisible) {
-                layoutSecondaryInsuranceDetails.visibility = View.GONE
-                imgSecondaryDownIcon.rotation = -90f
+                binding.layoutSecondaryInsuranceDetails.visibility = View.GONE
+                binding.imgSecondaryDownIcon.rotation = -90f
             } else {
-                layoutSecondaryInsuranceDetails.visibility = View.VISIBLE
-                imgSecondaryDownIcon.rotation = 0.3f
+                binding.layoutSecondaryInsuranceDetails.visibility = View.VISIBLE
+                binding.imgSecondaryDownIcon.rotation = 0.3f
             }
             isSecondaryInsuranceVisible = !isSecondaryInsuranceVisible
         }
 
-        layoutPharmacyInsurance.setOnClickListener {
+        binding.layoutPharmacyInsurance.setOnClickListener {
             if (isPharmacyInsuranceVisible) {
-                layoutPharmacyInsuranceDetails.visibility = View.GONE
-                imgPharmacyDownIcon.rotation = -90f
+                binding.layoutPharmacyInsuranceDetails.visibility = View.GONE
+                binding.imgPharmacyDownIcon.rotation = -90f
             } else {
-                layoutPharmacyInsuranceDetails.visibility = View.VISIBLE
-                imgPharmacyDownIcon.rotation = 0.3f
+                binding.layoutPharmacyInsuranceDetails.visibility = View.VISIBLE
+                binding.imgPharmacyDownIcon.rotation = 0.3f
             }
             isPharmacyInsuranceVisible = !isPharmacyInsuranceVisible
         }
 
-        etSecondaryPlanId.addTextChangedListener(object : TextWatcher {
+        binding.etSecondaryPlanId.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val userChange = abs(count - before) == 1
                 isSecondaryInsuranceUserChange = userChange
-                if(s.toString().isEmpty()){
+                if (s.toString().isEmpty()) {
                     isSecondaryInsuranceUserChange = false
                 }
             }
@@ -260,12 +299,12 @@ class InsuranceFragment : BaseFragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        etSecondaryMemberId.addTextChangedListener(object : TextWatcher {
+        binding.etSecondaryMemberId.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val userChange = abs(count - before) == 1
                 isSecondaryInsuranceUserChange = userChange
-                if(s.toString().isEmpty()){
+                if (s.toString().isEmpty()) {
                     isSecondaryInsuranceUserChange = false
                 }
             }
@@ -273,12 +312,12 @@ class InsuranceFragment : BaseFragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        etSecondaryGroupId.addTextChangedListener(object : TextWatcher {
+        binding.etSecondaryGroupId.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val userChange = abs(count - before) == 1
                 isSecondaryInsuranceUserChange = userChange
-                if(s.toString().isEmpty()){
+                if (s.toString().isEmpty()) {
                     isSecondaryInsuranceUserChange = false
                 }
             }
@@ -286,12 +325,12 @@ class InsuranceFragment : BaseFragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        etSecondaryMemberName.addTextChangedListener(object : TextWatcher {
+        binding.etSecondaryMemberName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val userChange = abs(count - before) == 1
                 isSecondaryInsuranceUserChange = userChange
-                if(s.toString().isEmpty()){
+                if (s.toString().isEmpty()) {
                     isSecondaryInsuranceUserChange = false
                 }
             }
@@ -299,12 +338,12 @@ class InsuranceFragment : BaseFragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        etPharmacyPlanId.addTextChangedListener(object : TextWatcher {
+        binding.etPharmacyPlanId.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val userChange = abs(count - before) == 1
                 isPharmacyInsuranceUserChange = userChange
-                if(s.toString().isEmpty()){
+                if (s.toString().isEmpty()) {
                     isPharmacyInsuranceUserChange = false
                 }
             }
@@ -312,12 +351,12 @@ class InsuranceFragment : BaseFragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        etPharmacyMemberId.addTextChangedListener(object : TextWatcher {
+        binding.etPharmacyMemberId.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val userChange = abs(count - before) == 1
                 isPharmacyInsuranceUserChange = userChange
-                if(s.toString().isEmpty()){
+                if (s.toString().isEmpty()) {
                     isPharmacyInsuranceUserChange = false
                 }
             }
@@ -325,12 +364,12 @@ class InsuranceFragment : BaseFragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        etPharmacyGroupId.addTextChangedListener(object : TextWatcher {
+        binding.etPharmacyGroupId.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val userChange = abs(count - before) == 1
                 isPharmacyInsuranceUserChange = userChange
-                if(s.toString().isEmpty()){
+                if (s.toString().isEmpty()) {
                     isPharmacyInsuranceUserChange = false
                 }
             }
@@ -338,28 +377,42 @@ class InsuranceFragment : BaseFragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        etPharmacyMemberName.addTextChangedListener(object : TextWatcher {
+        binding.etPharmacyMemberName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val userChange = abs(count - before) == 1
                 isPharmacyInsuranceUserChange = userChange
-                if(s.toString().isEmpty()){
+                if (s.toString().isEmpty()) {
                     isPharmacyInsuranceUserChange = false
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        binding.layoutSecondaryInsuranceDetails.visibility = View.GONE
+        binding.layoutPharmacyInsuranceDetails.visibility = View.GONE
+        binding.imgSecondaryDownIcon.rotation = -90f
+        binding.imgPharmacyDownIcon.rotation = -90f
     }
 
     private fun primaryInsuranceNameSpinner() {
         primaryInsuranceNameData = resources.getStringArray(R.array.insurance_name)
-        val adapter = ArrayAdapter(
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            requireActivity(), R.layout.spinner_dropdown_custom_item, primaryInsuranceNameData!!
+        )
+        binding.spinnerPrimaryInsuranceCompany.setAdapter(adapter)
+        binding.spinnerPrimaryInsuranceCompany.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, arg1, position, id ->
+                //TODO: You can your own logic.
+                selectedPrimaryInsuranceName = primaryInsuranceNameData!![position]
+            }
+        /*val adapter = ArrayAdapter(
             requireActivity(),
             R.layout.spinner_dropdown_custom_item, primaryInsuranceNameData!!
-        )
-        spinnerPrimaryInsuranceCompany.adapter = adapter
-        spinnerPrimaryInsuranceCompany.onItemSelectedListener = object :
+        )*/
+
+        /*spinnerPrimaryInsuranceCompany.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
@@ -371,12 +424,21 @@ class InsuranceFragment : BaseFragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // write code to perform some action
             }
-        }
+        }*/
     }
 
     private fun secondaryInsuranceNameSpinner() {
         secondaryInsuranceNameData = resources.getStringArray(R.array.insurance_name)
-        val adapter = ArrayAdapter(
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            requireActivity(), R.layout.spinner_dropdown_custom_item, secondaryInsuranceNameData!!
+        )
+        binding.spinnerSecondaryInsuranceCompany.setAdapter(adapter)
+        binding.spinnerSecondaryInsuranceCompany.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, arg1, position, id ->
+                //TODO: You can your own logic.
+                selectedSecondaryInsuranceName = secondaryInsuranceNameData!![position]
+            }
+        /*val adapter = ArrayAdapter(
             requireActivity(),
             R.layout.spinner_dropdown_custom_item, secondaryInsuranceNameData!!
         )
@@ -393,12 +455,21 @@ class InsuranceFragment : BaseFragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // write code to perform some action
             }
-        }
+        }*/
     }
 
     private fun pharmacyInsuranceNameSpinner() {
         pharmacyInsuranceNameData = resources.getStringArray(R.array.insurance_name)
-        val adapter = ArrayAdapter(
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            requireActivity(), R.layout.spinner_dropdown_custom_item, pharmacyInsuranceNameData!!
+        )
+        binding.spinnerPharmacyInsuranceCompany.setAdapter(adapter)
+        binding.spinnerPharmacyInsuranceCompany.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, arg1, position, id ->
+                //TODO: You can your own logic.
+                selectedPharmacyInsuranceName = pharmacyInsuranceNameData!![position]
+            }
+        /*val adapter = ArrayAdapter(
             requireActivity(),
             R.layout.spinner_dropdown_custom_item, pharmacyInsuranceNameData!!
         )
@@ -415,31 +486,34 @@ class InsuranceFragment : BaseFragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // write code to perform some action
             }
-        }
+        }*/
     }
 
     private fun checkPrimaryInsuranceData(): Boolean {
         isPrimaryInsuranceAvailable = false
-        if (selectedPrimaryInsuranceName != "Select Insurance Company") {
-            if (getText(etPrimaryPlanId).isNotEmpty()) {
-                if (getText(etPrimaryMemberId).isNotEmpty()) {
-                    if (getText(etPrimaryGroupId).isNotEmpty()) {
-                        if (getText(etPrimaryMemberName).isNotEmpty()) {
+        if (binding.spinnerPrimaryInsuranceCompany.text.toString().trim()
+                .isNotEmpty() && binding.spinnerPrimaryInsuranceCompany.text.toString()
+                .trim() != "Select Insurance Company"
+        ) {
+            if (getText(binding.etPrimaryPlanId).isNotEmpty()) {
+                if (getText(binding.etPrimaryMemberId).isNotEmpty()) {
+                    if (getText(binding.etPrimaryGroupId).isNotEmpty()) {
+                        if (getText(binding.etPrimaryMemberName).isNotEmpty()) {
                             isPrimaryInsuranceAvailable = true
                         } else {
                             setEditTextError(
-                                etPrimaryMemberName,
+                                binding.etPrimaryMemberName,
                                 "Member name cannot be empty."
                             )
                         }
                     } else {
-                        setEditTextError(etPrimaryGroupId, "Group Id cannot be empty.")
+                        setEditTextError(binding.etPrimaryGroupId, "Group Id cannot be empty.")
                     }
                 } else {
-                    setEditTextError(etPrimaryMemberId, "Member Id cannot be empty.")
+                    setEditTextError(binding.etPrimaryMemberId, "Member Id cannot be empty.")
                 }
             } else {
-                setEditTextError(etPrimaryPlanId, "Plan Id cannot be empty.")
+                setEditTextError(binding.etPrimaryPlanId, "Plan Id cannot be empty.")
             }
         } else {
             displayMsg("Alert", "Select primary insurance name")
@@ -449,26 +523,29 @@ class InsuranceFragment : BaseFragment() {
 
     private fun checkSecondaryInsuranceData(): Boolean {
         isSecondaryInsuranceAvailable = false
-        if (selectedSecondaryInsuranceName != "Select Insurance Company") {
-            if (getText(etSecondaryPlanId).isNotEmpty()) {
-                if (getText(etSecondaryMemberId).isNotEmpty()) {
-                    if (getText(etSecondaryGroupId).isNotEmpty()) {
-                        if (getText(etSecondaryMemberName).isNotEmpty()) {
+        if (binding.spinnerSecondaryInsuranceCompany.text.toString().trim()
+                .isNotEmpty() && binding.spinnerSecondaryInsuranceCompany.text.toString()
+                .trim() != "Select Insurance Company"
+        ) {
+            if (getText(binding.etSecondaryPlanId).isNotEmpty()) {
+                if (getText(binding.etSecondaryMemberId).isNotEmpty()) {
+                    if (getText(binding.etSecondaryGroupId).isNotEmpty()) {
+                        if (getText(binding.etSecondaryMemberName).isNotEmpty()) {
                             isSecondaryInsuranceAvailable = true
                         } else {
                             setEditTextError(
-                                etSecondaryMemberName,
+                                binding.etSecondaryMemberName,
                                 "Member name cannot be empty."
                             )
                         }
                     } else {
-                        setEditTextError(etSecondaryGroupId, "Group Id cannot be empty.")
+                        setEditTextError(binding.etSecondaryGroupId, "Group Id cannot be empty.")
                     }
                 } else {
-                    setEditTextError(etSecondaryMemberId, "Member Id cannot be empty.")
+                    setEditTextError(binding.etSecondaryMemberId, "Member Id cannot be empty.")
                 }
             } else {
-                setEditTextError(etSecondaryPlanId, "Plan Id cannot be empty.")
+                setEditTextError(binding.etSecondaryPlanId, "Plan Id cannot be empty.")
             }
         } else {
             displayMsg("Alert", "Select secondary insurance name")
@@ -478,37 +555,42 @@ class InsuranceFragment : BaseFragment() {
 
     private fun checkPharmacyInsuranceData(): Boolean {
         isPharmacyInsuranceAvailable = false
-        if (selectedPharmacyInsuranceName != "Select Insurance Company") {
-            if (getText(etPharmacyPlanId).isNotEmpty()) {
-                if (getText(etPharmacyMemberId).isNotEmpty()) {
-                    if (getText(etPharmacyGroupId).isNotEmpty()) {
-                        if (getText(etPharmacyMemberName).isNotEmpty()) {
+        if (binding.spinnerPharmacyInsuranceCompany.text.toString().trim()
+                .isNotEmpty() && binding.spinnerPharmacyInsuranceCompany.text.toString()
+                .trim() != "Select Insurance Company"
+        ) {
+            if (getText(binding.etPharmacyPlanId).isNotEmpty()) {
+                if (getText(binding.etPharmacyMemberId).isNotEmpty()) {
+                    if (getText(binding.etPharmacyGroupId).isNotEmpty()) {
+                        if (getText(binding.etPharmacyMemberName).isNotEmpty()) {
                             isPharmacyInsuranceAvailable = true
                         } else {
                             setEditTextError(
-                                etPharmacyMemberName,
+                                binding.etPharmacyMemberName,
                                 "Member name cannot be empty."
                             )
                         }
                     } else {
-                        setEditTextError(etPharmacyGroupId, "Group Id cannot be empty.")
+                        setEditTextError(binding.etPharmacyGroupId, "Group Id cannot be empty.")
                     }
                 } else {
-                    setEditTextError(etPharmacyMemberId, "Member Id cannot be empty.")
+                    setEditTextError(binding.etPharmacyMemberId, "Member Id cannot be empty.")
                 }
             } else {
-                setEditTextError(etPharmacyPlanId, "Plan Id cannot be empty.")
+                setEditTextError(binding.etPharmacyPlanId, "Plan Id cannot be empty.")
             }
         } else {
             displayMsg("Alert", "Select pharmacy insurance name")
         }
-        return isSecondaryInsuranceAvailable
+        return isPharmacyInsuranceAvailable
     }
 
     private fun verifyPrimaryInsuranceApi() {
         showProgress()
-        val drawable: BitmapDrawable = imgPrimaryInsurancePic.drawable as BitmapDrawable
+        val drawable: BitmapDrawable = binding.imgInsurancePic1.drawable as BitmapDrawable
         val bitmap: Bitmap = drawable.bitmap
+        val drawable1: BitmapDrawable = binding.imgInsurancePic2.drawable as BitmapDrawable
+        val bitmap1: Bitmap = drawable1.bitmap
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
@@ -516,12 +598,13 @@ class InsuranceFragment : BaseFragment() {
                         InsuranceVerifyReqBody(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
                             selectedPrimaryInsuranceName,
-                            getText(etPrimaryPlanId),
-                            getText(etPrimaryMemberId),
-                            getText(etPrimaryGroupId),
-                            getText(etPrimaryMemberName),
+                            getText(binding.etPrimaryPlanId),
+                            getText(binding.etPrimaryMemberId),
+                            getText(binding.etPrimaryGroupId),
+                            getText(binding.etPrimaryMemberName),
                             "Primary",
-                            if (bitmap != null) "data:image/jpg;base64," + convert(bitmap) else ""
+                            if (bitmap != null) "data:image/jpg;base64," + convert(bitmap) else "",
+                            if (bitmap1 != null) "data:image/jpg;base64," + convert(bitmap1) else ""
                         ),
                         getAccessToken()
                     )
@@ -602,8 +685,10 @@ class InsuranceFragment : BaseFragment() {
 
     private fun verifySecondaryInsuranceApi() {
         showProgress()
-        val drawable: BitmapDrawable = imgSecondaryInsurancePic.drawable as BitmapDrawable
+        val drawable: BitmapDrawable = binding.imgSecondaryInsurancePic1.drawable as BitmapDrawable
         val bitmap: Bitmap = drawable.bitmap
+        val drawable1: BitmapDrawable = binding.imgSecondaryInsurancePic2.drawable as BitmapDrawable
+        val bitmap1: Bitmap = drawable1.bitmap
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
@@ -611,12 +696,13 @@ class InsuranceFragment : BaseFragment() {
                         InsuranceVerifyReqBody(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
                             selectedSecondaryInsuranceName,
-                            getText(etSecondaryPlanId),
-                            getText(etSecondaryMemberId),
-                            getText(etSecondaryGroupId),
-                            getText(etSecondaryMemberName),
+                            getText(binding.etSecondaryPlanId),
+                            getText(binding.etSecondaryMemberId),
+                            getText(binding.etSecondaryGroupId),
+                            getText(binding.etSecondaryMemberName),
                             "Secondary",
-                            if (bitmap != null) "data:image/jpg;base64," + convert(bitmap) else ""
+                            if (bitmap != null) "data:image/jpg;base64," + convert(bitmap) else "",
+                            if (bitmap1 != null) "data:image/jpg;base64," + convert(bitmap1) else ""
                         ),
                         getAccessToken()
                     )
@@ -656,8 +742,10 @@ class InsuranceFragment : BaseFragment() {
 
     private fun verifyPharmacyInsuranceApi() {
         showProgress()
-        val drawable: BitmapDrawable = imgPharmacyInsurancePic.drawable as BitmapDrawable
+        val drawable: BitmapDrawable = binding.imgPharmacyInsurancePic1.drawable as BitmapDrawable
         val bitmap: Bitmap = drawable.bitmap
+        val drawable1: BitmapDrawable = binding.imgPharmacyInsurancePic2.drawable as BitmapDrawable
+        val bitmap1: Bitmap = drawable1.bitmap
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
@@ -665,12 +753,13 @@ class InsuranceFragment : BaseFragment() {
                         InsuranceVerifyReqBody(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
                             selectedPharmacyInsuranceName,
-                            getText(etPharmacyPlanId),
-                            getText(etPharmacyMemberId),
-                            getText(etPharmacyGroupId),
-                            getText(etPharmacyMemberName),
+                            getText(binding.etPharmacyPlanId),
+                            getText(binding.etPharmacyMemberId),
+                            getText(binding.etPharmacyGroupId),
+                            getText(binding.etPharmacyMemberName),
                             "Pharmacy",
-                            if (bitmap != null) "data:image/jpg;base64," + convert(bitmap) else ""
+                            if (bitmap != null) "data:image/jpg;base64," + convert(bitmap) else "",
+                            if (bitmap1 != null) "data:image/jpg;base64," + convert(bitmap1) else ""
                         ),
                         getAccessToken()
                     )

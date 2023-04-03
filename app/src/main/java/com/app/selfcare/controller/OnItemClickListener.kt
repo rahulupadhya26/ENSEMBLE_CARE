@@ -62,6 +62,10 @@ interface OnMessageClickListener {
     fun onItemClick(message: MessageBean?)
 }
 
+interface OnChatMessageClickListener {
+    fun onItemClick(message: ChatMessages?)
+}
+
 interface OnRecommendedItemClickListener {
     fun onRecommendedItemClickListener(recommendedData: RecommendedData)
 }
@@ -91,7 +95,10 @@ interface OnCarePlanTaskItemClickListener {
 }
 
 interface OnCarePlanPendingTaskItemClickListener {
-    fun onCarePlanPendingTaskItemClickListener(careDayIndividualTaskDetail: CareDayIndividualTaskDetail)
+    fun onCarePlanPendingTaskItemClickListener(
+        careDayIndividualTaskDetail: CareDayIndividualTaskDetail,
+        isCompleted: Boolean
+    )
 }
 
 interface OnDocumentItemClickListener {
@@ -104,4 +111,12 @@ interface OnToDoItemClickListener {
 
 interface OnDocumentsConsentRoisViewItemClickListener {
     fun onDocumentsConsentRoisViewItemClickListener(consentsRoisDocumentData: ConsentsRoisDocumentData)
+}
+
+interface OnEventItemClickListener {
+    fun onEventItemClickListener(events: EventCommunity)
+}
+
+interface OnCareBuddyItemClickListener {
+    fun onCareBuddyItemClickListener(careBuddy: CareBuddy)
 }

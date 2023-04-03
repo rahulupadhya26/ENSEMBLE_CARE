@@ -5,15 +5,18 @@ import android.app.ProgressDialog
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.data.ConsentsRoisDocumentData
-import kotlinx.android.synthetic.main.fragment_view_forms.*
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentViewFormsBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +32,7 @@ class ViewFormsFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var consentsRoisDocumentData: ConsentsRoisDocumentData? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentViewFormsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +40,15 @@ class ViewFormsFragment : BaseFragment() {
             consentsRoisDocumentData = it.getParcelable(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentViewFormsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -50,33 +63,33 @@ class ViewFormsFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        imgViewFormBack.setOnClickListener {
+        binding.imgViewFormBack.setOnClickListener {
             popBackStack()
         }
 
         if (consentsRoisDocumentData != null) {
             if (consentsRoisDocumentData!!.title.contains("Consents")) {
-                txtViewFormName.text = "Consent form"
+                binding.txtViewFormName.text = "Consent form"
             } else {
-                txtViewFormName.text = "ROI form"
+                binding.txtViewFormName.text = "ROI form"
             }
         }
 
-        val browser = webViewFormView.settings
+        val browser = binding.webViewFormView.settings
         browser.javaScriptEnabled = true
         browser.builtInZoomControls = true
         browser.pluginState = WebSettings.PluginState.ON
-        webViewFormView.webViewClient = object : WebViewClient() {
+        binding.webViewFormView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 view?.loadUrl(url!!)
                 return true
             }
         }
-        webViewFormView.webViewClient = object : WebViewClient() {
+        binding.webViewFormView.webViewClient = object : WebViewClient() {
             private var mProgressDialog: ProgressDialog? = null
             override fun onPageFinished(view: WebView, url: String?) {
                 view.settings.loadsImagesAutomatically = true
-                webViewFormView.visibility = View.VISIBLE
+                binding.webViewFormView.visibility = View.VISIBLE
                 //progressView.setVisibility(View.VISIBLE);
                 dismissProgressDialog()
             }
@@ -108,7 +121,7 @@ class ViewFormsFragment : BaseFragment() {
             }
         }
 
-        webViewFormView.loadUrl(
+        binding.webViewFormView.loadUrl(
             "http://docs.google.com/gview?embedded=true&url=" +
                     BaseActivity.baseURL.dropLast(5) + "/media/" + consentsRoisDocumentData!!.pdf_url
         )

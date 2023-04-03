@@ -40,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="@dimen/_15dp"
-                    android:src="@drawable/dashboard" />
+                    android:src="@drawable/home" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewDashboard"
@@ -96,7 +96,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="@dimen/_15dp"
-                    android:src="@drawable/activity" />
+                    android:src="@drawable/avg_time" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewActivity"
@@ -152,7 +152,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="@dimen/_15dp"
-                    android:src="@drawable/personal_trainer" />
+                    android:src="@drawable/spa" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewCoaches"
@@ -206,7 +206,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="@dimen/_15dp"
-                    android:src="@drawable/crisis" />
+                    android:src="@drawable/crisis_alert" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewCrisis"
@@ -253,23 +253,6 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-
-    <me.ibrahimsn.lib.SmoothBottomBar
-        android:id="@+id/bottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_gravity="bottom"
-        android:visibility="gone"
-        app:backgroundColor="@color/primaryGreen"
-        app:iconSize="24dp"
-        app:iconTint="#C8FFFFFF"
-        app:iconTintActive="#FFFFFF"
-        app:itemPadding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/navigation"
-        app:sideMargins="10dp"
-        app:textColor="@color/white"
-        app:textSize="14sp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

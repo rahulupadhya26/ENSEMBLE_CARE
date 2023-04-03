@@ -2,12 +2,16 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.data.ExerciseDashboard
 import com.app.selfcare.data.Video
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentExerciseBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
@@ -18,8 +22,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.dialog_inspiration.*
-import kotlinx.android.synthetic.main.fragment_exercise.*
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
@@ -39,6 +41,7 @@ class ExerciseFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentExerciseBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +49,15 @@ class ExerciseFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentExerciseBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -65,11 +77,17 @@ class ExerciseFragment : BaseFragment() {
     }
 
     private fun onClickEvents(){
-        exerciseBack.setOnClickListener {
-            popBackStack()
+        binding.exerciseBack.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
-        exerciseFav.setOnClickListener {
+        binding.exerciseFav.setOnClickListener {
             replaceFragment(
                 FavoriteFragment.newInstance(Utils.WELLNESS_EXERCISE),
                 R.id.layout_home,
@@ -77,33 +95,33 @@ class ExerciseFragment : BaseFragment() {
             )
         }
 
-        layoutCardio.setOnClickListener {
+        binding.layoutCardio.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtCardio.text.toString(), Utils.WELLNESS_EXERCISE),
+                DetailFragment.newInstance(binding.txtCardio.text.toString(), Utils.WELLNESS_EXERCISE),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutFlexibility.setOnClickListener {
+        binding.layoutFlexibility.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtFlexibility.text.toString(), Utils.WELLNESS_EXERCISE),
+                DetailFragment.newInstance(binding.txtFlexibility.text.toString(), Utils.WELLNESS_EXERCISE),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutStrength.setOnClickListener {
+        binding.layoutStrength.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtStrength.text.toString(), Utils.WELLNESS_EXERCISE),
+                DetailFragment.newInstance(binding.txtStrength.text.toString(), Utils.WELLNESS_EXERCISE),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutBalance.setOnClickListener {
+        binding.layoutBalance.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtBalance.text.toString(), Utils.WELLNESS_EXERCISE),
+                DetailFragment.newInstance(binding.txtBalance.text.toString(), Utils.WELLNESS_EXERCISE),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
@@ -132,78 +150,78 @@ class ExerciseFragment : BaseFragment() {
                                 Gson().fromJson(responseBody, exerciseDashboardDataType)
 
                             if (exerciseDashboardDataList.isNotEmpty()) {
-                                hsvFeaturedWorkout.visibility = View.VISIBLE
-                                txtNoFeaturedWorkout.visibility = View.GONE
+                                binding.hsvFeaturedWorkout.visibility = View.VISIBLE
+                                binding.txtNoFeaturedWorkout.visibility = View.GONE
 
                                 if (exerciseDashboardDataList.size == 1) {
-                                    cardViewExerciseData1.visibility = View.VISIBLE
-                                    txtExerciseName1.text =
+                                    binding.cardViewExerciseData1.visibility = View.VISIBLE
+                                    binding.txtExerciseName1.text =
                                         exerciseDashboardDataList[0].exercise_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[0].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgExercise1)
+                                        .into(binding.imgExercise1)
 
-                                    cardViewExerciseData2.visibility = View.GONE
-                                    cardViewExerciseData3.visibility = View.GONE
+                                    binding.cardViewExerciseData2.visibility = View.GONE
+                                    binding.cardViewExerciseData3.visibility = View.GONE
                                 } else if (exerciseDashboardDataList.size == 2) {
-                                    cardViewExerciseData1.visibility = View.VISIBLE
-                                    txtExerciseName1.text =
+                                    binding.cardViewExerciseData1.visibility = View.VISIBLE
+                                    binding.txtExerciseName1.text =
                                         exerciseDashboardDataList[0].exercise_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[0].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgExercise1)
+                                        .into(binding.imgExercise1)
 
-                                    cardViewExerciseData2.visibility = View.VISIBLE
-                                    txtExerciseName2.text =
+                                    binding.cardViewExerciseData2.visibility = View.VISIBLE
+                                    binding.txtExerciseName2.text =
                                         exerciseDashboardDataList[1].exercise_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[1].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgExercise2)
+                                        .into(binding.imgExercise2)
 
-                                    cardViewExerciseData3.visibility = View.GONE
+                                    binding.cardViewExerciseData3.visibility = View.GONE
                                 } else if (exerciseDashboardDataList.size >= 3) {
-                                    cardViewExerciseData1.visibility = View.VISIBLE
-                                    txtExerciseName1.text =
+                                    binding.cardViewExerciseData1.visibility = View.VISIBLE
+                                    binding.txtExerciseName1.text =
                                         exerciseDashboardDataList[0].exercise_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[0].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgExercise1)
+                                        .into(binding.imgExercise1)
 
-                                    cardViewExerciseData2.visibility = View.VISIBLE
-                                    txtExerciseName2.text =
+                                    binding.cardViewExerciseData2.visibility = View.VISIBLE
+                                    binding.txtExerciseName2.text =
                                         exerciseDashboardDataList[1].exercise_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[1].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgExercise2)
+                                        .into(binding.imgExercise2)
 
-                                    cardViewExerciseData3.visibility = View.VISIBLE
-                                    txtExerciseName3.text =
+                                    binding.cardViewExerciseData3.visibility = View.VISIBLE
+                                    binding.txtExerciseName3.text =
                                         exerciseDashboardDataList[2].exercise_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[2].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgExercise3)
+                                        .into(binding.imgExercise3)
                                 }
 
                             } else {
-                                hsvFeaturedWorkout.visibility = View.GONE
-                                txtNoFeaturedWorkout.visibility = View.VISIBLE
+                                binding.hsvFeaturedWorkout.visibility = View.GONE
+                                binding.txtNoFeaturedWorkout.visibility = View.VISIBLE
                             }
 
-                            cardViewExerciseData1.setOnClickListener {
+                            binding.cardViewExerciseData1.setOnClickListener {
                                 displayRespectiveScreen(exerciseDashboardDataList[0])
                             }
 
-                            cardViewExerciseData2.setOnClickListener {
+                            binding.cardViewExerciseData2.setOnClickListener {
                                 displayRespectiveScreen(exerciseDashboardDataList[1])
                             }
 
-                            cardViewExerciseData3.setOnClickListener {
+                            binding.cardViewExerciseData3.setOnClickListener {
                                 displayRespectiveScreen(exerciseDashboardDataList[2])
                             }
 

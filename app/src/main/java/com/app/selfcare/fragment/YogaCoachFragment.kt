@@ -2,11 +2,14 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.data.YogaDashboard
+import com.app.selfcare.databinding.FragmentYogaCoachBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
@@ -17,7 +20,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_yoga_coach.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.util.ArrayList
@@ -36,6 +38,7 @@ class YogaCoachFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentYogaCoachBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,15 @@ class YogaCoachFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentYogaCoachBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -63,11 +75,17 @@ class YogaCoachFragment : BaseFragment() {
     }
 
     private fun onClickEvents() {
-        yogaBack.setOnClickListener {
-            popBackStack()
+        binding.yogaBack.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
-        yogaFav.setOnClickListener {
+        binding.yogaFav.setOnClickListener {
             replaceFragment(
                 FavoriteFragment.newInstance(Utils.WELLNESS_YOGA),
                 R.id.layout_home,
@@ -75,49 +93,49 @@ class YogaCoachFragment : BaseFragment() {
             )
         }
 
-        layoutWeightLoss.setOnClickListener {
+        binding.layoutWeightLoss.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtWeightLoss.text.toString(), Utils.WELLNESS_YOGA),
+                DetailFragment.newInstance("Weight loss", Utils.WELLNESS_YOGA),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutBackPain.setOnClickListener {
+        binding.layoutBackPain.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtBackPain.text.toString(), Utils.WELLNESS_YOGA),
+                DetailFragment.newInstance("Stress relieving", Utils.WELLNESS_YOGA),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutHairGrowth.setOnClickListener {
+        binding.layoutHairGrowth.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtHairGrowth.text.toString(), Utils.WELLNESS_YOGA),
+                DetailFragment.newInstance("Sleep better", Utils.WELLNESS_YOGA),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutStress.setOnClickListener {
+        binding.layoutStress.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtStress.text.toString(), Utils.WELLNESS_YOGA),
+                DetailFragment.newInstance("Aid digestion", Utils.WELLNESS_YOGA),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutDiabetes.setOnClickListener {
+        binding.layoutDiabetes.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtDiabetes.text.toString(), Utils.WELLNESS_YOGA),
+                DetailFragment.newInstance("Improve posture", Utils.WELLNESS_YOGA),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
         }
 
-        layoutConstipation.setOnClickListener {
+        binding.layoutConstipation.setOnClickListener {
             replaceFragment(
-                DetailFragment.newInstance(txtConstipation.text.toString(), Utils.WELLNESS_YOGA),
+                DetailFragment.newInstance("Energise", Utils.WELLNESS_YOGA),
                 R.id.layout_home,
                 DetailFragment.TAG
             )
@@ -146,45 +164,45 @@ class YogaCoachFragment : BaseFragment() {
                                 Gson().fromJson(responseBody, yogaDashboardDataType)
 
                             if (yogaDashboardDataList.isNotEmpty()) {
-                                layoutWeeklyPicks.visibility = View.VISIBLE
+                                binding.layoutWeeklyPicks.visibility = View.VISIBLE
 
                                 if (yogaDashboardDataList.size == 1) {
-                                    layoutYoga1.visibility = View.VISIBLE
-                                    txtYogaName1.text =
+                                    binding.layoutYoga1.visibility = View.VISIBLE
+                                    binding.txtYogaName1.text =
                                         yogaDashboardDataList[0].yoga_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + yogaDashboardDataList[0].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgYogaBackground1)
+                                        .into(binding.imgYogaBackground1)
 
-                                    layoutYoga2.visibility = View.GONE
+                                    binding.layoutYoga2.visibility = View.GONE
                                 } else if (yogaDashboardDataList.size >= 2) {
-                                    layoutYoga1.visibility = View.VISIBLE
-                                    txtYogaName1.text =
+                                    binding.layoutYoga1.visibility = View.VISIBLE
+                                    binding.txtYogaName1.text =
                                         yogaDashboardDataList[0].yoga_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + yogaDashboardDataList[0].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgYogaBackground1)
+                                        .into(binding.imgYogaBackground1)
 
-                                    layoutYoga2.visibility = View.VISIBLE
-                                    txtYogaName2.text =
+                                    binding.layoutYoga2.visibility = View.VISIBLE
+                                    binding.txtYogaName2.text =
                                         yogaDashboardDataList[1].yoga_name
                                     Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + yogaDashboardDataList[1].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(imgYogaBackground2)
+                                        .into(binding.imgYogaBackground2)
                                 }
 
                             } else {
-                                layoutWeeklyPicks.visibility = View.GONE
+                                binding.layoutWeeklyPicks.visibility = View.GONE
                             }
 
-                            layoutYoga1.setOnClickListener {
+                            binding.layoutYoga1.setOnClickListener {
                                 displayRespectiveScreen(yogaDashboardDataList[0])
                             }
 
-                            layoutYoga2.setOnClickListener {
+                            binding.layoutYoga2.setOnClickListener {
                                 displayRespectiveScreen(yogaDashboardDataList[1])
                             }
 

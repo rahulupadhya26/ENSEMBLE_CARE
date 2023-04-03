@@ -8,13 +8,16 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
-import com.app.selfcare.controller.OnCarePlanDayItemClickListener
 import com.app.selfcare.controller.OnCarePlanTaskItemClickListener
 import com.app.selfcare.data.CareDayIndividualTaskDetail
-import kotlinx.android.synthetic.main.layout_item_care_plan_today_task.view.*
+import com.app.selfcare.databinding.LayoutItemCarePlanTodayTaskBinding
+import com.app.selfcare.databinding.LayoutItemGoalBinding
+import com.app.selfcare.utils.DateMethods
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CarePlanTodayTaskListAdapter(
     private val context: Context,
@@ -29,9 +32,14 @@ class CarePlanTodayTaskListAdapter(
         parent: ViewGroup,
         viewType: Int
     ): CarePlanTodayTaskListAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_care_plan_today_task, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemCarePlanTodayTaskBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_care_plan_today_task, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -39,114 +47,121 @@ class CarePlanTodayTaskListAdapter(
     }
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
-    override fun onBindViewHolder(holder: CarePlanTodayTaskListAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        if (item.task_detail.yoga != 0) {
-            holder.txtCompletedTaskTitle.text = "Yoga"
-            holder.txtPendingTaskTitle.text = "Yoga"
-            holder.txtPendingLaterTaskTitle.text = "Yoga"
-        } else if (item.task_detail.exercise != 0) {
-            holder.txtCompletedTaskTitle.text = "Exercise"
-            holder.txtPendingTaskTitle.text = "Exercise"
-            holder.txtPendingLaterTaskTitle.text = "Exercise"
-        } else if (item.task_detail.mindfulness != 0) {
-            holder.txtCompletedTaskTitle.text = "Mindfulness"
-            holder.txtPendingTaskTitle.text = "Mindfulness"
-            holder.txtPendingLaterTaskTitle.text = "Mindfulness"
-        } else if (item.task_detail.nutrition != 0) {
-            holder.txtCompletedTaskTitle.text = "Nutrition"
-            holder.txtPendingTaskTitle.text = "Nutrition"
-            holder.txtPendingLaterTaskTitle.text = "Nutrition"
-        } else if (item.task_detail.music != 0) {
-            holder.txtCompletedTaskTitle.text = "Music"
-            holder.txtPendingTaskTitle.text = "Music"
-            holder.txtPendingLaterTaskTitle.text = "Music"
-        }
-        holder.txtCompletedTaskSubTitle.text =
-            item.task_detail.title + " " + item.task_detail.time_taken
-
-        holder.txtPendingTaskSubTitle.text =
-            item.task_detail.title + " " + item.task_detail.time_taken
-
-        holder.txtPendingLaterTaskSubTitle.text =
-            item.task_detail.title + " " + item.task_detail.time_taken
-
-        if (item.is_completed) {
-            holder.layoutPendingTask.visibility = View.GONE
-            holder.layoutPendingLaterTask.visibility = View.GONE
-            holder.layoutCompletedTask.visibility = View.VISIBLE
-            holder.txtTaskStatus.text = "Completed"
-            if ((position + 1) < list.size) {
-                holder.layoutTaskBar1.visibility = View.VISIBLE
-                if (list[position + 1].is_completed) {
-                    holder.view1.setBackgroundColor(context.resources.getColor(R.color.primaryGreen))
-                } else {
-                    holder.view1.setBackgroundColor(context.resources.getColor(R.color.lightestGreyColor))
-                }
-            } else {
-                holder.layoutTaskBar1.visibility = View.GONE
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            if (item.task_detail.yoga != 0) {
+                txtCompletedTaskTitle.text = "Yoga"
+                txtPendingTaskTitle.text = "Yoga"
+                txtPendingLaterTaskTitle.text = "Yoga"
+            } else if (item.task_detail.exercise != 0) {
+                txtCompletedTaskTitle.text = "Exercise"
+                txtPendingTaskTitle.text = "Exercise"
+                txtPendingLaterTaskTitle.text = "Exercise"
+            } else if (item.task_detail.mindfulness != 0) {
+                txtCompletedTaskTitle.text = "Mindfulness"
+                txtPendingTaskTitle.text = "Mindfulness"
+                txtPendingLaterTaskTitle.text = "Mindfulness"
+            } else if (item.task_detail.nutrition != 0) {
+                txtCompletedTaskTitle.text = "Nutrition"
+                txtPendingTaskTitle.text = "Nutrition"
+                txtPendingLaterTaskTitle.text = "Nutrition"
+            } else if (item.task_detail.music != 0) {
+                txtCompletedTaskTitle.text = "Music"
+                txtPendingTaskTitle.text = "Music"
+                txtPendingLaterTaskTitle.text = "Music"
             }
-        }
+            txtCompletedTaskSubTitle.text =
+                item.task_detail.title + " - " + item.task_detail.time_taken + " mins"
 
-        if (pos == -1) {
-            if (!item.is_completed) {
-                holder.layoutPendingLaterTask.visibility = View.GONE
-                holder.layoutCompletedTask.visibility = View.GONE
-                holder.layoutPendingTask.visibility = View.VISIBLE
-                holder.txtPendingStatus.text = item.time.dropLast(3) + " hrs"
+            txtPendingTaskSubTitle.text =
+                item.task_detail.title + " - " + item.task_detail.time_taken + " mins"
+
+            txtPendingLaterTaskSubTitle.text =
+                item.task_detail.title + " - " + item.task_detail.time_taken + " mins"
+
+            val sdf = SimpleDateFormat("HH:mm")
+            val currentDate = sdf.format(Date())
+
+            if (pos == -1) {
+                if (!item.is_completed) {
+                    layoutPendingLaterTask.visibility = View.GONE
+                    layoutCompletedTask.visibility = View.GONE
+                    layoutPendingTask.visibility = View.VISIBLE
+                    txtPendingStatus.text = item.time.dropLast(3) + " hrs"
+                    if ((position + 1) < list.size) {
+                        layoutTaskBar2.visibility = View.VISIBLE
+                        pos = position + 1
+                    } else {
+                        layoutTaskBar2.visibility = View.GONE
+                    }
+                } else if (DateMethods().checkTimings(currentDate, item.time.dropLast(3))) {
+                    layoutPendingLaterTask.visibility = View.GONE
+                    layoutCompletedTask.visibility = View.GONE
+                    layoutPendingTask.visibility = View.VISIBLE
+                    txtPendingStatus.text = item.time.dropLast(3) + " hrs"
+                    if ((position + 1) < list.size) {
+                        layoutTaskBar2.visibility = View.VISIBLE
+                        pos = position + 1
+                    } else {
+                        layoutTaskBar2.visibility = View.GONE
+                    }
+                }
+            }
+
+            if (pos == position) {
+                pos = position + 1
+                if (DateMethods().checkTimings(currentDate, item.time.dropLast(3))) {
+                    layoutPendingLaterTask.visibility = View.GONE
+                    layoutCompletedTask.visibility = View.GONE
+                    layoutPendingTask.visibility = View.VISIBLE
+                    txtPendingStatus.text = item.time.dropLast(3) + " hrs"
+                    if ((position + 1) < list.size) {
+                        layoutTaskBar2.visibility = View.VISIBLE
+                        pos = position + 1
+                    } else {
+                        layoutTaskBar2.visibility = View.GONE
+                    }
+                } else {
+                    layoutCompletedTask.visibility = View.GONE
+                    layoutPendingTask.visibility = View.GONE
+                    layoutPendingLaterTask.visibility = View.VISIBLE
+                    txtPendingLaterStatus.text = item.time.dropLast(3) + " hrs"
+                    if (pos < list.size) {
+                        layoutTaskBar3.visibility = View.VISIBLE
+                    } else {
+                        layoutTaskBar3.visibility = View.GONE
+                    }
+                }
+            }
+
+            if (item.is_completed) {
+                layoutPendingTask.visibility = View.GONE
+                layoutPendingLaterTask.visibility = View.GONE
+                layoutCompletedTask.visibility = View.VISIBLE
+                txtTaskStatus.text = "Completed"
                 if ((position + 1) < list.size) {
-                    holder.layoutTaskBar2.visibility = View.VISIBLE
-                    pos = position + 1
+                    layoutTaskBar1.visibility = View.VISIBLE
+                    if (list[position + 1].is_completed) {
+                        view1.setBackgroundColor(context.resources.getColor(R.color.primaryGreen))
+                    } else {
+                        view1.setBackgroundColor(context.resources.getColor(R.color.lightestGreyColor))
+                    }
                 } else {
-                    holder.layoutTaskBar2.visibility = View.GONE
+                    layoutTaskBar1.visibility = View.GONE
                 }
             }
-        }
 
-        if (pos == position) {
-            pos = position + 1
-            holder.layoutCompletedTask.visibility = View.GONE
-            holder.layoutPendingTask.visibility = View.GONE
-            holder.layoutPendingLaterTask.visibility = View.VISIBLE
-            holder.txtPendingLaterStatus.text = item.time.dropLast(3) + " hrs"
-            if (pos < list.size) {
-                holder.layoutTaskBar3.visibility = View.VISIBLE
-            } else {
-                holder.layoutTaskBar3.visibility = View.GONE
+            layoutCompleteTodayTask.setOnClickListener {
+                adapterList.onCarePlanTaskItemClickListener(txtCompletedTaskTitle.text.toString())
+            }
+
+            layoutTodayPendingTask.setOnClickListener {
+                adapterList.onCarePlanTaskItemClickListener(txtPendingTaskTitle.text.toString())
             }
         }
-
-        holder.layoutCompleteTodayTask.setOnClickListener {
-            adapterList.onCarePlanTaskItemClickListener(holder.txtCompletedTaskTitle.text.toString())
-        }
-
-        holder.layoutTodayPendingTask.setOnClickListener {
-            adapterList.onCarePlanTaskItemClickListener(holder.txtPendingTaskTitle.text.toString())
-        }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val layoutCompletedTask: LinearLayout = itemView.layoutCompletedTask
-        val layoutCompleteTodayTask: LinearLayout = itemView.layoutCompleteTodayTask
-        val txtCompletedTaskTitle: TextView = itemView.txtCompletedTaskTitle
-        val txtCompletedTaskSubTitle: TextView = itemView.txtCompletedTaskSubTitle
-        val txtTaskStatus: TextView = itemView.txtTaskStatus
-
-        val layoutPendingTask: LinearLayout = itemView.layoutPendingTask
-        val layoutTodayPendingTask: RelativeLayout = itemView.layoutTodayPendingTask
-        val txtPendingTaskTitle: TextView = itemView.txtPendingTaskTitle
-        val txtPendingTaskSubTitle: TextView = itemView.txtPendingTaskSubTitle
-        val txtPendingStatus: TextView = itemView.txtPendingStatus
-
-        val layoutPendingLaterTask: LinearLayout = itemView.layoutPendingLaterTask
-        val txtPendingLaterTaskTitle: TextView = itemView.txtPendingLaterTaskTitle
-        val txtPendingLaterTaskSubTitle: TextView = itemView.txtPendingLaterTaskSubTitle
-        val txtPendingLaterStatus: TextView = itemView.txtPendingLaterStatus
-
-        val layoutTaskBar1: LinearLayout = itemView.layoutTaskBar1
-        val layoutTaskBar2: LinearLayout = itemView.layoutTaskBar2
-        val layoutTaskBar3: LinearLayout = itemView.layoutTaskBar3
-
-        val view1: View = itemView.view1
-    }
+    inner class ViewHolder(val binding: LayoutItemCarePlanTodayTaskBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

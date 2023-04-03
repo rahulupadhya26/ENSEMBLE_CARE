@@ -10,12 +10,12 @@ import android.widget.RatingBar
 import com.app.selfcare.R
 import com.app.selfcare.data.AppointmentReq
 import com.app.selfcare.data.Feedback
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentServiceFeedbackBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_service_feedback.*
-import kotlinx.android.synthetic.main.fragment_therapist_feedback.*
 import retrofit2.HttpException
 
 // TODO: Rename parameter arguments, choose names that match
@@ -35,6 +35,7 @@ class ServiceFeedbackFragment : BaseFragment() {
     private var feedbackOnTherapist: String? = null
     private var serviceFeedbackRating: String? = null
     private var apptId: String? = null
+    private lateinit var binding: FragmentServiceFeedbackBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +44,15 @@ class ServiceFeedbackFragment : BaseFragment() {
             feedbackOnTherapist = it.getString(ARG_PARAM2)
             apptId = it.getString(ARG_PARAM3)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentServiceFeedbackBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -60,9 +70,9 @@ class ServiceFeedbackFragment : BaseFragment() {
                 serviceFeedbackRating = p1.toString()
             }*/
 
-        btnServiceFeedback.setOnClickListener {
+        binding.btnServiceFeedback.setOnClickListener {
             if (serviceFeedbackRating != null) {
-                if (getText(editTxtServiceFeedback).isNotEmpty()) {
+                if (getText(binding.editTxtServiceFeedback).isNotEmpty()) {
                     sendFeedback()
                 } else {
                     displayMsg("Alert", "Please provide feedback")
@@ -86,7 +96,7 @@ class ServiceFeedbackFragment : BaseFragment() {
                             therapistRating!!.toDouble(),
                             feedbackOnTherapist!!,
                             serviceFeedbackRating!!.toDouble(),
-                            getText(editTxtServiceFeedback)
+                            getText(binding.editTxtServiceFeedback)
                         ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())

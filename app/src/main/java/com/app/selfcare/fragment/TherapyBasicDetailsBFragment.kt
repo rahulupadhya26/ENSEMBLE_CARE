@@ -24,11 +24,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.app.selfcare.BuildConfig
 import com.app.selfcare.R
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentTherapyBasicDetailsBBinding
 import com.app.selfcare.utils.Utils
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
-import kotlinx.android.synthetic.main.fragment_therapy_basic_details_b.*
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -54,6 +55,7 @@ class TherapyBasicDetailsBFragment : BaseFragment() {
         numUpdates = 1
     }
     var locationManager: LocationManager? = null
+    private lateinit var binding: FragmentTherapyBasicDetailsBBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +63,15 @@ class TherapyBasicDetailsBFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentTherapyBasicDetailsBBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -73,36 +84,36 @@ class TherapyBasicDetailsBFragment : BaseFragment() {
         getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
 
-        cardViewLocateMe.setOnClickListener {
+        binding.cardViewLocateMe.setOnClickListener {
             checkLocationPermission()
         }
 
-        btnBasicDetailB.setOnClickListener {
-            if (getText(etBasicDetailStreet).isNotEmpty()) {
-                if (getText(etBasicDetailCity).isNotEmpty()) {
-                    if (getText(etBasicDetailState).isNotEmpty()) {
-                        if (getText(etBasicDetailPostalCode).isNotEmpty()) {
-                            if (getText(etBasicDetailCountry).isNotEmpty()) {
-                                Utils.selectedStreet = getText(etBasicDetailStreet)
-                                Utils.selectedCity = getText(etBasicDetailCity)
-                                Utils.selectedState = getText(etBasicDetailState)
-                                Utils.selectedPostalCode = getText(etBasicDetailPostalCode)
-                                Utils.selectedCountry = getText(etBasicDetailCountry)
+        binding.btnBasicDetailB.setOnClickListener {
+            if (getText(binding.etBasicDetailStreet).isNotEmpty()) {
+                if (getText(binding.etBasicDetailCity).isNotEmpty()) {
+                    if (getText(binding.etBasicDetailState).isNotEmpty()) {
+                        if (getText(binding.etBasicDetailPostalCode).isNotEmpty()) {
+                            if (getText(binding.etBasicDetailCountry).isNotEmpty()) {
+                                Utils.selectedStreet = getText(binding.etBasicDetailStreet)
+                                Utils.selectedCity = getText(binding.etBasicDetailCity)
+                                Utils.selectedState = getText(binding.etBasicDetailState)
+                                Utils.selectedPostalCode = getText(binding.etBasicDetailPostalCode)
+                                Utils.selectedCountry = getText(binding.etBasicDetailCountry)
 
                             } else {
-                                setEditTextError(etBasicDetailCountry,"Country cannot be blank.")
+                                setEditTextError(binding.etBasicDetailCountry,"Country cannot be blank.")
                             }
                         } else {
-                            setEditTextError(etBasicDetailPostalCode,"Postal code cannot be blank.")
+                            setEditTextError(binding.etBasicDetailPostalCode,"Postal code cannot be blank.")
                         }
                     } else {
-                        setEditTextError(etBasicDetailState,"State cannot be blank.")
+                        setEditTextError(binding.etBasicDetailState,"State cannot be blank.")
                     }
                 } else {
-                    setEditTextError(etBasicDetailCity,"City cannot be blank.")
+                    setEditTextError(binding.etBasicDetailCity,"City cannot be blank.")
                 }
             } else {
-                setEditTextError(etBasicDetailStreet,"Street cannot be blank.")
+                setEditTextError(binding.etBasicDetailStreet,"Street cannot be blank.")
             }
         }
     }
@@ -294,16 +305,16 @@ class TherapyBasicDetailsBFragment : BaseFragment() {
         //tv_add.text = addressList.get(0).getAddressLine(0)
         Log.d("Last Location", "$addressList")
         if (addressList[0].subLocality != null && addressList[0].subLocality.isNotEmpty()) {
-            etBasicDetailStreet.setText(addressList[0].subLocality)
+            binding.etBasicDetailStreet.setText(addressList[0].subLocality)
         } else if (addressList[0].thoroughfare != null && addressList[0].thoroughfare.isNotEmpty()) {
-            etBasicDetailStreet.setText(addressList[0].thoroughfare)
+            binding.etBasicDetailStreet.setText(addressList[0].thoroughfare)
         } else if (addressList[0].subAdminArea != null && addressList[0].subAdminArea.isNotEmpty()) {
-            etBasicDetailStreet.setText(addressList[0].subAdminArea)
+            binding.etBasicDetailStreet.setText(addressList[0].subAdminArea)
         }
-        etBasicDetailCity.setText(addressList[0].locality)
-        etBasicDetailState.setText(addressList[0].adminArea)
-        etBasicDetailPostalCode.setText(addressList[0].postalCode)
-        etBasicDetailCountry.setText(addressList[0].countryName)
+        binding.etBasicDetailCity.setText(addressList[0].locality)
+        binding.etBasicDetailState.setText(addressList[0].adminArea)
+        binding.etBasicDetailPostalCode.setText(addressList[0].postalCode)
+        binding.etBasicDetailCountry.setText(addressList[0].countryName)
         fusedLocationProvider!!.removeLocationUpdates(locationCallback)
     }
 

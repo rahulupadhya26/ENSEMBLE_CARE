@@ -1,16 +1,17 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.app.selfcare.R
 import com.app.selfcare.data.TransactionStatus
+import com.app.selfcare.databinding.FragmentTransactionStatusBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.set
-import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
-import kotlinx.android.synthetic.main.fragment_transaction_status.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,6 +27,7 @@ class TransactionStatusFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var transSts: TransactionStatus? = null
     private var paymentSts: Boolean = false
+    private lateinit var binding: FragmentTransactionStatusBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,15 @@ class TransactionStatusFragment : BaseFragment() {
             transSts = it.getParcelable(ARG_PARAM1)
             paymentSts = it.getBoolean(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentTransactionStatusBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -49,25 +60,31 @@ class TransactionStatusFragment : BaseFragment() {
         preference!![PrefKeys.PREF_STEP] = Utils.PLAN_PAY
 
         if (paymentSts) {
-            imgTransaction.setImageResource(R.drawable.success)
-            txtTransStatus.text = "Transaction Successful"
-            txtTransStatus.setTextColor(
+            binding.imgTransaction.setImageResource(R.drawable.success)
+            binding.txtTransStatus.text = "Transaction Successful"
+            binding.txtTransStatus.setTextColor(
                 ContextCompat.getColor(
                     requireActivity(),
                     R.color.primaryGreen
                 )
             )
         } else {
-            imgTransaction.setImageResource(R.drawable.cancel)
-            txtTransStatus.text = "Transaction Failed"
-            txtTransStatus.setTextColor(ContextCompat.getColor(requireActivity(), R.color.red))
+            binding.imgTransaction.setImageResource(R.drawable.cancel)
+            binding.txtTransStatus.text = "Transaction Failed"
+            binding.txtTransStatus.setTextColor(ContextCompat.getColor(requireActivity(), R.color.red))
         }
-        txtTransId.text = transSts!!.transaction_id
+        binding.txtTransId.text = transSts!!.transaction_id
 
-        btnTransStsContinue.setOnClickListener {
-            val severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
+        binding.btnTransStsContinue.setOnClickListener {
+            Utils.isLoggedInFirstTime = true
+            val severityRating = 20
+            /*if (preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!! != null) {
+                if (preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.isNotEmpty()) {
+                    severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
+                }
+            }*/
             preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
-            if(severityRating in 0..14) {
+            if (severityRating in 0..14) {
                 Utils.isTherapististScreen = false
                 replaceFragmentNoBackStack(
                     BottomNavigationFragment(),
@@ -84,7 +101,7 @@ class TransactionStatusFragment : BaseFragment() {
             }
         }
 
-        layoutScreenshot.setOnClickListener {
+        binding.layoutScreenshot.setOnClickListener {
             takeScreenshot()
         }
     }

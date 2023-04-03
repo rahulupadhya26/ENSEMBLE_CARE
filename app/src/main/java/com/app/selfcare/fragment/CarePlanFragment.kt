@@ -2,13 +2,13 @@ package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
-import com.app.selfcare.adapters.CarePlanDayAdapter
 import com.app.selfcare.adapters.CarePlanDayListAdapter
 import com.app.selfcare.adapters.CarePlanTodayTaskListAdapter
 import com.app.selfcare.controller.OnCarePlanDayItemClickListener
@@ -17,15 +17,9 @@ import com.app.selfcare.data.CareDay
 import com.app.selfcare.data.CareDayIndividualTaskDetail
 import com.app.selfcare.data.CarePlans
 import com.app.selfcare.data.DayWiseCarePlan
-import com.app.selfcare.preference.PrefKeys
-import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.databinding.FragmentCarePlanBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_care_plan.*
-import kotlinx.android.synthetic.main.fragment_coaches.*
-import retrofit2.HttpException
 import java.lang.reflect.Type
 
 // TODO: Rename parameter arguments, choose names that match
@@ -44,6 +38,7 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
     private var carePlans: CarePlans? = null
     private var careDay: CareDay? = null
     private var selectedDayNo: Int = 0
+    private lateinit var binding: FragmentCarePlanBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +46,15 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
             carePlans = it.getParcelable(ARG_PARAM1)
             careDay = it.getParcelable(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCarePlanBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -71,8 +75,14 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
     }
 
     private fun onClickEvents() {
-        carePlanBack.setOnClickListener {
-            popBackStack()
+        binding.carePlanBack.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
     }
 
@@ -83,7 +93,7 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
             val dayWiseCarePlan: DayWiseCarePlan =
                 Gson().fromJson(response, dayWiseCarePlanType)
 
-            recyclerViewCarePlanDayList.apply {
+            binding.recyclerViewCarePlanDayList.apply {
                 layoutManager = LinearLayoutManager(
                     requireActivity(), RecyclerView.HORIZONTAL, false
                 )
@@ -110,68 +120,68 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
     private fun updateTaskProgressData(dayWiseCarePlan: DayWiseCarePlan) {
         if (dayWiseCarePlan.plan.task_completed.toString() != "{}") {
             if (dayWiseCarePlan.plan.task_completed.completed != null)
-                txtTaskCompleted.text =
+                binding.txtTaskCompleted.text =
                     dayWiseCarePlan.plan.task_completed.completed + " of " +
                             dayWiseCarePlan.plan.task_completed.total
             else
-                layoutTaskProgressTaskCompleted.visibility = View.GONE
+                binding.layoutTaskProgressTaskCompleted.visibility = View.GONE
         } else {
-            layoutTaskProgressTaskCompleted.visibility = View.GONE
+            binding.layoutTaskProgressTaskCompleted.visibility = View.GONE
         }
 
         if (dayWiseCarePlan.plan.calories != null && dayWiseCarePlan.plan.calories.toString() != "{}") {
             if (dayWiseCarePlan.plan.calories.completed != null)
-                txtCaloriesData.text =
+                binding.txtCaloriesData.text =
                     dayWiseCarePlan.plan.calories.completed.dropLast(4) + " of " +
                             dayWiseCarePlan.plan.calories.total.dropLast(4) + " mins"
             else
-                layoutTaskProgressCalories.visibility = View.GONE
+                binding.layoutTaskProgressCalories.visibility = View.GONE
         } else {
-            layoutTaskProgressCalories.visibility = View.GONE
+            binding.layoutTaskProgressCalories.visibility = View.GONE
         }
 
         if (dayWiseCarePlan.plan.exercise != null && dayWiseCarePlan.plan.exercise.toString() != "{}") {
             if (dayWiseCarePlan.plan.exercise.completed != null)
-                txtExerciseData.text =
+                binding.txtExerciseData.text =
                     dayWiseCarePlan.plan.exercise.completed.dropLast(4) + " of " +
                             dayWiseCarePlan.plan.exercise.total.dropLast(4) + " mins"
             else
-                layoutTaskProgressExercise.visibility = View.GONE
+                binding.layoutTaskProgressExercise.visibility = View.GONE
         } else {
-            layoutTaskProgressExercise.visibility = View.GONE
+            binding.layoutTaskProgressExercise.visibility = View.GONE
         }
 
         if (dayWiseCarePlan.plan.music != null && dayWiseCarePlan.plan.music.toString() != "{}") {
             if (dayWiseCarePlan.plan.music.completed != null)
-                txtMusicData.text =
+                binding.txtMusicData.text =
                     dayWiseCarePlan.plan.music.completed.dropLast(4) + " of " +
                             dayWiseCarePlan.plan.music.total.dropLast(4) + " mins"
             else
-                layoutTaskProgressMusic.visibility = View.GONE
+                binding.layoutTaskProgressMusic.visibility = View.GONE
         } else {
-            layoutTaskProgressMusic.visibility = View.GONE
+            binding.layoutTaskProgressMusic.visibility = View.GONE
         }
 
         if (dayWiseCarePlan.plan.mindfulness != null && dayWiseCarePlan.plan.mindfulness.toString() != "{}") {
             if (dayWiseCarePlan.plan.mindfulness.completed != null)
-                txtMindfulnessData.text =
+                binding.txtMindfulnessData.text =
                     dayWiseCarePlan.plan.mindfulness.completed.dropLast(4) + " of " +
                             dayWiseCarePlan.plan.mindfulness.total.dropLast(4) + " mins"
             else
-                layoutTaskProgressMindfulness.visibility = View.GONE
+                binding.layoutTaskProgressMindfulness.visibility = View.GONE
         } else {
-            layoutTaskProgressMindfulness.visibility = View.GONE
+            binding.layoutTaskProgressMindfulness.visibility = View.GONE
         }
 
         if (dayWiseCarePlan.plan.yoga != null && dayWiseCarePlan.plan.yoga.toString() != "{}") {
             if (dayWiseCarePlan.plan.yoga.completed != null)
-                txtYogaData.text =
+                binding.txtYogaData.text =
                     dayWiseCarePlan.plan.yoga.completed.dropLast(4) + " of " +
                             dayWiseCarePlan.plan.yoga.total.dropLast(4) + " mins"
             else
-                layoutTaskProgressYoga.visibility = View.GONE
+                binding.layoutTaskProgressYoga.visibility = View.GONE
         } else {
-            layoutTaskProgressYoga.visibility = View.GONE
+            binding.layoutTaskProgressYoga.visibility = View.GONE
         }
     }
 
@@ -190,7 +200,7 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
 
         tasks.sortBy { it.time }
 
-        recyclerViewTodayTask.apply {
+        binding.recyclerViewTodayTask.apply {
             layoutManager = LinearLayoutManager(
                 requireActivity(), RecyclerView.VERTICAL, false
             )

@@ -1,16 +1,16 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.app.selfcare.R
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentTherapyBasicDetailsABinding
 import com.app.selfcare.utils.Utils
-import kotlinx.android.synthetic.main.fragment_therapy_basic_details_a.*
-import kotlinx.android.synthetic.main.fragment_therapy_selection.*
 import java.util.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
@@ -29,6 +29,7 @@ class TherapyBasicDetailsAFragment : BaseFragment() {
     private var param2: String? = null
     private var selectedAllergies: String? = null
     private var selectedSymptoms: String? = null
+    private lateinit var binding: FragmentTherapyBasicDetailsABinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +37,15 @@ class TherapyBasicDetailsAFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentTherapyBasicDetailsABinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -52,7 +62,7 @@ class TherapyBasicDetailsAFragment : BaseFragment() {
 
         symptomsSpinner()
 
-        btnBasicDetailA.setOnClickListener {
+        binding.btnBasicDetailA.setOnClickListener {
             if (selectedAllergies != null) {
                 if (selectedSymptoms != null) {
                     Utils.selectedSymptoms = selectedSymptoms!!
@@ -84,8 +94,8 @@ class TherapyBasicDetailsAFragment : BaseFragment() {
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             requireActivity(), R.layout.spinner_dropdown_custom_item, allergies
         )
-        spinnerAllergies.setAdapter(adapter)
-        spinnerAllergies.onItemClickListener =
+        binding.spinnerAllergies.setAdapter(adapter)
+        binding.spinnerAllergies.onItemClickListener =
             AdapterView.OnItemClickListener { parent, arg1, position, id ->
                 //TODO: You can your own logic.
                 selectedAllergies = allergies[position]
@@ -107,8 +117,8 @@ class TherapyBasicDetailsAFragment : BaseFragment() {
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             requireActivity(), R.layout.spinner_dropdown_custom_item, symptoms
         )
-        spinnerSymptoms.setAdapter(adapter)
-        spinnerSymptoms.onItemClickListener =
+        binding.spinnerSymptoms.setAdapter(adapter)
+        binding.spinnerSymptoms.onItemClickListener =
             AdapterView.OnItemClickListener { parent, arg1, position, id ->
                 //TODO: You can your own logic.
                 selectedSymptoms = symptoms[position]

@@ -22,15 +22,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_centerInParent="true"
+                android:orientation="vertical"
                 android:visibility="gone">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ensemble_care_logo"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/_32sp"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -76,23 +76,33 @@
             android:id="@+id/layout_progress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/transparent"
+            android:background="#80FFFFFF"
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:visibility="gone">
 
-            <ProgressBar
+            <!--<ProgressBar
                 android:id="@+id/progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-            <!--        <View-->
-            <!--            android:layout_width="match_parent"-->
-            <!--            android:clickable="true"-->
-            <!--            android:focusableInTouchMode="true"-->
-            <!--            android:focusable="true"-->
-            <!--            android:layout_height="match_parent"/>-->
+                android:layout_gravity="center"/>-->
+            <!--<LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:background="#00BD9C">-->
+
+            <com.github.ybq.android.spinkit.SpinKitView
+                android:id="@+id/spin_kit"
+                style="@style/SpinKitView.Large.ThreeBounce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:SpinKit_Color="@color/primaryGreen" />
+            <!--</LinearLayout>-->
+
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -100,24 +110,24 @@
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="start"
         android:background="@color/white"
         android:fitsSystemWindows="true"
-        android:layout_gravity = "start"
         app:headerLayout="@layout/layout_header_drawer"
         app:itemIconTint="@color/black"
         app:itemTextAppearance="@style/itemTextStyle"
         app:itemTextColor="@color/black"
-        app:menu="@menu/drawer_view" >
+        app:menu="@menu/drawer_view">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:fontFamily="@font/avenir_heavy"
-            android:text="Build No. - 7.21.10.1"
-            android:padding="10dp"
             android:gravity="center"
-            android:textColor="@color/black"/>
+            android:padding="10dp"
+            android:text="Build No. - 7.21.10.1"
+            android:textColor="@color/black" />
 
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

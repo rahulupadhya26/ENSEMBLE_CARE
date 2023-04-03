@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.app.selfcare.R
 import com.app.selfcare.controller.OnDocumentsConsentRoisViewItemClickListener
 import com.app.selfcare.data.ConsentsRoisDocumentData
-import kotlinx.android.synthetic.main.layout_item_document_consent_rois.view.*
+import com.app.selfcare.databinding.LayoutItemDocumentConsentRoisBinding
 
 class ConsentsRoisViewAdapter(
     private val context: Context,
@@ -24,9 +23,14 @@ class ConsentsRoisViewAdapter(
         parent: ViewGroup,
         viewType: Int
     ): ConsentsRoisViewAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_document_consent_rois, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemDocumentConsentRoisBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_document_consent_rois, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -34,16 +38,16 @@ class ConsentsRoisViewAdapter(
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: ConsentsRoisViewAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        holder.txtDocumentViewConsentRois.text = item.name
-        holder.layoutDocumentConsentRoisView.setOnClickListener {
-            adapterItemClick.onDocumentsConsentRoisViewItemClickListener(item)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            txtDocumentViewConsentRois.text = item.name
+            layoutDocumentConsentRoisView.setOnClickListener {
+                adapterItemClick.onDocumentsConsentRoisViewItemClickListener(item)
+            }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val layoutDocumentConsentRoisView: LinearLayout = itemView.layoutDocumentConsentRoisView
-        val txtDocumentViewConsentRois: TextView = itemView.txtDocumentViewConsentRois
-    }
+    inner class ViewHolder(val binding: LayoutItemDocumentConsentRoisBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

@@ -3,20 +3,23 @@ package com.app.selfcare.fragment
 import android.os.Bundle
 import android.text.SpannableString
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.app.selfcare.R
 import com.app.selfcare.data.Employee
 import com.app.selfcare.data.Register
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentRegisterPartCBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_register_part_c.*
 import retrofit2.HttpException
 import kotlin.Exception
 
@@ -36,6 +39,7 @@ class RegisterPartCFragment : BaseFragment() {
     private var param2: String? = null
     private var selectedType: String? = null
     private var employerTypeData: Array<String>? = null
+    private lateinit var binding: FragmentRegisterPartCBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,15 @@ class RegisterPartCFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRegisterPartCBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -59,18 +72,20 @@ class RegisterPartCFragment : BaseFragment() {
 
         employeeTypeListSpinner()
 
-        checkboxCoveredSelfPay.isChecked = false
+        binding.checkboxCoveredSelfPay.isChecked = false
+        binding.checkboxCoveredEAP.isChecked = false
+        binding.checkboxCoveredInsurance.isChecked = false
 
         if (preference!![PrefKeys.PREF_REG, ""]!!.isNotEmpty()) {
             val register =
                 Gson().fromJson(preference!![PrefKeys.PREF_REG, ""]!!, Register::class.java)
             if (register.is_employee) {
-                layout_employeeId.visibility = View.VISIBLE
-                etSignUpEmployeeId.setText(register.employee_id)
-                etSignUpEmployer.setText(register.employer)
-                etSignUpEmployerCode.setText(register.access_code)
+                binding.layoutEmployeeId.visibility = View.VISIBLE
+                binding.etSignUpEmployeeId.setText(register.employee_id)
+                binding.etSignUpEmployer.setText(register.employer)
+                binding.etSignUpEmployerCode.setText(register.access_code)
             } else {
-                layout_employeeId.visibility = View.GONE
+                binding.layoutEmployeeId.visibility = View.GONE
             }
         }
 
@@ -78,8 +93,8 @@ class RegisterPartCFragment : BaseFragment() {
             popBackStack()
         }*/
 
-        checkboxCoveredSelfPay.addClickableLink(
-            "I hereby agree to abide by the terms and conditions provider by EnsembleCare for SelfPay",
+        binding.checkboxCoveredSelfPay.addClickableLink(
+            "I hereby acknowledge and agree to abide by the terms and conditions set forth by EnsembleCare.",
             SpannableString("terms and conditions")
         ) {
             val createRegisterTermsConditions =
@@ -94,11 +109,43 @@ class RegisterPartCFragment : BaseFragment() {
             createRegisterTermsConditions.show()
         }
 
-        btnRegisterC.setOnClickListener {
+        binding.checkboxCoveredEAP.addClickableLink(
+            "I hereby acknowledge and agree to abide by the terms and conditions set forth by EnsembleCare.",
+            SpannableString("terms and conditions")
+        ) {
+            val createRegisterTermsConditions =
+                BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+            val coveredSelfPayTermsConditionsDialog: View = layoutInflater.inflate(
+                R.layout.dialog_register_part_terms_conditions, null
+            )
+            createRegisterTermsConditions.setContentView(coveredSelfPayTermsConditionsDialog)
+            createRegisterTermsConditions.behavior.isFitToContents = false
+            createRegisterTermsConditions.behavior.halfExpandedRatio = 0.6f
+            createRegisterTermsConditions.setCanceledOnTouchOutside(true)
+            createRegisterTermsConditions.show()
+        }
+
+        binding.checkboxCoveredInsurance.addClickableLink(
+            "I hereby acknowledge and agree to abide by the terms and conditions set forth by EnsembleCare.",
+            SpannableString("terms and conditions")
+        ) {
+            val createRegisterTermsConditions =
+                BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+            val coveredSelfPayTermsConditionsDialog: View = layoutInflater.inflate(
+                R.layout.dialog_register_part_terms_conditions, null
+            )
+            createRegisterTermsConditions.setContentView(coveredSelfPayTermsConditionsDialog)
+            createRegisterTermsConditions.behavior.isFitToContents = false
+            createRegisterTermsConditions.behavior.halfExpandedRatio = 0.6f
+            createRegisterTermsConditions.setCanceledOnTouchOutside(true)
+            createRegisterTermsConditions.show()
+        }
+
+        binding.btnRegisterC.setOnClickListener {
             employerTypeData = resources.getStringArray(R.array.employer_type)
             when (selectedType) {
                 employerTypeData!![0] -> {
-                    if (checkboxCoveredSelfPay.isChecked) {
+                    if (binding.checkboxCoveredSelfPay.isChecked) {
                         callVerifyEmp("SelfPay")
                     } else {
                         displayMsg(
@@ -108,21 +155,35 @@ class RegisterPartCFragment : BaseFragment() {
                     }
                 }
                 employerTypeData!![1] -> {
-                    callVerifyEmp("Insurance")
+                    if (binding.checkboxCoveredInsurance.isChecked) {
+                        callVerifyEmp("Insurance")
+                    } else {
+                        displayMsg(
+                            "Message",
+                            "Please select terms and conditions for further procedure"
+                        )
+                    }
                 }
                 employerTypeData!![2] -> {
-                    if (getText(etSignUpEmployeeId).isNotEmpty()) {
-                        if (getText(etSignUpEmployer).isNotEmpty()) {
-                            if (getText(etSignUpEmployerCode).isNotEmpty()) {
-                                callVerifyEmp("EAP")
+                    if (getText(binding.etSignUpEmployeeId).isNotEmpty()) {
+                        if (getText(binding.etSignUpEmployer).isNotEmpty()) {
+                            if (getText(binding.etSignUpEmployerCode).isNotEmpty()) {
+                                if (binding.checkboxCoveredEAP.isChecked) {
+                                    callVerifyEmp("EAP")
+                                } else {
+                                    displayMsg(
+                                        "Message",
+                                        "Please select terms and conditions for further procedure"
+                                    )
+                                }
                             } else {
-                                setEditTextError(etSignUpEmployer, "Employer Code cannot be blank")
+                                setEditTextError(binding.etSignUpEmployer, "Employer Code cannot be blank")
                             }
                         } else {
-                            setEditTextError(etSignUpEmployer, "Company name cannot be blank")
+                            setEditTextError(binding.etSignUpEmployer, "Company name cannot be blank")
                         }
                     } else {
-                        setEditTextError(etSignUpEmployeeId, "Employee ID cannot be blank")
+                        setEditTextError(binding.etSignUpEmployeeId, "Employee ID cannot be blank")
                     }
                 }
             }
@@ -136,9 +197,9 @@ class RegisterPartCFragment : BaseFragment() {
                 requireActivity(),
                 R.layout.spinner_dropdown_custom_item, employerTypeData!!
             )
-            spinnerEmployerTypeList.adapter = adapter
+            binding.spinnerEmployerTypeList.adapter = adapter
 
-            spinnerEmployerTypeList.onItemSelectedListener = object :
+            binding.spinnerEmployerTypeList.onItemSelectedListener = object :
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
@@ -148,19 +209,24 @@ class RegisterPartCFragment : BaseFragment() {
                         selectedType = employerTypeData!![position]
                         when (selectedType) {
                             employerTypeData!![0] -> {
-                                layoutCoveredSelfPay.visibility = View.VISIBLE
-                                layout_employeeId.visibility = View.GONE
-                                etSignUpEmployeeId.setText("")
-                                etSignUpEmployer.setText("")
-                                etSignUpEmployerCode.setText("")
+                                binding.layoutCoveredSelfPay.visibility = View.VISIBLE
+                                binding.layoutEmployeeId.visibility = View.GONE
+                                binding.layoutCoveredEAP.visibility = View.GONE
+                                binding.layoutCoveredInsurance.visibility = View.GONE
+                                binding.etSignUpEmployeeId.setText("")
+                                binding.etSignUpEmployer.setText("")
+                                binding.etSignUpEmployerCode.setText("")
                             }
                             employerTypeData!![2] -> {
-                                layout_employeeId.visibility = View.VISIBLE
-                                layoutCoveredSelfPay.visibility = View.GONE
+                                binding.layoutEmployeeId.visibility = View.VISIBLE
+                                binding.layoutCoveredSelfPay.visibility = View.GONE
+                                binding.layoutCoveredInsurance.visibility = View.GONE
+                                binding.layoutCoveredEAP.visibility = View.VISIBLE
                             }
                             else -> {
-                                layout_employeeId.visibility = View.GONE
-                                layoutCoveredSelfPay.visibility = View.GONE
+                                binding.layoutEmployeeId.visibility = View.GONE
+                                binding.layoutCoveredSelfPay.visibility = View.GONE
+                                binding.layoutCoveredInsurance.visibility = View.VISIBLE
                             }
                         }
                     } catch (e: Exception) {
@@ -185,9 +251,9 @@ class RegisterPartCFragment : BaseFragment() {
                     .coveredType(
                         Employee(
                             coveredType,
-                            getText(etSignUpEmployeeId),
-                            getText(etSignUpEmployer),
-                            getText(etSignUpEmployerCode)
+                            getText(binding.etSignUpEmployeeId),
+                            getText(binding.etSignUpEmployer),
+                            getText(binding.etSignUpEmployerCode)
                         ),
                         getAccessToken()
                     )

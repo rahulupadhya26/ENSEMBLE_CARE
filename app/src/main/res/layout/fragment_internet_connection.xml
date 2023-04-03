@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:clickable="false"
+    tools:context=".fragment.InternetConnectionFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/fontfamily"
+        android:text="No Connection"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_20sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/fontfamily"
+        android:text="The server connection has been lost. Please verify that your internet connection is working properly"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_20sp"
+        android:layout_marginStart="@dimen/_30dp"
+        android:layout_marginEnd="@dimen/_30dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:gravity="center"/>
+
+    <Button
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        android:text="Retry"
+        android:visibility="gone"
+        android:textAppearance="@style/fontfamily"
+        android:textSize="@dimen/_18sp"
+        android:layout_marginTop="@dimen/_10dp"/>
+
+</LinearLayout>

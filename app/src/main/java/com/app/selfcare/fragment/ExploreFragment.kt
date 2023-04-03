@@ -2,8 +2,10 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -12,13 +14,14 @@ import com.app.selfcare.adapters.DashboardJournalAdapter
 import com.app.selfcare.controller.OnGoalItemClickListener
 import com.app.selfcare.controller.OnJournalItemClickListener
 import com.app.selfcare.data.*
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentExploreBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_explore.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.util.ArrayList
@@ -38,6 +41,7 @@ class ExploreFragment : BaseFragment(), OnGoalItemClickListener, OnJournalItemCl
     private var param1: String? = null
     private var param2: String? = null
     private val isDebug: Boolean = true
+    private lateinit var binding: FragmentExploreBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +49,15 @@ class ExploreFragment : BaseFragment(), OnGoalItemClickListener, OnJournalItemCl
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentExploreBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -77,19 +90,19 @@ class ExploreFragment : BaseFragment(), OnGoalItemClickListener, OnJournalItemCl
             goalLists = Gson().fromJson(response, goalList)
 
             if (goalLists.isNotEmpty()) {
-                recyclerviewGoals.visibility = View.VISIBLE
-                txtNoGoalsData.visibility = View.GONE
-                recyclerviewGoals.apply {
+                binding.recyclerviewGoals.visibility = View.VISIBLE
+                binding.txtNoGoalsData.visibility = View.GONE
+                binding.recyclerviewGoals.apply {
                     layoutManager = LinearLayoutManager(mActivity!!, RecyclerView.HORIZONTAL, false)
                     adapter = AllGoalsAdapter(mActivity!!, goalLists, this@ExploreFragment, false)
                 }
             } else {
-                recyclerviewGoals.visibility = View.GONE
-                txtNoGoalsData.visibility = View.VISIBLE
+                binding.recyclerviewGoals.visibility = View.GONE
+                binding.txtNoGoalsData.visibility = View.VISIBLE
             }
         }
 
-        txtViewAllGoals.setOnClickListener {
+        binding.txtViewAllGoals.setOnClickListener {
             replaceFragment(
                 GoalsFragment(),
                 R.id.layout_home,
@@ -106,16 +119,16 @@ class ExploreFragment : BaseFragment(), OnGoalItemClickListener, OnJournalItemCl
             journalLists = Gson().fromJson(response, journalList)
 
             if (journalLists.isNotEmpty()) {
-                recyclerviewJournals.visibility = View.VISIBLE
-                txtNoJournalsData.visibility = View.GONE
-                recyclerviewJournals.apply {
+                binding.recyclerviewJournals.visibility = View.VISIBLE
+                binding.txtNoJournalsData.visibility = View.GONE
+                binding.recyclerviewJournals.apply {
                     layoutManager = LinearLayoutManager(mActivity!!, RecyclerView.HORIZONTAL, false)
                     adapter =
                         DashboardJournalAdapter(mActivity!!, journalLists, this@ExploreFragment)
                 }
             } else {
-                recyclerviewJournals.visibility = View.GONE
-                txtNoJournalsData.visibility = View.VISIBLE
+                binding.recyclerviewJournals.visibility = View.GONE
+                binding.txtNoJournalsData.visibility = View.VISIBLE
             }
         }
         /*if (isDebug) {
@@ -151,7 +164,7 @@ class ExploreFragment : BaseFragment(), OnGoalItemClickListener, OnJournalItemCl
             )
         }*/
 
-        txtViewAllJournals.setOnClickListener {
+        binding.txtViewAllJournals.setOnClickListener {
             replaceFragment(JournalFragment(), R.id.layout_home, JournalFragment.TAG)
         }
     }

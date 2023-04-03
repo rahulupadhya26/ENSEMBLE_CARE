@@ -3,10 +3,13 @@ package com.app.selfcare.fragment
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import com.app.selfcare.R
-import kotlinx.android.synthetic.main.fragment_welcome.*
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentWelcomeBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +25,7 @@ class WelcomeFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentWelcomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +33,15 @@ class WelcomeFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentWelcomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -42,17 +55,17 @@ class WelcomeFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
 
-        val rawId = resources.getIdentifier("splash_video", "raw", requireActivity().packageName)
+        val rawId = resources.getIdentifier("landing_screen", "raw", requireActivity().packageName)
         val video: Uri =
             Uri.parse("android.resource://" + requireActivity().packageName + "/" + rawId)
 
-        imgSplashBackground.setVideoURI(video)
-        imgSplashBackground.setOnPreparedListener { mp ->
+        binding.imgSplashBackground.setVideoURI(video)
+        binding.imgSplashBackground.setOnPreparedListener { mp ->
             mp.isLooping = true
-            imgSplashBackground.start()
+            binding.imgSplashBackground.start()
         }
 
-        txtLoginButton.setOnClickListener {
+        binding.txtLoginButton.setOnClickListener {
             replaceFragmentNoBackStack(
                 LoginFragment(),
                 R.id.layout_home,
@@ -62,7 +75,7 @@ class WelcomeFragment : BaseFragment() {
         /*Glide.with(requireActivity())
             .load("https://drive.google.com/file/d/16paRRS2WNT8jdMLFlCGrsJLbz_fguYri/view?usp=share_link")
             .into(imgSplashBackground)*/
-        btnSplash.setOnClickListener {
+        binding.btnSplash.setOnClickListener {
             replaceFragmentNoBackStack(
                 CarouselFragment(),
                 R.id.layout_home,

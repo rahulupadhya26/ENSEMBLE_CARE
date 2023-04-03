@@ -92,7 +92,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/fontfamily"
                         android:padding="5dp"
-                        android:text="I voluntarily agree to receive evaluation/consultation from the doctors/therapists/physicians booked through Ensemble Care App. I concur on the below information supplied while booking the appointment."
+                        android:text="I voluntarily agree to receive evaluation/consultation from the doctors/therapists/physicians booked through EnsembleCare App. I concur on the below information supplied while booking the appointment."
                         android:textColor="@color/black"
                         android:textSize="@dimen/_16sp" />
 
@@ -111,7 +111,7 @@
                         android:text="Sign below"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/primaryGreen"
-                        android:textSize="@dimen/_20sp"
+                        android:textSize="@dimen/_16sp"
                         android:textStyle="bold" />
 
                     <com.app.selfcare.utils.SignatureView

@@ -2,8 +2,10 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -11,12 +13,13 @@ import com.app.selfcare.adapters.AssessmentListAdapter
 import com.app.selfcare.adapters.ViewAssessmentListAdapter
 import com.app.selfcare.data.Assessments
 import com.app.selfcare.data.ViewAssessment
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentViewAssessmentBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_view_assessment.*
 import retrofit2.HttpException
 
 // TODO: Rename parameter arguments, choose names that match
@@ -33,6 +36,7 @@ class ViewAssessmentFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var assessment: Assessments? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentViewAssessmentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +44,15 @@ class ViewAssessmentFragment : BaseFragment() {
             assessment = it.getParcelable(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentViewAssessmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -52,7 +65,7 @@ class ViewAssessmentFragment : BaseFragment() {
         getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
 
-        txtViewAssessmentType.text = assessment!!.type_of_assessment
+        binding.txtViewAssessmentType.text = assessment!!.type_of_assessment
         viewAssessment()
     }
 
@@ -74,9 +87,9 @@ class ViewAssessmentFragment : BaseFragment() {
                             responseBody = respBody[0]
                             val viewAssessment =
                                 Gson().fromJson(responseBody, ViewAssessment::class.java)
-                            txtScore.text =
+                            binding.txtScore.text =
                                 viewAssessment.patient_score + "/" + viewAssessment.Total_score
-                            recyclerViewCompletedAssessment.apply {
+                            binding.recyclerViewCompletedAssessment.apply {
                                 layoutManager = LinearLayoutManager(
                                     mActivity!!,
                                     RecyclerView.VERTICAL,

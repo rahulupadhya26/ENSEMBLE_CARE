@@ -1,19 +1,14 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
+import android.view.ViewGroup
 import com.app.selfcare.R
+import com.app.selfcare.databinding.FragmentBottomNavigationBinding
 import com.app.selfcare.utils.Utils
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.fragment_bottom_navigation.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +24,7 @@ class BottomNavigationFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentBottomNavigationBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +32,15 @@ class BottomNavigationFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentBottomNavigationBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -55,41 +60,51 @@ class BottomNavigationFragment : BaseFragment() {
 
         val appBarConfiguration = AppBarConfiguration(loginNavController.graph)*/
 
-        bottomNavigationView.background = null
+        binding.bottomNavigationView.background = null
 
         if (getBottomNavigation() == null) {
-            val navigationView = bottomNavigationView
+            val navigationView = binding.bottomNavigationView
             setBottomNavigation(navigationView as BottomNavigationView)
             navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
             getBottomNavigation()!!.selectedItemId = R.id.navigation_home
         }
 
         if (getLayoutBottomNavigation() == null) {
-            setLayoutBottomNavigation(layoutBottomNav)
-            layoutBottomNav.visibility = View.VISIBLE
+            setLayoutBottomNavigation(binding.layoutBottomNav)
+            binding.layoutBottomNav.visibility = View.VISIBLE
+            if (Utils.bottomNav == Utils.BOTTOM_NAV_DASHBOARD) {
+                navigateDashboard()
+            }
 
-            imgDashboard.visibility = View.GONE
-            cardViewDashboard.visibility = View.VISIBLE
+            if (Utils.bottomNav == Utils.BOTTOM_NAV_COACH) {
+                navigateCarePlan()
+            }
 
-            imgCrisis.visibility = View.VISIBLE
-            cardViewCrisis.visibility = View.GONE
+            if (Utils.bottomNav == Utils.BOTTOM_NAV_WELLNESS) {
+                navigateWellness()
+            }
 
-            imgCoaches.visibility = View.VISIBLE
-            cardViewCoaches.visibility = View.GONE
+            if (Utils.bottomNav == Utils.BOTTOM_NAV_CRISIS) {
+                navigateCrisis()
+            }
 
-            imgActivity.visibility = View.VISIBLE
-            cardViewActivity.visibility = View.GONE
+            /*binding.imgCrisis.visibility = View.VISIBLE
+            binding.cardViewCrisis.visibility = View.GONE
 
-            replaceFragmentNoBackStack(
+            binding.imgCoaches.visibility = View.VISIBLE
+            binding.cardViewCoaches.visibility = View.GONE
+
+            binding.imgActivity.visibility = View.VISIBLE
+            binding.cardViewActivity.visibility = View.GONE*/
+
+            /*replaceFragmentNoBackStack(
                 DashboardFragment(),
                 R.id.layoutContent,
                 DashboardFragment.TAG
-            )
-
-            fab.visibility = View.VISIBLE
+            )*/
         }
 
-        fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             Utils.isTherapististScreen = false
             clearTempFormData()
             replaceFragmentNoBackStack(
@@ -100,89 +115,109 @@ class BottomNavigationFragment : BaseFragment() {
         }
 
 
-        layoutDashboard.setOnClickListener {
-            imgDashboard.visibility = View.GONE
-            cardViewDashboard.visibility = View.VISIBLE
-
-            imgCrisis.visibility = View.VISIBLE
-            cardViewCrisis.visibility = View.GONE
-
-            imgCoaches.visibility = View.VISIBLE
-            cardViewCoaches.visibility = View.GONE
-
-            imgActivity.visibility = View.VISIBLE
-            cardViewActivity.visibility = View.GONE
-
-            replaceFragmentNoBackStack(
-                DashboardFragment(),
-                R.id.layoutContent,
-                DashboardFragment.TAG
-            )
-            fab.visibility = View.VISIBLE
+        binding.layoutDashboard.setOnClickListener {
+            navigateDashboard()
         }
 
-        layoutActivity.setOnClickListener {
-            imgActivity.visibility = View.GONE
-            cardViewActivity.visibility = View.VISIBLE
-
-            imgDashboard.visibility = View.VISIBLE
-            cardViewDashboard.visibility = View.GONE
-
-            imgCoaches.visibility = View.VISIBLE
-            cardViewCoaches.visibility = View.GONE
-
-            imgCrisis.visibility = View.VISIBLE
-            cardViewCrisis.visibility = View.GONE
-
-            replaceFragmentNoBackStack(
-                CarePlanDashboardFragment(),
-                R.id.layoutContent,
-                CarePlanDashboardFragment.TAG
-            )
-            fab.visibility = View.GONE
+        binding.layoutActivity.setOnClickListener {
+            navigateCarePlan()
         }
 
-        layoutCoaches.setOnClickListener {
-            imgCoaches.visibility = View.GONE
-            cardViewCoaches.visibility = View.VISIBLE
-
-            imgActivity.visibility = View.VISIBLE
-            cardViewActivity.visibility = View.GONE
-
-            imgDashboard.visibility = View.VISIBLE
-            cardViewDashboard.visibility = View.GONE
-
-            imgCrisis.visibility = View.VISIBLE
-            cardViewCrisis.visibility = View.GONE
-
-            replaceFragmentNoBackStack(
-                CoachesFragment(),
-                R.id.layoutContent,
-                CoachesFragment.TAG
-            )
-            fab.visibility = View.GONE
+        binding.layoutCoaches.setOnClickListener {
+            navigateWellness()
         }
 
-        layoutCrisis.setOnClickListener {
-            imgCrisis.visibility = View.GONE
-            cardViewCrisis.visibility = View.VISIBLE
-
-            imgCoaches.visibility = View.VISIBLE
-            cardViewCoaches.visibility = View.GONE
-
-            imgActivity.visibility = View.VISIBLE
-            cardViewActivity.visibility = View.GONE
-
-            imgDashboard.visibility = View.VISIBLE
-            cardViewDashboard.visibility = View.GONE
-
-            replaceFragmentNoBackStack(
-                HealthInfoFragment(),
-                R.id.layoutContent,
-                HealthInfoFragment.TAG
-            )
-            fab.visibility = View.GONE
+        binding.layoutCrisis.setOnClickListener {
+            navigateCrisis()
         }
+    }
+
+    private fun navigateDashboard() {
+        Utils.bottomNav = Utils.BOTTOM_NAV_DASHBOARD
+        binding.imgDashboard.visibility = View.GONE
+        binding.cardViewDashboard.visibility = View.VISIBLE
+
+        binding.imgCrisis.visibility = View.VISIBLE
+        binding.cardViewCrisis.visibility = View.GONE
+
+        binding.imgCoaches.visibility = View.VISIBLE
+        binding.cardViewCoaches.visibility = View.GONE
+
+        binding.imgActivity.visibility = View.VISIBLE
+        binding.cardViewActivity.visibility = View.GONE
+
+        replaceFragmentNoBackStack(
+            DashboardFragment(),
+            R.id.layoutContent,
+            DashboardFragment.TAG
+        )
+        binding.fab.visibility = View.VISIBLE
+    }
+
+    private fun navigateCarePlan() {
+        Utils.bottomNav = Utils.BOTTOM_NAV_COACH
+        binding.imgActivity.visibility = View.GONE
+        binding.cardViewActivity.visibility = View.VISIBLE
+
+        binding.imgDashboard.visibility = View.VISIBLE
+        binding.cardViewDashboard.visibility = View.GONE
+
+        binding.imgCoaches.visibility = View.VISIBLE
+        binding.cardViewCoaches.visibility = View.GONE
+
+        binding.imgCrisis.visibility = View.VISIBLE
+        binding.cardViewCrisis.visibility = View.GONE
+
+        replaceFragmentNoBackStack(
+            CarePlanDashboardFragment(),
+            R.id.layoutContent,
+            CarePlanDashboardFragment.TAG
+        )
+        binding.fab.visibility = View.GONE
+    }
+
+    private fun navigateWellness() {
+        Utils.bottomNav = Utils.BOTTOM_NAV_WELLNESS
+        binding.imgCoaches.visibility = View.GONE
+        binding.cardViewCoaches.visibility = View.VISIBLE
+
+        binding.imgActivity.visibility = View.VISIBLE
+        binding.cardViewActivity.visibility = View.GONE
+
+        binding.imgDashboard.visibility = View.VISIBLE
+        binding.cardViewDashboard.visibility = View.GONE
+
+        binding.imgCrisis.visibility = View.VISIBLE
+        binding.cardViewCrisis.visibility = View.GONE
+
+        replaceFragmentNoBackStack(
+            CoachesFragment(),
+            R.id.layoutContent,
+            CoachesFragment.TAG
+        )
+        binding.fab.visibility = View.GONE
+    }
+
+    private fun navigateCrisis() {
+        Utils.bottomNav = Utils.BOTTOM_NAV_CRISIS
+        binding.imgCrisis.visibility = View.GONE
+        binding.cardViewCrisis.visibility = View.VISIBLE
+
+        binding.imgCoaches.visibility = View.VISIBLE
+        binding.cardViewCoaches.visibility = View.GONE
+
+        binding.imgActivity.visibility = View.VISIBLE
+        binding.cardViewActivity.visibility = View.GONE
+
+        binding.imgDashboard.visibility = View.VISIBLE
+        binding.cardViewDashboard.visibility = View.GONE
+
+        replaceFragmentNoBackStack(
+            CrisisManagementFragment(),
+            R.id.layoutContent,
+            CrisisManagementFragment.TAG
+        )
+        binding.fab.visibility = View.GONE
     }
 
     private val mOnNavigationItemSelectedListener =

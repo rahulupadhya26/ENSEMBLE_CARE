@@ -2,17 +2,17 @@ package com.app.selfcare.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.adapters.VideosAdapter
 import com.app.selfcare.controller.OnVideoItemClickListener
-import com.app.selfcare.data.Articles
-import com.app.selfcare.data.Podcast
 import com.app.selfcare.data.Video
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentVideosListBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
@@ -20,9 +20,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_news_detail.*
-import kotlinx.android.synthetic.main.fragment_resources.*
-import kotlinx.android.synthetic.main.fragment_videos_list.*
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
@@ -45,6 +42,7 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
     private var wellnessType: String? = null
     private var isFavourite: Boolean = false
     private var category: String? = null
+    private lateinit var binding: FragmentVideosListBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +52,15 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
             isFavourite = it.getBoolean(ARG_PARAM3)
             category = it.getString(ARG_PARAM4)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentVideosListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -67,51 +74,63 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        videosBack.setOnClickListener {
+        binding.videosBack.setOnClickListener {
             popBackStack()
         }
 
         if (videos != null && videos!!.isNotEmpty()) {
             displayVideos(videos!!)
         } else {
-            when (wellnessType!!) {
-                Utils.WELLNESS_EXERCISE -> {
-                    if (isFavourite) {
-                        getFavDetailVideoData()
-                    } else {
-                        getDetailVideoData("exercise_data/")
-                    }
+            fetchVideos()
+        }
+    }
+
+    private fun fetchVideos() {
+        when (wellnessType!!) {
+            Utils.WELLNESS_EXERCISE -> {
+                if (isFavourite) {
+                    getFavDetailVideoData()
+                } else {
+                    getDetailVideoData("exercise_data/")
                 }
-                Utils.WELLNESS_NUTRITION -> {
-                    if (isFavourite) {
-                        getFavDetailVideoData()
-                    } else {
-                        getDetailVideoData("nutrition_data/")
-                    }
+            }
+            Utils.WELLNESS_NUTRITION -> {
+                if (isFavourite) {
+                    getFavDetailVideoData()
+                } else {
+                    getDetailVideoData("nutrition_data/")
                 }
-                Utils.WELLNESS_MINDFULNESS -> {
-                    if (isFavourite) {
-                        getFavDetailVideoData()
-                    } else {
-                        getDetailVideoData("mindfulness_data/")
-                    }
+            }
+            Utils.WELLNESS_MINDFULNESS -> {
+                if (isFavourite) {
+                    getFavDetailVideoData()
+                } else {
+                    getDetailVideoData("mindfulness_data/")
                 }
-                Utils.WELLNESS_YOGA -> {
-                    if (isFavourite) {
-                        getFavDetailVideoData()
-                    } else {
-                        getDetailVideoData("yoga_data/")
-                    }
+            }
+            Utils.WELLNESS_YOGA -> {
+                if (isFavourite) {
+                    getFavDetailVideoData()
+                } else {
+                    getDetailVideoData("yoga_data/")
                 }
-                else -> {
-                    getVideosList()
+            }
+            Utils.WELLNESS_MUSIC -> {
+                if (isFavourite) {
+                    getFavDetailVideoData()
+                } else {
+                    getDetailVideoData("music_data/")
                 }
+            }
+            else -> {
+                getVideosList()
             }
         }
     }
 
     private fun getFavDetailVideoData() {
         getFavoriteData(wellnessType!!) { response ->
+            videos = arrayListOf()
             val jsonObj = JSONObject(response!!)
             val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
             videos = Gson().fromJson(jsonObj.getString("videos"), videoList)
@@ -121,6 +140,7 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
 
     private fun getDetailVideoData(type: String) {
         getDetailData(type, category!!) { response ->
+            videos = arrayListOf()
             val jsonObj = JSONObject(response!!)
             val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
             videos = Gson().fromJson(jsonObj.getString("videos"), videoList)
@@ -174,7 +194,10 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
 
     private fun displayVideos(videos: ArrayList<Video>) {
         if (videos.isNotEmpty()) {
-            recyclerViewVideosList.apply {
+            binding.shimmerVideosList.stopShimmer()
+            binding.shimmerVideosList.visibility = View.GONE
+            binding.recyclerViewVideosList.visibility = View.VISIBLE
+            binding.recyclerViewVideosList.apply {
                 layoutManager =
                     LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false)
                 adapter = VideosAdapter(
@@ -183,10 +206,13 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
                     wellnessType!!.isEmpty(),
                     this@VideosListFragment
                 )
-                txt_no_videos.visibility = View.GONE
+                binding.txtNoVideos.visibility = View.GONE
             }
         } else {
-            txt_no_videos.visibility = View.VISIBLE
+            binding.shimmerVideosList.stopShimmer()
+            binding.shimmerVideosList.visibility = View.GONE
+            binding.recyclerViewVideosList.visibility = View.GONE
+            binding.txtNoVideos.visibility = View.VISIBLE
         }
     }
 
@@ -218,11 +244,11 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
         if (isFav) {
             if (isWellness) {
                 sendResourceFavoriteData(video.id, "Video", !video.is_favourite) {
-                    getVideosList()
+                    fetchVideos()
                 }
             } else {
-                sendFavoriteData(video.id, "Video", !video.is_favourite, "") {
-                    getVideosList()
+                sendFavoriteData(video.id, "Video", !video.is_favourite, wellnessType!!) {
+                    fetchVideos()
                 }
             }
         } else {

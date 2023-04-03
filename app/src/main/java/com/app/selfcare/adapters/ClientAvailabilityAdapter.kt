@@ -15,7 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnClickListener
 import com.app.selfcare.data.AvailabilityData
-import kotlinx.android.synthetic.main.client_availablity_item.view.*
+import com.app.selfcare.databinding.ClientAvailablityItemBinding
+import com.app.selfcare.databinding.LayoutItemGoalBinding
 
 class ClientAvailabilityAdapter(
     val context: Context,
@@ -28,9 +29,11 @@ class ClientAvailabilityAdapter(
         parent: ViewGroup,
         viewType: Int
     ): ClientAvailabilityAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.client_availablity_item, parent, false)
-        return ViewHolder(v)
+        val binding =
+            ClientAvailablityItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.client_availablity_item, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -39,25 +42,39 @@ class ClientAvailabilityAdapter(
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun onBindViewHolder(holder: ClientAvailabilityAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        holder.availabilityTxt.text = item.name
-        holder.availabilityLayout.setOnClickListener {
-            item.isSelected = !item.isSelected
-            onClickListener!!.onClickListener(item.name, item.isSelected)
-            if (item.isSelected) {
-                holder.cardViewAvailability.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primaryGreen))
-                holder.availabilityTxt.setTextColor(ContextCompat.getColor(context, R.color.white))
-            } else {
-                holder.cardViewAvailability.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
-                holder.availabilityTxt.setTextColor(ContextCompat.getColor(context, R.color.primaryGreen))
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            txtAvailability.text = item.name
+            layoutAvailability.setOnClickListener {
+                item.isSelected = !item.isSelected
+                onClickListener!!.onClickListener(item.name, item.isSelected)
+                if (item.isSelected) {
+                    cardViewAvailability.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.primaryGreen
+                        )
+                    )
+                    txtAvailability.setTextColor(ContextCompat.getColor(context, R.color.white))
+                } else {
+                    cardViewAvailability.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.white
+                        )
+                    )
+                    txtAvailability.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.primaryGreen
+                        )
+                    )
+                }
             }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val availabilityTxt: TextView = itemView.txtAvailability
-        val availabilityLayout: LinearLayout = itemView.layoutAvailability
-        val cardViewAvailability : CardView = itemView.cardViewAvailability
-    }
+    inner class ViewHolder(val binding: ClientAvailablityItemBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

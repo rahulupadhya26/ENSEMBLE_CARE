@@ -1,18 +1,18 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import com.app.selfcare.R
 import com.app.selfcare.calendar.CalendarChangesObserver
 import com.app.selfcare.calendar.CalendarViewManager
 import com.app.selfcare.calendar.SingleRowCalendarAdapter
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentActivityShowAllBinding
 import com.app.selfcare.selection.CalendarSelectionManager
 import com.app.selfcare.utils.DateUtil
-import kotlinx.android.synthetic.main.calendar_item.view.*
-import kotlinx.android.synthetic.main.fragment_activity_show_all.*
-import kotlinx.android.synthetic.main.fragment_activity_show_all.btnLeft
-import kotlinx.android.synthetic.main.fragment_activity_show_all.btnRight
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,6 +31,7 @@ class ActivityShowAllFragment : BaseFragment() {
     private var param2: String? = null
     private val calendar = Calendar.getInstance()
     private var currentMonth = 0
+    private lateinit var binding: FragmentActivityShowAllBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +39,15 @@ class ActivityShowAllFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentActivityShowAllBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -50,7 +60,7 @@ class ActivityShowAllFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        layoutActivityCreateGoal.setOnClickListener {
+        binding.layoutActivityCreateGoal.setOnClickListener {
             replaceFragment(
                 ActivityCreateGoalFragment(),
                 R.id.layout_home,
@@ -58,7 +68,7 @@ class ActivityShowAllFragment : BaseFragment() {
             )
         }
 
-        layoutActivityDrinkWater.setOnClickListener {
+        binding.layoutActivityDrinkWater.setOnClickListener {
             replaceFragment(
                 ActivityGoalDetailFragment(),
                 R.id.layout_home,
@@ -66,7 +76,7 @@ class ActivityShowAllFragment : BaseFragment() {
             )
         }
 
-        activityShowAllBack.setOnClickListener {
+        binding.activityShowAllBack.setOnClickListener {
             popBackStack()
         }
 
@@ -117,8 +127,8 @@ class ActivityShowAllFragment : BaseFragment() {
             ) {
                 // using this method we can bind data to calendar view
                 // good practice is if all views in layout have same IDs in all item views
-                holder.itemView.tv_date_calendar_item.text = DateUtil.getDayNumber(date)
-                holder.itemView.tv_day_calendar_item.text = DateUtil.getDay3LettersName(date)
+                /*holder.itemView.tv_date_calendar_item.text = DateUtil.getDayNumber(date)
+                holder.itemView.tv_day_calendar_item.text = DateUtil.getDay3LettersName(date)*/
             }
         }
 
@@ -172,7 +182,7 @@ class ActivityShowAllFragment : BaseFragment() {
         }
 
         // here we init our calendar, also you can set more properties if you haven't specified in XML layout
-        val singleRowCalendar = activityShowAllCalendar.apply {
+        val singleRowCalendar = binding.activityShowAllCalendar.apply {
             calendarViewManager = myCalendarViewManager
             calendarChangesObserver = myCalendarChangesObserver
             calendarSelectionManager = mySelectionManager
@@ -180,14 +190,14 @@ class ActivityShowAllFragment : BaseFragment() {
             init()
         }
 
-        btnRight.setOnClickListener {
+        binding.btnRight.setOnClickListener {
             //tvDay.text = ""
             //selectedTimeSlot = ""
             //layoutTimeSlotSelection.visibility = View.GONE
             singleRowCalendar.setDates(getDatesOfNextMonth())
         }
 
-        btnLeft.setOnClickListener {
+        binding.btnLeft.setOnClickListener {
             /*tvDay.text = ""
             selectedTimeSlot = ""
             layoutTimeSlotSelection.visibility = View.GONE*/
@@ -261,6 +271,7 @@ class ActivityShowAllFragment : BaseFragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_activity_show_all"
     }
 }

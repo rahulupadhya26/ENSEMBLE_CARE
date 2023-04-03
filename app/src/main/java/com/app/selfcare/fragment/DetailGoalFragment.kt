@@ -3,12 +3,15 @@ package com.app.selfcare.fragment
 import android.os.Bundle
 import android.text.Html
 import android.text.method.ScrollingMovementMethod
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import com.app.selfcare.R
 import com.app.selfcare.data.Goal
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentDetailGoalBinding
 import com.app.selfcare.utils.DateUtils
-import kotlinx.android.synthetic.main.fragment_detail_goal.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,6 +27,7 @@ class DetailGoalFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var goal: Goal? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentDetailGoalBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +35,15 @@ class DetailGoalFragment : BaseFragment() {
             goal = it.getParcelable(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentDetailGoalBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -43,11 +56,11 @@ class DetailGoalFragment : BaseFragment() {
         getBackButton().visibility = View.VISIBLE
         getSubTitle().visibility = View.GONE
 
-        txt_goal_desc.movementMethod = ScrollingMovementMethod()
+        binding.txtGoalDesc.movementMethod = ScrollingMovementMethod()
         val goalDate = DateUtils(goal!!.start_date + " 01:00:00")
-        txt_goal_date.text =
+        binding.txtGoalDate.text =
             Html.fromHtml("<b>Date</b> : " + goalDate.getDay() + " " + goalDate.getMonth() + " " + goalDate.getYear())
-        txt_goal_title.text = Html.fromHtml("<b>" + goal!!.title + "</b>")
+        binding.txtGoalTitle.text = Html.fromHtml("<b>" + goal!!.title + "</b>")
         var durationTxt = ""
         when (goal!!.duration) {
             0 -> durationTxt = "Does not repeat"
@@ -56,8 +69,8 @@ class DetailGoalFragment : BaseFragment() {
             3 -> durationTxt = "Every month"
             4 -> durationTxt = "Every year"
         }
-        txt_goal_duration.text = Html.fromHtml("<b>Duration</b> : $durationTxt")
-        txt_goal_desc.text = Html.fromHtml("<b>Description</b> : " + goal!!.description)
+        binding.txtGoalDuration.text = Html.fromHtml("<b>Duration</b> : $durationTxt")
+        binding.txtGoalDesc.text = Html.fromHtml("<b>Description</b> : " + goal!!.description)
     }
 
     companion object {

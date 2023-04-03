@@ -1,9 +1,12 @@
 package com.app.selfcare.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
@@ -13,14 +16,14 @@ import com.app.selfcare.adapters.CarePlanExerciseTaskListAdapter
 import com.app.selfcare.controller.OnCarePlanDayItemClickListener
 import com.app.selfcare.controller.OnCarePlanPendingTaskItemClickListener
 import com.app.selfcare.data.*
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentExerciseCarePlanBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_care_plan_dashboard.*
-import kotlinx.android.synthetic.main.fragment_exercise_care_plan.*
 import retrofit2.HttpException
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
@@ -44,6 +47,7 @@ class ExerciseCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
     private var param2: String? = null
     private var selectedDayNo: Int = 0
     private lateinit var dayWiseCarePlan: DayWiseCarePlan
+    private lateinit var binding: FragmentExerciseCarePlanBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +55,15 @@ class ExerciseCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
             exerciseCarePlanDayNumber = it.getInt(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentExerciseCarePlanBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -65,20 +78,25 @@ class ExerciseCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
         updateStatusBarColor(R.color.white)
         selectedDayNo = exerciseCarePlanDayNumber
 
-        carePlanExerciseBack.setOnClickListener {
+        binding.carePlanExerciseBack.setOnClickListener {
             popBackStack()
         }
 
         getExerciseCarePlanTaskDetails(selectedDayNo)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getExerciseCarePlanTaskDetails(dayNumber: Int) {
         getDayWiseCarePlanData(dayNumber) { response ->
             val dayWiseCarePlanType: Type =
                 object : TypeToken<DayWiseCarePlan?>() {}.type
             dayWiseCarePlan = Gson().fromJson(response, dayWiseCarePlanType)
-
-            recyclerViewCarePlanExerciseDayList.apply {
+            binding.txtExerciseCarePlanAssignedBy.text = dayWiseCarePlan.coach.name
+            binding.txtExerciseCarePlanTaskAssigned.text = "Task assigned " +
+                    dayWiseCarePlan.plan.task_completed.completed + "/" + dayWiseCarePlan.plan.task_completed.total
+            binding.txtExerciseCarePlanCurrentDay.text = "Day " +
+                    dayNumber.toString() + "/" + dayWiseCarePlan.total_days
+            binding.recyclerViewCarePlanExerciseDayList.apply {
                 layoutManager = LinearLayoutManager(
                     requireActivity(), RecyclerView.HORIZONTAL, false
                 )
@@ -95,7 +113,7 @@ class ExerciseCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
     }
 
     private fun updateExerciseTodayTasks(exerciseTaskDetails: ArrayList<CareDayIndividualTaskDetail>) {
-        recyclerViewCarePlanExerciseTask.apply {
+        binding.recyclerViewCarePlanExerciseTask.apply {
             layoutManager = LinearLayoutManager(
                 requireActivity(), RecyclerView.VERTICAL, false
             )
@@ -123,7 +141,7 @@ class ExerciseCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
                             detail.plan,
                             detail.id,
                             detail.time
-                            ),
+                        ),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -159,6 +177,51 @@ class ExerciseCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
         handler.postDelayed(runnable!!, 1000)
     }
 
+    private fun sendCarePlanRemoveExerciseTask(detail: CareDayIndividualTaskDetail) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendExerciseCarePlanDeleteTask(
+                        "PI0052",
+                        RemoveCarePlan(
+                            detail.task_input_id
+                        ),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            getExerciseCarePlanTaskDetails(selectedDayNo)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                sendCarePlanRemoveExerciseTask(detail)
+                            }
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -186,7 +249,13 @@ class ExerciseCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
         getExerciseCarePlanTaskDetails(dayNumber)
     }
 
-    override fun onCarePlanPendingTaskItemClickListener(careDayIndividualTaskDetail: CareDayIndividualTaskDetail) {
-        sendCarePlanPendingExerciseTask(careDayIndividualTaskDetail)
+    override fun onCarePlanPendingTaskItemClickListener(
+        careDayIndividualTaskDetail: CareDayIndividualTaskDetail,
+        isCompleted: Boolean
+    ) {
+        if (isCompleted)
+            sendCarePlanPendingExerciseTask(careDayIndividualTaskDetail)
+        else
+            sendCarePlanRemoveExerciseTask(careDayIndividualTaskDetail)
     }
 }

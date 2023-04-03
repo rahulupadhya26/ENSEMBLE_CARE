@@ -48,6 +48,24 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
+    <com.skydoves.progressview.ProgressView
+        android:id="@+id/progressViewConsentFormCount"
+        android:layout_width="match_parent"
+        android:layout_height="18dp"
+        app:progressView_colorBackground="#D8D8D8"
+        app:progressView_colorProgress="#26476D"
+        app:progressView_max="100"
+        app:progressView_labelSize="@dimen/_12sp"
+        app:progressView_labelColorInner="@color/white"
+        app:progressView_labelTypeface="bold"
+        app:progressView_labelSpace="@dimen/_10dp"
+        app:progressView_radius="@dimen/_10dp"
+        android:layout_marginStart="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_10dp"
+        app:progressView_autoAnimate="true"
+        app:progressView_progressFromPrevious="true"
+        app:progressView_padding="1dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -3,7 +3,9 @@ package com.app.selfcare.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
@@ -13,6 +15,8 @@ import com.app.selfcare.adapters.PlanViewPagerAdapter
 import com.app.selfcare.controller.AdapterCallback
 import com.app.selfcare.data.AddOn
 import com.app.selfcare.data.Plan
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentPlanBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
@@ -23,7 +27,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_plan.*
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,6 +49,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
     private var param2: String? = null
     private var selectedPlan = ""
     private var addOnPlan: AddOn? = null
+    private lateinit var binding: FragmentPlanBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +57,15 @@ class PlanFragment : BaseFragment(), AdapterCallback {
             addOnNeeded = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPlanBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -68,7 +81,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
         getSubTitle().text = ""
         updateStatusBarColor(R.color.white)
 
-        planBack.setOnClickListener {
+        binding.planBack.setOnClickListener {
             popBackStack()
         }
 
@@ -77,7 +90,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
         val nextMonthDate = SimpleDateFormat("MM/dd/yyyy").format(date.time)
         val nextMonthDateFormat = DateUtils("$nextMonthDate 00:00:00")
 
-        txtRenewPlan.text =
+        binding.txtRenewPlan.text =
             "Auto renews on " + nextMonthDateFormat.getFullMonthName() + " " +
                     nextMonthDateFormat.getDay() +
                     nextMonthDateFormat.getDayNumberSuffix(
@@ -85,7 +98,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                     ) + " " +
                     nextMonthDateFormat.getYear()
 
-        txtPlanAgreeByTerms.makeLinks(
+        binding.txtPlanAgreeByTerms.makeLinks(
             Pair("our terms", View.OnClickListener {
                 val termsApplyDialog = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
                 val termsApplyDialogView: View = layoutInflater.inflate(
@@ -142,77 +155,77 @@ class PlanFragment : BaseFragment(), AdapterCallback {
 
                             selectedPlan = planLists[0].name
 
-                            txtCardViewPlan1.text = planLists[0].name
-                            txtPlan1.text = planLists[0].name
-                            txtCardViewPlan2.text = planLists[1].name
-                            txtPlan2.text = planLists[1].name
+                            binding.txtCardViewPlan1.text = planLists[0].name
+                            binding.txtPlan1.text = planLists[0].name
+                            binding.txtCardViewPlan2.text = planLists[1].name
+                            binding.txtPlan2.text = planLists[1].name
 
-                            txtPlanMonthlyPrice.text = "$" + planLists[0].monthly_price
-                            txtPlanQuarterlyPrice.text = "$" + planLists[0].quarterly_price
-                            txtPlanAnnuallyPrice.text = "$" + planLists[0].annually_price
+                            binding.txtPlanMonthlyPrice.text = "$" + planLists[0].monthly_price
+                            binding.txtPlanQuarterlyPrice.text = "$" + planLists[0].quarterly_price
+                            binding.txtPlanAnnuallyPrice.text = "$" + planLists[0].annually_price
 
-                            txtMonthlySessions.text =
+                            binding.txtMonthlySessions.text =
                                 planLists[0].no_of_sessions.toString() + " Sessions"
-                            txtQuarterlySessions.text =
+                            binding.txtQuarterlySessions.text =
                                 (planLists[0].no_of_sessions * 3).toString() + " Sessions"
-                            txtAnnuallySessions.text =
+                            binding.txtAnnuallySessions.text =
                                 (planLists[0].no_of_sessions * 12).toString() + " Sessions"
 
-                            txtPlan1.visibility = View.GONE
-                            cardViewPlan1.visibility = View.VISIBLE
-                            txtPlan2.visibility = View.VISIBLE
-                            cardViewPlan2.visibility = View.GONE
-                            tick1.visibility = View.INVISIBLE
-                            tick2.visibility = View.INVISIBLE
-                            tick3.visibility = View.INVISIBLE
+                            binding.txtPlan1.visibility = View.GONE
+                            binding.cardViewPlan1.visibility = View.VISIBLE
+                            binding.txtPlan2.visibility = View.VISIBLE
+                            binding.cardViewPlan2.visibility = View.GONE
+                            binding.tick1.visibility = View.INVISIBLE
+                            binding.tick2.visibility = View.INVISIBLE
+                            binding.tick3.visibility = View.INVISIBLE
 
-                            txtPlan1.setOnClickListener {
+                            binding.txtPlan1.setOnClickListener {
                                 selectedPlan = planLists[0].name
-                                txtPlan1.visibility = View.GONE
-                                cardViewPlan1.visibility = View.VISIBLE
-                                txtPlan2.visibility = View.VISIBLE
-                                cardViewPlan2.visibility = View.GONE
-                                tick1.visibility = View.INVISIBLE
-                                tick2.visibility = View.INVISIBLE
-                                tick3.visibility = View.INVISIBLE
-                                txtPlanMonthlyPrice.text = "$" + planLists[0].monthly_price
-                                txtPlanQuarterlyPrice.text =
+                                binding.txtPlan1.visibility = View.GONE
+                                binding.cardViewPlan1.visibility = View.VISIBLE
+                                binding.txtPlan2.visibility = View.VISIBLE
+                                binding.cardViewPlan2.visibility = View.GONE
+                                binding.tick1.visibility = View.INVISIBLE
+                                binding.tick2.visibility = View.INVISIBLE
+                                binding.tick3.visibility = View.INVISIBLE
+                                binding.txtPlanMonthlyPrice.text = "$" + planLists[0].monthly_price
+                                binding.txtPlanQuarterlyPrice.text =
                                     "$" + planLists[0].quarterly_price
-                                txtPlanAnnuallyPrice.text =
+                                binding.txtPlanAnnuallyPrice.text =
                                     "$" + planLists[0].annually_price
 
-                                txtMonthlySessions.text =
+                                binding.txtMonthlySessions.text =
                                     planLists[0].no_of_sessions.toString() + " Sessions"
-                                txtQuarterlySessions.text =
+                                binding.txtQuarterlySessions.text =
                                     (planLists[0].no_of_sessions * 3).toString() + " Sessions"
-                                txtAnnuallySessions.text =
+                                binding.txtAnnuallySessions.text =
                                     (planLists[0].no_of_sessions * 12).toString() + " Sessions"
                             }
 
-                            txtPlan2.setOnClickListener {
+                            binding.txtPlan2.setOnClickListener {
                                 selectedPlan = planLists[1].name
-                                txtPlan2.visibility = View.GONE
-                                cardViewPlan2.visibility = View.VISIBLE
-                                txtPlan1.visibility = View.VISIBLE
-                                cardViewPlan1.visibility = View.GONE
-                                tick1.visibility = View.VISIBLE
-                                tick2.visibility = View.VISIBLE
-                                tick3.visibility = View.VISIBLE
-                                txtPlanMonthlyPrice.text = "$" + planLists[1].monthly_price
-                                txtPlanQuarterlyPrice.text =
+                                binding.txtPlan2.visibility = View.GONE
+                                binding.cardViewPlan2.visibility = View.VISIBLE
+                                binding.txtPlan1.visibility = View.VISIBLE
+                                binding.cardViewPlan1.visibility = View.GONE
+                                binding.tick1.visibility = View.VISIBLE
+                                binding.tick2.visibility = View.VISIBLE
+                                binding.tick3.visibility = View.VISIBLE
+                                binding.txtPlanMonthlyPrice.text = "$" + planLists[1].monthly_price
+                                binding.txtPlanQuarterlyPrice.text =
                                     "$" + planLists[1].quarterly_price
-                                txtPlanAnnuallyPrice.text =
+                                binding.txtPlanAnnuallyPrice.text =
                                     "$" + planLists[1].annually_price
 
-                                txtMonthlySessions.text =
+                                binding.txtMonthlySessions.text =
                                     planLists[1].no_of_sessions.toString() + " Sessions"
-                                txtQuarterlySessions.text =
+                                binding.txtQuarterlySessions.text =
                                     (planLists[1].no_of_sessions * 3).toString() + " Sessions"
-                                txtAnnuallySessions.text =
+                                binding.txtAnnuallySessions.text =
                                     (planLists[1].no_of_sessions * 12).toString() + " Sessions"
                             }
 
-                            txtMonthlyPlanTerms.makeLinks(
+                            binding.txtMonthlyPlanTerms.makeLinks(
                                 Pair("Terms apply", View.OnClickListener {
                                     val termsApplyDialog =
                                         BottomSheetDialog(requireActivity(), R.style.SheetDialog)
@@ -227,7 +240,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                 })
                             )
 
-                            txtQuarterlyPlanTerms.makeLinks(
+                            binding.txtQuarterlyPlanTerms.makeLinks(
                                 Pair("Terms apply", View.OnClickListener {
                                     val termsApplyDialog =
                                         BottomSheetDialog(requireActivity(), R.style.SheetDialog)
@@ -242,7 +255,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                 })
                             )
 
-                            txtAnnuallyPlanTerms.makeLinks(
+                            binding.txtAnnuallyPlanTerms.makeLinks(
                                 Pair("Terms apply", View.OnClickListener {
                                     val termsApplyDialog =
                                         BottomSheetDialog(requireActivity(), R.style.SheetDialog)
@@ -257,7 +270,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                 })
                             )
 
-                            layoutPlanMonthly.setOnClickListener {
+                            binding.layoutPlanMonthly.setOnClickListener {
                                 if (selectedPlan == planLists[0].name) {
                                     onClickPlan(planLists[0], "Monthly")
                                 } else {
@@ -265,7 +278,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                 }
                             }
 
-                            layoutPlanQuarterly.setOnClickListener {
+                            binding.layoutPlanQuarterly.setOnClickListener {
                                 if (selectedPlan == planLists[0].name) {
                                     onClickPlan(planLists[0], "Quarterly")
                                 } else {
@@ -273,7 +286,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                 }
                             }
 
-                            layoutPlanAnnually.setOnClickListener {
+                            binding.layoutPlanAnnually.setOnClickListener {
                                 if (selectedPlan == planLists[0].name) {
                                     onClickPlan(planLists[0], "Annually")
                                 } else {
@@ -364,7 +377,12 @@ class PlanFragment : BaseFragment(), AdapterCallback {
             }
         } else {
             if (plan.name == alreadySelectedPlan) {
-                val severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
+                var severityRating = 20
+                /*if (preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!! != null) {
+                    if (preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.isNotEmpty()) {
+                        severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
+                    }
+                }*/
                 preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
                 if (severityRating in 0..14) {
                     replaceFragmentNoBackStack(
@@ -446,7 +464,12 @@ class PlanFragment : BaseFragment(), AdapterCallback {
             )
         } else {
             if (plan.name == selectedPlan) {
-                val severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
+                var severityRating = 20
+                /*if (preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!! != null) {
+                    if (preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.isNotEmpty()) {
+                        severityRating = preference!![PrefKeys.PREF_SEVERITY_SCORE, ""]!!.toInt()
+                    }
+                }*/
                 preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
                 if (severityRating in 0..14) {
                     replaceFragmentNoBackStack(

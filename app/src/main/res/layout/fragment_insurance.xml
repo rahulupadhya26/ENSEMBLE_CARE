@@ -137,19 +137,34 @@
                         android:textSize="@dimen/_16sp"
                         android:textStyle="bold" />
 
-                    <RelativeLayout
+                    <!--<RelativeLayout
+                        android:id="@+id/layoutPrimaryInsuranceList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:padding="@dimen/_5dp">
 
                         <Spinner
-                            android:id="@+id/spinnerPrimaryInsuranceCompany"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp" />
-                    </RelativeLayout>
+                            android:layout_height="40dp"
+                            android:visibility="gone"/>
+
+
+                    </RelativeLayout>-->
+
+                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                        android:id="@+id/spinnerPrimaryInsuranceCompany"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:imeOptions="actionNext"
+                        android:textStyle="bold"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:nextFocusDown="@+id/etPrimaryPlanId"
+                        android:background="@drawable/edittext_background_box"/>
 
                     <TextView
                         android:layout_width="match_parent"
@@ -165,8 +180,8 @@
                         android:id="@+id/etPrimaryPlanId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Plan ID"
                         android:imeOptions="actionNext"
@@ -192,8 +207,8 @@
                         android:id="@+id/etPrimaryGroupId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Group ID"
                         android:imeOptions="actionNext"
@@ -219,8 +234,8 @@
                         android:id="@+id/etPrimaryMemberId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Member ID"
                         android:imeOptions="actionNext"
@@ -246,8 +261,8 @@
                         android:id="@+id/etPrimaryMemberName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Member Name"
                         android:imeOptions="actionNext"
@@ -263,27 +278,94 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_15dp"
-                        android:text="Insurance Card Image(Optional)"
+                        android:text="Insurance Card Image"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/primaryGreen"
                         android:textSize="@dimen/_16sp"
                         android:textStyle="bold" />
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:padding="5dp"
-                        android:text="Insurance Card Picture (Optional)"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_16sp"
-                        android:visibility="gone" />
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardViewPrimaryInsurance1"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                app:cardBackgroundColor="#D9D9D9"
+                                app:cardCornerRadius="@dimen/_5dp"
+                                app:cardElevation="@dimen/_5dp"
+                                app:cardUseCompatPadding="true">
+
+                                <ImageView
+                                    android:id="@+id/imgInsurancePic1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/plusnew" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Upload front image"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardViewPrimaryInsurance2"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                app:cardBackgroundColor="#D9D9D9"
+                                app:cardCornerRadius="@dimen/_5dp"
+                                app:cardElevation="@dimen/_5dp"
+                                app:cardUseCompatPadding="true">
+
+                                <ImageView
+                                    android:id="@+id/imgInsurancePic2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/plusnew" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Upload back image"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_5dp">
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:visibility="gone">
 
                         <ImageView
                             android:id="@+id/imgPrimaryInsurancePic"
@@ -314,7 +396,8 @@
                         android:text="Click here to add a picture"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/primaryGreen"
-                        android:textSize="@dimen/_16sp" />
+                        android:textSize="@dimen/_16sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -370,15 +453,25 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:padding="@dimen/_5dp">
 
-                        <Spinner
+                        <!--<Spinner
                             android:id="@+id/spinnerSecondaryInsuranceCompany"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp" />
+                            android:layout_height="40dp" />-->
+
+                        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                            android:id="@+id/spinnerSecondaryInsuranceCompany"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:inputType="text"
+                            android:imeOptions="actionNext"
+                            android:textStyle="bold"
+                            android:nextFocusDown="@+id/etSecondaryPlanId"
+                            android:background="@android:color/transparent"/>
                     </RelativeLayout>
 
                     <TextView
@@ -395,8 +488,8 @@
                         android:id="@+id/etSecondaryPlanId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Plan ID"
                         android:imeOptions="actionNext"
@@ -422,8 +515,8 @@
                         android:id="@+id/etSecondaryGroupId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Group ID"
                         android:imeOptions="actionNext"
@@ -449,8 +542,8 @@
                         android:id="@+id/etSecondaryMemberId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Member ID"
                         android:imeOptions="actionNext"
@@ -476,8 +569,8 @@
                         android:id="@+id/etSecondaryMemberName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Member Name"
                         android:imeOptions="actionNext"
@@ -493,27 +586,94 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_15dp"
-                        android:text="Insurance Card Image(Optional)"
+                        android:text="Insurance Card Image"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/primaryGreen"
                         android:textSize="@dimen/_16sp"
                         android:textStyle="bold" />
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:padding="5dp"
-                        android:text="Insurance Card Picture (Optional)"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_16sp"
-                        android:visibility="gone" />
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardViewSecondaryInsurance1"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                app:cardBackgroundColor="#D9D9D9"
+                                app:cardCornerRadius="@dimen/_5dp"
+                                app:cardElevation="@dimen/_5dp"
+                                app:cardUseCompatPadding="true">
+
+                                <ImageView
+                                    android:id="@+id/imgSecondaryInsurancePic1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/plusnew" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Upload front image"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardViewSecondaryInsurance2"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                app:cardBackgroundColor="#D9D9D9"
+                                app:cardCornerRadius="@dimen/_5dp"
+                                app:cardElevation="@dimen/_5dp"
+                                app:cardUseCompatPadding="true">
+
+                                <ImageView
+                                    android:id="@+id/imgSecondaryInsurancePic2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/plusnew" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Upload back image"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_5dp">
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:visibility="gone">
 
                         <ImageView
                             android:id="@+id/imgSecondaryInsurancePic"
@@ -544,7 +704,8 @@
                         android:text="Click here to add a picture"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/primaryGreen"
-                        android:textSize="@dimen/_16sp" />
+                        android:textSize="@dimen/_16sp"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
@@ -600,15 +761,25 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:padding="@dimen/_5dp">
 
-                        <Spinner
+                        <!--<Spinner
                             android:id="@+id/spinnerPharmacyInsuranceCompany"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp" />
+                            android:layout_height="40dp" />-->
+
+                        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                            android:id="@+id/spinnerPharmacyInsuranceCompany"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:inputType="text"
+                            android:imeOptions="actionNext"
+                            android:textStyle="bold"
+                            android:nextFocusDown="@+id/etPharmacyPlanId"
+                            android:background="@android:color/transparent"/>
                     </RelativeLayout>
 
                     <TextView
@@ -625,8 +796,8 @@
                         android:id="@+id/etPharmacyPlanId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Plan ID"
                         android:imeOptions="actionNext"
@@ -652,8 +823,8 @@
                         android:id="@+id/etPharmacyGroupId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Group ID"
                         android:imeOptions="actionNext"
@@ -679,8 +850,8 @@
                         android:id="@+id/etPharmacyMemberId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Member ID"
                         android:imeOptions="actionNext"
@@ -706,8 +877,8 @@
                         android:id="@+id/etPharmacyMemberName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5dp"
                         android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
                         android:background="@drawable/edittext_background_box"
                         android:hint="Member Name"
                         android:imeOptions="actionNext"
@@ -723,27 +894,94 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_15dp"
-                        android:text="Insurance Card Image(Optional)"
+                        android:text="Insurance Card Image"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/primaryGreen"
                         android:textSize="@dimen/_16sp"
                         android:textStyle="bold" />
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:padding="5dp"
-                        android:text="Insurance Card Picture (Optional)"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_16sp"
-                        android:visibility="gone" />
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardViewPharmacyInsurance1"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                app:cardBackgroundColor="#D9D9D9"
+                                app:cardCornerRadius="@dimen/_5dp"
+                                app:cardElevation="@dimen/_5dp"
+                                app:cardUseCompatPadding="true">
+
+                                <ImageView
+                                    android:id="@+id/imgPharmacyInsurancePic1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/plusnew" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Upload front image"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardViewPharmacyInsurance2"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                app:cardBackgroundColor="#D9D9D9"
+                                app:cardCornerRadius="@dimen/_5dp"
+                                app:cardElevation="@dimen/_5dp"
+                                app:cardUseCompatPadding="true">
+
+                                <ImageView
+                                    android:id="@+id/imgPharmacyInsurancePic2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/plusnew" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Upload back image"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_5dp">
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:visibility="gone">
 
                         <ImageView
                             android:id="@+id/imgPharmacyInsurancePic"
@@ -775,7 +1013,8 @@
                         android:text="Click here to add a picture"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/primaryGreen"
-                        android:textSize="@dimen/_16sp" />
+                        android:textSize="@dimen/_16sp"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
             </LinearLayout>

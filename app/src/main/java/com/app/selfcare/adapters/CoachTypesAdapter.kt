@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnCoachTypeClickListener
 import com.app.selfcare.data.CoachType
-import kotlinx.android.synthetic.main.coach_type_list_item.view.*
+import com.app.selfcare.databinding.CoachTypeListItemBinding
 
 class CoachTypesAdapter(
     val context: Context,
@@ -25,9 +25,11 @@ class CoachTypesAdapter(
         parent: ViewGroup,
         viewType: Int
     ): CoachTypesAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.coach_type_list_item, parent, false)
-        return ViewHolder(v)
+        val binding =
+            CoachTypeListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.coach_type_list_item, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -35,22 +37,19 @@ class CoachTypesAdapter(
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun onBindViewHolder(holder: CoachTypesAdapter.ViewHolder, position: Int) {
-        val item = list[position]
-        holder.coachTypeTxt.text = item.mainText
-        holder.coachTypeImage.setImageResource(item.image)
-        holder.coachTypeSecondary.text = item.secondaryText
-        holder.coachTypeSub.text = item.subText
-        holder.coachType.setOnClickListener {
-            onTypeClickListener!!.onCoachTypeClickListener(item)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            txtCoachType.text = item.mainText
+            imageViewCoachType.setImageResource(item.image)
+            txtCoachSecondary.text = item.secondaryText
+            txtCoachSub.text = item.subText
+            cardViewTherapyType.setOnClickListener {
+                onTypeClickListener!!.onCoachTypeClickListener(item)
+            }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val coachTypeTxt: TextView = itemView.txtCoachType
-        val coachTypeImage: ImageView = itemView.imageViewCoachType
-        val coachTypeSecondary: TextView = itemView.txtCoachSecondary
-        val coachTypeSub: TextView = itemView.txtCoachSub
-        val coachType: CardView = itemView.cardViewTherapyType
-    }
+    inner class ViewHolder(val binding: CoachTypeListItemBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

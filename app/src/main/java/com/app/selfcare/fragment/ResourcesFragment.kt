@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +19,8 @@ import com.app.selfcare.controller.OnPodcastItemClickListener
 import com.app.selfcare.data.Articles
 import com.app.selfcare.data.Podcast
 import com.app.selfcare.data.Video
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentResourcesBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.bumptech.glide.Glide
@@ -26,7 +30,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_resources.*
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
@@ -50,6 +53,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
     private var articlesLists: ArrayList<Articles> = arrayListOf()
     private var isFavouriteVideo1: Boolean = false
     private var isFavouriteVideo2: Boolean = false
+    private lateinit var binding: FragmentResourcesBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +61,15 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentResourcesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -73,15 +86,25 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
 
         onClickEvents()
 
+        binding.layoutShimmerDisplayVideos.startShimmer()
+        binding.layoutShimmerDisplayVideos.visibility = View.VISIBLE
+        binding.shimmerResourcePodcast.startShimmer()
+        binding.shimmerResourcePodcast.visibility = View.VISIBLE
+        binding.layoutShimmerDisplayArticles.startShimmer()
+        binding.layoutShimmerDisplayArticles.visibility = View.VISIBLE
+        binding.cardViewNoVideos.visibility = View.GONE
+        binding.cardViewNoPodcasts.visibility = View.GONE
+        binding.cardViewNoArticles.visibility = View.GONE
+
         getAllResourceData()
 
-        imgSearch.setOnClickListener {
-            resourceSearch.isFocusableInTouchMode = true
-            resourceSearch.isFocusable = true
-            resourceSearch.requestFocus()
+        binding.imgSearch.setOnClickListener {
+            binding.resourceSearch.isFocusableInTouchMode = true
+            binding.resourceSearch.isFocusable = true
+            binding.resourceSearch.requestFocus()
         }
 
-        resourceSearch.addTextChangedListener(object : TextWatcher {
+        binding.resourceSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
             }
 
@@ -95,11 +118,17 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
     }
 
     private fun onClickEvents() {
-        resourceBack.setOnClickListener {
-            popBackStack()
+        binding.resourceBack.setOnClickListener {
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
         }
 
-        resourceFavourite.setOnClickListener {
+        binding.resourceFavourite.setOnClickListener {
             replaceFragment(
                 FavoriteFragment.newInstance(""),
                 R.id.layout_home,
@@ -107,7 +136,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
             )
         }
 
-        txtVideoSeeAll.setOnClickListener {
+        binding.txtVideoSeeAll.setOnClickListener {
             replaceFragment(
                 VideosListFragment.newInstance(arrayListOf(), "", false, ""),
                 R.id.layout_home,
@@ -115,7 +144,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
             )
         }
 
-        txtPodcastSeeAll.setOnClickListener {
+        binding.txtPodcastSeeAll.setOnClickListener {
             replaceFragment(
                 PodcastFragment.newInstance(arrayListOf(), "", false, ""),
                 R.id.layout_home,
@@ -123,7 +152,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
             )
         }
 
-        txtArticleSeeAll.setOnClickListener {
+        binding.txtArticleSeeAll.setOnClickListener {
             replaceFragment(
                 NewsListFragment.newInstance(arrayListOf(), "", false, ""),
                 R.id.layout_home,
@@ -136,7 +165,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
         videoLists = arrayListOf()
         podcastLists = arrayListOf()
         articlesLists = arrayListOf()
-        showProgress()
+        //layoutResources.visibility = View.GONE
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
@@ -145,6 +174,12 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         try {
+                            binding.layoutShimmerDisplayVideos.stopShimmer()
+                            binding.layoutShimmerDisplayVideos.visibility = View.GONE
+                            binding.shimmerResourcePodcast.stopShimmer()
+                            binding.shimmerResourcePodcast.visibility = View.GONE
+                            binding.layoutShimmerDisplayArticles.stopShimmer()
+                            binding.layoutShimmerDisplayArticles.visibility = View.GONE
                             hideProgress()
                             var responseBody = result.string()
                             Log.d("Response Body", responseBody)
@@ -170,8 +205,24 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                             articlesLists =
                                 Gson().fromJson(jsonObj.getString("articles"), articleList)
                             displayArticleList(articlesLists)
+
+                            if (videoLists.isEmpty() && podcastLists.isEmpty() && articlesLists.isEmpty()) {
+                                binding.layoutResourceSearch.visibility = View.GONE
+                            } else {
+                                binding.layoutResourceSearch.visibility = View.VISIBLE
+                            }
                         } catch (e: Exception) {
                             hideProgress()
+                            binding.layoutShimmerDisplayVideos.stopShimmer()
+                            binding.layoutShimmerDisplayVideos.visibility = View.GONE
+                            binding.shimmerResourcePodcast.stopShimmer()
+                            binding.shimmerResourcePodcast.visibility = View.GONE
+                            binding.layoutShimmerDisplayArticles.stopShimmer()
+                            binding.layoutShimmerDisplayArticles.visibility = View.GONE
+                            binding.layoutResourceSearch.visibility = View.GONE
+                            binding.cardViewNoVideos.visibility = View.VISIBLE
+                            binding.cardViewNoPodcasts.visibility = View.VISIBLE
+                            binding.cardViewNoArticles.visibility = View.VISIBLE
                             e.printStackTrace()
                             displayToast("Something went wrong.. Please try after sometime")
                         }
@@ -185,6 +236,16 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                                 getAllResourceData()
                             }
                         } else {
+                            binding.layoutShimmerDisplayVideos.stopShimmer()
+                            binding.layoutShimmerDisplayVideos.visibility = View.GONE
+                            binding.shimmerResourcePodcast.stopShimmer()
+                            binding.shimmerResourcePodcast.visibility = View.GONE
+                            binding.layoutShimmerDisplayArticles.stopShimmer()
+                            binding.layoutShimmerDisplayArticles.visibility = View.GONE
+                            binding.layoutResourceSearch.visibility = View.GONE
+                            binding.cardViewNoVideos.visibility = View.VISIBLE
+                            binding.cardViewNoPodcasts.visibility = View.VISIBLE
+                            binding.cardViewNoArticles.visibility = View.VISIBLE
                             displayAfterLoginErrorMsg(error)
                         }
                     })
@@ -195,49 +256,49 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
 
     private fun displayVideoList(videoList: ArrayList<Video>) {
         if (videoList.isNotEmpty()) {
-            layoutDisplayVideos.visibility = View.VISIBLE
-            cardViewNoVideos.visibility = View.GONE
+            binding.layoutDisplayVideos.visibility = View.VISIBLE
+            binding.cardViewNoVideos.visibility = View.GONE
             if (videoList.size == 1) {
                 isFavouriteVideo1 = videoList[0].is_favourite
-                layoutVideoList1.visibility = View.VISIBLE
-                setVideoImage(videoList[0], videoBanner1)
-                resourceVideoTitle1.text = videoList[0].name
-                resourceVideoDesc1.text = videoList[0].description
+                binding.layoutVideoList1.visibility = View.VISIBLE
+                setVideoImage(videoList[0], binding.videoBanner1)
+                binding.resourceVideoTitle1.text = videoList[0].name
+                binding.resourceVideoDesc1.text = videoList[0].description
                 if (videoList[0].is_favourite) {
-                    resourceFavImg1.setImageResource(R.drawable.favorite)
-                    resourceFavTitle1.text = "Added to favorites"
+                    binding.resourceFavImg1.setImageResource(R.drawable.favorite)
+                    binding.resourceFavTitle1.text = "Added to favorites"
                 } else {
-                    resourceFavImg1.setImageResource(R.drawable.favorite_outline)
-                    resourceFavTitle1.text = "Add to favorites"
+                    binding.resourceFavImg1.setImageResource(R.drawable.favorite_outline)
+                    binding.resourceFavTitle1.text = "Add to favorites"
                 }
-                layoutVideoList2.visibility = View.GONE
+                binding.layoutVideoList2.visibility = View.GONE
             } else if (videoList.size >= 2) {
                 isFavouriteVideo2 = videoList[1].is_favourite
-                layoutVideoList1.visibility = View.VISIBLE
-                setVideoImage(videoList[0], videoBanner1)
-                resourceVideoTitle1.text = videoList[0].name
-                resourceVideoDesc1.text = videoList[0].description
+                binding.layoutVideoList1.visibility = View.VISIBLE
+                setVideoImage(videoList[0], binding.videoBanner1)
+                binding.resourceVideoTitle1.text = videoList[0].name
+                binding.resourceVideoDesc1.text = videoList[0].description
                 if (videoList[0].is_favourite) {
-                    resourceFavImg1.setImageResource(R.drawable.favorite)
-                    resourceFavTitle1.text = "Added to favorites"
+                    binding.resourceFavImg1.setImageResource(R.drawable.favorite)
+                    binding.resourceFavTitle1.text = "Added to favorites"
                 } else {
-                    resourceFavImg1.setImageResource(R.drawable.favorite_outline)
-                    resourceFavTitle1.text = "Add to favorites"
+                    binding.resourceFavImg1.setImageResource(R.drawable.favorite_outline)
+                    binding.resourceFavTitle1.text = "Add to favorites"
                 }
-                layoutVideoList2.visibility = View.VISIBLE
-                setVideoImage(videoList[1], videoBanner2)
-                resourceVideoTitle2.text = videoList[1].name
-                resourceVideoDesc2.text = videoList[1].description
+                binding.layoutVideoList2.visibility = View.VISIBLE
+                setVideoImage(videoList[1], binding.videoBanner2)
+                binding.resourceVideoTitle2.text = videoList[1].name
+                binding.resourceVideoDesc2.text = videoList[1].description
                 if (videoList[1].is_favourite) {
-                    resourceFavImg2.setImageResource(R.drawable.favorite)
-                    resourceFavTitle2.text = "Added to favorites"
+                    binding.resourceFavImg2.setImageResource(R.drawable.favorite)
+                    binding.resourceFavTitle2.text = "Added to favorites"
                 } else {
-                    resourceFavImg2.setImageResource(R.drawable.favorite_outline)
-                    resourceFavTitle2.text = "Add to favorites"
+                    binding.resourceFavImg2.setImageResource(R.drawable.favorite_outline)
+                    binding.resourceFavTitle2.text = "Add to favorites"
                 }
             }
 
-            cardViewVideo1.setOnClickListener {
+            binding.cardViewVideo1.setOnClickListener {
                 replaceFragment(
                     VideoDetailFragment.newInstance(videoList[0]),
                     R.id.layout_home,
@@ -245,7 +306,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewVideo2.setOnClickListener {
+            binding.cardViewVideo2.setOnClickListener {
                 replaceFragment(
                     VideoDetailFragment.newInstance(videoList[1]),
                     R.id.layout_home,
@@ -253,34 +314,34 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            resourceLayoutFav1.setOnClickListener {
+            binding.resourceLayoutFav1.setOnClickListener {
                 sendResourceFavoriteData(videoList[0].id, "Video", !isFavouriteVideo1) {
                     if (!isFavouriteVideo1) {
-                        resourceFavImg1.setImageResource(R.drawable.favorite)
-                        resourceFavTitle1.text = "Added to favorites"
+                        binding.resourceFavImg1.setImageResource(R.drawable.favorite)
+                        binding.resourceFavTitle1.text = "Added to favorites"
                     } else {
-                        resourceFavImg1.setImageResource(R.drawable.favorite_outline)
-                        resourceFavTitle1.text = "Removed from favorites"
+                        binding.resourceFavImg1.setImageResource(R.drawable.favorite_outline)
+                        binding.resourceFavTitle1.text = "Removed from favorites"
                     }
                     isFavouriteVideo1 = !isFavouriteVideo1
                 }
             }
 
-            resourceLayoutFav2.setOnClickListener {
+            binding.resourceLayoutFav2.setOnClickListener {
                 sendResourceFavoriteData(videoList[1].id, "Video", !isFavouriteVideo2) {
                     if (!isFavouriteVideo2) {
-                        resourceFavImg2.setImageResource(R.drawable.favorite)
-                        resourceFavTitle2.text = "Added to favorites"
+                        binding.resourceFavImg2.setImageResource(R.drawable.favorite)
+                        binding.resourceFavTitle2.text = "Added to favorites"
                     } else {
-                        resourceFavImg2.setImageResource(R.drawable.favorite_outline)
-                        resourceFavTitle2.text = "Removed from favorites"
+                        binding.resourceFavImg2.setImageResource(R.drawable.favorite_outline)
+                        binding.resourceFavTitle2.text = "Removed from favorites"
                     }
                     isFavouriteVideo2 = !isFavouriteVideo2
                 }
             }
         } else {
-            layoutDisplayVideos.visibility = View.GONE
-            cardViewNoVideos.visibility = View.VISIBLE
+            binding.layoutDisplayVideos.visibility = View.GONE
+            binding.cardViewNoVideos.visibility = View.VISIBLE
         }
     }
 
@@ -298,74 +359,74 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
 
     private fun displayPodcastList(podcastList: ArrayList<Podcast>) {
         if (podcastList.isNotEmpty()) {
-            recyclerViewResourcePodcast.visibility = View.VISIBLE
-            cardViewNoPodcasts.visibility = View.GONE
-            recyclerViewResourcePodcast.apply {
+            binding.recyclerViewResourcePodcast.visibility = View.VISIBLE
+            binding.cardViewNoPodcasts.visibility = View.GONE
+            binding.recyclerViewResourcePodcast.apply {
                 layoutManager = LinearLayoutManager(mActivity!!, RecyclerView.HORIZONTAL, false)
                 adapter =
                     DashboardPodcastAdapter(mActivity!!, podcastList, this@ResourcesFragment, "")
             }
         } else {
-            recyclerViewResourcePodcast.visibility = View.GONE
-            cardViewNoPodcasts.visibility = View.VISIBLE
+            binding.recyclerViewResourcePodcast.visibility = View.GONE
+            binding.cardViewNoPodcasts.visibility = View.VISIBLE
         }
     }
 
     private fun displayArticleList(articleList: ArrayList<Articles>) {
         if (articleList.isNotEmpty()) {
-            layoutDisplayArticles.visibility = View.VISIBLE
-            cardViewNoArticles.visibility = View.GONE
+            binding.layoutDisplayArticles.visibility = View.VISIBLE
+            binding.cardViewNoArticles.visibility = View.GONE
             if (articleList.size == 1) {
-                layoutArticleList1.visibility = View.VISIBLE
-                cardViewArticle1.visibility = View.VISIBLE
-                articleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], articleBanner1)
-                cardViewArticle2.visibility = View.GONE
-                layoutArticleList2.visibility = View.GONE
-                cardViewArticle3.visibility = View.GONE
-                cardViewArticle4.visibility = View.GONE
+                binding.layoutArticleList1.visibility = View.VISIBLE
+                binding.cardViewArticle1.visibility = View.VISIBLE
+                binding.articleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.articleBanner1)
+                binding.cardViewArticle2.visibility = View.GONE
+                binding.layoutArticleList2.visibility = View.GONE
+                binding.cardViewArticle3.visibility = View.GONE
+                binding.cardViewArticle4.visibility = View.GONE
             } else if (articleList.size == 2) {
-                layoutArticleList1.visibility = View.VISIBLE
-                cardViewArticle1.visibility = View.VISIBLE
-                articleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], articleBanner1)
-                cardViewArticle2.visibility = View.VISIBLE
-                articleTitle2.text = articleList[1].name
-                setArticleImage(articleList[1], articleBanner2)
-                layoutArticleList2.visibility = View.GONE
-                cardViewArticle3.visibility = View.GONE
-                cardViewArticle4.visibility = View.GONE
+                binding.layoutArticleList1.visibility = View.VISIBLE
+                binding.cardViewArticle1.visibility = View.VISIBLE
+                binding.articleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.articleBanner1)
+                binding.cardViewArticle2.visibility = View.VISIBLE
+                binding.articleTitle2.text = articleList[1].name
+                setArticleImage(articleList[1], binding.articleBanner2)
+                binding.layoutArticleList2.visibility = View.GONE
+                binding.cardViewArticle3.visibility = View.GONE
+                binding.cardViewArticle4.visibility = View.GONE
             } else if (articleList.size == 3) {
-                layoutArticleList1.visibility = View.VISIBLE
-                cardViewArticle1.visibility = View.VISIBLE
-                articleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], articleBanner1)
-                cardViewArticle2.visibility = View.VISIBLE
-                articleTitle2.text = articleList[1].name
-                setArticleImage(articleList[1], articleBanner2)
-                layoutArticleList2.visibility = View.VISIBLE
-                cardViewArticle3.visibility = View.VISIBLE
-                articleTitle3.text = articleList[2].name
-                setArticleImage(articleList[2], articleBanner3)
-                cardViewArticle4.visibility = View.GONE
+                binding.layoutArticleList1.visibility = View.VISIBLE
+                binding.cardViewArticle1.visibility = View.VISIBLE
+                binding.articleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.articleBanner1)
+                binding.cardViewArticle2.visibility = View.VISIBLE
+                binding.articleTitle2.text = articleList[1].name
+                setArticleImage(articleList[1], binding.articleBanner2)
+                binding.layoutArticleList2.visibility = View.VISIBLE
+                binding.cardViewArticle3.visibility = View.VISIBLE
+                binding.articleTitle3.text = articleList[2].name
+                setArticleImage(articleList[2], binding.articleBanner3)
+                binding.cardViewArticle4.visibility = View.GONE
             } else if (articleList.size >= 4) {
-                layoutArticleList1.visibility = View.VISIBLE
-                cardViewArticle1.visibility = View.VISIBLE
-                articleTitle1.text = articleList[0].name
-                setArticleImage(articleList[0], articleBanner1)
-                cardViewArticle2.visibility = View.VISIBLE
-                articleTitle2.text = articleList[1].name
-                setArticleImage(articleList[1], articleBanner2)
-                layoutArticleList2.visibility = View.VISIBLE
-                cardViewArticle3.visibility = View.VISIBLE
-                articleTitle3.text = articleList[2].name
-                setArticleImage(articleList[2], articleBanner3)
-                cardViewArticle4.visibility = View.VISIBLE
-                articleTitle4.text = articleList[3].name
-                setArticleImage(articleList[3], articleBanner4)
+                binding.layoutArticleList1.visibility = View.VISIBLE
+                binding.cardViewArticle1.visibility = View.VISIBLE
+                binding.articleTitle1.text = articleList[0].name
+                setArticleImage(articleList[0], binding.articleBanner1)
+                binding.cardViewArticle2.visibility = View.VISIBLE
+                binding.articleTitle2.text = articleList[1].name
+                setArticleImage(articleList[1], binding.articleBanner2)
+                binding.layoutArticleList2.visibility = View.VISIBLE
+                binding.cardViewArticle3.visibility = View.VISIBLE
+                binding.articleTitle3.text = articleList[2].name
+                setArticleImage(articleList[2], binding.articleBanner3)
+                binding.cardViewArticle4.visibility = View.VISIBLE
+                binding.articleTitle4.text = articleList[3].name
+                setArticleImage(articleList[3], binding.articleBanner4)
             }
 
-            cardViewArticle1.setOnClickListener {
+            binding.cardViewArticle1.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[0], ""),
                     R.id.layout_home,
@@ -373,7 +434,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewArticle2.setOnClickListener {
+            binding.cardViewArticle2.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[1], ""),
                     R.id.layout_home,
@@ -381,7 +442,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewArticle3.setOnClickListener {
+            binding.cardViewArticle3.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[2], ""),
                     R.id.layout_home,
@@ -389,7 +450,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
 
-            cardViewArticle4.setOnClickListener {
+            binding.cardViewArticle4.setOnClickListener {
                 replaceFragment(
                     NewsDetailFragment.newInstance(articleList[3], ""),
                     R.id.layout_home,
@@ -397,8 +458,8 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
         } else {
-            layoutDisplayArticles.visibility = View.GONE
-            cardViewNoArticles.visibility = View.VISIBLE
+            binding.layoutDisplayArticles.visibility = View.GONE
+            binding.cardViewNoArticles.visibility = View.VISIBLE
         }
     }
 
@@ -432,24 +493,24 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
         }
 
         if (filteredVideos.isNotEmpty()) {
-            layoutVideoResourceData.visibility = View.VISIBLE
+            binding.layoutVideoResourceData.visibility = View.VISIBLE
             displayVideoList(filteredVideos)
         } else {
             if (text.length < 2) {
                 displayVideoList(videoLists)
             } else {
-                layoutVideoResourceData.visibility = View.GONE
+                binding.layoutVideoResourceData.visibility = View.GONE
             }
         }
 
         if (filteredPodcasts.isNotEmpty()) {
-            layoutPodcastResourceData.visibility = View.VISIBLE
+            binding.layoutPodcastResourceData.visibility = View.VISIBLE
             val adapter = DashboardPodcastAdapter(
                 mActivity!!,
                 podcastLists, this, ""
             )
             adapter.filterList(filteredPodcasts)
-            recyclerViewResourcePodcast.adapter = adapter
+            binding.recyclerViewResourcePodcast.adapter = adapter
         } else {
             if (text.length < 2) {
                 val adapter = DashboardPodcastAdapter(
@@ -457,28 +518,28 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                     podcastLists, this, ""
                 )
                 adapter.filterList(filteredPodcasts)
-                recyclerViewResourcePodcast.adapter = adapter
+                binding.recyclerViewResourcePodcast.adapter = adapter
             } else {
-                layoutPodcastResourceData.visibility = View.GONE
+                binding.layoutPodcastResourceData.visibility = View.GONE
             }
         }
 
         if (filteredArticles.isNotEmpty()) {
-            layoutArticlesResourceData.visibility = View.VISIBLE
+            binding.layoutArticlesResourceData.visibility = View.VISIBLE
             displayArticleList(filteredArticles)
         } else {
             if (text.length < 2) {
                 displayArticleList(articlesLists)
             } else {
-                layoutArticlesResourceData.visibility = View.GONE
+                binding.layoutArticlesResourceData.visibility = View.GONE
             }
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (resourceSearch != null)
-            resourceSearch.setText("")
+        if (binding.resourceSearch != null)
+            binding.resourceSearch.setText("")
     }
 
     companion object {

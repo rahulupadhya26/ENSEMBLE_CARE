@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnNewsItemClickListener
 import com.app.selfcare.data.Articles
-import kotlinx.android.synthetic.main.layout_item_dashboard_news.view.*
+import com.app.selfcare.databinding.LayoutItemDashboardNewsBinding
 import kotlin.math.min
 
-class DashboardArticlesAdapter (
+class DashboardArticlesAdapter(
     val context: Context,
     val list: List<Articles>, private val adapterItemClickListener: OnNewsItemClickListener?
 ) :
@@ -24,9 +24,14 @@ class DashboardArticlesAdapter (
         parent: ViewGroup,
         viewType: Int
     ): DashboardArticlesAdapter.ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_dashboard_news, parent, false)
-        return ViewHolder(v)
+        val binding = LayoutItemDashboardNewsBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        /*val v: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_item_dashboard_news, parent, false)*/
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -34,19 +39,17 @@ class DashboardArticlesAdapter (
         return min(list.size, limit)
     }
 
-    override fun onBindViewHolder(holder: DashboardArticlesAdapter.ViewHolder, position: Int) {
-
-        val item = list[position]
-        holder.newsTitle.text = item.name
-        holder.newsDate.text = item.published_date
-        holder.layoutNewsPane.setOnClickListener {
-            adapterItemClickListener!!.onNewsItemClicked(item)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            val item = list[position]
+            txtNewsTitle.text = item.name
+            txtNewsDate.text = item.published_date
+            layoutNewsPane.setOnClickListener {
+                adapterItemClickListener!!.onNewsItemClicked(item)
+            }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val newsTitle: TextView = itemView.txtNewsTitle
-        val newsDate: TextView = itemView.txtNewsDate
-        val layoutNewsPane: CardView = itemView.layoutNewsPane
-    }
+    inner class ViewHolder(val binding: LayoutItemDashboardNewsBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

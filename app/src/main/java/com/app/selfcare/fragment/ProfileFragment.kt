@@ -9,7 +9,9 @@ import android.telephony.PhoneNumberFormattingTextWatcher
 import android.telephony.PhoneNumberUtils
 import android.text.Editable
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
@@ -20,6 +22,8 @@ import com.app.selfcare.R
 import com.app.selfcare.data.PartProfileData
 import com.app.selfcare.data.PatientId
 import com.app.selfcare.data.ProfileData
+import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.databinding.FragmentProfileBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
@@ -32,9 +36,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.dialog_picture_option.view.*
-import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_therapy_basic_details_c.*
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
@@ -65,6 +66,7 @@ class ProfileFragment : BaseFragment() {
     private var selectedPreferredLang: String = "English"
     private var preferredLanguageData: Array<String>? = null
     private var createPictureDialog: BottomSheetDialog? = null
+    private lateinit var binding: FragmentProfileBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +74,15 @@ class ProfileFragment : BaseFragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun getLayout(): Int {
@@ -86,7 +97,7 @@ class ProfileFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        profileDetailBack.setOnClickListener {
+        binding.profileDetailBack.setOnClickListener {
             popBackStack()
         }
 
@@ -99,7 +110,7 @@ class ProfileFragment : BaseFragment() {
 
         setDobCalender()
 
-        etProfilePhoneNo.addTextChangedListener(object :
+        binding.etProfilePhoneNo.addTextChangedListener(object :
             PhoneNumberFormattingTextWatcher("US") {
             private var mFormatting = false
             private var mAfter = 0
@@ -125,7 +136,7 @@ class ProfileFragment : BaseFragment() {
             }
         })
 
-        etProfileEmerConPhno.addTextChangedListener(object :
+        binding.etProfileEmerConPhno.addTextChangedListener(object :
             PhoneNumberFormattingTextWatcher("US") {
             private var mFormatting = false
             private var mAfter = 0
@@ -151,36 +162,36 @@ class ProfileFragment : BaseFragment() {
             }
         })
 
-        tvAddProfilePic.setOnClickListener {
-            captureImage(imgProfilePhoto, "Profile")
+        binding.tvAddProfilePic.setOnClickListener {
+            captureImage(binding.imgProfilePhoto, "Profile")
         }
 
-        imgProfilePhoto.setOnClickListener {
+        /*imgProfilePhoto.setOnClickListener {
             showImage(imgProfilePhoto)
-        }
+        }*/
 
         verifyProfileDetails()
     }
 
     private fun bindProfileData(profileData: ProfileData) {
-        etProfileFname.setText(if (profileData.first_name == "null") "" else profileData.first_name)
-        etProfileMname.setText(if (profileData.middle_name == "null") "" else profileData.middle_name)
-        etProfileLname.setText(if (profileData.last_name == "null") "" else profileData.last_name)
+        binding.etProfileFname.setText(if (profileData.first_name == "null") "" else profileData.first_name)
+        binding.etProfileMname.setText(if (profileData.middle_name == "null") "" else profileData.middle_name)
+        binding.etProfileLname.setText(if (profileData.last_name == "null") "" else profileData.last_name)
         //etProfileSSN.setText(if (profileData.ssn == null) "" else profileData.ssn)
-        txtProfileDob.setText(if (profileData.dob == "null") "" else profileData.dob)
-        etProfileMailId.setText(preference!![PrefKeys.PREF_EMAIL, ""]!!)
+        binding.txtProfileDob.setText(if (profileData.dob == "null") "" else profileData.dob)
+        binding.etProfileMailId.setText(preference!![PrefKeys.PREF_EMAIL, ""]!!)
         val phoneNo =
             preference!![PrefKeys.PREF_PHONE_NO, ""]!!.replace("(", "").replace(")", "")
                 .replace(" ", "").replace("-", "")
-        etProfilePhoneNo.setText(formatNumbersAsCode(phoneNo))
-        etProfileEmerConPhno.setText(if (profileData.emergency_phone == "null") "" else profileData.emergency_phone)
-        etProfileAddress.setText(if (profileData.address == "null") "" else profileData.address)
-        etProfileAddress2.setText(if (profileData.address == "null") "" else profileData.address1)
-        etProfileStreet.setText(if (profileData.street == "null") "" else profileData.street)
-        etProfileCity.setText(if (profileData.city == "null") "" else profileData.city)
-        etProfileState.setText(if (profileData.state == "null") "" else profileData.state)
-        etProfileCountry.setText(if (profileData.country == "null") "" else profileData.country)
-        etProfileZipcode.setText(if (profileData.zipcode == "null") "" else profileData.zipcode)
+        binding.etProfilePhoneNo.setText(formatNumbersAsCode(phoneNo))
+        binding.etProfileEmerConPhno.setText(if (profileData.emergency_phone == "null") "" else profileData.emergency_phone)
+        binding.etProfileAddress.setText(if (profileData.address == "null") "" else profileData.address)
+        binding.etProfileAddress2.setText(if (profileData.address == "null") "" else profileData.address1)
+        binding.etProfileStreet.setText(if (profileData.street == "null") "" else profileData.street)
+        binding.etProfileCity.setText(if (profileData.city == "null") "" else profileData.city)
+        binding.etProfileState.setText(if (profileData.state == "null") "" else profileData.state)
+        binding.etProfileCountry.setText(if (profileData.country == "null") "" else profileData.country)
+        binding.etProfileZipcode.setText(if (profileData.zipcode == "null") "" else profileData.zipcode)
         preference!![PrefKeys.PREF_MARTIAL_STATUS] = profileData.marital_status
         preference!![PrefKeys.PREF_GENDER] = profileData.gender
         preference!![PrefKeys.PREF_PREFERRED_LANG] = profileData.preffered_language
@@ -191,12 +202,20 @@ class ProfileFragment : BaseFragment() {
         selectedPreferredLang = profileData.preffered_language
         selectedMartialStatus = profileData.marital_status
         val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
-        if (photo.isNotEmpty()) {
+        if (photo != "null" && photo.isNotEmpty()) {
+            binding.imgProfilePhoto.visibility = View.VISIBLE
+            binding.txtProfilePhoto.visibility = View.GONE
             Glide.with(requireActivity())
                 .load(BaseActivity.baseURL.dropLast(5) + photo)
                 .placeholder(R.drawable.user_pic)
                 .transform(CenterCrop(), RoundedCorners(5))
-                .into(imgProfilePhoto)
+                .into(binding.imgProfilePhoto)
+        } else {
+            binding.imgProfilePhoto.visibility = View.GONE
+            binding.txtProfilePhoto.visibility = View.VISIBLE
+            if (profileData.first_name.isNotEmpty()) {
+                binding.txtProfilePhoto.text = profileData.first_name.substring(0, 1).uppercase()
+            }
         }
         preference!![PrefKeys.PREF_SEVERITY_SCORE] = profileData.patient_severity_score
         preference!![PrefKeys.PREF_SELECTED_SERVICE] = profileData.selected_service
@@ -261,19 +280,19 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun verifyProfileDetails() {
-        btnProfileUpdate.setOnClickListener {
-            if (getText(etProfileFname).isNotEmpty()) {
+        binding.btnProfileUpdate.setOnClickListener {
+            if (getText(binding.etProfileFname).isNotEmpty()) {
                 //if (getText(etProfileMname).isNotEmpty()) {
-                if (getText(etProfileLname).isNotEmpty()) {
-                    if (getText(spinnerProfileGender).isNotEmpty()) {
+                if (getText(binding.etProfileLname).isNotEmpty()) {
+                    if (getText(binding.spinnerProfileGender).isNotEmpty()) {
                         //if (getText(etProfileCity).isNotEmpty()) {
                         //if (getText(etProfileState).isNotEmpty()) {
                         //if (getText(etProfileAddress).isNotEmpty()) {
                         //if (getText(etProfileZipcode).isNotEmpty()) {
-                        if (txtProfileDob.text.toString().isNotEmpty()) {
+                        if (binding.txtProfileDob.text.toString().isNotEmpty()) {
                             when (preference!![PrefKeys.PREF_SELECTED_THERAPY, ""]!!) {
                                 "Teen" -> {
-                                    if (getAge(txtProfileDob.text.toString()) in 13..17) {
+                                    if (getAge(binding.txtProfileDob.text.toString()) in 13..17) {
                                         updateProfileData()
                                     } else {
                                         displayMsg(
@@ -283,7 +302,7 @@ class ProfileFragment : BaseFragment() {
                                     }
                                 }
                                 else -> {
-                                    if (getAge(txtProfileDob.text.toString()) > 18) {
+                                    if (getAge(binding.txtProfileDob.text.toString()) > 18) {
                                         updateProfileData()
                                     } else {
                                         displayMsg(
@@ -321,37 +340,37 @@ class ProfileFragment : BaseFragment() {
                         displayMsg("Alert", "Select the gender")
                     }
                 } else {
-                    setEditTextError(etProfileLname, "Last name cannot be empty!")
+                    setEditTextError(binding.etProfileLname, "Last name cannot be empty!")
                 }
                 /*} else {
                     setEditTextError(etProfileMname, "Middle name cannot be empty!")
                 }*/
             } else {
-                setEditTextError(etProfileFname, "First name cannot be empty!")
+                setEditTextError(binding.etProfileFname, "First name cannot be empty!")
             }
         }
     }
 
     private fun updateProfileData() {
-        preference!![PrefKeys.PREF_EMERGENCY_CONTACT_NAME] = getText(etProfileEmerConName)
+        preference!![PrefKeys.PREF_EMERGENCY_CONTACT_NAME] = getText(binding.etProfileEmerConName)
         val photo =
-            "data:image/jpg;base64," + Utils.convert(Utils.convertImageToBitmap(imgProfilePhoto))!!
+            "data:image/jpg;base64," + Utils.convert(Utils.convertImageToBitmap(binding.imgProfilePhoto))!!
         val profileData = PartProfileData(
             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
-            getText(etProfileFname),
-            getText(etProfileMname),
-            getText(etProfileLname),
-            getText(txtProfileDob),
+            getText(binding.etProfileFname),
+            getText(binding.etProfileMname),
+            getText(binding.etProfileLname),
+            getText(binding.txtProfileDob),
             photo,
-            getText(etProfileEmerConPhno),
-            getText(etProfileCity),
-            getText(etProfileState),
-            getText(etProfileAddress),
+            getText(binding.etProfileEmerConPhno),
+            getText(binding.etProfileCity),
+            getText(binding.etProfileState),
+            getText(binding.etProfileAddress),
             selectedMartialStatus,
-            getText(etProfileZipcode),
+            getText(binding.etProfileZipcode),
             selectedRelationship,
-            getText(etProfileAddress2),
-            getText(etProfileCountry),
+            getText(binding.etProfileAddress2),
+            getText(binding.etProfileCountry),
             selectedGender,
             selectedPreferredLang
         )
@@ -427,31 +446,31 @@ class ProfileFragment : BaseFragment() {
     private fun genderSpinner() {
         if (preference!![PrefKeys.PREF_GENDER, ""]!!.isNotEmpty()) {
             Handler().postDelayed({
-                if (spinnerProfileGender != null)
-                    spinnerProfileGender.setText(preference!![PrefKeys.PREF_GENDER, ""]!!, false)
+                if (binding.spinnerProfileGender != null)
+                    binding.spinnerProfileGender.setText(preference!![PrefKeys.PREF_GENDER, ""]!!, false)
             }, 300)
         }
         genderData = resources.getStringArray(R.array.gender)
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             requireActivity(), R.layout.spinner_dropdown_custom_item, genderData!!
         )
-        spinnerProfileGender.setAdapter(adapter)
-        spinnerProfileGender.onItemClickListener =
+        binding.spinnerProfileGender.setAdapter(adapter)
+        binding.spinnerProfileGender.onItemClickListener =
             AdapterView.OnItemClickListener { parent, arg1, position, id ->
                 //TODO: You can your own logic.
                 selectedGender = genderData!![position]
             }
 
-        spinnerProfileGender.setOnClickListener {
-            spinnerProfileGender.showDropDown()
+        binding.spinnerProfileGender.setOnClickListener {
+            binding.spinnerProfileGender.showDropDown()
         }
     }
 
     private fun preferredLanguageSpinner() {
         if (preference!![PrefKeys.PREF_PREFERRED_LANG, ""]!!.isNotEmpty()) {
             Handler().postDelayed({
-                if (spinnerProfilePreferredLanguage != null)
-                    spinnerProfilePreferredLanguage.setText(
+                if (binding.spinnerProfilePreferredLanguage != null)
+                    binding.spinnerProfilePreferredLanguage.setText(
                         preference!![PrefKeys.PREF_PREFERRED_LANG, ""]!!,
                         false
                     )
@@ -461,14 +480,14 @@ class ProfileFragment : BaseFragment() {
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             requireActivity(), R.layout.spinner_dropdown_custom_item, preferredLanguageData!!
         )
-        spinnerProfilePreferredLanguage.setAdapter(adapter)
-        spinnerProfilePreferredLanguage.onItemClickListener =
+        binding.spinnerProfilePreferredLanguage.setAdapter(adapter)
+        binding.spinnerProfilePreferredLanguage.onItemClickListener =
             AdapterView.OnItemClickListener { parent, arg1, position, id ->
                 //TODO: You can your own logic.
                 selectedPreferredLang = preferredLanguageData!![position]
             }
-        spinnerProfilePreferredLanguage.setOnClickListener {
-            spinnerProfilePreferredLanguage.showDropDown()
+        binding.spinnerProfilePreferredLanguage.setOnClickListener {
+            binding.spinnerProfilePreferredLanguage.showDropDown()
         }
     }
 
@@ -476,8 +495,8 @@ class ProfileFragment : BaseFragment() {
         try {
             if (preference!![PrefKeys.PREF_RELATIONSHIP, ""]!!.isNotEmpty()) {
                 Handler().postDelayed({
-                    if (spinnerProfileRelationship != null)
-                        spinnerProfileRelationship.setText(
+                    if (binding.spinnerProfileRelationship != null)
+                        binding.spinnerProfileRelationship.setText(
                             preference!![PrefKeys.PREF_RELATIONSHIP, ""]!!,
                             false
                         )
@@ -489,14 +508,14 @@ class ProfileFragment : BaseFragment() {
                 R.layout.spinner_dropdown_custom_item,
                 relationshipsData!!
             )
-            spinnerProfileRelationship.setAdapter(adapter)
-            spinnerProfileRelationship.onItemClickListener =
+            binding.spinnerProfileRelationship.setAdapter(adapter)
+            binding.spinnerProfileRelationship.onItemClickListener =
                 AdapterView.OnItemClickListener { parent, arg1, position, id ->
                     //TODO: You can your own logic.
                     selectedRelationship = relationshipsData!![position]
                 }
-            spinnerProfileRelationship.setOnClickListener {
-                spinnerProfileRelationship.showDropDown()
+            binding.spinnerProfileRelationship.setOnClickListener {
+                binding.spinnerProfileRelationship.showDropDown()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -535,17 +554,17 @@ class ProfileFragment : BaseFragment() {
 
                 val myFormat = "MM/dd/yyyy" // mention the format you need
                 val sdf = SimpleDateFormat(myFormat)
-                txtProfileDob.setText(sdf.format(cal.time))
+                binding.txtProfileDob.setText(sdf.format(cal.time))
             }
 
-        txtProfileDob.setOnClickListener {
-            val datePickerDialog = DatePickerDialog(
+        binding.txtProfileDob.setOnClickListener {
+            /*val datePickerDialog = DatePickerDialog(
                 mActivity!!, dateSetListener,
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH)
             )
-            datePickerDialog.show()
+            datePickerDialog.show()*/
         }
     }
 
