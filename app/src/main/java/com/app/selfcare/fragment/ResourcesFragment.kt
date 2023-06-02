@@ -23,6 +23,7 @@ import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentResourcesBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -112,7 +113,8 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
             }
 
             override fun afterTextChanged(editable: Editable) {
-                filterData(editable.toString())
+                if (editable.toString().isNotEmpty())
+                    filterData(editable.toString())
             }
         })
     }
@@ -130,7 +132,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
 
         binding.resourceFavourite.setOnClickListener {
             replaceFragment(
-                FavoriteFragment.newInstance(""),
+                FavoriteFragment.newInstance(Utils.RESOURCE),
                 R.id.layout_home,
                 FavoriteFragment.TAG
             )
@@ -166,6 +168,15 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
         podcastLists = arrayListOf()
         articlesLists = arrayListOf()
         //layoutResources.visibility = View.GONE
+        binding.layoutShimmerDisplayVideos.startShimmer()
+        binding.layoutShimmerDisplayVideos.visibility = View.VISIBLE
+        binding.shimmerResourcePodcast.startShimmer()
+        binding.shimmerResourcePodcast.visibility = View.VISIBLE
+        binding.layoutShimmerDisplayArticles.startShimmer()
+        binding.layoutShimmerDisplayArticles.visibility = View.VISIBLE
+        binding.cardViewNoVideos.visibility = View.GONE
+        binding.cardViewNoPodcasts.visibility = View.GONE
+        binding.cardViewNoArticles.visibility = View.GONE
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()

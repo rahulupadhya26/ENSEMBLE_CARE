@@ -120,7 +120,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         mActivity!!.setUserDetails()
-        updateStatusBarColor(R.color.screen_background_color)
+        updateStatusBarColor(R.color.resource_background)
         checkPermissionsAndRun(FitActionRequestCode.SUBSCRIBE)
 
         //Show Good morning, afternoon, evening or night message to user.
@@ -136,31 +136,35 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
         displayDashboardNotifications()
 
         binding.itemsSwipeToRefresh.setOnRefreshListener {
-            try {
-                isGetNotification = false
-                displayAppointments()
-                displayDashboardNotifications()
-                val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
-                if (photo != "null" && photo.isNotEmpty()) {
-                    binding.imgUserPic.visibility = View.VISIBLE
-                    binding.txtUserPic.visibility = View.GONE
-                    Glide.with(requireActivity())
-                        .load(BaseActivity.baseURL.dropLast(5) + photo)
-                        .placeholder(R.drawable.user_pic)
-                        .transform(CenterCrop(), RoundedCorners(5))
-                        .into(binding.imgUserPic)
-                } else {
-                    //img_user_pic.setImageResource(R.drawable.user_pic)
-                    binding.imgUserPic.visibility = View.GONE
-                    binding.txtUserPic.visibility = View.VISIBLE
-                    val userTxt = preference!![PrefKeys.PREF_FNAME, ""]!!
-                    if (userTxt.isNotEmpty()) {
-                        binding.txtUserPic.text = userTxt.substring(0, 1).uppercase()
-                    }
+            refreshDashboardData()
+        }
+    }
+
+    private fun refreshDashboardData() {
+        try {
+            isGetNotification = false
+            displayAppointments()
+            displayDashboardNotifications()
+            val photo = preference!![PrefKeys.PREF_PHOTO, ""]!!
+            if (photo != "null" && photo.isNotEmpty()) {
+                binding.imgUserPic.visibility = View.VISIBLE
+                binding.txtUserPic.visibility = View.GONE
+                Glide.with(requireActivity())
+                    .load(BaseActivity.baseURL.dropLast(5) + photo)
+                    .placeholder(R.drawable.user_pic)
+                    .transform(CenterCrop(), RoundedCorners(5))
+                    .into(binding.imgUserPic)
+            } else {
+                //img_user_pic.setImageResource(R.drawable.user_pic)
+                binding.imgUserPic.visibility = View.GONE
+                binding.txtUserPic.visibility = View.VISIBLE
+                val userTxt = preference!![PrefKeys.PREF_FNAME, ""]!!
+                if (userTxt.isNotEmpty()) {
+                    binding.txtUserPic.text = userTxt.substring(0, 1).uppercase()
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -340,12 +344,15 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
             in 0..11 -> {
                 binding.txtShowMessageToUser.text = "Good Morning,"
             }
+
             in 12..15 -> {
                 binding.txtShowMessageToUser.text = "Good Afternoon,"
             }
+
             in 16..19 -> {
                 binding.txtShowMessageToUser.text = "Good Evening,"
             }
+
             in 20..23 -> {
                 binding.txtShowMessageToUser.text = "Good Night,"
             }
@@ -462,6 +469,14 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
         }
     }
 
+    private fun <T> getItemImpl(list: List<T>, item: T): Int {
+        list.forEachIndexed { index, it ->
+            if (it == item)
+                return index
+        }
+        return -1
+    }
+
     @SuppressLint("SetTextI18n")
     private fun displayAppointments() {
         binding.itemsSwipeToRefresh.isRefreshing = false
@@ -477,7 +492,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
 
                 if (appointmentLists.today[0].is_group_appointment) {
                     binding.txtAppointTherapistName.text =
-                        if (appointmentLists.today[0].meeting_title == null) "Group Appointment" else appointmentLists.today[0].meeting_title
+                        if (appointmentLists.today[0].group_name == null) "Group Appointment" else appointmentLists.today[0].group_name
                     binding.txtAppointTherapistType.text =
                         appointmentLists.today[0].doctor_first_name + " " +
                                 appointmentLists.today[0].doctor_last_name
@@ -485,37 +500,38 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                     binding.txtAppointTherapistName.text =
                         appointmentLists.today[0].doctor_first_name + " " +
                                 appointmentLists.today[0].doctor_last_name
-                    binding.txtAppointTherapistType.text = appointmentLists.today[0].doctor_designation
+                    binding.txtAppointTherapistType.text =
+                        appointmentLists.today[0].doctor_designation
                 }
 
                 if (appointmentLists.today[0].is_group_appointment) {
                     val appointmentDate =
-                        DateUtils(appointmentLists.today[0].group_appointment.date + " 00:00:00")
+                        DateUtils(appointmentLists.today[0].group_appointment!!.date + " 00:00:00")
 
                     binding.txtAppointmentDateTime.text =
                         appointmentDate.getCurrentDay() + ", " +
                                 appointmentDate.getDay() + " " +
                                 appointmentDate.getMonth() + " at " +
-                                appointmentLists.today[0].group_appointment.time + " " +
-                                appointmentLists.today[0].group_appointment.select_am_or_pm
+                                appointmentLists.today[0].group_appointment!!.time + " " +
+                                appointmentLists.today[0].group_appointment!!.select_am_or_pm
                 } else {
                     val appointmentDate =
-                        DateUtils(appointmentLists.today[0].appointment.booking_date + " 00:00:00")
+                        DateUtils(appointmentLists.today[0].appointment!!.booking_date + " 00:00:00")
 
                     binding.txtAppointmentDateTime.text =
                         appointmentDate.getCurrentDay() + ", " +
                                 appointmentDate.getDay() + " " +
                                 appointmentDate.getMonth() + " at " +
-                                appointmentLists.today[0].appointment.time_slot.starting_time.dropLast(
+                                appointmentLists.today[0].appointment!!.time_slot.starting_time.dropLast(
                                     3
                                 ) + " - " +
-                                appointmentLists.today[0].appointment.time_slot.ending_time.dropLast(
+                                appointmentLists.today[0].appointment!!.time_slot.ending_time.dropLast(
                                     3
                                 )
                 }
 
                 if (!appointmentLists.today[0].is_group_appointment) {
-                    when (appointmentLists.today[0].appointment.type_of_visit) {
+                    when (appointmentLists.today[0].appointment!!.type_of_visit) {
                         "Video" -> {
                             binding.appointmentCall.setImageResource(R.drawable.video)
                             binding.appointmentCall.imageTintList =
@@ -526,6 +542,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                     )
                                 )
                         }
+
                         "Audio" -> {
                             binding.appointmentCall.setImageResource(R.drawable.telephone)
                             binding.appointmentCall.imageTintList =
@@ -536,6 +553,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                     )
                                 )
                         }
+
                         else -> {
                             binding.appointmentCall.setImageResource(R.drawable.chat)
                             binding.appointmentCall.imageTintList =
@@ -574,26 +592,58 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                 binding.cardViewAppointment.setOnClickListener {
                     if (appointmentLists.today[0].is_group_appointment) {
                         getGroupApptToken(appointmentLists.today[0])
-                        /*val i = Intent(requireActivity(), CallActivity::class.java)
-                        i.putExtra(ConstantApp.ACTION_KEY_TOKEN, appointmentLists.today[0].rtc_token)
-                        i.putExtra(ConstantApp.ACTION_KEY_CHANNEL_NAME, appointmentLists.today[0].channel_name)
-                        startActivity(i)
-                        requireActivity().overridePendingTransition(0, 0)
-                        val intent = Intent(requireActivity(), GroupVideoCall::class.java)
-                        intent.putExtra("token", appointmentLists.today[0].rtc_token)
-                        intent.putExtra("channelName", appointmentLists.today[0].channel_name)
-                        startActivity(intent)
-                        requireActivity().overridePendingTransition(0, 0)
-                        clearPreviousFragmentStack()
-                        replaceFragmentNoBackStack(
-                            GroupVideoCallFragment.newInstance(
-                                appointmentLists.today[0].rtc_token,
-                                appointmentLists.today[0].channel_name
-                            ), R.id.layout_home, GroupVideoCallFragment.TAG
-                        )*/
                     } else {
                         getToken(appointmentLists.today[0])
                     }
+                }
+
+                var sessionIndex = -1
+
+                for (index in 0 until appointmentLists.today.size) {
+                    if (appointmentLists.today[index].appointment_type == "Training_appointment") {
+                        sessionIndex = index
+                        break
+                    }
+                }
+
+                if (sessionIndex != -1) {
+                    binding.layoutTrainingSession.visibility = View.VISIBLE
+                    binding.txtTrainingSessionTherapistName.text =
+                        appointmentLists.today[sessionIndex].host!!.first_name + " " +
+                                appointmentLists.today[sessionIndex].host!!.last_name
+                    binding.txtTrainingSessionTherapistType.text =
+                        appointmentLists.today[sessionIndex].title
+                    val sessionDate =
+                        DateUtils(appointmentLists.today[sessionIndex].date.replace("-", " "))
+                    binding.txtTrainingSessionDateTime.text =
+                        sessionDate.getCurrentDay() + ", " +
+                                sessionDate.getDay() + " " +
+                                sessionDate.getMonth() + " at " +
+                                appointmentLists.today[sessionIndex].start_time.dropLast(
+                                    3
+                                ) + " - " +
+                                appointmentLists.today[sessionIndex].end_time.dropLast(
+                                    3
+                                )
+                    binding.trainingSessionCall.setImageResource(R.drawable.video)
+                    binding.trainingSessionCall.imageTintList =
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                requireActivity(),
+                                R.color.primaryGreen
+                            )
+                        )
+                    Glide.with(requireActivity())
+                        .load(BaseActivity.baseURL.dropLast(5) + appointmentLists.today[sessionIndex].host!!.photo)
+                        .placeholder(R.drawable.doctor_new_image)
+                        .transform(CenterCrop(), RoundedCorners(5))
+                        .into(binding.dashboardTrainingSessionImgUser)
+
+                    binding.cardViewTrainingSession.setOnClickListener {
+                        getTrainingSessionToken(appointmentLists.today[sessionIndex])
+                    }
+                } else {
+                    binding.layoutTrainingSession.visibility = View.GONE
                 }
             } else if (appointmentLists.upcoming.isNotEmpty()) {
                 binding.cardViewAppointment.visibility = View.VISIBLE
@@ -602,7 +652,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
 
                 if (appointmentLists.upcoming[0].is_group_appointment) {
                     binding.txtAppointTherapistName.text =
-                        if (appointmentLists.upcoming[0].meeting_title == null) "Group Appointment" else appointmentLists.upcoming[0].meeting_title
+                        if (appointmentLists.upcoming[0].group_name == null) "Group Appointment" else appointmentLists.upcoming[0].group_name
                     binding.txtAppointTherapistType.text =
                         appointmentLists.upcoming[0].doctor_first_name + " " +
                                 appointmentLists.upcoming[0].doctor_last_name
@@ -610,37 +660,38 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                     binding.txtAppointTherapistName.text =
                         appointmentLists.upcoming[0].doctor_first_name + " " +
                                 appointmentLists.upcoming[0].doctor_last_name
-                    binding.txtAppointTherapistType.text = appointmentLists.upcoming[0].doctor_designation
+                    binding.txtAppointTherapistType.text =
+                        appointmentLists.upcoming[0].doctor_designation
                 }
 
                 if (appointmentLists.upcoming[0].is_group_appointment) {
                     val appointmentDate =
-                        DateUtils(appointmentLists.upcoming[0].group_appointment.date + " 00:00:00")
+                        DateUtils(appointmentLists.upcoming[0].group_appointment!!.date + " 00:00:00")
 
                     binding.txtAppointmentDateTime.text =
                         appointmentDate.getCurrentDay() + ", " +
                                 appointmentDate.getDay() + " " +
                                 appointmentDate.getMonth() + " at " +
-                                appointmentLists.upcoming[0].group_appointment.time + " " +
-                                appointmentLists.upcoming[0].group_appointment.select_am_or_pm
+                                appointmentLists.upcoming[0].group_appointment!!.time + " " +
+                                appointmentLists.upcoming[0].group_appointment!!.select_am_or_pm
                 } else {
                     val appointmentDate =
-                        DateUtils(appointmentLists.upcoming[0].appointment.date + " 00:00:00")
+                        DateUtils(appointmentLists.upcoming[0].appointment!!.date + " 00:00:00")
 
                     binding.txtAppointmentDateTime.text =
                         appointmentDate.getCurrentDay() + ", " +
                                 appointmentDate.getDay() + " " +
                                 appointmentDate.getMonth() + " at " +
-                                appointmentLists.upcoming[0].appointment.time_slot.starting_time.dropLast(
+                                appointmentLists.upcoming[0].appointment!!.time_slot.starting_time.dropLast(
                                     3
                                 ) + " - " +
-                                appointmentLists.upcoming[0].appointment.time_slot.ending_time.dropLast(
+                                appointmentLists.upcoming[0].appointment!!.time_slot.ending_time.dropLast(
                                     3
                                 )
                 }
 
                 if (!appointmentLists.upcoming[0].is_group_appointment) {
-                    when (appointmentLists.upcoming[0].appointment.type_of_visit) {
+                    when (appointmentLists.upcoming[0].appointment!!.type_of_visit) {
                         "Video" -> {
                             binding.appointmentCall.setImageResource(R.drawable.video)
                             binding.appointmentCall.imageTintList =
@@ -651,6 +702,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                     )
                                 )
                         }
+
                         "Audio" -> {
                             binding.appointmentCall.setImageResource(R.drawable.telephone)
                             binding.appointmentCall.imageTintList =
@@ -661,6 +713,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                     )
                                 )
                         }
+
                         else -> {
                             binding.appointmentCall.setImageResource(R.drawable.chat)
                             binding.appointmentCall.imageTintList =
@@ -723,7 +776,9 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                 displayDailyInspiration(jsonObj)
                             }
                         }
-                        if (jsonObj.getString("title").contains("Appointment", ignoreCase = true)) {
+                        if (jsonObj.getString("title")
+                                .contains("Appointment", ignoreCase = true)
+                        ) {
                             displayAppointmentCancelledAlert(jsonObj)
                         } else if (jsonObj.getString("title")
                                 .contains("Consent", ignoreCase = true)
@@ -734,14 +789,18 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                             val consentRoisNotify: ConsentRoisFormsNotify =
                                 Gson().fromJson(jsonObj.toString(), consentRoisNotifyType)
                             consentRoisFormsNotifyList.add(consentRoisNotify)
-                        } else if (jsonObj.getString("title").contains("ROI", ignoreCase = true)) {
+                        } else if (jsonObj.getString("title")
+                                .contains("ROI", ignoreCase = true)
+                        ) {
                             consentRoisCount += 1
                             val consentRoisNotifyType: Type =
                                 object : TypeToken<ConsentRoisFormsNotify?>() {}.type
                             val consentRoisNotify: ConsentRoisFormsNotify =
                                 Gson().fromJson(jsonObj.toString(), consentRoisNotifyType)
                             consentRoisFormsNotifyList.add(consentRoisNotify)
-                        } else if (jsonObj.getString("title").contains("Plan", ignoreCase = true)) {
+                        } else if (jsonObj.getString("title")
+                                .contains("Plan", ignoreCase = true)
+                        ) {
                             displayPlanSubscriptionAlert(jsonObj)
                         }
                     }
@@ -774,15 +833,10 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
 
     private fun getToken(appointment: GetAppointment) {
         showProgress()
-        val id = if (appointment.is_group_appointment) {
-            appointment.group_appointment.id
-        } else {
-            appointment.appointment.appointment_id
-        }
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getToken(GetToken(id), getAccessToken())
+                    .getToken(GetToken(appointment.appointment!!.appointment_id), getAccessToken())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -797,54 +851,35 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                             val rtcToken = jsonObj.getString("rtc_token")
                             val rtmToken = jsonObj.getString("rtm_token")
                             val channelName = jsonObj.getString("channel_name")
-                            if (appointment.is_group_appointment) {
-                                val i = Intent(requireActivity(), CallActivity::class.java)
-                                i.putExtra(ConstantApp.ACTION_KEY_TOKEN, rtcToken)
-                                i.putExtra(ConstantApp.ACTION_KEY_CHANNEL_NAME, channelName)
-                                startActivity(i)
-                                requireActivity().overridePendingTransition(0, 0)
-                                /*val intent = Intent(requireActivity(), GroupVideoCall::class.java)
-                                intent.putExtra("token", rtcToken)
-                                intent.putExtra("channelName", channelName)
-                                startActivity(intent)
-                                requireActivity().overridePendingTransition(0, 0)*/
-                                /*clearPreviousFragmentStack()
-                                replaceFragmentNoBackStack(
-                                    GroupVideoCallFragment.newInstance(
-                                        rtcToken,
-                                        channelName
-                                    ), R.id.layout_home, GroupVideoCallFragment.TAG
-                                )*/
-                            } else {
-                                when (appointment.appointment.type_of_visit) {
-                                    "Text" -> {
-                                        clearPreviousFragmentStack()
-                                        //Start video call
-                                        replaceFragmentNoBackStack(
-                                            TextAppointmentFragment.newInstance(
-                                                appointment,
-                                                rtcToken,
-                                                rtmToken,
-                                                channelName
-                                            ),
-                                            R.id.layout_home,
-                                            TextAppointmentFragment.TAG
-                                        )
-                                    }
-                                    else -> {
-                                        clearPreviousFragmentStack()
-                                        //Start video call
-                                        replaceFragmentNoBackStack(
-                                            VideoCallFragment.newInstance(
-                                                appointment,
-                                                rtcToken,
-                                                rtmToken,
-                                                channelName
-                                            ),
-                                            R.id.layout_home,
-                                            VideoCallFragment.TAG
-                                        )
-                                    }
+                            when (appointment.appointment.type_of_visit) {
+                                "Text" -> {
+                                    clearPreviousFragmentStack()
+                                    //Start video call
+                                    replaceFragmentNoBackStack(
+                                        TextAppointmentFragment.newInstance(
+                                            appointment,
+                                            rtcToken,
+                                            rtmToken,
+                                            channelName
+                                        ),
+                                        R.id.layout_home,
+                                        TextAppointmentFragment.TAG
+                                    )
+                                }
+
+                                else -> {
+                                    clearPreviousFragmentStack()
+                                    //Start video call
+                                    replaceFragmentNoBackStack(
+                                        VideoCallFragment.newInstance(
+                                            appointment,
+                                            rtcToken,
+                                            rtmToken,
+                                            channelName
+                                        ),
+                                        R.id.layout_home,
+                                        VideoCallFragment.TAG
+                                    )
                                 }
                             }
                         } catch (e: Exception) {
@@ -872,14 +907,19 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
     private fun getGroupApptToken(appointment: GetAppointment) {
         showProgress()
         val id = if (appointment.is_group_appointment) {
-            appointment.group_appointment.id
+            appointment.group_appointment!!.id
         } else {
-            appointment.appointment.appointment_id
+            appointment.appointment!!.appointment_id
         }
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getGroupApptToken(GetGroupApptToken(id), getAccessToken())
+                    .getGroupApptToken(
+                        GetGroupApptToken(
+                            id,
+                            preference!![PrefKeys.PREF_EMAIL, ""]!!
+                        ), getAccessToken()
+                    )
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -895,27 +935,43 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                             val rtmToken = jsonObj.getString("rtm_token")
                             val channelName = jsonObj.getString("channel_name")
                             if (appointment.is_group_appointment) {
-                                val i = Intent(requireActivity(), CallActivity::class.java)
+                                /*val i = Intent(requireActivity(), CallActivity::class.java)
                                 val bundle = Bundle()
-                                bundle.putString(ConstantApp.ACTION_KEY_ID, Gson().toJson(appointment))
+                                bundle.putString(
+                                    ConstantApp.ACTION_KEY_ID,
+                                    appointment.group_appointment!!.id.toString()
+                                )
                                 bundle.putString(ConstantApp.ACTION_KEY_TOKEN, rtcToken)
                                 bundle.putString(ConstantApp.ACTION_KEY_RTM, rtmToken)
-                                bundle.putString(ConstantApp.ACTION_KEY_CHANNEL_NAME, channelName)
+                                bundle.putString(
+                                    ConstantApp.ACTION_KEY_CHANNEL_NAME,
+                                    channelName
+                                )
+                                bundle.putString(
+                                    ConstantApp.ACTION_KEY_FNAME,
+                                    appointment.doctor_first_name
+                                )
+                                bundle.putString(
+                                    ConstantApp.ACTION_KEY_LNAME,
+                                    appointment.doctor_last_name
+                                )
                                 i.putExtras(bundle)
                                 startActivity(i)
-                                requireActivity().overridePendingTransition(0, 0)
+                                requireActivity().overridePendingTransition(0, 0)*/
                                 /*val intent = Intent(requireActivity(), GroupVideoCall::class.java)
                                 intent.putExtra("token", rtcToken)
                                 intent.putExtra("channelName", channelName)
                                 startActivity(intent)
                                 requireActivity().overridePendingTransition(0, 0)*/
-                                /*clearPreviousFragmentStack()
+                                clearPreviousFragmentStack()
                                 replaceFragmentNoBackStack(
                                     GroupVideoCallFragment.newInstance(
                                         rtcToken,
-                                        channelName
+                                        channelName,
+                                        rtmToken,
+                                        appointment
                                     ), R.id.layout_home, GroupVideoCallFragment.TAG
-                                )*/
+                                )
                             }
                         } catch (e: Exception) {
                             hideProgress()
@@ -928,7 +984,66 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                 preference!![PrefKeys.PREF_EMAIL]!!,
                                 preference!![PrefKeys.PREF_PASS]!!
                             ) { result ->
-                                getGroupApptToken(appointment)
+                                clearCache()
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    private fun getTrainingSessionToken(appointment: GetAppointment) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getTrainingSessionToken(
+                        GetTrainingSessionToken(
+                            appointment.id,
+                            preference!![PrefKeys.PREF_EMAIL, ""]!!
+                        ), getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            val jsonObj = JSONObject(responseBody)
+                            val rtcToken = jsonObj.getString("rtc_token")
+                            val rtmToken = jsonObj.getString("rtm_token")
+                            val channelName = jsonObj.getString("channel_name")
+                            clearPreviousFragmentStack()
+                            //Start video call
+                            replaceFragmentNoBackStack(
+                                TrainingSessionFragment.newInstance(
+                                    appointment,
+                                    rtcToken,
+                                    rtmToken,
+                                    channelName
+                                ),
+                                R.id.layout_home,
+                                TrainingSessionFragment.TAG
+                            )
+                        } catch (e: Exception) {
+                            hideProgress()
+                            //displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                clearCache()
                             }
                         } else {
                             displayAfterLoginErrorMsg(error)
@@ -1002,7 +1117,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                     .cancelAppointment(
                         CancelAppointment(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
-                            appointment.appointment.appointment_id
+                            appointment.appointment!!.appointment_id
                         ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -1118,7 +1233,9 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
             AppCompatActivity.RESULT_OK -> {
                 val postSignInAction = FitActionRequestCode.values()[requestCode]
                 performActionForRequestCode(postSignInAction)
+                refreshDashboardData()
             }
+
             else -> oAuthErrorMsg(requestCode, resultCode)
         }
     }
@@ -1253,7 +1370,8 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
         val currentDate = sdf.format(Date())
         val currentDateTime = DateUtils(currentDate)
 
-        binding.txtViewUpdatedAt.text = "Updated today at " + currentDateTime.getTimeWithFormat()
+        binding.txtViewUpdatedAt.text =
+            "Updated today at " + currentDateTime.getTimeWithFormat()
 
         binding.goalTrackerProgress.setProgress(74.0, 100.0)
     }
@@ -1321,6 +1439,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                 // is cancelled and you receive empty arrays.
                 Log.i(TAG, "User interaction was cancelled.")
             }
+
             grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
                 // Permission was granted.
                 val fitActionRequestCode = FitActionRequestCode.values()[requestCode]
@@ -1328,6 +1447,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                     fitSignIn(fitActionRequestCode)
                 }
             }
+
             else -> {
                 // Permission denied.
 

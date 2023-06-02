@@ -65,7 +65,7 @@
                 android:layout_marginEnd="@dimen/_20dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:weightSum="15">
+                android:weightSum="25">
 
                 <LinearLayout
                     android:id="@+id/dashProgress1"
@@ -208,6 +208,106 @@
 
                 <LinearLayout
                     android:id="@+id/dashProgress15"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:background="@drawable/dash_white_progress_bar"/>
+
+                <LinearLayout
+                    android:id="@+id/dashProgress16"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:background="@drawable/dash_white_progress_bar"/>
+
+                <LinearLayout
+                    android:id="@+id/dashProgress17"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:background="@drawable/dash_white_progress_bar"/>
+
+                <LinearLayout
+                    android:id="@+id/dashProgress18"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:background="@drawable/dash_white_progress_bar"/>
+
+                <LinearLayout
+                    android:id="@+id/dashProgress19"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:background="@drawable/dash_white_progress_bar"/>
+
+                <LinearLayout
+                    android:id="@+id/dashProgress20"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:background="@drawable/dash_white_progress_bar"/>
+
+                <LinearLayout
+                    android:id="@+id/dashProgress21"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:background="@drawable/dash_white_progress_bar"/>
+
+                <LinearLayout
+                    android:id="@+id/dashProgress22"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:background="@drawable/dash_white_progress_bar"/>
+
+                <LinearLayout
+                    android:id="@+id/dashProgress23"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:background="@drawable/dash_white_progress_bar"/>
+
+                <LinearLayout
+                    android:id="@+id/dashProgress24"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:background="@drawable/dash_white_progress_bar"/>
+
+                <LinearLayout
+                    android:id="@+id/dashProgress25"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_5dp"
                     android:layout_weight="1"
@@ -701,7 +801,8 @@
                         android:padding="@dimen/_5dp"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="@dimen/_5dp"
-                        android:src="@mipmap/ic_action_close"/>
+                        android:src="@mipmap/ic_action_close"
+                        app:tint="#5F6368" />
 
                 </RelativeLayout>
 
@@ -760,7 +861,8 @@
                     android:autoLink="phone"
                     android:textColorLink="#830CDB"
                     android:textSize="@dimen/_20sp"
-                    android:layout_marginTop="@dimen/_10dp"/>
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -787,12 +889,12 @@
                         android:textSize="@dimen/_16sp" />
 
                     <TextView
+                        android:id="@+id/txtCall911"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/fontfamily"
                         android:text="@string/call_911"
                         android:textColor="#830CDB"
-                        android:autoLink="phone"
                         android:textSize="@dimen/_16sp"/>
 
                 </LinearLayout>
@@ -814,12 +916,12 @@
                         android:textSize="@dimen/_16sp" />
 
                     <TextView
+                        android:id="@+id/txtSuicideCrisisLifeLine"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/fontfamily"
                         android:text="@string/crisis_lifeline"
                         android:textColor="@color/black"
-                        android:autoLink="web"
                         android:textColorLink="#830CDB"
                         android:textSize="@dimen/_16sp" />
 
@@ -841,6 +943,7 @@
                         android:textSize="@dimen/_16sp" />
 
                     <TextView
+                        android:id="@+id/txtResourceCrisisTextLine"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/fontfamily"
@@ -867,6 +970,7 @@
                         android:textSize="@dimen/_16sp" />
 
                     <TextView
+                        android:id="@+id/txtDisasterDistressHelpLine"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/fontfamily"
@@ -902,6 +1006,7 @@
                         android:textSize="@dimen/_16sp" />
 
                     <TextView
+                        android:id="@+id/txtTransLifeLine"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/fontfamily"
@@ -928,12 +1033,184 @@
                         android:textSize="@dimen/_16sp" />
 
                     <TextView
+                        android:id="@+id/txtResourceTrevorProject"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/fontfamily"
                         android:text="@string/the_trevor_project"
                         android:textColor="@color/black"
                         android:textColorLink="#830CDB"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="Abuse/Assault/Violence"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_5dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginStart="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="\u2022 "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:id="@+id/txtResourceNationalViolence"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="@string/crisis_screen_national_domestic"
+                        android:textColor="@color/black"
+                        android:textColorLink="#830CDB"
+                        android:clickable="true"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginStart="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="\u2022 "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:id="@+id/txtResourceNationalChildAbuse"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="@string/crisis_screen_national_child"
+                        android:textColor="@color/black"
+                        android:textColorLink="#830CDB"
+                        android:clickable="true"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginStart="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="\u2022 "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:id="@+id/txtResourceNationalSexualAssault"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="@string/crisis_screen_national_sexual"
+                        android:textColor="@color/black"
+                        android:textColorLink="#830CDB"
+                        android:clickable="true"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="Elders"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_5dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginStart="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="\u2022 "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:id="@+id/txtResourceElderDisability"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="@string/elders"
+                        android:textColor="@color/black"
+                        android:textColorLink="#830CDB"
+                        android:clickable="true"
+                        android:textSize="@dimen/_16sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:text="Veterans/Active-duty Military"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_5dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_2dp"
+                    android:paddingBottom="@dimen/_10dp"
+                    android:layout_marginStart="@dimen/_10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="\u2022 "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:id="@+id/txtResourceVeteranCrisis"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="@string/veterans"
+                        android:textColor="@color/black"
+                        android:textColorLink="#830CDB"
+                        android:clickable="true"
                         android:textSize="@dimen/_16sp" />
 
                 </LinearLayout>

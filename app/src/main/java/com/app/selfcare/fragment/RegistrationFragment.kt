@@ -88,6 +88,8 @@ class RegistrationFragment : BaseFragment() {
             binding.etSignUpLname.setText(register!!.last_name)
             //etSignUpSSN.setText(register!!.ssn)
             binding.txtSignupDob.text = register!!.dob
+        } else {
+            binding.txtSignupDob.text = Utils.dob
         }
 
         genderSpinner()
@@ -95,7 +97,7 @@ class RegistrationFragment : BaseFragment() {
         setDobCalender()
 
         onClickEvents()
-        binding.txtSignupDob.hint = "mm/dd/yyyy"
+        //binding.txtSignupDob.hint = "mm/dd/yyyy"
         binding.etSignUpFname.requestFocus()
 
         binding.etSignUpSSN.addTextChangedListener(object : TextWatcher {
@@ -197,10 +199,10 @@ class RegistrationFragment : BaseFragment() {
     private fun preferredLangSpinner() {
         try {
             prefLangData = resources.getStringArray(R.array.preferred_language)
-            val adapter = object: ArrayAdapter<String>(
+            val adapter = object : ArrayAdapter<String>(
                 requireActivity(),
                 R.layout.spinner_dropdown_custom_item, prefLangData!!
-            ){
+            ) {
                 override fun isEnabled(position: Int): Boolean {
                     return position != 0
                 }

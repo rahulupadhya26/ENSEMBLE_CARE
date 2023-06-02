@@ -228,7 +228,7 @@ class PaymentSelectFragment : BaseFragment() {
             countryCode = "US",
             currencyCode = "USD" // Required for Setup Intents, optional for Payment Intents
         )
-        val configuration = PaymentSheet.Configuration.Builder("Ensemble Care")
+        val configuration = PaymentSheet.Configuration.Builder("EnsembleCare")
             .customer(
                 PaymentSheet.CustomerConfiguration(
                     customerID!!,

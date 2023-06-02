@@ -127,6 +127,18 @@ class PodcastFragment : BaseFragment(), OnPodcastItemClickListener {
                         getDetailPodcastData("music_data/")
                     }
                 }
+                Utils.RESOURCE->{
+                    if (isFavourite) {
+                        getResourceFavData { response ->
+                            val jsonObj = JSONObject(response!!)
+                            val podcastList: Type = object : TypeToken<ArrayList<Podcast?>?>() {}.type
+                            val podcastLists: ArrayList<Podcast> = Gson().fromJson(jsonObj.getString("podcasts"), podcastList)
+                            displayPodcasts(podcastLists)
+                        }
+                    } else {
+                        getPodcastList()
+                    }
+                }
                 else -> {
                     getPodcastList()
                 }

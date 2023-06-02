@@ -16,17 +16,22 @@
         android:background="@color/resource_background"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_10dp"
             android:layout_marginTop="@dimen/_20dp"
-            android:layout_marginEnd="@dimen/_10dp">
+            android:layout_marginEnd="@dimen/_10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="1">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/layoutCrisisViewProfile"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@+id/layoutUserLocation"
+                android:layout_weight="0.5"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
@@ -48,6 +53,8 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:layout_gravity="center"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         android:background="@drawable/square_background"
                         android:textSize="24sp"
                         android:textColor="@color/white"/>
@@ -55,7 +62,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_5dp"
                     android:orientation="vertical">
@@ -69,7 +76,6 @@
                         android:textSize="@dimen/_16sp" />
 
                     <TextView
-                        android:id="@+id/txtCrisisViewProfile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="View Profile"
@@ -81,29 +87,34 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/layoutUserLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
+                android:layout_weight="0.5"
+                android:layout_marginStart="@dimen/_5dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_toStartOf="@+id/imgCurrentLoc">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/txtCurrentLocation"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="3166 Hemlock.."
+                        android:text="Updating.."
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_12sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Current location"
                         android:textAppearance="@style/fontfamily"
@@ -113,373 +124,947 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/imgCurrentLoc"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@drawable/distance" />
+                    android:src="@drawable/distance"
+                    android:layout_alignParentEnd="true"/>
 
-            </LinearLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutResourcesHelp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/_5dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:visibility="gone">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="Helpline Numbers"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_20sp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="Always there to help you, no matter the timezone"
+                        android:textColor="#8E6B6B"
+                        android:textSize="@dimen/_16sp"
+                        android:layout_marginTop="@dimen/_5dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="+1-800-273-8255"
+                        android:textColor="@color/black"
+                        android:autoLink="phone"
+                        android:textSize="@dimen/_20sp"
+                        android:textColorLink="#830CDB"
+                        android:layout_marginTop="@dimen/_10dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="+1-212-673-3000"
+                        android:textColor="@color/black"
+                        android:autoLink="phone"
+                        android:textSize="@dimen/_20sp"
+                        android:textColorLink="#830CDB"
+                        android:layout_marginTop="@dimen/_10dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="+1-800-273-8255"
+                        android:textColor="@color/black"
+                        android:autoLink="phone"
+                        android:textColorLink="#830CDB"
+                        android:textSize="@dimen/_20sp"
+                        android:layout_marginTop="@dimen/_10dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="If you are in crisis, get immediate help:"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp"
+                        android:layout_marginTop="@dimen/_10dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginStart="@dimen/_10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="\u2022 Call "
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="@string/call_911"
+                            android:textColor="#830CDB"
+                            android:autoLink="phone"
+                            android:textSize="@dimen/_16sp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_2dp"
+                        android:layout_marginStart="@dimen/_10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="\u2022 "
+                            android:textColor="@color/black"
+                            android:autoLink="web"
+                            android:textSize="@dimen/_16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="@string/crisis_lifeline"
+                            android:textColor="@color/black"
+                            android:autoLink="web"
+                            android:textColorLink="#830CDB"
+                            android:textSize="@dimen/_16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_2dp"
+                        android:layout_marginStart="@dimen/_10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="\u2022 "
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="@string/crisis_text_line"
+                            android:textColor="@color/black"
+                            android:textColorLink="#830CDB"
+                            android:textSize="@dimen/_16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_2dp"
+                        android:layout_marginStart="@dimen/_10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="\u2022 "
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="@string/disaster_distress_helpline"
+                            android:textColor="@color/black"
+                            android:textColorLink="#830CDB"
+                            android:textSize="@dimen/_16sp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:text="LGBTQ+"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp"
+                        android:layout_marginTop="@dimen/_10dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_2dp"
+                        android:layout_marginStart="@dimen/_10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="\u2022 "
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="@string/trans_lifeline"
+                            android:textColor="@color/black"
+                            android:textColorLink="#830CDB"
+                            android:textSize="@dimen/_16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_2dp"
+                        android:layout_marginStart="@dimen/_10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="\u2022 "
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="@string/the_trevor_project"
+                            android:textColor="@color/black"
+                            android:textColorLink="#830CDB"
+                            android:textSize="@dimen/_16sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
 
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10dp"
-            android:layout_marginTop="@dimen/_20dp"
-            android:layout_marginEnd="@dimen/_10dp"
-            android:background="@color/white"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/_10dp"
-            android:paddingTop="@dimen/_10dp">
+            android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Emergency help needed?"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_14sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="@dimen/_40dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:layout_marginEnd="@dimen/_40dp"
-                android:background="#E4DEDE" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10dp"
-                android:gravity="center"
-                android:text="Press and hold to call"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="#A48585"
-                android:textSize="@dimen/_12sp" />
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:layout_marginEnd="@dimen/_20dp"
-                android:padding="@dimen/_15dp"
-                android:text="Yes"
-                android:backgroundTint="#F92E2E"
-                android:textAppearance="@style/fontfamily"
-                android:textSize="@dimen/_12sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10dp"
-            android:layout_marginTop="@dimen/_20dp"
-            android:layout_marginEnd="@dimen/_10dp"
-            android:background="@color/white"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/_10dp"
-            android:paddingTop="@dimen/_10dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/emergency" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Nearby Hospitals"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_12sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_5dp"
-                android:layout_marginEnd="@dimen/_20dp"
-                android:background="#E4DEDE" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:layout_marginEnd="@dimen/_20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:text="St. John’s Hospital"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Get directions ->"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/primaryGreen"
-                        android:textSize="@dimen/_12sp" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:maxLines="1"
-                    android:text="1.2 Miles"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="@dimen/_10sp"
-                    android:textStyle="bold|italic" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20dp"
+                android:layout_marginStart="@dimen/_10dp"
                 android:layout_marginTop="@dimen/_20dp"
-                android:layout_marginEnd="@dimen/_20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:text="St. John’s Hospital"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Get directions ->"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/primaryGreen"
-                        android:textSize="@dimen/_12sp" />
-                </LinearLayout>
+                android:layout_marginEnd="@dimen/_10dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/_10dp"
+                android:paddingTop="@dimen/_10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:maxLines="1"
-                    android:text="1.2 Miles"
+                    android:gravity="center"
+                    android:text="Emergency help needed?"
                     android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="@dimen/_10sp"
-                    android:textStyle="bold|italic" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_14sp"
+                    android:textStyle="bold" />
 
-            </RelativeLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/_40dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_40dp"
+                    android:background="#E4DEDE" />
 
-            <RelativeLayout
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:gravity="center"
+                    android:text="Press and hold to call"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="#A48585"
+                    android:textSize="@dimen/_12sp" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_20dp"
+                    android:padding="@dimen/_15dp"
+                    android:text="Yes"
+                    android:backgroundTint="#F92E2E"
+                    android:textAppearance="@style/fontfamily"
+                    android:textSize="@dimen/_12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20dp"
+                android:layout_marginStart="@dimen/_10dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginEnd="@dimen/_10dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/_10dp"
+                android:paddingTop="@dimen/_10dp"
+                android:paddingStart="@dimen/_10dp"
+                android:paddingEnd="@dimen/_10dp">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="Crisis Line"
+                            android:textColor="#4B4E54"
+                            android:textSize="@dimen/_20sp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="+1-212-673-3000"
+                            android:textColor="@color/black"
+                            android:autoLink="phone"
+                            android:textSize="@dimen/_20sp"
+                            android:textColorLink="#830CDB"
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:visibility="gone"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="Call "
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_16sp"/>
+
+                            <TextView
+                                android:id="@+id/txtCrisisCall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="@string/call_911"
+                                android:clickable="true"
+                                android:textSize="@dimen/_14sp"
+                                android:textColorLink="#830CDB"
+                                android:focusable="true" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_2dp">
+
+                            <TextView
+                                android:id="@+id/txtCrisisLifeLine"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="@string/crisis_screen_lifeline"
+                                android:textColor="@color/black"
+                                android:clickable="true"
+                                android:textColorLink="#830CDB"
+                                android:textSize="@dimen/_14sp"
+                                android:focusable="true" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_20dp">
+
+                            <TextView
+                                android:id="@+id/txtCrisisTextLine"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="@string/crisis_text_line"
+                                android:textColor="@color/black"
+                                android:clickable="true"
+                                android:textColorLink="#830CDB"
+                                android:textSize="@dimen/_14sp"
+                                android:focusable="true" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_20dp">
+
+                            <TextView
+                                android:id="@+id/txtDisasterHelpline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="@string/crisis_screen_disaster_distress_helpline"
+                                android:textColor="@color/black"
+                                android:clickable="true"
+                                android:textColorLink="#830CDB"
+                                android:textSize="@dimen/_14sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="Abuse/Assault/Violence"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_20dp"
+                            android:layout_marginBottom="@dimen/_5dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_2dp">
+
+                            <TextView
+                                android:id="@+id/txtNationalViolence"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="@string/crisis_screen_national_domestic"
+                                android:textColor="@color/black"
+                                android:textColorLink="#830CDB"
+                                android:clickable="true"
+                                android:textSize="@dimen/_14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_20dp">
+
+                            <TextView
+                                android:id="@+id/txtNationalChildAbuse"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="@string/crisis_screen_national_child"
+                                android:textColor="@color/black"
+                                android:textColorLink="#830CDB"
+                                android:clickable="true"
+                                android:textSize="@dimen/_14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_20dp">
+
+                            <TextView
+                                android:id="@+id/txtNationalSexualAssault"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="@string/crisis_screen_national_sexual"
+                                android:textColor="@color/black"
+                                android:textColorLink="#830CDB"
+                                android:clickable="true"
+                                android:textSize="@dimen/_14sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="LGBTQ+"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_20dp"
+                            android:layout_marginBottom="@dimen/_5dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_2dp">
+
+                            <TextView
+                                android:id="@+id/txtTransLifeLine"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="@string/trans_lifeline"
+                                android:textColor="@color/black"
+                                android:textColorLink="#830CDB"
+                                android:clickable="true"
+                                android:textSize="@dimen/_14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_2dp">
+
+                            <TextView
+                                android:id="@+id/txtTrevorProject"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="@string/the_trevor_project"
+                                android:textColor="@color/black"
+                                android:textColorLink="#830CDB"
+                                android:clickable="true"
+                                android:textSize="@dimen/_14sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="Elders"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_20dp"
+                            android:layout_marginBottom="@dimen/_5dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_2dp">
+
+                            <TextView
+                                android:id="@+id/txtElderDisability"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="@string/elders"
+                                android:textColor="@color/black"
+                                android:textColorLink="#830CDB"
+                                android:clickable="true"
+                                android:textSize="@dimen/_14sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:text="Veterans/Active-duty Military"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_20dp"
+                            android:layout_marginBottom="@dimen/_5dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:layout_marginBottom="@dimen/_10dp">
+
+                            <TextView
+                                android:id="@+id/txtVeteranCrisis"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:text="@string/veterans"
+                                android:textColor="@color/black"
+                                android:textColorLink="#830CDB"
+                                android:clickable="true"
+                                android:textSize="@dimen/_14sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </ScrollView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10dp"
                 android:layout_marginTop="@dimen/_20dp"
-                android:layout_marginEnd="@dimen/_20dp">
+                android:layout_marginEnd="@dimen/_10dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/_10dp"
+                android:paddingTop="@dimen/_10dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/emergency" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Nearby Hospitals"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_20dp"
+                    android:background="#E4DEDE" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:text="St. John’s Hospital"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Get directions ->"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:maxLines="1"
+                        android:text="1.2 Miles"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_10sp"
+                        android:textStyle="bold|italic" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_20dp"
+                    android:layout_marginEnd="@dimen/_20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:text="St. John’s Hospital"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Get directions ->"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:maxLines="1"
+                        android:text="1.2 Miles"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_10sp"
+                        android:textStyle="bold|italic" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_20dp"
+                    android:layout_marginEnd="@dimen/_20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:text="St. John’s Hospital"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Get directions ->"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="@dimen/_12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:maxLines="1"
+                        android:text="1.2 Miles"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:textSize="@dimen/_10sp"
+                        android:textStyle="bold|italic" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10dp"
+                android:layout_marginTop="@dimen/_20dp"
+                android:layout_marginEnd="@dimen/_10dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/_10dp"
+                android:paddingTop="@dimen/_10dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/question_mark" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Not sure what to do?"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_20dp"
+                    android:background="#E4DEDE" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_20dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/crisis_call" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:text="St. John’s Hospital"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:text="Call your emergency contact"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Get directions ->"
-                        android:textAppearance="@style/fontfamily"
-                        android:textColor="@color/primaryGreen"
                         android:textSize="@dimen/_12sp" />
+
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:maxLines="1"
-                    android:text="1.2 Miles"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/primaryGreen"
-                    android:textSize="@dimen/_10sp"
-                    android:textStyle="bold|italic" />
-
-            </RelativeLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10dp"
-            android:layout_marginTop="@dimen/_20dp"
-            android:layout_marginEnd="@dimen/_10dp"
-            android:background="@color/white"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/_10dp"
-            android:paddingTop="@dimen/_10dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/question_mark" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Not sure what to do?"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_12sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_5dp"
-                android:layout_marginEnd="@dimen/_20dp"
-                android:background="#E4DEDE" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:layout_marginEnd="@dimen/_20dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/crisis_call" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:text="Call your emergency contact"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_12sp" />
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_20dp"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/chat" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:layout_marginEnd="@dimen/_20dp"
-                android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:text="Chat with expert"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12sp" />
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/chat" />
+                </LinearLayout>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:text="Chat with expert"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_12sp" />
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_20dp"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ambulance" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:layout_marginEnd="@dimen/_20dp"
-                android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:text="Call an ambulance"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12sp" />
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ambulance" />
+                </LinearLayout>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:text="Call an ambulance"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_12sp" />
+                    android:layout_marginStart="@dimen/_20dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_20dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/music_note" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:text="Listen to something peaceful"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:layout_marginEnd="@dimen/_20dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/music_note" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:text="Listen to something peaceful"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_12sp" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
     </LinearLayout>

@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Ensemble Care"
+                    android:text="EnsembleCare"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_32sp"

@@ -6,74 +6,160 @@
     android:id="@+id/relativeLayoutOnlineChatScreen"
     android:background="@drawable/bg_box_grey_top_corners">
 
-    <ImageView
-        android:id="@+id/imgCloseChatScreen"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:padding="@dimen/_5dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="@dimen/_5dp"
-        android:src="@mipmap/ic_action_close"/>
-
-    <TextView
-        android:id="@+id/txtTherapistChatName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_below="@+id/imgCloseChatScreen"
-        android:textAppearance="@style/fontfamily"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_22sp"
-        android:textStyle="bold" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatMessageList"
+    <LinearLayout
+        android:id="@+id/layoutGroupVideoChatMessage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/relativeLayoutMessageText"
-        android:layout_below="@+id/txtTherapistChatName" />
-
-    <RelativeLayout
-        android:id="@+id/relativeLayoutMessageText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/_10dp">
-
-
-        <EditText
-            android:id="@+id/editTextMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_5dp"
-            android:layout_toStartOf="@+id/relativeLayoutSend"
-            android:background="@drawable/bg_corner_rounded_edittext"
-            android:hint="Message"
-            android:maxLines="6"
-            android:padding="@dimen/_10dp"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_18sp"
-            android:layout_marginBottom="@dimen/_10dp"/>
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/relativeLayoutSend"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/bg_round_gray"
-            android:layout_marginBottom="@dimen/_10dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/imgSend"
-                android:layout_width="wrap_content"
+                android:id="@+id/imgCloseChatScreen"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/_5dp"
+                android:padding="@dimen/_5dp"
+                android:src="@mipmap/ic_action_close" />
+
+            <TextView
+                android:id="@+id/txtTherapistChatName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/imgCloseChatScreen"
                 android:layout_centerInParent="true"
-                android:src="@android:drawable/ic_menu_send"
-                app:tint="#388E3C" />
+                android:gravity="center"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_22sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/chatMessageList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/relativeLayoutGroupVideoMessageText" />
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutGroupVideoMessageText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#F9E6E6">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_10dp">
+
+                    <ImageView
+                        android:id="@+id/imgGroupChatAddFile"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:padding="@dimen/_5dp"
+                        android:src="@drawable/add" />
+
+                    <EditText
+                        android:id="@+id/editTextMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginEnd="@dimen/_5dp"
+                        android:layout_toStartOf="@+id/relativeLayoutSend"
+                        android:layout_toEndOf="@+id/imgGroupChatAddFile"
+                        android:background="@drawable/bg_corner_rounded_edittext"
+                        android:backgroundTint="@color/white"
+                        android:hint="Message"
+                        android:maxLines="6"
+                        android:padding="@dimen/_10dp"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_10sp" />
+
+                    <RelativeLayout
+                        android:id="@+id/relativeLayoutSend"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/bg_round_gray"
+                        android:backgroundTint="@color/primaryGreen">
+
+                        <ImageView
+                            android:id="@+id/imgGroupVideoSend"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/send"
+                            app:tint="@color/white" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutGroupVideoWebViewFile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imgGroupVideoCloseFileWebView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/_5dp"
+            android:padding="@dimen/_5dp"
+            android:src="@mipmap/ic_action_close"
+            app:tint="#5F6368" />
+
+        <WebView
+            android:id="@+id/webViewGroupVideoFile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/imgGroupVideoCloseFileWebView" />
+
     </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/layoutProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80FFFFFF"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:visibility="gone">
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/spin_kit"
+            style="@style/SpinKitView.Large.ThreeBounce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/primaryGreen" />
+
+    </FrameLayout>
 
 </RelativeLayout>

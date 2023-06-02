@@ -1,24 +1,18 @@
 package com.app.selfcare.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.app.selfcare.CallActivity
-import com.app.selfcare.GroupVideoCall
 import com.app.selfcare.R
 import com.app.selfcare.adapters.AppointmentsAdapter
 import com.app.selfcare.controller.OnAppointmentItemClickListener
 import com.app.selfcare.data.AppointmentPatientId
-import com.app.selfcare.data.ConstantApp
 import com.app.selfcare.data.GetAppointment
 import com.app.selfcare.data.GetAppointmentList
-import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentTodayAppointmentBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
@@ -182,68 +176,94 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
                         val rtmToken = jsonObj.getString("rtm_token")
                         val channelName = jsonObj.getString("channel_name")
                         if (appointment.is_group_appointment) {
-                            val i = Intent(requireActivity(), CallActivity::class.java)
+                            /*val i = Intent(requireActivity(), CallActivity::class.java)
                             val bundle = Bundle()
-                            bundle.putString(ConstantApp.ACTION_KEY_ID,
-                                appointment.group_appointment.id.toString()
+                            bundle.putString(
+                                ConstantApp.ACTION_KEY_ID,
+                                appointment.group_appointment!!.id.toString()
                             )
-                            bundle.putString(ConstantApp.ACTION_KEY_FNAME, appointment.doctor_first_name)
-                            bundle.putString(ConstantApp.ACTION_KEY_LNAME, appointment.doctor_last_name)
+                            bundle.putString(
+                                ConstantApp.ACTION_KEY_FNAME,
+                                appointment.doctor_first_name
+                            )
+                            bundle.putString(
+                                ConstantApp.ACTION_KEY_LNAME,
+                                appointment.doctor_last_name
+                            )
                             bundle.putString(ConstantApp.ACTION_KEY_TOKEN, rtcToken)
                             bundle.putString(ConstantApp.ACTION_KEY_RTM, rtmToken)
                             bundle.putString(ConstantApp.ACTION_KEY_CHANNEL_NAME, channelName)
                             i.putExtras(bundle)
                             startActivity(i)
-                            requireActivity().overridePendingTransition(0, 0)
-                            /*val intent = Intent(requireActivity(), GroupVideoCall::class.java)
-                            intent.putExtra("token", rtcToken)
-                            intent.putExtra("channelName", channelName)
-                            startActivity(intent)
                             requireActivity().overridePendingTransition(0, 0)*/
-                            /*clearPreviousFragmentStack()
+
+                            clearPreviousFragmentStack()
                             replaceFragmentNoBackStack(
                                 GroupVideoCallFragment.newInstance(
                                     rtcToken,
-                                    channelName
+                                    channelName,
+                                    rtmToken,
+                                    appointment
                                 ), R.id.layout_home, GroupVideoCallFragment.TAG
-                            )*/
+                            )
                         }
                     }
                 } else {
-                    getToken(appointment) { response ->
-                        val jsonObj = JSONObject(response)
-                        val rtcToken = jsonObj.getString("rtc_token")
-                        val rtmToken = jsonObj.getString("rtm_token")
-                        val channelName = jsonObj.getString("channel_name")
-                        if (!appointment.is_group_appointment) {
-                            when (appointment.appointment.type_of_visit) {
-                                "Text" -> {
-                                    clearPreviousFragmentStack()
-                                    //Start video call
-                                    replaceFragmentNoBackStack(
-                                        TextAppointmentFragment.newInstance(
-                                            appointment,
-                                            rtcToken,
-                                            rtmToken,
-                                            channelName
-                                        ),
-                                        R.id.layout_home,
-                                        TextAppointmentFragment.TAG
-                                    )
-                                }
-                                else -> {
-                                    clearPreviousFragmentStack()
-                                    //Start video call
-                                    replaceFragmentNoBackStack(
-                                        VideoCallFragment.newInstance(
-                                            appointment,
-                                            rtcToken,
-                                            rtmToken,
-                                            channelName
-                                        ),
-                                        R.id.layout_home,
-                                        VideoCallFragment.TAG
-                                    )
+                    if (appointment.appointment_type == "Training_appointment") {
+                        getTrainingSessionToken(appointment){response->
+                            val jsonObj = JSONObject(response!!)
+                            val rtcToken = jsonObj.getString("rtc_token")
+                            val rtmToken = jsonObj.getString("rtm_token")
+                            val channelName = jsonObj.getString("channel_name")
+                            clearPreviousFragmentStack()
+                            //Start video call
+                            replaceFragmentNoBackStack(
+                                TrainingSessionFragment.newInstance(
+                                    appointment,
+                                    rtcToken,
+                                    rtmToken,
+                                    channelName
+                                ),
+                                R.id.layout_home,
+                                TrainingSessionFragment.TAG
+                            )
+                        }
+                    } else {
+                        getToken(appointment) { response ->
+                            val jsonObj = JSONObject(response!!)
+                            val rtcToken = jsonObj.getString("rtc_token")
+                            val rtmToken = jsonObj.getString("rtm_token")
+                            val channelName = jsonObj.getString("channel_name")
+                            if (!appointment.is_group_appointment) {
+                                when (appointment.appointment!!.type_of_visit) {
+                                    "Text" -> {
+                                        clearPreviousFragmentStack()
+                                        //Start video call
+                                        replaceFragmentNoBackStack(
+                                            TextAppointmentFragment.newInstance(
+                                                appointment,
+                                                rtcToken,
+                                                rtmToken,
+                                                channelName
+                                            ),
+                                            R.id.layout_home,
+                                            TextAppointmentFragment.TAG
+                                        )
+                                    }
+                                    else -> {
+                                        clearPreviousFragmentStack()
+                                        //Start video call
+                                        replaceFragmentNoBackStack(
+                                            VideoCallFragment.newInstance(
+                                                appointment,
+                                                rtcToken,
+                                                rtmToken,
+                                                channelName
+                                            ),
+                                            R.id.layout_home,
+                                            VideoCallFragment.TAG
+                                        )
+                                    }
                                 }
                             }
                         }

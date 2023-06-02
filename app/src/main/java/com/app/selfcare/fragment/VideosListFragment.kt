@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.selfcare.R
 import com.app.selfcare.adapters.VideosAdapter
 import com.app.selfcare.controller.OnVideoItemClickListener
+import com.app.selfcare.data.Articles
 import com.app.selfcare.data.Video
 import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentVideosListBinding
@@ -94,6 +95,7 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
                     getDetailVideoData("exercise_data/")
                 }
             }
+
             Utils.WELLNESS_NUTRITION -> {
                 if (isFavourite) {
                     getFavDetailVideoData()
@@ -101,6 +103,7 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
                     getDetailVideoData("nutrition_data/")
                 }
             }
+
             Utils.WELLNESS_MINDFULNESS -> {
                 if (isFavourite) {
                     getFavDetailVideoData()
@@ -108,6 +111,7 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
                     getDetailVideoData("mindfulness_data/")
                 }
             }
+
             Utils.WELLNESS_YOGA -> {
                 if (isFavourite) {
                     getFavDetailVideoData()
@@ -115,6 +119,7 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
                     getDetailVideoData("yoga_data/")
                 }
             }
+
             Utils.WELLNESS_MUSIC -> {
                 if (isFavourite) {
                     getFavDetailVideoData()
@@ -122,6 +127,21 @@ class VideosListFragment : BaseFragment(), OnVideoItemClickListener {
                     getDetailVideoData("music_data/")
                 }
             }
+
+            Utils.RESOURCE -> {
+                if (isFavourite) {
+                    getResourceFavData { response ->
+                        videos = arrayListOf()
+                        val jsonObj = JSONObject(response!!)
+                        val videoList: Type = object : TypeToken<ArrayList<Video?>?>() {}.type
+                        videos = Gson().fromJson(jsonObj.getString("videos"), videoList)
+                        displayVideos(videos!!)
+                    }
+                } else {
+                    getVideosList()
+                }
+            }
+
             else -> {
                 getVideosList()
             }

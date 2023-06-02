@@ -191,13 +191,13 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
         if (signedCount < consentRoisFormsNotifyList!!.size) {
             if (consentRoisFormsNotifyList!![signedCount].description.contains("consent", true)) {
                 binding.webviewConsentRoisForm.loadUrl(
-                    BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentRoisFormsNotifyList!![signedCount].description + "/" + getAccessToken().drop(
+                    BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentRoisFormsNotifyList!![signedCount].description + "/" + consentRoisFormsNotifyList!![signedCount].extra_data.pk + "/" + getAccessToken().drop(
                         7
                     )
                 )
             } else {
                 binding.webviewConsentRoisForm.loadUrl(
-                    BaseActivity.baseURL.dropLast(5) + "/patient/roi_mobile/" + consentRoisFormsNotifyList!![signedCount].description + "/" + getAccessToken().drop(
+                    BaseActivity.baseURL.dropLast(5) + "/patient/roi_mobile/" + consentRoisFormsNotifyList!![signedCount].description + "/" + consentRoisFormsNotifyList!![signedCount].extra_data.pk + "/" + getAccessToken().drop(
                         7
                     )
                 )
@@ -205,7 +205,7 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
         } else {
             val builder = AlertDialog.Builder(mActivity!!)
             builder.setTitle("Message")
-            builder.setMessage("Completed")
+            builder.setMessage("Consent/ROI’s Completed")
             builder.setPositiveButton("OK") { dialog, which ->
                 dialog.dismiss()
                 //popBackStack()
@@ -230,6 +230,7 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
                     .sendFormSignature(
                         FormSignature(
                             consentRoisFormsNotifyList!![signedCount].description,
+                            consentRoisFormsNotifyList!![signedCount].extra_data.pk,
                             "data:image/jpg;base64," + convert(signature),
                         ), getAccessToken()
                     )

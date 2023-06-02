@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,7 @@ import com.app.selfcare.databinding.FragmentQuestionnaireBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
+import com.app.selfcare.utils.DateUtils
 import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -31,6 +33,7 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
 import java.io.*
 import java.lang.reflect.Type
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -130,6 +133,18 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setQuestion()
         }*/
+        
+        binding.txtCall911.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtSuicideCrisisLifeLine.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtResourceCrisisTextLine.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtDisasterDistressHelpLine.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtTransLifeLine.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtResourceTrevorProject.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtResourceNationalViolence.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtResourceNationalChildAbuse.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtResourceNationalSexualAssault.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtResourceElderDisability.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtResourceVeteranCrisis.movementMethod = LinkMovementMethod.getInstance()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -1251,10 +1266,10 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
         )
         binding.etOthers.setText("")
         binding.btnQuestionnaireContinue.visibility = View.GONE
-        binding.tvCheckApply.visibility = View.GONE
-        binding.cvEdit.visibility = View.GONE
         preference!![PrefKeys.PREF_SET_ANSWER] = Gson().toJson(setAnswers)
         if (nextOptionId != null) {
+            binding.tvCheckApply.visibility = View.GONE
+            binding.cvEdit.visibility = View.GONE
             setQuestion(questions!!)
         } else {
             sendAnswers()
@@ -1293,6 +1308,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             2 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1310,6 +1335,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             3 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1327,6 +1362,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             4 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1344,6 +1389,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             5 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1361,6 +1416,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             6 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1378,6 +1443,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             7 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1395,6 +1470,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             8 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1412,6 +1497,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             9 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1429,6 +1524,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             10 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1446,6 +1551,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             11 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1463,6 +1578,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             12 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1480,6 +1605,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.GONE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             13 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1497,6 +1632,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.VISIBLE
                 binding.dashProgress14.visibility = View.GONE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             14 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1514,6 +1659,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.VISIBLE
                 binding.dashProgress14.visibility = View.VISIBLE
                 binding.dashProgress15.visibility = View.GONE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
             }
             15 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
@@ -1531,6 +1686,313 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 binding.dashProgress13.visibility = View.VISIBLE
                 binding.dashProgress14.visibility = View.VISIBLE
                 binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.GONE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
+            }
+            16 -> {
+                binding.dashProgress1.visibility = View.VISIBLE
+                binding.dashProgress2.visibility = View.VISIBLE
+                binding.dashProgress3.visibility = View.VISIBLE
+                binding.dashProgress4.visibility = View.VISIBLE
+                binding.dashProgress5.visibility = View.VISIBLE
+                binding.dashProgress6.visibility = View.VISIBLE
+                binding.dashProgress7.visibility = View.VISIBLE
+                binding.dashProgress8.visibility = View.VISIBLE
+                binding.dashProgress9.visibility = View.VISIBLE
+                binding.dashProgress10.visibility = View.VISIBLE
+                binding.dashProgress11.visibility = View.VISIBLE
+                binding.dashProgress12.visibility = View.VISIBLE
+                binding.dashProgress13.visibility = View.VISIBLE
+                binding.dashProgress14.visibility = View.VISIBLE
+                binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.VISIBLE
+                binding.dashProgress17.visibility = View.GONE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
+            }
+            17 -> {
+                binding.dashProgress1.visibility = View.VISIBLE
+                binding.dashProgress2.visibility = View.VISIBLE
+                binding.dashProgress3.visibility = View.VISIBLE
+                binding.dashProgress4.visibility = View.VISIBLE
+                binding.dashProgress5.visibility = View.VISIBLE
+                binding.dashProgress6.visibility = View.VISIBLE
+                binding.dashProgress7.visibility = View.VISIBLE
+                binding.dashProgress8.visibility = View.VISIBLE
+                binding.dashProgress9.visibility = View.VISIBLE
+                binding.dashProgress10.visibility = View.VISIBLE
+                binding.dashProgress11.visibility = View.VISIBLE
+                binding.dashProgress12.visibility = View.VISIBLE
+                binding.dashProgress13.visibility = View.VISIBLE
+                binding.dashProgress14.visibility = View.VISIBLE
+                binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.VISIBLE
+                binding.dashProgress17.visibility = View.VISIBLE
+                binding.dashProgress18.visibility = View.GONE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
+            }
+            18 -> {
+                binding.dashProgress1.visibility = View.VISIBLE
+                binding.dashProgress2.visibility = View.VISIBLE
+                binding.dashProgress3.visibility = View.VISIBLE
+                binding.dashProgress4.visibility = View.VISIBLE
+                binding.dashProgress5.visibility = View.VISIBLE
+                binding.dashProgress6.visibility = View.VISIBLE
+                binding.dashProgress7.visibility = View.VISIBLE
+                binding.dashProgress8.visibility = View.VISIBLE
+                binding.dashProgress9.visibility = View.VISIBLE
+                binding.dashProgress10.visibility = View.VISIBLE
+                binding.dashProgress11.visibility = View.VISIBLE
+                binding.dashProgress12.visibility = View.VISIBLE
+                binding.dashProgress13.visibility = View.VISIBLE
+                binding.dashProgress14.visibility = View.VISIBLE
+                binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.VISIBLE
+                binding.dashProgress17.visibility = View.VISIBLE
+                binding.dashProgress18.visibility = View.VISIBLE
+                binding.dashProgress19.visibility = View.GONE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
+            }
+            19 -> {
+                binding.dashProgress1.visibility = View.VISIBLE
+                binding.dashProgress2.visibility = View.VISIBLE
+                binding.dashProgress3.visibility = View.VISIBLE
+                binding.dashProgress4.visibility = View.VISIBLE
+                binding.dashProgress5.visibility = View.VISIBLE
+                binding.dashProgress6.visibility = View.VISIBLE
+                binding.dashProgress7.visibility = View.VISIBLE
+                binding.dashProgress8.visibility = View.VISIBLE
+                binding.dashProgress9.visibility = View.VISIBLE
+                binding.dashProgress10.visibility = View.VISIBLE
+                binding.dashProgress11.visibility = View.VISIBLE
+                binding.dashProgress12.visibility = View.VISIBLE
+                binding.dashProgress13.visibility = View.VISIBLE
+                binding.dashProgress14.visibility = View.VISIBLE
+                binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.VISIBLE
+                binding.dashProgress17.visibility = View.VISIBLE
+                binding.dashProgress18.visibility = View.VISIBLE
+                binding.dashProgress19.visibility = View.VISIBLE
+                binding.dashProgress20.visibility = View.GONE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
+            }
+            20 -> {
+                binding.dashProgress1.visibility = View.VISIBLE
+                binding.dashProgress2.visibility = View.VISIBLE
+                binding.dashProgress3.visibility = View.VISIBLE
+                binding.dashProgress4.visibility = View.VISIBLE
+                binding.dashProgress5.visibility = View.VISIBLE
+                binding.dashProgress6.visibility = View.VISIBLE
+                binding.dashProgress7.visibility = View.VISIBLE
+                binding.dashProgress8.visibility = View.VISIBLE
+                binding.dashProgress9.visibility = View.VISIBLE
+                binding.dashProgress10.visibility = View.VISIBLE
+                binding.dashProgress11.visibility = View.VISIBLE
+                binding.dashProgress12.visibility = View.VISIBLE
+                binding.dashProgress13.visibility = View.VISIBLE
+                binding.dashProgress14.visibility = View.VISIBLE
+                binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.VISIBLE
+                binding.dashProgress17.visibility = View.VISIBLE
+                binding.dashProgress18.visibility = View.VISIBLE
+                binding.dashProgress19.visibility = View.VISIBLE
+                binding.dashProgress20.visibility = View.VISIBLE
+                binding.dashProgress21.visibility = View.GONE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
+            }
+            21 -> {
+                binding.dashProgress1.visibility = View.VISIBLE
+                binding.dashProgress2.visibility = View.VISIBLE
+                binding.dashProgress3.visibility = View.VISIBLE
+                binding.dashProgress4.visibility = View.VISIBLE
+                binding.dashProgress5.visibility = View.VISIBLE
+                binding.dashProgress6.visibility = View.VISIBLE
+                binding.dashProgress7.visibility = View.VISIBLE
+                binding.dashProgress8.visibility = View.VISIBLE
+                binding.dashProgress9.visibility = View.VISIBLE
+                binding.dashProgress10.visibility = View.VISIBLE
+                binding.dashProgress11.visibility = View.VISIBLE
+                binding.dashProgress12.visibility = View.VISIBLE
+                binding.dashProgress13.visibility = View.VISIBLE
+                binding.dashProgress14.visibility = View.VISIBLE
+                binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.VISIBLE
+                binding.dashProgress17.visibility = View.VISIBLE
+                binding.dashProgress18.visibility = View.VISIBLE
+                binding.dashProgress19.visibility = View.VISIBLE
+                binding.dashProgress20.visibility = View.VISIBLE
+                binding.dashProgress21.visibility = View.VISIBLE
+                binding.dashProgress22.visibility = View.GONE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
+            }
+            22 -> {
+                binding.dashProgress1.visibility = View.VISIBLE
+                binding.dashProgress2.visibility = View.VISIBLE
+                binding.dashProgress3.visibility = View.VISIBLE
+                binding.dashProgress4.visibility = View.VISIBLE
+                binding.dashProgress5.visibility = View.VISIBLE
+                binding.dashProgress6.visibility = View.VISIBLE
+                binding.dashProgress7.visibility = View.VISIBLE
+                binding.dashProgress8.visibility = View.VISIBLE
+                binding.dashProgress9.visibility = View.VISIBLE
+                binding.dashProgress10.visibility = View.VISIBLE
+                binding.dashProgress11.visibility = View.VISIBLE
+                binding.dashProgress12.visibility = View.VISIBLE
+                binding.dashProgress13.visibility = View.VISIBLE
+                binding.dashProgress14.visibility = View.VISIBLE
+                binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.VISIBLE
+                binding.dashProgress17.visibility = View.VISIBLE
+                binding.dashProgress18.visibility = View.VISIBLE
+                binding.dashProgress19.visibility = View.VISIBLE
+                binding.dashProgress20.visibility = View.VISIBLE
+                binding.dashProgress21.visibility = View.VISIBLE
+                binding.dashProgress22.visibility = View.VISIBLE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
+            }
+            22 -> {
+                binding.dashProgress1.visibility = View.VISIBLE
+                binding.dashProgress2.visibility = View.VISIBLE
+                binding.dashProgress3.visibility = View.VISIBLE
+                binding.dashProgress4.visibility = View.VISIBLE
+                binding.dashProgress5.visibility = View.VISIBLE
+                binding.dashProgress6.visibility = View.VISIBLE
+                binding.dashProgress7.visibility = View.VISIBLE
+                binding.dashProgress8.visibility = View.VISIBLE
+                binding.dashProgress9.visibility = View.VISIBLE
+                binding.dashProgress10.visibility = View.VISIBLE
+                binding.dashProgress11.visibility = View.VISIBLE
+                binding.dashProgress12.visibility = View.VISIBLE
+                binding.dashProgress13.visibility = View.VISIBLE
+                binding.dashProgress14.visibility = View.VISIBLE
+                binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.VISIBLE
+                binding.dashProgress17.visibility = View.VISIBLE
+                binding.dashProgress18.visibility = View.VISIBLE
+                binding.dashProgress19.visibility = View.VISIBLE
+                binding.dashProgress20.visibility = View.VISIBLE
+                binding.dashProgress21.visibility = View.VISIBLE
+                binding.dashProgress22.visibility = View.VISIBLE
+                binding.dashProgress23.visibility = View.GONE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
+            }
+            23 -> {
+                binding.dashProgress1.visibility = View.VISIBLE
+                binding.dashProgress2.visibility = View.VISIBLE
+                binding.dashProgress3.visibility = View.VISIBLE
+                binding.dashProgress4.visibility = View.VISIBLE
+                binding.dashProgress5.visibility = View.VISIBLE
+                binding.dashProgress6.visibility = View.VISIBLE
+                binding.dashProgress7.visibility = View.VISIBLE
+                binding.dashProgress8.visibility = View.VISIBLE
+                binding.dashProgress9.visibility = View.VISIBLE
+                binding.dashProgress10.visibility = View.VISIBLE
+                binding.dashProgress11.visibility = View.VISIBLE
+                binding.dashProgress12.visibility = View.VISIBLE
+                binding.dashProgress13.visibility = View.VISIBLE
+                binding.dashProgress14.visibility = View.VISIBLE
+                binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.VISIBLE
+                binding.dashProgress17.visibility = View.VISIBLE
+                binding.dashProgress18.visibility = View.VISIBLE
+                binding.dashProgress19.visibility = View.VISIBLE
+                binding.dashProgress20.visibility = View.VISIBLE
+                binding.dashProgress21.visibility = View.VISIBLE
+                binding.dashProgress22.visibility = View.VISIBLE
+                binding.dashProgress23.visibility = View.VISIBLE
+                binding.dashProgress24.visibility = View.GONE
+                binding.dashProgress25.visibility = View.GONE
+            }
+            24 -> {
+                binding.dashProgress1.visibility = View.VISIBLE
+                binding.dashProgress2.visibility = View.VISIBLE
+                binding.dashProgress3.visibility = View.VISIBLE
+                binding.dashProgress4.visibility = View.VISIBLE
+                binding.dashProgress5.visibility = View.VISIBLE
+                binding.dashProgress6.visibility = View.VISIBLE
+                binding.dashProgress7.visibility = View.VISIBLE
+                binding.dashProgress8.visibility = View.VISIBLE
+                binding.dashProgress9.visibility = View.VISIBLE
+                binding.dashProgress10.visibility = View.VISIBLE
+                binding.dashProgress11.visibility = View.VISIBLE
+                binding.dashProgress12.visibility = View.VISIBLE
+                binding.dashProgress13.visibility = View.VISIBLE
+                binding.dashProgress14.visibility = View.VISIBLE
+                binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.VISIBLE
+                binding.dashProgress17.visibility = View.VISIBLE
+                binding.dashProgress18.visibility = View.VISIBLE
+                binding.dashProgress19.visibility = View.VISIBLE
+                binding.dashProgress20.visibility = View.VISIBLE
+                binding.dashProgress21.visibility = View.VISIBLE
+                binding.dashProgress22.visibility = View.VISIBLE
+                binding.dashProgress23.visibility = View.VISIBLE
+                binding.dashProgress24.visibility = View.VISIBLE
+                binding.dashProgress25.visibility = View.GONE
+            }
+            25 -> {
+                binding.dashProgress1.visibility = View.VISIBLE
+                binding.dashProgress2.visibility = View.VISIBLE
+                binding.dashProgress3.visibility = View.VISIBLE
+                binding.dashProgress4.visibility = View.VISIBLE
+                binding.dashProgress5.visibility = View.VISIBLE
+                binding.dashProgress6.visibility = View.VISIBLE
+                binding.dashProgress7.visibility = View.VISIBLE
+                binding.dashProgress8.visibility = View.VISIBLE
+                binding.dashProgress9.visibility = View.VISIBLE
+                binding.dashProgress10.visibility = View.VISIBLE
+                binding.dashProgress11.visibility = View.VISIBLE
+                binding.dashProgress12.visibility = View.VISIBLE
+                binding.dashProgress13.visibility = View.VISIBLE
+                binding.dashProgress14.visibility = View.VISIBLE
+                binding.dashProgress15.visibility = View.VISIBLE
+                binding.dashProgress16.visibility = View.VISIBLE
+                binding.dashProgress17.visibility = View.VISIBLE
+                binding.dashProgress18.visibility = View.VISIBLE
+                binding.dashProgress19.visibility = View.VISIBLE
+                binding.dashProgress20.visibility = View.VISIBLE
+                binding.dashProgress21.visibility = View.VISIBLE
+                binding.dashProgress22.visibility = View.VISIBLE
+                binding.dashProgress23.visibility = View.VISIBLE
+                binding.dashProgress24.visibility = View.VISIBLE
+                binding.dashProgress25.visibility = View.VISIBLE
             }
         }
     }
@@ -2400,8 +2862,19 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
                 }
             }
             R.id.btnResourceContinue -> {
-                binding.layoutResourcesHelp.visibility = View.GONE
-                binding.layoutQuestionnaire.visibility = View.VISIBLE
+                val builder = AlertDialog.Builder(mActivity!!)
+                builder.setTitle("Confirmation")
+                builder.setMessage("Do you wish to close the resource crisis screen?")
+                builder.setPositiveButton("Yes") { dialog, which ->
+                    binding.layoutResourcesHelp.visibility = View.GONE
+                    binding.layoutQuestionnaire.visibility = View.VISIBLE
+                }
+
+                builder.setNegativeButton("No") { dialog, which ->
+                    dialog.dismiss()
+                }
+                builder.setCancelable(false)
+                builder.show()
             }
         }
     }

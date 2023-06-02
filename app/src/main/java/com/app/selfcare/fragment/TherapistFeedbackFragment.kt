@@ -9,6 +9,8 @@ import android.widget.RatingBar
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.data.Feedback
+import com.app.selfcare.data.GetAppointment
+import com.app.selfcare.data.GroupVideoCallFeedback
 import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentTherapistFeedbackBinding
 import com.app.selfcare.preference.PrefKeys
@@ -29,7 +31,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class TherapistFeedbackFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
-    private var apptId: String? = null
+    private var appointment: GetAppointment? = null
     private var param2: String? = null
     private var therapistFeedbackRating: String? = null
     private var serviceFeedbackRating: String? = null
@@ -38,7 +40,7 @@ class TherapistFeedbackFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            apptId = it.getString(ARG_PARAM1)
+            appointment = it.getParcelable(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -76,7 +78,11 @@ class TherapistFeedbackFragment : BaseFragment() {
             if (serviceFeedbackRating != null) {
                 if (therapistFeedbackRating != null) {
                     if (getText(binding.editTxtTherapistFeedback).isNotEmpty()) {
-                        sendFeedback()
+                        if(appointment!!.is_group_appointment) {
+                            sendGroupVideoCallFeedback()
+                        } else {
+                            sendFeedback()
+                        }
                     } else {
                         setEditTextError(binding.editTxtTherapistFeedback, "Please provide feedback")
                     }
@@ -98,7 +104,73 @@ class TherapistFeedbackFragment : BaseFragment() {
                         "PI0045",
                         Feedback(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
-                            apptId!!.toInt(),
+                            appointment!!.appointment!!.appointment_id,
+                            therapistFeedbackRating!!.toDouble(),
+                            getText(binding.editTxtTherapistFeedback),
+                            serviceFeedbackRating!!.toDouble(),
+                            ""
+                        ), getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "201") {
+                                /*for (i in 0 until mActivity!!.supportFragmentManager.backStackEntryCount) {
+                                    if (mActivity!!.getCurrentFragment() !is DashboardFragment) {
+                                        popBackStack()
+                                    } else {
+                                        break
+                                    }
+                                }*/
+                                setBottomNavigation(null)
+                                setLayoutBottomNavigation(null)
+                                replaceFragmentNoBackStack(
+                                    BottomNavigationFragment(),
+                                    R.id.layout_home,
+                                    BottomNavigationFragment.TAG
+                                )
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                sendFeedback()
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                            popBackStack()
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    private fun sendGroupVideoCallFeedback() {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendGroupVideoFeedback(
+                        "PI0045",
+                        GroupVideoCallFeedback(
+                            preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
+                            appointment!!.group_appointment!!.id,
                             therapistFeedbackRating!!.toDouble(),
                             getText(binding.editTxtTherapistFeedback),
                             serviceFeedbackRating!!.toDouble(),
@@ -166,10 +238,10 @@ class TherapistFeedbackFragment : BaseFragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String = "") =
+        fun newInstance(param1: GetAppointment, param2: String = "") =
             TherapistFeedbackFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
+                    putParcelable(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                 }
             }

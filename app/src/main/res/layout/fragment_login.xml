@@ -66,237 +66,456 @@
         </LinearLayout>
     </LinearLayout>
 
-    <ScrollView
+    <RelativeLayout
+        android:id="@+id/layoutClientLogin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/layoutLoginBottom"
         android:layout_below="@+id/layoutLoginTopPortion">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="@dimen/_20dp">
+            android:layout_height="match_parent"
+            android:layout_above="@+id/layoutLoginBottom">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hi, Welcome Back!"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_28sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Login with your information"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="#948282"
-                android:textSize="@dimen/_16sp"/>
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Email Address"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_18sp"
-                android:layout_marginTop="@dimen/_20dp"
-                android:textStyle="bold"/>
+                android:orientation="vertical"
+                android:layout_margin="@dimen/_20dp">
 
-            <EditText
-                android:id="@+id/edit_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/fontfamily"
-                android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:layout_marginBottom="@dimen/_5dp"
-                android:padding="@dimen/_15dp"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_16sp"
-                android:textStyle="bold"
-                android:textColorHint="#807B7B"
-                android:background="@drawable/login_edittxt_background" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hi, Welcome Back!"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_28sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Password"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_18sp"
-                android:layout_marginTop="@dimen/_15dp"
-                android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Login with your information"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="#948282"
+                    android:textSize="@dimen/_16sp"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true"
-                app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="0dp"
-                app:hintEnabled="false"
-                android:background="@android:color/transparent">
-
-                <EditText
-                    android:id="@+id/edit_password"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/login_edittxt_background"
+                    android:text="Email Address"
                     android:textAppearance="@style/fontfamily"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPassword"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_18sp"
+                    android:layout_marginTop="@dimen/_20dp"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/edit_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:layout_marginBottom="@dimen/_5dp"
                     android:padding="@dimen/_15dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_16sp"
                     android:textStyle="bold"
-                    android:textColorHint="#807B7B"/>
+                    android:textColorHint="#807B7B"
+                    android:background="@drawable/login_edittxt_background" />
 
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <CheckBox
-                    android:id="@+id/checkBoxKeepMeSignedIn"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:buttonTint="#BCC6D1"
-                    android:text="Keep me signed in"
+                    android:text="Password"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_14sp"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="-5dp"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/_18sp"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:textStyle="bold"/>
 
-                <TextView
-                    android:id="@+id/loginForgotPassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerInParent="true"
-                    android:gravity="right"
-                    android:text="Forgot Password?"
-                    android:paddingStart="@dimen/_10dp"
-                    android:paddingTop="@dimen/_10dp"
-                    android:paddingBottom="@dimen/_10dp"
-                    android:layout_marginEnd="@dimen/_2dp"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="#830CDB"
-                    android:textSize="@dimen/_14sp"
-                    android:textStyle="bold" />
-
-            </RelativeLayout>
-
-            <Button
-                android:id="@+id/btn_login"
-                style="@style/buttonBackground"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="0dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:text="@string/action_login" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_15dp"
-                android:layout_marginBottom="@dimen/_15dp"
-                android:visibility="gone">
-
-                <View
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#DED1D1"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:layout_marginEnd="@dimen/_10dp"
-                    android:layout_toLeftOf="@+id/txtLoginWithYourEmail"/>
-
-                <TextView
-                    android:id="@+id/txtLoginWithYourEmail"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="Or, login with your email"
-                    android:textAppearance="@style/fontfamily"
-                    android:textColor="#9F8F8F"
-                    android:textSize="@dimen/_16sp" />
+                    app:passwordToggleEnabled="true"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:hintEnabled="false"
+                    android:background="@android:color/transparent">
 
-                <View
+                    <EditText
+                        android:id="@+id/edit_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/login_edittxt_background"
+                        android:textAppearance="@style/fontfamily"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:padding="@dimen/_15dp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold"
+                        android:textColorHint="#807B7B"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#DED1D1"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="@dimen/_10dp"
-                    android:layout_marginEnd="@dimen/_10dp"
-                    android:layout_toRightOf="@+id/txtLoginWithYourEmail"/>
+                    android:layout_height="wrap_content">
 
-            </RelativeLayout>
+                    <CheckBox
+                        android:id="@+id/checkBoxKeepMeSignedIn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="#BCC6D1"
+                        android:text="Keep me signed in"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="-5dp"
+                        android:textStyle="bold" />
 
-            <com.google.android.gms.common.SignInButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_10dp"
-                android:layout_marginEnd="@dimen/_10dp"
-                android:visibility="gone"
-                android:background="@drawable/login_edittxt_background"/>
+                    <TextView
+                        android:id="@+id/loginForgotPassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:gravity="right"
+                        android:text="Forgot Password?"
+                        android:paddingStart="@dimen/_10dp"
+                        android:paddingTop="@dimen/_10dp"
+                        android:paddingBottom="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_2dp"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="#830CDB"
+                        android:textSize="@dimen/_14sp"
+                        android:textStyle="bold" />
 
-        </LinearLayout>
+                </RelativeLayout>
 
-    </ScrollView>
+                <Button
+                    android:id="@+id/btn_login"
+                    style="@style/buttonBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:text="@string/action_login" />
 
-    <LinearLayout
-        android:id="@+id/layoutLoginBottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:layout_marginBottom="@dimen/_15dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Don't have an account?"
-            android:gravity="center"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_20sp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#DED1D1"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:layout_toLeftOf="@+id/txtLoginWithYourEmail"/>
+
+                    <TextView
+                        android:id="@+id/txtLoginWithYourEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="OR"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="#9F8F8F"
+                        android:textSize="@dimen/_16sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#DED1D1"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:layout_toRightOf="@+id/txtLoginWithYourEmail"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutLoginAsCareBuddy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/edittext_background_box">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Login as CareBuddy"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:gravity="center"
+                        android:textSize="@dimen/_12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
 
         <LinearLayout
+            android:id="@+id/layoutLoginBottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Let's get started"
+                android:text="Don't have an account?"
                 android:gravity="center"
                 android:textAppearance="@style/fontfamily"
-                android:textColor="#830CDB"
-                android:textSize="@dimen/_18sp" />
+                android:textColor="@color/black"
+                android:textSize="@dimen/_20sp" />
 
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/journal_resource_back"
-                app:tint="#830CDB"
-                android:layout_gravity="center"
-                android:rotation="180"
-                android:layout_marginStart="@dimen/_5dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Let's get started"
+                    android:gravity="center"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="#830CDB"
+                    android:textSize="@dimen/_18sp" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/journal_resource_back"
+                    app:tint="#830CDB"
+                    android:layout_gravity="center"
+                    android:rotation="180"
+                    android:layout_marginStart="@dimen/_5dp"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutCareBuddyLogin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layoutLoginTopPortion"
+        android:visibility="gone">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="@dimen/_20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CareBuddy"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Login in to continue"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="#948282"
+                    android:textSize="@dimen/_14sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Email Address"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="#977C7C"
+                    android:textSize="@dimen/_14sp"
+                    android:layout_marginTop="@dimen/_30dp"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/editCareBuddyEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:padding="@dimen/_15dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold"
+                    android:textColorHint="#977C7C"
+                    android:backgroundTint="#BCC6D1"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Password"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="#977C7C"
+                    android:textSize="@dimen/_14sp"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:textStyle="bold"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:hintEnabled="false"
+                    app:boxStrokeColor="#BCC6D1">
+
+                    <EditText
+                        android:id="@+id/editCareBuddyPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/fontfamily"
+                        android:background="@android:color/transparent"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:padding="@dimen/_15dp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold"
+                        android:textColorHint="#807B7B"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/checkBoxCareBuddyKeepMeSignedIn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="#BCC6D1"
+                        android:text="Keep me signed in"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="-5dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/loginCareBuddyForgotPassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:gravity="right"
+                        android:text="Forgot Password?"
+                        android:paddingStart="@dimen/_10dp"
+                        android:paddingTop="@dimen/_10dp"
+                        android:paddingBottom="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_2dp"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="#830CDB"
+                        android:textSize="@dimen/_14sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btnCareBuddyLogin"
+                    style="@style/buttonBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:text="Login" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:layout_marginBottom="@dimen/_15dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#DED1D1"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:layout_toStartOf="@+id/txtCareBuddyLoginWithYourEmail"/>
+
+                    <TextView
+                        android:id="@+id/txtCareBuddyLoginWithYourEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="OR"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="#9F8F8F"
+                        android:textSize="@dimen/_16sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#DED1D1"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:layout_toEndOf="@+id/txtCareBuddyLoginWithYourEmail"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutLoginAsClient"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/edittext_background_box">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Login as Client"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:gravity="center"
+                        android:textSize="@dimen/_12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

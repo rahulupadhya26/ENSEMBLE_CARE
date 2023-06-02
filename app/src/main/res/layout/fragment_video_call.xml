@@ -49,7 +49,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/video_audio_user_txt_bakground">
 
             <TextView
                 android:id="@+id/txtUserNameAudio"
@@ -59,7 +60,9 @@
                 android:textSize="@dimen/_30sp"
                 android:textStyle="bold"
                 android:padding="@dimen/_20dp"
-                android:background="@drawable/video_audio_user_txt_bakground"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_toStartOf="@+id/txtUserAudioTime"
                 android:layout_alignParentTop="true"
                 android:textColor="@color/white"/>
 
@@ -143,7 +146,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/video_audio_user_txt_bakground">
 
             <TextView
                 android:id="@+id/txtUserNameVideo"
@@ -153,7 +157,9 @@
                 android:textSize="@dimen/_30sp"
                 android:textStyle="bold"
                 android:padding="@dimen/_20dp"
-                android:background="@drawable/video_audio_user_txt_bakground"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_toStartOf="@+id/txtUserVideoTime"
                 android:layout_alignParentTop="true"
                 android:textColor="@color/white"/>
 

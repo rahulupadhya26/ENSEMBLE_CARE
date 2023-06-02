@@ -226,6 +226,7 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
         Utils.aptScheduleTime = therapist.appointment.time_slot.starting_time
         Utils.appointmentId = therapist.appointment.appointment_id.toString()
         Utils.providerPhoto = therapist.photo
+        Utils.selectedCommunicationMode = ""
         clearTempFormData()
         if (!therapist.appointment.on_sameday) {
             replaceFragment(

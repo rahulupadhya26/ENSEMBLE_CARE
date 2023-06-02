@@ -956,7 +956,7 @@
         android:layout_margin="@dimen/_10dp"
         android:gravity="center"
         android:padding="@dimen/_10dp"
-        android:text="Currently you don't have any appointments."
+        android:text="You don't have any appointments."
         android:textAppearance="@style/fontfamily"
         android:textColor="@color/localBackground"
         android:textSize="@dimen/_16sp"

@@ -1,6 +1,5 @@
 package com.app.selfcare.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,12 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.app.selfcare.GroupVideoCall
 import com.app.selfcare.R
 import com.app.selfcare.adapters.GroupAppointmentsAdapter
 import com.app.selfcare.controller.OnGroupAppointmentItemClickListener
 import com.app.selfcare.data.GroupAppointment
-import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentGroupAppointmentsBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get

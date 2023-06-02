@@ -89,13 +89,16 @@
                                 android:id="@+id/txtCoachType"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_5dp"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:layout_marginEnd="@dimen/_5dp"
+                                android:layout_marginBottom="@dimen/_5dp"
                                 android:padding="@dimen/_5dp"
+                                android:text="Exercise"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/_24sp"
-                                android:text="Exercise"
-                                android:textStyle="bold"
-                                android:layout_margin="@dimen/_5dp"/>
+                                android:textSize="@dimen/_22sp"
+                                android:textStyle="bold" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -152,7 +155,7 @@
                                 android:padding="@dimen/_5dp"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/_24sp"
+                                android:textSize="@dimen/_22sp"
                                 android:text="Mindfulness"
                                 android:textStyle="bold"
                                 android:layout_margin="@dimen/_5dp"/>
@@ -212,7 +215,7 @@
                                 android:padding="@dimen/_5dp"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/_24sp"
+                                android:textSize="@dimen/_22sp"
                                 android:text="Music"
                                 android:textStyle="bold"
                                 android:layout_margin="@dimen/_5dp"/>
@@ -280,7 +283,7 @@
                                 android:padding="@dimen/_5dp"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/_24sp"
+                                android:textSize="@dimen/_22sp"
                                 android:text="Nutrition"
                                 android:textStyle="bold"
                                 android:layout_margin="@dimen/_5dp"/>
@@ -340,7 +343,7 @@
                                 android:padding="@dimen/_5dp"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/_24sp"
+                                android:textSize="@dimen/_22sp"
                                 android:text="Yoga"
                                 android:textStyle="bold"
                                 android:layout_margin="@dimen/_5dp"/>
@@ -400,7 +403,7 @@
                                 android:padding="@dimen/_5dp"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/_24sp"
+                                android:textSize="@dimen/_22sp"
                                 android:text="Inspiration"
                                 android:textStyle="bold"
                                 android:layout_margin="@dimen/_5dp"/>

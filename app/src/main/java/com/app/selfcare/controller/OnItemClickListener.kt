@@ -1,5 +1,6 @@
 package com.app.selfcare.controller
 
+import android.view.View
 import com.app.selfcare.data.*
 
 interface OnItemTherapistImageClickListener {
@@ -62,10 +63,6 @@ interface OnMessageClickListener {
     fun onItemClick(message: MessageBean?)
 }
 
-interface OnChatMessageClickListener {
-    fun onItemClick(message: ChatMessages?)
-}
-
 interface OnRecommendedItemClickListener {
     fun onRecommendedItemClickListener(recommendedData: RecommendedData)
 }
@@ -106,7 +103,7 @@ interface OnDocumentItemClickListener {
 }
 
 interface OnToDoItemClickListener {
-    fun onToDoItemClickListener(toDoData: ToDoData)
+    fun onToDoItemClickListener(view: View, showPopup: Boolean, status: String, toDoData: ToDoData)
 }
 
 interface OnDocumentsConsentRoisViewItemClickListener {
@@ -119,4 +116,12 @@ interface OnEventItemClickListener {
 
 interface OnCareBuddyItemClickListener {
     fun onCareBuddyItemClickListener(careBuddy: CareBuddy)
+}
+
+interface OnCareBuddyDashboardItemClickListener {
+    fun onCareBuddyDashboardItemClickListener(careBuddyDashboard: CareBuddyDashboard)
+}
+
+interface OnExerciseDashboardItemClickListener {
+    fun onExerciseDashboardItemClickListener(exerciseDashboard: ExerciseDashboard)
 }

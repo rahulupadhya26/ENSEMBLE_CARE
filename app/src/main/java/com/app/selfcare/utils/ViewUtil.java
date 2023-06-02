@@ -69,8 +69,9 @@ public class ViewUtil {
 
     public static String composeVideoInfoString(Context context, VideoInfoData videoMetaData) {
         // so far do not show delay info
-        return videoMetaData.mWidth + "x" + videoMetaData.mHeight + ", "
+        /*return videoMetaData.mWidth + "x" + videoMetaData.mHeight + ", "
                 + context.getString(R.string.frame_rate_value_with_unit, videoMetaData.mFrameRate) + ", "
-                + context.getString(R.string.bit_rate_value_with_unit, videoMetaData.mBitRate);
+                + context.getString(R.string.bit_rate_value_with_unit, videoMetaData.mBitRate);*/
+        return "";
     }
 }

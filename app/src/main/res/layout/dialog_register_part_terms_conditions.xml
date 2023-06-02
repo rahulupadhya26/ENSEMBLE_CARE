@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/fontfamily"
-                android:text="We know it’s tempting to skip these Terms of Service, but it’s important to establish what you can expect from us as you use Ensemble care services, and what we expect from you."
+                android:text="We know it’s tempting to skip these Terms of Service, but it’s important to establish what you can expect from us as you use EnsembleCare services, and what we expect from you."
                 android:textSize="@dimen/_14sp"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5dp"
@@ -66,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/fontfamily"
-                android:text="These Terms of Service reflect the way Ensemble care’s business works, the laws that apply to our company, and certain things we’ve always believed to be true. As a result, these Terms of Service help define Ensemble care’s relationship with you as you interact with our services. For example, these terms include the following topic headings:"
+                android:text="These Terms of Service reflect the way EnsembleCare’s business works, the laws that apply to our company, and certain things we’ve always believed to be true. As a result, these Terms of Service help define Ensemble care’s relationship with you as you interact with our services. For example, these terms include the following topic headings:"
                 android:textSize="@dimen/_14sp"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5dp"/>
@@ -93,7 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/fontfamily"
-                android:text="3. Content in Ensemble care services, which describes the intellectual property rights to the content you find in our services — whether that content belongs to you"
+                android:text="3. Content in EnsembleCare services, which describes the intellectual property rights to the content you find in our services — whether that content belongs to you"
                 android:textSize="@dimen/_12sp"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5dp"/>
@@ -149,7 +149,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/fontfamily"
-                android:text="If you’re under the age required to manage your own Ensemble care Account, you must have your parent or legal guardian’s permission to use a Ensemble care Account. Please have your parent or legal guardian read these terms with you."
+                android:text="If you’re under the age required to manage your own EnsembleCare Account, you must have your parent or legal guardian’s permission to use a Ensemble care Account. Please have your parent or legal guardian read these terms with you."
                 android:textSize="@dimen/_14sp"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5dp"/>

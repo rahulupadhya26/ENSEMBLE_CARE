@@ -88,7 +88,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/primaryGreen"
-                            android:textSize="@dimen/_18sp"
+                            android:textSize="@dimen/_14sp"
                             android:textStyle="bold"/>
 
                         <TextView

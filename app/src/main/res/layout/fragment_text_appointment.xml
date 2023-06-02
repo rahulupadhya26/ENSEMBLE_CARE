@@ -1,274 +1,330 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.TextAppointmentFragment"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=".fragment.TextAppointmentFragment">
 
-   <RelativeLayout
-       android:layout_width="match_parent"
-       android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/layoutChatMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-      <LinearLayout
-          android:id="@+id/layoutTextAppointLabel"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_alignParentTop="true"
-          android:orientation="vertical"
-          android:elevation="@dimen/_5dp"
-          android:background="@color/white">
-
-         <RelativeLayout
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/textAppointBack"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:padding="@dimen/_5dp"
-                android:layout_marginStart="@dimen/_5dp"
-                android:layout_marginTop="@dimen/_5dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/journal_resource_back"
-                app:tint="@color/primaryGreen" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_toEndOf="@+id/textAppointBack"
-                android:layout_toStartOf="@+id/cardViewTxtAppoint"
-                android:layout_centerInParent="true">
-
-               <TextView
-                   android:id="@+id/txtTextAppointName"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:textAppearance="@style/fontfamily"
-                   android:text="Text Appointment"
-                   android:textColor="@color/black"
-                   android:textSize="@dimen/_14sp"
-                   android:padding="@dimen/_5dp"
-                   android:layout_gravity="center"
-                   android:layout_marginStart="@dimen/_5dp"
-                   android:textStyle="bold" />
-
-               <androidx.cardview.widget.CardView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   app:cardBackgroundColor="#FFD6D6"
-                   app:cardCornerRadius="@dimen/_20dp"
-                   app:cardElevation="5dp"
-                   android:layout_gravity="center">
-
-                  <TextView
-                      android:id="@+id/txtTextAppointTimeTaken"
-                      android:layout_width="70dp"
-                      android:layout_height="wrap_content"
-                      android:gravity="center"
-                      android:padding="4dp"
-                      android:textAppearance="@style/fontfamily"
-                      android:textColor="@color/primaryGreen"
-                      android:textSize="8sp"
-                      android:textStyle="bold" />
-
-               </androidx.cardview.widget.CardView>
-
-            </LinearLayout>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardViewTxtAppoint"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerInParent="true"
-                android:layout_margin="@dimen/_5dp"
-                app:cardCornerRadius="15dp"
-                android:layout_alignParentEnd="true">
-
-               <ImageView
-                   android:id="@+id/imgTxtAppoint"
-                   android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:scaleType="centerCrop"
-                   android:src="@drawable/user_pic"
-                   android:visibility="gone"/>
-
-               <TextView
-                   android:id="@+id/txtTxtAppoint"
-                   android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:gravity="center"
-                   android:layout_gravity="center"
-                   android:background="@drawable/square_background"
-                   android:textSize="16sp"
-                   android:textStyle="bold"
-                   android:textColor="@color/white"/>
-
-            </androidx.cardview.widget.CardView>
-
-         </RelativeLayout>
-
-         <RelativeLayout
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:paddingStart="45sp"
-             android:paddingBottom="@dimen/_10dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-               <LinearLayout
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:orientation="vertical">
-
-                  <TextView
-                      android:id="@+id/txtTextAppointStartTime"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:textAppearance="@style/fontfamily"
-                      android:textSize="@dimen/_20sp"
-                      android:textStyle="bold"
-                      android:textColor="@color/black"/>
-
-                  <TextView
-                      android:id="@+id/txtTextAppointStartDate"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:textAppearance="@style/fontfamily"
-                      android:textSize="@dimen/_12sp"
-                      android:textStyle="bold"
-                      android:textColor="#D8ADAD"/>
-
-               </LinearLayout>
-
-               <ImageView
-                   android:layout_width="15dp"
-                   android:layout_height="15dp"
-                   android:src="@drawable/line_end_arrow_notch"
-                   android:layout_marginTop="@dimen/_8dp"
-                   android:layout_marginStart="@dimen/_10dp"
-                   android:layout_marginEnd="@dimen/_10dp"/>
-
-               <LinearLayout
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:orientation="vertical">
-
-                  <TextView
-                      android:id="@+id/txtTextAppointEndTime"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:textAppearance="@style/fontfamily"
-                      android:textSize="@dimen/_20sp"
-                      android:textStyle="bold"
-                      android:textColor="@color/black"/>
-
-                  <TextView
-                      android:id="@+id/txtTextAppointEndDate"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:textAppearance="@style/fontfamily"
-                      android:textSize="@dimen/_12sp"
-                      android:textStyle="bold"
-                      android:textColor="#D8ADAD"/>
-
-               </LinearLayout>
-
-            </LinearLayout>
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:padding="@dimen/_5dp"
-                android:layout_marginStart="@dimen/_5dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:layout_marginEnd="@dimen/_5dp"
-                android:src="@drawable/more_horiz"
-                android:layout_alignParentEnd="true"/>
-
-         </RelativeLayout>
-
-      </LinearLayout>
-
-      <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/textAppointMessageList"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_above="@+id/relativeLayoutMessageText"
-          android:layout_below="@+id/layoutTextAppointLabel" />
-
-      <RelativeLayout
-          android:id="@+id/relativeLayoutMessageText"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_alignParentBottom="true"
-          android:background="#F9E6E6">
-
-         <RelativeLayout
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_marginStart="@dimen/_5dp"
-             android:layout_marginEnd="@dimen/_5dp"
-             android:layout_marginTop="@dimen/_10dp"
-             android:layout_marginBottom="@dimen/_10dp">
-
-            <ImageView
-                android:id="@+id/imgAddFile"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerInParent="true"
-                android:padding="@dimen/_5dp"
-                android:src="@drawable/add"
-                android:visibility="invisible"/>
-
-            <EditText
-                android:id="@+id/editTextTextAppointMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_5dp"
-                android:layout_toEndOf="@+id/imgAddFile"
-                android:layout_toStartOf="@+id/layoutTextAppointSend"
-                android:background="@drawable/bg_corner_rounded_edittext"
-                android:hint="Message"
-                android:maxLines="6"
-                android:padding="@dimen/_10dp"
-                android:layout_centerInParent="true"
-                android:textAppearance="@style/fontfamily"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_10sp"
-                android:backgroundTint="@color/white"/>
+        <LinearLayout
+            android:id="@+id/layoutTextAppointLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@color/white"
+            android:elevation="@dimen/_5dp"
+            android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/layoutTextAppointSend"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/bg_round_gray"
-                android:backgroundTint="@color/primaryGreen"
-                android:layout_centerInParent="true">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-               <ImageView
-                   android:id="@+id/imgSend"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_centerInParent="true"
-                   android:padding="@dimen/_10dp"
-                   android:src="@drawable/send"
-                   app:tint="@color/white" />
+                <ImageView
+                    android:id="@+id/textAppointBack"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:padding="@dimen/_5dp"
+                    android:src="@drawable/journal_resource_back"
+                    app:tint="@color/primaryGreen" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toStartOf="@+id/cardViewTxtAppoint"
+                    android:layout_toEndOf="@+id/textAppointBack"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtTextAppointName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/_5dp"
+                        android:padding="@dimen/_5dp"
+                        android:text="Text Appointment"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp"
+                        android:textStyle="bold" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        app:cardBackgroundColor="#FFD6D6"
+                        app:cardCornerRadius="@dimen/_20dp">
+
+                        <TextView
+                            android:id="@+id/txtTextAppointTimeTaken"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="4dp"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/primaryGreen"
+                            android:textSize="8sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewTxtAppoint"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="@dimen/_5dp"
+                    app:cardCornerRadius="15dp">
+
+                    <ImageView
+                        android:id="@+id/imgTxtAppoint"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/user_pic"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txtTxtAppoint"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/square_background"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </androidx.cardview.widget.CardView>
 
             </RelativeLayout>
 
-         </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="45sp"
+                android:paddingBottom="@dimen/_10dp">
 
-      </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-   </RelativeLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtTextAppointStartTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtTextAppointStartDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#D8ADAD"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginTop="@dimen/_8dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:src="@drawable/line_end_arrow_notch" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtTextAppointEndTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtTextAppointEndDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#D8ADAD"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imgViewFiles"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    android:padding="@dimen/_5dp"
+                    android:src="@drawable/draft" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layoutTextAppointLabel">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/textAppointMessageList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/relativeLayoutMessageText"/>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutMessageText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#F9E6E6">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_10dp">
+
+                    <ImageView
+                        android:id="@+id/imgAddFile"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:padding="@dimen/_5dp"
+                        android:src="@drawable/add" />
+
+                    <EditText
+                        android:id="@+id/editTextTextAppointMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginEnd="@dimen/_5dp"
+                        android:layout_toStartOf="@+id/layoutTextAppointSend"
+                        android:layout_toEndOf="@+id/imgAddFile"
+                        android:background="@drawable/bg_corner_rounded_images"
+                        android:backgroundTint="@color/white"
+                        android:hint="Message"
+                        android:maxLines="6"
+                        android:padding="@dimen/_10dp"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_10sp" />
+
+                    <RelativeLayout
+                        android:id="@+id/layoutTextAppointSend"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/bg_round_gray"
+                        android:backgroundTint="@color/primaryGreen">
+
+                        <ImageView
+                            android:id="@+id/imgSend"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/send"
+                            app:tint="@color/white" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutWebViewFile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imgCloseFileWebView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/_5dp"
+            android:padding="@dimen/_5dp"
+            android:src="@mipmap/ic_action_close"
+            app:tint="#5F6368" />
+
+        <WebView
+            android:id="@+id/webViewFile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/imgCloseFileWebView" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutViewFile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imgCloseViewFile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/_5dp"
+            android:padding="@dimen/_5dp"
+            android:src="@mipmap/ic_action_close"
+            app:tint="#5F6368" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerviewFileList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/imgCloseViewFile"/>
+
+    </RelativeLayout>
 
 </FrameLayout>

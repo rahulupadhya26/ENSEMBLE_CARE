@@ -3,7 +3,9 @@ package com.app.selfcare.preference
 class PrefKeys {
     companion object {
         const val PREF_IS_LOGGEDIN = "is_logged_in"
+        const val PREF_IS_CARE_BUDDY_LOGGEDIN = "is_care_buddy_logged_in"
         const val PREF_IS_REMEMBER_ME = "is_remember_me"
+        const val PREF_CARE_BUDDY_IS_REMEMBER_ME = "care_buddy_is_remember_me"
         const val PREF_STEP = "step"            //Int
         const val PREF_ID = "id"                //Int
         const val PREF_DEVICE_ID = "device_id"  //String
@@ -17,6 +19,12 @@ class PrefKeys {
         const val PREF_DOB = "dob"
         const val PREF_SSN = "ssn"
         const val PREF_GENDER = "gender"
+        const val PREF_ADDRESS = "address"
+        const val PREF_ADDRESS1 = "address1"
+        const val PREF_COUNTRY = "country"
+        const val PREF_STATE = "state"
+        const val PREF_CITY = "city"
+        const val PREF_ZIPCODE = "zipcode"
         const val PREF_PREFERRED_LANG = "preferred_language"
         const val PREF_RELATIONSHIP = "relationship"
         const val PREF_MARTIAL_STATUS = "martial_status"
@@ -29,6 +37,8 @@ class PrefKeys {
         const val PREF_PHOTO = "user_photo"
         const val PREF_PASS = "pass"
         const val PREF_REG = "register"
+        const val PREF_CARE_BUDDY_EMAIL = "care_buddy_email"
+        const val PREF_CARE_BUDDY_PASS = "care_buddy_pass"
         const val PREF_REFRESH_TOKEN = "refresh_token"
         const val PREF_ACCESS_TOKEN = "access_token"
         const val PREF_Journal_Added = "journalAdded"

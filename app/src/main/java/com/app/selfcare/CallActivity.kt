@@ -1,22 +1,35 @@
 package com.app.selfcare
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.ProgressDialog
+import android.content.ContentResolver
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.media.AudioManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.provider.OpenableColumns
+import android.util.Base64
 import android.util.Log
 import android.view.*
+import android.webkit.MimeTypeMap
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.adapters.GridVideoViewContainer
@@ -30,8 +43,7 @@ import com.app.selfcare.crypto.EncryptionImpl
 import com.app.selfcare.data.*
 import com.app.selfcare.databinding.DialogOnlineChatBinding
 import com.app.selfcare.databinding.FragmentGroupVideoCallBinding
-import com.app.selfcare.fragment.OnlineChatFragment
-import com.app.selfcare.fragment.VideoCallFragment
+import com.app.selfcare.fragment.TherapistFeedbackFragment
 import com.app.selfcare.interceptor.DecryptionInterceptor
 import com.app.selfcare.interceptor.EncryptionInterceptor
 import com.app.selfcare.preference.PrefKeys
@@ -39,7 +51,6 @@ import com.app.selfcare.preference.PreferenceHelper
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.realTimeMessaging.ChatManager
 import com.app.selfcare.services.RequestInterface
-import com.app.selfcare.services.SelfCareApplication
 import com.app.selfcare.utils.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.agora.rtc2.Constants
@@ -52,11 +63,15 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONObject
 import org.slf4j.LoggerFactory
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -100,7 +115,6 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
     private var createPostDialog: BottomSheetDialog? = null
     private var mChatManager: ChatManager? = null
     private var mRtmClient: RtmClient? = null
-    private var mClientListener: RtmClientListener? = null
     private var mRtmChannel: RtmChannel? = null
 
     private var mIsPeerToPeerMode = false
@@ -169,12 +183,70 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
             mUidsList,
             mIsLandscape
         ) // first is now full view
-        mChatManager = SelfCareApplication.instance.getChatManager()
-        mRtmClient = mChatManager!!.getRtmClient()
+        mRtmClient = RtmClient.createInstance(
+            this,
+            BuildConfig.appId,
+            object : RtmClientListener {
+                override fun onConnectionStateChanged(state: Int, reason: Int) {
+                    runOnUiThread {
+                        when (state) {
+                            RtmStatusCode.ConnectionState.CONNECTION_STATE_RECONNECTING -> displayToast(
+                                getString(R.string.reconnecting)
+                            )
+                            RtmStatusCode.ConnectionState.CONNECTION_STATE_ABORTED -> {
+                                displayToast(getString(R.string.account_offline))
+                                setResult(MessageUtil.ACTIVITY_RESULT_CONN_ABORTED)
+                            }
+                        }
+                    }
+                }
+
+                override fun onMessageReceived(message: RtmMessage?, peerId: String?) {
+                    runOnUiThread {
+                        if (peerId == mPeerId) {
+                            val messageBean = MessageBean(peerId, message, false)
+                            messageBean.setBackground(getMessageColor(peerId))
+                            mMessageBeanList.add(messageBean)
+                            mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
+                            dialogBinding.chatMessageList.scrollToPosition(
+                                mMessageBeanList.size - 1
+                            )
+                        } else {
+                            MessageUtil.addMessageBean(peerId!!, message)
+                        }
+                    }
+                }
+
+                override fun onImageMessageReceivedFromPeer(p0: RtmImageMessage?, p1: String?) {
+                }
+
+                override fun onFileMessageReceivedFromPeer(p0: RtmFileMessage?, p1: String?) {
+                    Log.i("File received", "Hurrray ")
+                }
+
+                override fun onMediaUploadingProgress(
+                    p0: RtmMediaOperationProgress?,
+                    p1: Long
+                ) {
+                }
+
+                override fun onMediaDownloadingProgress(
+                    p0: RtmMediaOperationProgress?,
+                    p1: Long
+                ) {
+                }
+
+                override fun onTokenExpired() {
+                }
+
+                override fun onPeersOnlineStatusChanged(p0: MutableMap<String, Int>?) {
+                }
+
+            })
         if (!Utils.rtmLoggedIn) {
             doLogin()
         }
-        joinChannel(channelName, token, 0)
+        joinChannel(channelName, token, preference!![PrefKeys.PREF_USER_ID, "0"]!!.toInt())
         running = true
         val date: Calendar = Calendar.getInstance()
         val nextMonthDate = SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(date.time)
@@ -327,14 +399,6 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == CALL_OPTIONS_REQUEST) {
-            /*RecyclerView msgListView = (RecyclerView) findViewById(R.id.msg_list);
-            msgListView.setVisibility(Constant.DEBUG_INFO_ENABLED ? View.VISIBLE : View.INVISIBLE);*/
-        }
-    }
-
     fun onClickHideIME(view: View) {
         log.debug("onClickHideIME $view")
 
@@ -434,6 +498,26 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
             actualEndTime = endTime.getTime()
             duration = time
             sendApptStatus(id, actualStartTime!!, actualEndTime!!, duration!!) {
+                supportFragmentManager.fragments.let {
+                    if (it.isNotEmpty()) {
+                        supportFragmentManager.beginTransaction().apply {
+                            for (fragment in it) {
+                                remove(fragment)
+                            }
+                            commit()
+                        }
+                    }
+                }
+                supportFragmentManager.popBackStackImmediate(
+                    null,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                )
+                /*supportFragmentManager.beginTransaction().replace(
+                    R.id.layout_home,
+                    TherapistFeedbackFragment.newInstance(),
+                    TherapistFeedbackFragment.TAG
+                )
+                    .commitAllowingStateLoss()*/
                 finish()
             }
         }
@@ -458,7 +542,7 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
         duration: String,
         myCallback: (result: String?) -> Unit
     ) {
-        binding.layoutProgress.visibility = View.VISIBLE
+        ////binding.layoutProgress.visibility = View.VISIBLE
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
@@ -476,7 +560,7 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         try {
-                            binding.layoutProgress.visibility = View.GONE
+                            //binding.layoutProgress.visibility = View.GONE
                             var responseBody = result.string()
                             Log.d("Response Body", responseBody)
                             val respBody = responseBody.split("|")
@@ -486,7 +570,7 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
                                 myCallback.invoke("Success")
                             }
                         } catch (e: Exception) {
-                            binding.layoutProgress.visibility = View.GONE
+                            //binding.layoutProgress.visibility = View.GONE
                             Toast.makeText(
                                 this,
                                 "Something went wrong.. Please try after sometime",
@@ -494,7 +578,7 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
                             ).show()
                         }
                     }, { error ->
-                        binding.layoutProgress.visibility = View.GONE
+                        //binding.layoutProgress.visibility = View.GONE
                         //displayToast("Error ${error.localizedMessage}")
                         if ((error as HttpException).code() == 401) {
 
@@ -637,13 +721,14 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
                       Initializes the video view of a remote user.
                       This method initializes the video view of a remote stream on the local device. It affects only the video view that the local user sees.
                       Call this method to bind the remote video stream to a video view and to set the rendering and mirror modes of the video view.
-                     */rtcEngine()!!.setupRemoteVideo(
-            VideoCanvas(
-                surfaceV,
-                VideoCanvas.RENDER_MODE_HIDDEN,
-                uid
+                     */
+            rtcEngine()!!.setupRemoteVideo(
+                VideoCanvas(
+                    surfaceV,
+                    VideoCanvas.RENDER_MODE_HIDDEN,
+                    uid
+                )
             )
-        )
             if (useDefaultLayout) {
                 log.debug("doRenderRemoteUi LAYOUT_TYPE_DEFAULT " + (uid and 0xFFFFFFFFL.toInt()))
                 switchToDefaultVideoView()
@@ -917,15 +1002,11 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
         }
     }
 
-    private lateinit var dialogBinding:DialogOnlineChatBinding
+    private lateinit var dialogBinding: DialogOnlineChatBinding
     fun openOnlineChatWindow() {
         createPostDialog = BottomSheetDialog(this)
         dialogBinding = DialogOnlineChatBinding.inflate(layoutInflater)
         val onlineChatView = dialogBinding.root
-        /*onlineChatView = layoutInflater.inflate(
-            R.layout.dialog_online_chat, null
-        )*/
-        //onlineChatView!!.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         createPostDialog!!.setContentView(onlineChatView)
         createPostDialog!!.behavior.peekHeight =
             Resources.getSystem().displayMetrics.heightPixels
@@ -952,6 +1033,42 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
             dialogBinding.editTextMessage.setText("")
         }
 
+        dialogBinding.imgGroupVideoCloseFileWebView.setOnClickListener {
+            dialogBinding.layoutGroupVideoWebViewFile.visibility = View.GONE
+            dialogBinding.layoutGroupVideoChatMessage.visibility = View.VISIBLE
+        }
+
+        dialogBinding.imgGroupChatAddFile.setOnClickListener {
+            val mimeTypes = arrayOf("image/jpeg", "image/png", "image/gif", "application/pdf")
+            var intent: Intent
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+            } else {
+                intent = Intent(Intent.ACTION_GET_CONTENT)
+            }
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                intent.type = if (mimeTypes.size == 1) mimeTypes[0] else "*/*"
+                if (mimeTypes.isNotEmpty()) {
+                    intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+                }
+            } else {
+                var mimeTypesStr = ""
+                for (mimeType in mimeTypes) {
+                    mimeTypesStr += "$mimeType|"
+                }
+                intent.type = mimeTypesStr.substring(0, mimeTypesStr.length - 1)
+            }
+            try {
+                intent = Intent.createChooser(intent, "Select a file")
+                startActivityForResult(intent, PICKFILE_REQUEST_CODE)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
         dialogBinding.imgCloseChatScreen.setOnClickListener {
             createPostDialog!!.dismiss()
         }
@@ -963,11 +1080,11 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
     private fun doLogin() {
         try {
             if (rtm.isNotEmpty()) {
-                mRtmClient!!.login(rtm, preference!![PrefKeys.PREF_EMAIL, ""],
+                mRtmClient!!.login(rtm, preference!![PrefKeys.PREF_USER_ID, "0"]!!,
                     object : ResultCallback<Void?> {
                         override fun onSuccess(responseInfo: Void?) {
                             Utils.rtmLoggedIn = true
-                            Log.i(VideoCallFragment.TAG, "login success")
+                            Log.i("log", "login success")
                             runOnUiThread {
                                 try {
                                     openOnlineChatWindow()
@@ -980,8 +1097,9 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
                         }
 
                         override fun onFailure(errorInfo: ErrorInfo) {
+                            displayToast("chat login failed: " + errorInfo.errorDescription)
                             Log.i(
-                                VideoCallFragment.TAG,
+                                "TAG",
                                 "login failed: " + errorInfo.errorDescription
                             )
 
@@ -996,43 +1114,22 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
     }
 
     private fun init() {
-        mClientListener = rtmClientListener
-        mChatManager!!.registerListener(mClientListener)
         mIsPeerToPeerMode = false
         val targetName = "$fname $lname"
-        if (mIsPeerToPeerMode) {
-            mPeerId = targetName
-            dialogBinding.txtTherapistChatName.text = mPeerId
-
-            // load history chat records
-            val messageListBean = MessageUtil.getExistMessageListBean(mPeerId)
-            if (messageListBean != null) {
-                mMessageBeanList.addAll(messageListBean.getMessageBeanList()!!)
-            }
-
-            // load offline messages since last chat with this peer.
-            // Then clear cached offline messages from message pool
-            // since they are already consumed.
-            val peerName =
-                fname.take(1) + "" + lname.take(1)
-            val offlineMessageBean = MessageListBean(peerName, mChatManager!!)
-            mMessageBeanList.addAll(offlineMessageBean.getMessageBeanList()!!)
-            mChatManager!!.removeAllOfflineMessages(mPeerId)
-        } else {
-            mChannelName = targetName
-            mChannelMemberCount = 1
-            dialogBinding.txtTherapistChatName.text = mChannelName
-            /*onlineChatView!!.txtTherapistChatName.text = MessageFormat.format(
-                "{0}({1})",
-                mChannelName,
-                mChannelMemberCount
-            )*/
-            createAndJoinChannel()
-        }
+        mChannelName = targetName
+        mChannelMemberCount = 1
+        dialogBinding.txtTherapistChatName.text = mChannelName
+        createAndJoinChannel()
         runOnUiThread {
             val layoutManager = LinearLayoutManager(this)
             layoutManager.orientation = RecyclerView.VERTICAL
-            mMessageAdapter = MessageAdapter(this, mMessageBeanList, this)
+            mMessageAdapter = MessageAdapter(
+                this,
+                mMessageBeanList,
+                this,
+                preference!![PrefKeys.PREF_PHOTO, ""]!!,
+                ""
+            )
             dialogBinding.chatMessageList.layoutManager = layoutManager
             dialogBinding.chatMessageList.adapter = mMessageAdapter
         }
@@ -1090,7 +1187,7 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
         // step 2: join the channel
         mRtmChannel!!.join(object : ResultCallback<Void?> {
             override fun onSuccess(responseInfo: Void?) {
-                Log.i(OnlineChatFragment.TAG, "join channel success")
+                Log.i("TAG", "join channel success")
                 runOnUiThread {
                     //showToast("join channel success")
                 }
@@ -1098,7 +1195,7 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
             }
 
             override fun onFailure(errorInfo: ErrorInfo) {
-                Log.e(OnlineChatFragment.TAG, "join channel failed")
+                Log.e("TAG", "join channel failed")
                 runOnUiThread {
                     showToast(getString(R.string.join_channel_failed))
                     showToast(errorInfo.errorDescription + " - " + errorInfo.errorCode)
@@ -1122,7 +1219,7 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
 
             override fun onFailure(errorInfo: ErrorInfo) {
                 Log.e(
-                    OnlineChatFragment.TAG,
+                    "TAG",
                     "failed to get channel members, err: " + errorInfo.errorCode
                 )
             }
@@ -1166,42 +1263,19 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
         }
     }
 
-    /**
-     * API CALLBACK: rtm event listener
-     */
-    private val rtmClientListener = object : RtmClientListener {
-        override fun onConnectionStateChanged(state: Int, reason: Int) {
-            runOnUiThread {
-                when (state) {
-                    RtmStatusCode.ConnectionState.CONNECTION_STATE_RECONNECTING -> showToast(
-                        getString(R.string.reconnecting)
-                    )
-                    RtmStatusCode.ConnectionState.CONNECTION_STATE_ABORTED -> {
-                        showToast(getString(R.string.account_offline))
-                        setResult(MessageUtil.ACTIVITY_RESULT_CONN_ABORTED)
-                        finish()
-                    }
-                }
+    override fun onDestroy() {
+        super.onDestroy()
+        try {
+            RtcEngine.destroy()
+            if (mIsPeerToPeerMode) {
+                MessageUtil.addMessageListBeanList(MessageListBean(mPeerId, mMessageBeanList))
+            } else {
+                leaveAndReleaseChannel()
             }
+            doLogout()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-        override fun onMessageReceived(message: RtmMessage, peerId: String) {
-            runOnUiThread {
-                if (peerId == mPeerId) {
-                    val messageBean = MessageBean(peerId, message, false)
-                    messageBean.setBackground(getMessageColor(peerId))
-                    mMessageBeanList.add(messageBean)
-                    mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
-                    dialogBinding.chatMessageList.scrollToPosition(mMessageBeanList.size - 1)
-                } else {
-                    MessageUtil.addMessageBean(peerId, message)
-                }
-            }
-        }
-
-        override fun onTokenExpired() {}
-        override fun onTokenPrivilegeWillExpire() {}
-        override fun onPeersOnlineStatusChanged(map: Map<String, Int>) {}
     }
 
     /**
@@ -1214,13 +1288,20 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
             runOnUiThread {
                 val targetName = fname.take(1) + "" + lname.take(1)
                 val account = fromMember.userId
-                Log.i(OnlineChatFragment.TAG, "onMessageReceived account = $account msg = $message")
+                Log.i("TAG", "onMessageReceived account = $account msg = $message")
                 val messageBean = MessageBean(targetName, message, false)
                 messageBean.setBackground(getMessageColor(account))
                 mMessageBeanList.add(messageBean)
                 mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
                 dialogBinding.chatMessageList.scrollToPosition(mMessageBeanList.size - 1)
             }
+        }
+
+        override fun onImageMessageReceived(p0: RtmImageMessage?, p1: RtmChannelMember?) {
+
+        }
+
+        override fun onFileMessageReceived(p0: RtmFileMessage?, p1: RtmChannelMember?) {
         }
 
         override fun onMemberJoined(member: RtmChannelMember) {
@@ -1281,14 +1362,224 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICKFILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                data.data.let { returnUri ->
+                    contentResolver.query(returnUri!!, null, null, null, null)
+                }?.use { cursor ->
+                    /*
+                 * Get the column indexes of the data in the Cursor,
+                 * move to the first row in the Cursor, get the data,
+                 * and display it.
+                 */
+                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+                    cursor.moveToFirst()
+                    val selectedFile = data.data
+                    convertToString(
+                        selectedFile!!,
+                        cursor.getString(nameIndex),
+                        cursor.getLong(sizeIndex)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun convertToString(uri: Uri, fileName: String, fileSize: Long) {
+        if (fileSize <= 10000000) {
+            val uriString = uri.toString()
+            val fileType = getMimeType(uri)
+            Log.d("data", "onActivityResult: uri$uriString")
+            //            myFile = new File(uriString);
+            //            ret = myFile.getAbsolutePath();
+            try {
+                val inputStream: InputStream = contentResolver.openInputStream(uri)!!
+                val bytes = getBytes(inputStream)
+                val document = Base64.encodeToString(bytes, Base64.DEFAULT)
+                /*val document =
+                    "JVBERi0xLjMKMyAwIG9iago8PC9UeXBlIC9QYWdlCi9QYXJlbnQgMSAwIFIKL1Jlc291cmNlcyAyIDAgUgovQ29udGVudHMgNCAwIFI+PgplbmRvYmoKNCAwIG9iago8PC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggNjQ3Pj4Kc3RyZWFtCnicnZbBctowFEX3fMVbtjNBlmRZsndtSNLSaVMK7qJLBz8cN8YmspxM/r6ygdrgpDMVCyHEWOceJD3B4cuEkkDB8+QyBu+GAQsIpRBv4DreD3Fgqh9itkuBDlqdTR5tl1FuWxGJQ6szsI/7jLAIpJREMYhTePerajQs4zks8bHB2sAmLzCFulmvsa43TVG8kPcQ/7Ys+DGhkO1D+MD4WS5xMvRqLh4SPwBplRgHbkMICVPOiQxBI6ygzc0DdtKe5KbWK+xyLzHLa6MTk1cl3DbbO9R9TB4JEjInEI8UkWJIWnxfxStv6V173Pcok1INQJ1QEHEihItQoBQJaIe5TbY4MnCZ+WAwmPqTXePkCVZ5md2PssuIKOmUPbAR/Q5wlRiEagM3eWEZYwsHxtGih1AxpXzKKfdHDsIeiMjJweeEBfsNZc/ADaI9B2vMnzAdWzhQjhY9htFRei6IYE7paUSE2m/S5GWLpYFvVfrKLnIgHJP3iHlpUJdo4DIpH+wyX8BMY5obqDRc4Z3tzBKdggfLxqbpPlzAz8V85EsZUb6Lrwht2YpOfJe4QY3lGt+qAS60g/sAN1t8nH39HMeXIfx9nXsJFRHqdJKEFG2dakGxTso6WXdVbWUS09QjIxfO0agHzartrkBjS/1qUOpHToEkfujkJFhbufalenizPOfmfuzkwDk69aAr3CXadPvCFqNFVZvBr/d/d5Rg9kunO8qPZFsmusXEAnf3Vfnm5nShHLQHGMrYlPtUiJCPriY/7N5cPJTfFo0WcL1N8gLm45LoMvsxfz+9NnmK9cOHvEzzZGdXjWTVE8nLs7V79a9Q2I/8A6lkVwMCEgWH6pEhMI/1hD/eriz+CmVuZHN0cmVhbQplbmRvYmoKMSAwIG9iago8PC9UeXBlIC9QYWdlcwovS2lkcyBbMyAwIFIgXQovQ291bnQgMQovTWVkaWFCb3ggWzAgMCA1OTUuMjggODQxLjg5XQo+PgplbmRvYmoKNSAwIG9iago8PC9UeXBlIC9Gb250Ci9CYXNlRm9udCAvSGVsdmV0aWNhLUJvbGQKL1N1YnR5cGUgL1R5cGUxCi9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nCj4+CmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL0ZvbnQKL0Jhc2VGb250IC9IZWx2ZXRpY2EtT2JsaXF1ZQovU3VidHlwZSAvVHlwZTEKL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcKPj4KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvRm9udAovQmFzZUZvbnQgL1RpbWVzLVJvbWFuCi9TdWJ0eXBlIC9UeXBlMQovRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZwo+PgplbmRvYmoKOCAwIG9iago8PC9UeXBlIC9Gb250Ci9CYXNlRm9udCAvSGVsdmV0aWNhCi9TdWJ0eXBlIC9UeXBlMQovRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZwo+PgplbmRvYmoKMiAwIG9iago8PAovUHJvY1NldCBbL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSV0KL0ZvbnQgPDwKL0YxIDUgMCBSCi9GMiA2IDAgUgovRjMgNyAwIFIKL0Y0IDggMCBSCj4+Ci9YT2JqZWN0IDw8Cj4+Cj4+CmVuZG9iago5IDAgb2JqCjw8Ci9Qcm9kdWNlciAoRlBERiAxLjcpCi9DcmVhdGlvbkRhdGUgKEQ6MjAyMzAyMDQwMDE0MzkpCj4+CmVuZG9iagoxMCAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMSAwIFIKPj4KZW5kb2JqCnhyZWYKMCAxMQowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDA4MDQgMDAwMDAgbiAKMDAwMDAwMTI5MCAwMDAwMCBuIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwODcgMDAwMDAgbiAKMDAwMDAwMDg5MSAwMDAwMCBuIAowMDAwMDAwOTkyIDAwMDAwIG4gCjAwMDAwMDEwOTYgMDAwMDAgbiAKMDAwMDAwMTE5NCAwMDAwMCBuIAowMDAwMDAxNDI0IDAwMDAwIG4gCjAwMDAwMDE0OTkgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSAxMQovUm9vdCAxMCAwIFIKL0luZm8gOSAwIFIKPj4Kc3RhcnR4cmVmCjE1NDkKJSVFT0YK"*/
+                sendFile(
+                    id.toInt(),
+                    fileName.split(".")[0],
+                    fileType.split("/")[1],
+                    document
+                ) { response ->
+                    //binding.layoutProgress.visibility = View.GONE
+                    Log.i("Response", response.toString())
+                    val jsonObj = JSONObject(response.toString())
+                    val message = mRtmClient!!.createMessage()
+                    message.rawMessage = ("$fileName," + jsonObj.getString("file")).toByteArray()
+                    //message.text = "$fileName,"+jsonObj.getString("file")
+                    val patientName =
+                        preference!![PrefKeys.PREF_FNAME, ""]!!.take(1) + "" + preference!![PrefKeys.PREF_LNAME, ""]!!.take(
+                            1
+                        )
+                    val messageBean = MessageBean(patientName, message, true)
+                    mMessageBeanList.add(messageBean)
+                    mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
+                    dialogBinding.chatMessageList.scrollToPosition(mMessageBeanList.size - 1)
+                }
+            } catch (e: java.lang.Exception) {
+                // TODO: handle exception
+                e.printStackTrace()
+                Log.d("error", "onActivityResult: $e")
+            }
+        } else {
+            displayToast("File size should not exceed more than 10 MB")
+        }
+    }
+
+    fun sendFile(
+        apptId: Int,
+        fileName: String,
+        fileExt: String,
+        file: String,
+        myCallback: (result: String?) -> Unit
+    ) {
+        //binding.layoutProgress.visibility = View.VISIBLE
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendFile(
+                        "PI0071",
+                        FileDetails(
+                            preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
+                            apptId.toString(),
+                            fileName,
+                            fileExt,
+                            file
+                        ),
+                        "Bearer " + preference!![PrefKeys.PREF_ACCESS_TOKEN, ""]!!
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            //binding.layoutProgress.visibility = View.GONE
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status != "401") {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            //binding.layoutProgress.visibility = View.GONE
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        //binding.layoutProgress.visibility = View.GONE
+                        //displayToast("Error ${error.localizedMessage}")
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    private fun getMimeType(uri: Uri): String {
+        var mimeType = ""
+        try {
+            mimeType = if (uri.scheme.equals(ContentResolver.SCHEME_CONTENT)) {
+                val cr = contentResolver
+                cr.getType(uri)!!
+            } else {
+                val fileExt: String = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExt.lowercase())!!
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return mimeType
+    }
+
+    @Throws(IOException::class)
+    private fun getBytes(inputStream: InputStream): ByteArray? {
+        val byteBuffer = ByteArrayOutputStream()
+        val bufferSize = 1024
+        val buffer = ByteArray(bufferSize)
+        var len = 0
+        while (inputStream.read(buffer).also { len = it } != -1) {
+            byteBuffer.write(buffer, 0, len)
+        }
+        return byteBuffer.toByteArray()
+    }
+
     companion object {
         const val LAYOUT_TYPE_DEFAULT = 0
         const val LAYOUT_TYPE_SMALL = 1
         private val log = LoggerFactory.getLogger(CallActivity::class.java)
         private const val CALL_OPTIONS_REQUEST = 3222
+        private const val PICKFILE_REQUEST_CODE = 9
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onItemClick(message: MessageBean?) {
-        TODO("Not yet implemented")
+        dialogBinding.layoutGroupVideoChatMessage.visibility = View.GONE
+        dialogBinding.layoutGroupVideoWebViewFile.visibility = View.VISIBLE
+        val browser = dialogBinding.webViewGroupVideoFile.settings
+        browser.javaScriptEnabled = true
+        browser.builtInZoomControls = true
+        browser.pluginState = WebSettings.PluginState.ON
+        browser.loadWithOverviewMode = true
+        browser.useWideViewPort = true
+        dialogBinding.webViewGroupVideoFile.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                view?.loadUrl(url!!)
+                return true
+            }
+        }
+        dialogBinding.webViewGroupVideoFile.webViewClient = object : WebViewClient() {
+            private var mProgressDialog: ProgressDialog? = null
+            override fun onPageFinished(view: WebView, url: String?) {
+                view.settings.loadsImagesAutomatically = true
+                dialogBinding.webViewGroupVideoFile.visibility = View.VISIBLE
+                //progressView.setVisibility(View.VISIBLE);
+                dismissProgressDialog()
+                view.loadUrl("javascript:clickFunction(){  })()")
+            }
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                showProgressDialog()
+            }
+
+            override fun onReceivedError(
+                view: WebView?,
+                errorCode: Int,
+                description: String?,
+                failingUrl: String?
+            ) {
+                dismissProgressDialog()
+                Log.e("error", description!!)
+            }
+
+            private fun showProgressDialog() {
+                dismissProgressDialog()
+                mProgressDialog = ProgressDialog.show(this@CallActivity, "", "Loading...")
+            }
+
+            private fun dismissProgressDialog() {
+                if (mProgressDialog != null && mProgressDialog!!.isShowing) {
+                    mProgressDialog!!.dismiss()
+                    mProgressDialog = null
+                }
+            }
+        }
+
+        val mMessage = String(message!!.getMessage()!!.rawMessage)
+        val mMsgArr = mMessage.split(",")
+        if (mMsgArr[1].contains("pdf")) {
+            dialogBinding.webViewGroupVideoFile.loadUrl(
+                "http://docs.google.com/gview?embedded=true&url=" + BaseActivity.baseURL.dropLast(
+                    5
+                ) + mMsgArr[1]
+            )
+        } else {
+            dialogBinding.webViewGroupVideoFile.loadUrl(BaseActivity.baseURL.dropLast(5) + mMsgArr[1])
+        }
     }
 }

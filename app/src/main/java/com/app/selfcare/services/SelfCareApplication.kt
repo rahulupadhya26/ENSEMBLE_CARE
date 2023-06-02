@@ -9,15 +9,12 @@ import com.app.selfcare.data.CurrentUserSettings
 import com.app.selfcare.data.EngineConfig
 import com.app.selfcare.data.MyEngineEventHandler
 import com.app.selfcare.realTimeMessaging.ChatManager
-import io.agora.chat.ChatClient
-import io.agora.chat.ChatOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
 import org.slf4j.LoggerFactory
 
 class SelfCareApplication : Application() {
     private var mChatManager: ChatManager? = null
-    private var mChatClient: ChatClient? = null
     private val mVideoSettings: CurrentUserSettings = CurrentUserSettings()
 
     private val log = LoggerFactory.getLogger(this.javaClass)
@@ -52,19 +49,10 @@ class SelfCareApplication : Application() {
         createRtcEngine()
         mChatManager = ChatManager(this, BuildConfig.appId)
         mChatManager!!.init()
-
-        val options = ChatOptions()
-        options.appKey = BuildConfig.appId
-        mChatClient = ChatClient.getInstance()
-        mChatClient!!.init(this, options)
     }
 
     fun getChatManager(): ChatManager? {
         return mChatManager
-    }
-
-    fun getChatClient(): ChatClient? {
-        return mChatClient
     }
 
     companion object {

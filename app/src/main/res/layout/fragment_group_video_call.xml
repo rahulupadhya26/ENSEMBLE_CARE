@@ -179,24 +179,4 @@
 
     </RelativeLayout>
 
-    <FrameLayout
-        android:id="@+id/layoutProgress"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80FFFFFF"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:visibility="gone">
-
-        <com.github.ybq.android.spinkit.SpinKitView
-            android:id="@+id/spinKit"
-            style="@style/SpinKitView.Large.ThreeBounce"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:SpinKit_Color="@color/primaryGreen" />
-
-    </FrameLayout>
-
 </FrameLayout>

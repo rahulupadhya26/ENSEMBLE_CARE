@@ -88,13 +88,16 @@ class NewsListFragment : BaseFragment(), OnNewsItemClickListener {
                         getDetailArticleData("exercise_data/")
                     }
                 }
+
                 Utils.WELLNESS_NUTRITION -> {
+                    binding.txtArticleTitle.text = "Recipes"
                     if (isFavourite) {
                         getFavDetailArticleData()
                     } else {
                         getDetailArticleData("nutrition_data/")
                     }
                 }
+
                 Utils.WELLNESS_MINDFULNESS -> {
                     if (isFavourite) {
                         getFavDetailArticleData()
@@ -102,6 +105,7 @@ class NewsListFragment : BaseFragment(), OnNewsItemClickListener {
                         getDetailArticleData("mindfulness_data/")
                     }
                 }
+
                 Utils.WELLNESS_YOGA -> {
                     if (isFavourite) {
                         getFavDetailArticleData()
@@ -109,6 +113,7 @@ class NewsListFragment : BaseFragment(), OnNewsItemClickListener {
                         getDetailArticleData("yoga_data/")
                     }
                 }
+
                 Utils.WELLNESS_MUSIC -> {
                     if (isFavourite) {
                         getFavDetailArticleData()
@@ -116,6 +121,20 @@ class NewsListFragment : BaseFragment(), OnNewsItemClickListener {
                         getDetailArticleData("music_data/")
                     }
                 }
+                Utils.RESOURCE -> {
+                    if (isFavourite) {
+                        getResourceFavData { response ->
+                            val jsonObj = JSONObject(response!!)
+                            val articleList: Type = object : TypeToken<ArrayList<Articles?>?>() {}.type
+                            val articlesList: ArrayList<Articles> =
+                                Gson().fromJson(jsonObj.getString("articles"), articleList)
+                            displayArticles(articlesList)
+                        }
+                    } else {
+                        displayNews()
+                    }
+                }
+
                 else -> {
                     displayNews()
                 }

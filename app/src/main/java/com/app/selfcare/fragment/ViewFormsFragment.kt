@@ -121,10 +121,22 @@ class ViewFormsFragment : BaseFragment() {
             }
         }
 
-        binding.webViewFormView.loadUrl(
+        val docUrl = if (consentsRoisDocumentData!!.title.contains("Consents")) {
+            BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentsRoisDocumentData!!.description + "/" + consentsRoisDocumentData!!.pk + "/" + getAccessToken().drop(
+                7
+            )
+        } else {
+            BaseActivity.baseURL.dropLast(5) + "/patient/roi_mobile/" + consentsRoisDocumentData!!.description + "/" + consentsRoisDocumentData!!.pk + "/" + getAccessToken().drop(
+                7
+            )
+        }
+
+        binding.webViewFormView.loadUrl(docUrl)
+
+        /*binding.webViewFormView.loadUrl(
             "http://docs.google.com/gview?embedded=true&url=" +
                     BaseActivity.baseURL.dropLast(5) + "/media/" + consentsRoisDocumentData!!.pdf_url
-        )
+        )*/
 
     }
 

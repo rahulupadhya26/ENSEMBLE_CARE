@@ -2,10 +2,7 @@ package com.app.selfcare.realTimeMessaging
 
 import android.content.Context
 import android.util.Log
-import io.agora.rtm.RtmClient
-import io.agora.rtm.RtmClientListener
-import io.agora.rtm.RtmMessage
-import io.agora.rtm.SendMessageOptions
+import io.agora.rtm.*
 
 class ChatManager(private var mContext: Context?, appId: String) {
 
@@ -39,8 +36,20 @@ class ChatManager(private var mContext: Context?, appId: String) {
                     }
                 }
 
+                override fun onImageMessageReceivedFromPeer(p0: RtmImageMessage?, p1: String?) {
+
+                }
+
+                override fun onFileMessageReceivedFromPeer(p0: RtmFileMessage?, p1: String?) {
+                }
+
+                override fun onMediaUploadingProgress(p0: RtmMediaOperationProgress?, p1: Long) {
+                }
+
+                override fun onMediaDownloadingProgress(p0: RtmMediaOperationProgress?, p1: Long) {
+                }
+
                 override fun onTokenExpired() {}
-                override fun onTokenPrivilegeWillExpire() {}
                 override fun onPeersOnlineStatusChanged(status: Map<String, Int>) {}
             })
         } catch (e: Exception) {

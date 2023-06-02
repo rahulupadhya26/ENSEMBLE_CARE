@@ -31,7 +31,8 @@ class CareBuddyAdapter(
         parent: ViewGroup,
         viewType: Int
     ): CareBuddyAdapter.ViewHolder {
-        val binding = LayoutItemCarebuddyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            LayoutItemCarebuddyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         /*val v: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.layout_item_carebuddy, parent, false)*/
         return ViewHolder(binding)
@@ -63,10 +64,12 @@ class CareBuddyAdapter(
             holder.binding.imgCareBuddy.visibility = View.GONE
         }
         holder.binding.txtCareBuddyName.text = item.first_name + " " + item.last_name
-        holder.binding.txtCareBuddyRelation.text = item.relation.replaceFirstChar {
-            if (it.isLowerCase()) it.titlecase(
-                Locale.getDefault()
-            ) else it.toString()
+        if (item.relation != null) {
+            holder.binding.txtCareBuddyRelation.text = item.relation.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            }
         }
 
         holder.binding.layoutCareBuddy.setOnClickListener {
@@ -74,5 +77,6 @@ class CareBuddyAdapter(
         }
     }
 
-    inner class ViewHolder(val binding: LayoutItemCarebuddyBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: LayoutItemCarebuddyBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

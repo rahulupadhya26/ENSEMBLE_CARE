@@ -17,6 +17,7 @@ import com.app.selfcare.R
 import com.app.selfcare.adapters.JournalListAdapter
 import com.app.selfcare.controller.OnJournalItemClickListener
 import com.app.selfcare.data.Journal
+import com.app.selfcare.data.JournalDashboard
 import com.app.selfcare.data.PatientId
 import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentJournalBinding
@@ -51,7 +52,6 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
     private var journalPrevious7DaysLists: ArrayList<Journal> = arrayListOf()
     private var journalWeeksLists: ArrayList<Journal> = arrayListOf()
     private var adapter: JournalListAdapter? = null
-    private var adapter2: JournalListAdapter? = null
     private lateinit var binding: FragmentJournalBinding
 
     @SuppressLint("SimpleDateFormat")
@@ -109,8 +109,8 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
             }
 
             override fun afterTextChanged(editable: Editable) {
-
-                filterOne(editable.toString())
+                if (editable.toString().isNotEmpty())
+                    filterOne(editable.toString())
             }
         })
 
@@ -178,9 +178,10 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                             journalPrevious7DaysLists = arrayListOf()
                             journalWeeksLists = arrayListOf()
                             val journalList: Type =
-                                object : TypeToken<ArrayList<Journal?>?>() {}.type
-                            journalLists = Gson().fromJson(responseBody, journalList)
-
+                                object : TypeToken<JournalDashboard?>() {}.type
+                            val journalDashboard: JournalDashboard =
+                                Gson().fromJson(responseBody, journalList)
+                            journalLists = journalDashboard.results
                             if (journalLists.isNotEmpty()) {
                                 binding.layoutJournalData.visibility = View.VISIBLE
                                 binding.txtNoJournal.visibility = View.GONE
@@ -271,9 +272,11 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
         }
 
         if (text.isEmpty()) {
+            binding.scrollViewJournal.visibility = View.VISIBLE
             binding.llPrevious7Days.visibility = View.VISIBLE
             binding.llPreviousMonths.visibility = View.VISIBLE
             binding.recyclerViewJournalListLastWeek.visibility = View.VISIBLE
+            binding.recyclerViewFilteredJournalList.visibility = View.GONE
             journalPrevious7DaysLists = arrayListOf()
             journalWeeksLists = arrayListOf()
             for (i in 0 until journalLists.size) {
@@ -316,15 +319,22 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                 )
             }
         } else {
+            binding.scrollViewJournal.visibility = View.GONE
             binding.llPrevious7Days.visibility = View.GONE
             binding.llPreviousMonths.visibility = View.GONE
             binding.recyclerViewJournalListLastWeek.visibility = View.GONE
+            binding.recyclerViewFilteredJournalList.visibility = View.VISIBLE
+            val layoutManager = StaggeredGridLayoutManager(
+                2,
+                RecyclerView.VERTICAL,
+            )
             adapter = JournalListAdapter(
                 mActivity!!,
                 journalLists, this@JournalFragment
             )
             adapter!!.filterList(filteredNames)
-            binding.recyclerViewJournalList.adapter = adapter
+            binding.recyclerViewFilteredJournalList.layoutManager = layoutManager
+            binding.recyclerViewFilteredJournalList.adapter = adapter
         }
     }
 

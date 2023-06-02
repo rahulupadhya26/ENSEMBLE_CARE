@@ -22,6 +22,8 @@
             android:textSize="@dimen/_16sp"
             android:gravity="center"
             android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="@color/primaryGreen"
             android:padding="@dimen/_10dp"/>
 

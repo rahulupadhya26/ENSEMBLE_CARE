@@ -330,7 +330,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Appointment, tasks and more"
+                            android:text="Appointment, Tasks and more"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="#877C7C"
                             android:textSize="@dimen/_10sp"

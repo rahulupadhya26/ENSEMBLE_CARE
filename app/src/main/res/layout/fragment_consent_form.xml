@@ -259,7 +259,8 @@
             android:layout_alignParentBottom="true"
             android:fontFamily="@font/avenir_heavy"
             android:gravity="center"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:visibility="gone"/>
     </LinearLayout>
 
 </FrameLayout>

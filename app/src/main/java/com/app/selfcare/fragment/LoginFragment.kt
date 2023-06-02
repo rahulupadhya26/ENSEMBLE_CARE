@@ -57,11 +57,7 @@ class LoginFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
 
-        if (preference!![PrefKeys.PREF_IS_REMEMBER_ME, false]!!) {
-            binding.checkBoxKeepMeSignedIn.isChecked = true
-            binding.editUsername.setText(preference!![PrefKeys.PREF_EMAIL, ""]!!)
-            binding.editPassword.setText(preference!![PrefKeys.PREF_PASS, ""]!!)
-        }
+        loadLoginData()
 
         binding.loginBack.setOnClickListener {
             replaceFragmentNoBackStack(
@@ -77,6 +73,26 @@ class LoginFragment : BaseFragment() {
                 R.id.layout_home,
                 ResetPasswordFragment.TAG
             )
+        }
+
+        binding.layoutLoginAsCareBuddy.setOnClickListener {
+            binding.layoutClientLogin.visibility = View.GONE
+            binding.layoutCareBuddyLogin.visibility = View.VISIBLE
+            if (preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME, false]!!) {
+                binding.checkBoxCareBuddyKeepMeSignedIn.isChecked = true
+                binding.editCareBuddyEmail.setText(preference!![PrefKeys.PREF_CARE_BUDDY_EMAIL, ""]!!)
+                binding.editCareBuddyPassword.setText(preference!![PrefKeys.PREF_CARE_BUDDY_PASS, ""]!!)
+            }
+        }
+
+        binding.layoutLoginAsClient.setOnClickListener {
+            binding.layoutCareBuddyLogin.visibility = View.GONE
+            binding.layoutClientLogin.visibility = View.VISIBLE
+            if (preference!![PrefKeys.PREF_IS_REMEMBER_ME, false]!!) {
+                binding.checkBoxKeepMeSignedIn.isChecked = true
+                binding.editUsername.setText(preference!![PrefKeys.PREF_EMAIL, ""]!!)
+                binding.editPassword.setText(preference!![PrefKeys.PREF_PASS, ""]!!)
+            }
         }
 
         binding.btnLogin.setOnClickListener {
@@ -101,8 +117,49 @@ class LoginFragment : BaseFragment() {
             }
         }
 
+        binding.btnCareBuddyLogin.setOnClickListener {
+            if (getText(binding.editCareBuddyEmail).isNotEmpty()) {
+                if (getText(binding.editCareBuddyPassword).isNotEmpty()) {
+                    careBuddyLogin(getText(binding.editCareBuddyEmail), getText(binding.editCareBuddyPassword)) { result ->
+                        preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME] = binding.checkBoxCareBuddyKeepMeSignedIn.isChecked
+                        replaceFragmentNoBackStack(
+                            CareBuddyDashboardFragment(),
+                            R.id.layout_home,
+                            CareBuddyDashboardFragment.TAG
+                        )
+                    }
+                } else {
+                    setEditTextError(binding.editCareBuddyPassword, "Password cannot be blank.")
+                }
+            } else {
+                setEditTextError(binding.editCareBuddyEmail, "Email Id cannot be blank.")
+            }
+        }
+
+        binding.loginCareBuddyForgotPassword.setOnClickListener {
+            replaceFragment(
+                ResetPasswordFragment(),
+                R.id.layout_home,
+                ResetPasswordFragment.TAG
+            )
+        }
+
         binding.layoutLoginBottom.setOnClickListener {
             replaceFragment(CarouselFragment(), R.id.layout_home, CarouselFragment.TAG)
+        }
+    }
+
+    private fun loadLoginData(){
+        if (preference!![PrefKeys.PREF_IS_REMEMBER_ME, false]!!) {
+            binding.checkBoxKeepMeSignedIn.isChecked = true
+            binding.editUsername.setText(preference!![PrefKeys.PREF_EMAIL, ""]!!)
+            binding.editPassword.setText(preference!![PrefKeys.PREF_PASS, ""]!!)
+        }
+
+        if (preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME, false]!!) {
+            binding.checkBoxCareBuddyKeepMeSignedIn.isChecked = true
+            binding.editCareBuddyEmail.setText(preference!![PrefKeys.PREF_CARE_BUDDY_EMAIL, ""]!!)
+            binding.editCareBuddyPassword.setText(preference!![PrefKeys.PREF_CARE_BUDDY_PASS, ""]!!)
         }
     }
 

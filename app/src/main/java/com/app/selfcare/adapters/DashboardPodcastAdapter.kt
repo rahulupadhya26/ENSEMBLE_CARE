@@ -54,7 +54,7 @@ class DashboardPodcastAdapter(
                 .into(imgPodcast)
             podcastTitle.text = item.name
             if (wellness.isNotEmpty()) {
-                if (wellness == Utils.WELLNESS_NUTRITION) {
+                if (wellness == Utils.WELLNESS_NUTRITION || wellness == Utils.RESOURCE) {
                     podcastTitle.setTextColor(context.resources.getColor(R.color.black))
                 } else {
                     podcastTitle.setTextColor(context.resources.getColor(R.color.white))

@@ -13,7 +13,6 @@ import com.app.selfcare.adapters.CarePlanDayAdapter
 import com.app.selfcare.controller.OnCarePlanDayWiseItemClickListener
 import com.app.selfcare.data.CareDay
 import com.app.selfcare.data.CarePlans
-import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentCarePlanDashboardBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get

@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.data.MindfulnessDashboard
+import com.app.selfcare.data.YogaDashboard
 import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentMindfullnessBinding
 import com.app.selfcare.preference.PrefKeys
@@ -187,28 +189,26 @@ class MindfullnessFragment : BaseFragment() {
                                     binding.layoutMindfulness1.visibility = View.VISIBLE
                                     binding.txtMindfulnessName1.text =
                                         mindfulnessDashboardDataList[0].mindfulness_name
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + mindfulnessDashboardDataList[0].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgMindfulnessBackground1)
+
+
+                                    displayVideoThumbnail(mindfulnessDashboardDataList[0],binding.imgMindfulnessBackground1)
 
                                     binding.layoutMindfulness2.visibility = View.GONE
                                 } else if (mindfulnessDashboardDataList.size >= 2) {
                                     binding.layoutMindfulness1.visibility = View.VISIBLE
                                     binding.txtMindfulnessName1.text =
                                         mindfulnessDashboardDataList[0].mindfulness_name
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + mindfulnessDashboardDataList[0].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgMindfulnessBackground1)
+
+                                    displayVideoThumbnail(mindfulnessDashboardDataList[0],binding.imgMindfulnessBackground1)
 
                                     binding.layoutMindfulness2.visibility = View.VISIBLE
                                     binding.txtMindfulnessName2.text =
                                         mindfulnessDashboardDataList[1].mindfulness_name
-                                    Glide.with(requireActivity())
+                                    displayVideoThumbnail(mindfulnessDashboardDataList[1],binding.imgMindfulnessBackground2)
+                                    /*Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + mindfulnessDashboardDataList[1].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgMindfulnessBackground2)
+                                        .into(binding.imgMindfulnessBackground2)*/
                                 }
 
                             } else {
@@ -243,6 +243,18 @@ class MindfullnessFragment : BaseFragment() {
             )
         }
         handler.postDelayed(runnable!!, 1000)
+    }
+
+    private fun displayVideoThumbnail(data: MindfulnessDashboard, imageView: ImageView) {
+        val videoImg = if (data.url.isNotEmpty() && data.url.contains("youtube")) {
+            val videoId: String = data.url.split("v=")[1]
+            "http://img.youtube.com/vi/$videoId/hqdefault.jpg" //high quality thumbnail
+        } else {
+            BaseActivity.baseURL.dropLast(5) + data.image
+        }
+        Glide.with(requireActivity()).load(videoImg)
+            .transform(CenterCrop(), RoundedCorners(5))
+            .into(imageView)
     }
 
     private fun displayRespectiveScreen(mindfulnessDashboard: MindfulnessDashboard) {

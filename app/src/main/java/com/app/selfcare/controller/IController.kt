@@ -1,5 +1,6 @@
 package com.app.selfcare.controller
 
+import android.net.Uri
 import android.view.View
 import android.widget.TextView
 
@@ -18,4 +19,6 @@ interface IController {
     fun getBitmapList(): ArrayList<String>
     fun hideKeyboard(view: View)
     fun setBottomMenu(id: Int)
+    fun selectFile()
+    fun getFileUri(): Uri
 }

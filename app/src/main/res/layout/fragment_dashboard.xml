@@ -5,21 +5,21 @@
     android:id="@+id/itemsSwipeToRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/screen_background_color"
+    android:background="@color/resource_background"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".fragment.DashboardFragment">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/screen_background_color">
+        android:background="@color/resource_background">
 
         <LinearLayout
             android:id="@+id/dashboardLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/_5dp"
-            android:background="@color/screen_background_color"
+            android:background="@color/resource_background"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -43,17 +43,17 @@
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
                         android:src="@drawable/user_pic"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/txt_user_pic"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="center"
                         android:layout_gravity="center"
                         android:background="@drawable/square_background"
-                        android:textSize="24sp"
-                        android:textColor="@color/white"/>
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="24sp" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -460,20 +460,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_5dp"
                 android:layout_marginEnd="@dimen/_5dp"
-                app:cardUseCompatPadding="true"
                 app:cardCornerRadius="@dimen/_5dp"
                 app:cardElevation="@dimen/_5dp"
+                app:cardUseCompatPadding="true"
                 android:visibility="gone">
 
                 <TextView
                     android:id="@+id/consentsRoisNotify"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/fontfamily"
-                    android:textSize="@dimen/_18sp"
-                    android:textColor="@color/primaryGreen"
                     android:gravity="center"
-                    android:padding="@dimen/_15dp"/>
+                    android:padding="@dimen/_10dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_18sp" />
 
             </androidx.cardview.widget.CardView>
 
@@ -491,7 +491,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@+id/txtViewAllAppointments"
+                        android:layout_toStartOf="@+id/txtViewAllAppointments"
                         android:padding="@dimen/_5dp"
                         android:text="Upcoming Appointment"
                         android:textAppearance="@style/fontfamily"
@@ -517,10 +517,10 @@
                     android:id="@+id/cardViewAppointment"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
+                    android:visibility="gone"
                     app:cardCornerRadius="@dimen/_10dp"
                     app:cardElevation="@dimen/_5dp"
-                    app:cardUseCompatPadding="true"
-                    android:visibility="gone">
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -536,24 +536,24 @@
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:orientation="vertical"
                                 android:layout_weight="0.25"
-                                android:gravity="center">
+                                android:gravity="center"
+                                android:orientation="vertical">
 
                                 <androidx.cardview.widget.CardView
                                     android:layout_width="60dp"
                                     android:layout_height="60dp"
                                     android:layout_marginStart="@dimen/_5dp"
                                     android:layout_marginEnd="@dimen/_5dp"
+                                    app:cardBackgroundColor="@color/primaryGreen"
                                     app:cardCornerRadius="30dp"
-                                    app:cardElevation="0dp"
-                                    app:cardBackgroundColor="@color/primaryGreen">
+                                    app:cardElevation="0dp">
 
                                     <ImageView
                                         android:id="@+id/dashboardAppointImgUser"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:scaleType="centerCrop"/>
+                                        android:scaleType="centerCrop" />
 
                                     <ImageView
                                         android:id="@+id/dashboardAppointGroupImg"
@@ -562,23 +562,15 @@
                                         android:layout_gravity="center"
                                         android:paddingBottom="@dimen/_5dp"
                                         android:src="@drawable/group_appoint"
-                                        android:visibility="gone"/>
+                                        android:visibility="gone" />
 
                                 </androidx.cardview.widget.CardView>
 
                             </LinearLayout>
 
-                            <ImageView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_weight="0.25"
-                                android:src="@drawable/doctor_icon"
-                                android:visibility="gone"/>
-
                             <LinearLayout
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:layout_weight="0.75"
                                 android:orientation="vertical">
 
@@ -626,7 +618,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="1dp"
                                     android:layout_marginTop="@dimen/_5dp"
-                                    android:layout_marginBottom="@dimen/_10dp"
+                                    android:layout_marginBottom="@dimen/_5dp"
                                     android:background="@color/divider" />
 
                                 <LinearLayout
@@ -643,7 +635,9 @@
                                         android:id="@+id/txtAppointmentDateTime"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
                                         android:layout_marginStart="@dimen/_5dp"
+                                        android:layout_marginEnd="@dimen/_5dp"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="#544E4E"
                                         android:textSize="@dimen/_12sp"
@@ -688,24 +682,24 @@
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
-                                    android:orientation="vertical"
                                     android:layout_weight="0.25"
-                                    android:gravity="center">
+                                    android:gravity="center"
+                                    android:orientation="vertical">
 
                                     <androidx.cardview.widget.CardView
                                         android:layout_width="60dp"
                                         android:layout_height="60dp"
                                         android:layout_marginStart="@dimen/_5dp"
                                         android:layout_marginEnd="@dimen/_5dp"
+                                        app:cardBackgroundColor="@color/primaryGreen"
                                         app:cardCornerRadius="30dp"
-                                        app:cardElevation="0dp"
-                                        app:cardBackgroundColor="@color/primaryGreen">
+                                        app:cardElevation="0dp">
 
                                         <ImageView
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:scaleType="centerCrop"
-                                            android:background="@color/shimmer_color"/>
+                                            android:background="@color/shimmer_color"
+                                            android:scaleType="centerCrop" />
 
                                     </androidx.cardview.widget.CardView>
 
@@ -717,7 +711,7 @@
                                     android:layout_gravity="center"
                                     android:layout_weight="0.25"
                                     android:src="@drawable/doctor_icon"
-                                    android:visibility="gone"/>
+                                    android:visibility="gone" />
 
                                 <LinearLayout
                                     android:layout_width="0dp"
@@ -738,18 +732,18 @@
                                             <TextView
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content"
+                                                android:background="@color/shimmer_color"
                                                 android:textAppearance="@style/fontfamily"
                                                 android:textColor="@color/primaryGreen"
-                                                android:background="@color/shimmer_color"
                                                 android:textSize="@dimen/_16sp"
                                                 android:textStyle="bold" />
 
                                             <TextView
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content"
+                                                android:background="@color/shimmer_color"
                                                 android:textAppearance="@style/fontfamily"
                                                 android:textColor="#38A387"
-                                                android:background="@color/shimmer_color"
                                                 android:textSize="@dimen/_12sp"
                                                 android:textStyle="bold" />
                                         </LinearLayout>
@@ -758,8 +752,8 @@
                                             android:layout_width="40dp"
                                             android:layout_height="40dp"
                                             android:layout_alignParentRight="true"
-                                            android:padding="@dimen/_5dp"
-                                            android:background="@color/shimmer_color" />
+                                            android:background="@color/shimmer_color"
+                                            android:padding="@dimen/_5dp" />
 
                                     </RelativeLayout>
 
@@ -784,10 +778,10 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="@dimen/_5dp"
+                                            android:background="@color/shimmer_color"
                                             android:textAppearance="@style/fontfamily"
                                             android:textColor="#544E4E"
                                             android:textSize="@dimen/_12sp"
-                                            android:background="@color/shimmer_color"
                                             android:textStyle="bold" />
 
                                     </LinearLayout>
@@ -801,14 +795,177 @@
 
                 </com.facebook.shimmer.ShimmerFrameLayout>
 
+                <LinearLayout
+                    android:id="@+id/layoutTrainingSession"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/_5dp"
+                            android:text="Upcoming Training Session"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardViewTrainingSession"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        app:cardCornerRadius="@dimen/_10dp"
+                        app:cardElevation="@dimen/_5dp"
+                        app:cardUseCompatPadding="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.25"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <androidx.cardview.widget.CardView
+                                        android:layout_width="60dp"
+                                        android:layout_height="60dp"
+                                        android:layout_marginStart="@dimen/_5dp"
+                                        android:layout_marginEnd="@dimen/_5dp"
+                                        app:cardBackgroundColor="@color/primaryGreen"
+                                        app:cardCornerRadius="30dp"
+                                        app:cardElevation="0dp">
+
+                                        <ImageView
+                                            android:id="@+id/dashboardTrainingSessionImgUser"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:scaleType="centerCrop" />
+
+                                        <ImageView
+                                            android:id="@+id/dashboardTrainingSessionGroupImg"
+                                            android:layout_width="30dp"
+                                            android:layout_height="30dp"
+                                            android:layout_gravity="center"
+                                            android:paddingBottom="@dimen/_5dp"
+                                            android:src="@drawable/group_appoint"
+                                            android:visibility="gone" />
+
+                                    </androidx.cardview.widget.CardView>
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.75"
+                                    android:orientation="vertical">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:padding="@dimen/_5dp">
+
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_toStartOf="@+id/trainingSessionCall"
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:id="@+id/txtTrainingSessionTherapistName"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:textAppearance="@style/fontfamily"
+                                                android:textColor="@color/primaryGreen"
+                                                android:textSize="@dimen/_16sp"
+                                                android:textStyle="bold" />
+
+                                            <TextView
+                                                android:id="@+id/txtTrainingSessionTherapistType"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:textAppearance="@style/fontfamily"
+                                                android:textColor="#38A387"
+                                                android:textSize="@dimen/_12sp"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
+
+                                        <ImageView
+                                            android:id="@+id/trainingSessionCall"
+                                            android:layout_width="40dp"
+                                            android:layout_height="40dp"
+                                            android:layout_alignParentRight="true"
+                                            android:padding="@dimen/_5dp" />
+
+                                    </RelativeLayout>
+
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:layout_height="1dp"
+                                        android:layout_marginTop="@dimen/_5dp"
+                                        android:layout_marginBottom="@dimen/_5dp"
+                                        android:background="@color/divider" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:layout_width="20dp"
+                                            android:layout_height="20dp"
+                                            android:src="@drawable/time_icon" />
+
+                                        <TextView
+                                            android:id="@+id/txtTrainingSessionDateTime"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginStart="@dimen/_5dp"
+                                            android:layout_marginEnd="@dimen/_5dp"
+                                            android:textAppearance="@style/fontfamily"
+                                            android:textColor="#544E4E"
+                                            android:textSize="@dimen/_12sp"
+                                            android:textStyle="bold" />
+
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/txtNoAppointments"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
+                    android:visibility="gone"
                     app:cardCornerRadius="@dimen/_10dp"
                     app:cardElevation="@dimen/_5dp"
-                    app:cardUseCompatPadding="true"
-                    android:visibility="gone">
+                    app:cardUseCompatPadding="true">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="match_parent"
@@ -949,14 +1106,14 @@
                                 android:id="@+id/goalTrackerProgress"
                                 android:layout_width="150dp"
                                 android:layout_height="150dp"
+                                app:direction="clockwise"
                                 app:enableProgressAnimation="true"
                                 app:progressBackgroundColor="#D1CED2"
                                 app:progressBackgroundStrokeWidth="@dimen/_20dp"
                                 app:progressCap="round"
                                 app:progressColor="#5C2E7E"
                                 app:progressStrokeWidth="@dimen/_20dp"
-                                app:textSize="0sp"
-                                app:direction="clockwise"/>
+                                app:textSize="0sp" />
                         </LinearLayout>
 
                     </LinearLayout>

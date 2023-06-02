@@ -299,8 +299,8 @@
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="@dimen/_20dp"
                         app:cardElevation="@dimen/_5dp"
-                        android:visibility="gone"
-                        app:cardUseCompatPadding="true">
+                        app:cardUseCompatPadding="true"
+                        android:visibility="gone">
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -324,19 +324,24 @@
                                     android:layout_height="wrap_content"
                                     android:padding="@dimen/_10dp"
                                     android:text="Fruit Salad Bowl"
+                                    android:layout_toStartOf="@+id/cardViewNutritionTiming"
                                     android:textAppearance="@style/fontfamily"
                                     android:textColor="@color/white"
                                     android:textSize="@dimen/_20sp"
+                                    android:ellipsize="end"
                                     android:textStyle="bold" />
 
                                 <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNutritionTiming"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentRight="true"
                                     app:cardBackgroundColor="#FFE9A0"
                                     app:cardCornerRadius="@dimen/_20dp"
                                     app:cardElevation="5dp"
-                                    app:cardUseCompatPadding="true">
+                                    android:layout_centerInParent="true"
+                                    android:layout_marginStart="@dimen/_5dp"
+                                    android:layout_marginEnd="@dimen/_10dp">
 
                                     <TextView
                                         android:id="@+id/txtNutritionTimeTaken1"
@@ -363,10 +368,10 @@
                         android:id="@+id/cardViewNutritionCard2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
                         app:cardCornerRadius="@dimen/_20dp"
                         app:cardElevation="@dimen/_5dp"
-                        app:cardUseCompatPadding="true">
+                        app:cardUseCompatPadding="true"
+                        android:visibility="gone">
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -393,16 +398,21 @@
                                     android:textAppearance="@style/fontfamily"
                                     android:textColor="@color/white"
                                     android:textSize="@dimen/_20sp"
-                                    android:textStyle="bold" />
+                                    android:layout_toStartOf="@+id/cardViewNutritionTiming2"
+                                    android:textStyle="bold"
+                                    android:ellipsize="end" />
 
                                 <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNutritionTiming2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentRight="true"
                                     app:cardBackgroundColor="#FFE9A0"
                                     app:cardCornerRadius="@dimen/_20dp"
                                     app:cardElevation="5dp"
-                                    app:cardUseCompatPadding="true">
+                                    android:layout_centerInParent="true"
+                                    android:layout_marginStart="@dimen/_5dp"
+                                    android:layout_marginEnd="@dimen/_10dp">
 
                                     <TextView
                                         android:id="@+id/txtNutritionTimeTaken2"

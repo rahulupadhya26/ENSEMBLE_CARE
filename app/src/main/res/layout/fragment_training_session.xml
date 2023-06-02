@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.TrainingSessionFragment">
+
+    <RelativeLayout
+        android:id="@+id/trainingSessionLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/remoteTrainingSessionVideoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/remoteBackground">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/user_pic"
+                tools:ignore="ContentDescription" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtTrainingSessionUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:textSize="@dimen/_30sp"
+                android:textStyle="bold"
+                android:padding="@dimen/_20dp"
+                android:background="@drawable/video_audio_user_txt_bakground"
+                android:layout_alignParentTop="true"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/txtTrainingSessionTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/_20dp"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_20sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/trainingSessionControls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/video_audio_call_btn_background"
+            android:paddingTop="@dimen/_15dp"
+            android:paddingBottom="@dimen/_15dp">
+
+            <ImageView
+                android:id="@+id/btnCall"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="15dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/btn_endcall"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/btnMute"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:layout_toEndOf="@id/btnCall"
+                android:scaleType="centerCrop"
+                android:src="@drawable/btn_unmute"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/btnChat"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="30dp"
+                android:layout_toStartOf="@id/btnCall"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_chat"
+                tools:ignore="ContentDescription" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

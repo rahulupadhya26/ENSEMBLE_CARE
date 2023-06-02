@@ -44,7 +44,6 @@
             android:id="@+id/layoutJournalData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtJournals"
             android:orientation="vertical">
 
             <EditText
@@ -68,6 +67,7 @@
                 android:textSize="@dimen/_18sp" />
 
             <ScrollView
+                android:id="@+id/scrollViewJournal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/et_search">
@@ -171,18 +171,24 @@
                 </RelativeLayout>
             </ScrollView>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewFilteredJournalList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10dp"
+                android:layout_marginEnd="@dimen/_10dp" />
+
         </LinearLayout>
 
         <TextView
             android:id="@+id/txt_no_journal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/txtJournals"
             android:layout_centerInParent="true"
             android:layout_margin="@dimen/_10dp"
             android:gravity="center"
             android:padding="@dimen/_10dp"
-            android:text="Currently you haven't create any journals."
+            android:text="Click on '+' button to add Journal"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/localBackground"
             android:textSize="@dimen/_22sp"

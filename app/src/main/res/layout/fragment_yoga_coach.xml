@@ -806,7 +806,7 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="$20 / Month"
+                                            android:text="$19.99 / Month"
                                             android:textAppearance="@style/fontfamily"
                                             android:textColor="@color/white"
                                             android:textSize="@dimen/_20sp" />

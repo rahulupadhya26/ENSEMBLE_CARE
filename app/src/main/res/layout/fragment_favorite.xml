@@ -80,6 +80,7 @@
             android:elevation="@dimen/_5dp"/>
 
         <ScrollView
+            android:id="@+id/scrollViewFavorite"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none">
@@ -132,8 +133,7 @@
                         android:id="@+id/layoutFavDisplayVideos"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:id="@+id/layoutFavVideoList1"
@@ -1113,6 +1113,18 @@
             </LinearLayout>
 
         </ScrollView>
+
+        <TextView
+            android:id="@+id/txtNoFavorites"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Currently there are no favorites."
+            android:gravity="center"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/localBackground"
+            android:textSize="@dimen/_22sp"
+            android:textStyle="bold"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

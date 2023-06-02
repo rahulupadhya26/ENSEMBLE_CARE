@@ -1,12 +1,7 @@
 package com.app.selfcare.data
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-
-data class EncryptDecrypt(
-    @SerializedName("msg") val data: String
-)
 
 data class Question(
     val question_id: Int,
@@ -312,7 +307,13 @@ data class GetToken(
 )
 
 data class GetGroupApptToken(
-    val group_appointment_id: Int
+    val group_appointment_id: Int,
+    val email: String
+)
+
+data class GetTrainingSessionToken(
+    val training_appointment_id: Int,
+    val email: String
 )
 
 @Parcelize
@@ -450,6 +451,13 @@ data class Podcast(
     val is_favourite: Boolean
 ) : Parcelable
 
+data class JournalDashboard(
+    val count: Int,
+    val next: String,
+    val previous: String,
+    val results: ArrayList<Journal>
+)
+
 @Parcelize
 data class Journal(
     val id: Int,
@@ -517,12 +525,13 @@ data class GetAppointmentList(
 
 @Parcelize
 data class GetAppointment(
+    val group_name: String,
     val doctor_first_name: String,
     val doctor_last_name: String,
     val doctor_designation: String,
     val doctor_photo: String,
-    val group_appointment: GroupAppointment,
-    val appointment: Appointment,
+    val group_appointment: GroupAppointment?,
+    val appointment: Appointment?,
     val meeting_title: String,
     val channel_name: String,
     val rtc_token: String,
@@ -531,7 +540,25 @@ data class GetAppointment(
     val duration: Int,
     val description: String,
     val meeting_date: String,
-    val is_group_appointment: Boolean
+    val is_group_appointment: Boolean,
+    val id: Int,
+    val appointment_type: String,
+    val uid: String,
+    val title: String,
+    val date: String,
+    val start_time: String,
+    val end_time: String,
+    val is_complete: Boolean,
+    val host: SessionHost?
+) : Parcelable
+
+@Parcelize
+data class SessionHost(
+    val id: Int,
+    val first_name: String,
+    val last_name: String,
+    val photo: String,
+    val user: String
 ) : Parcelable
 
 @Parcelize
@@ -637,6 +664,15 @@ data class Feedback(
     val service_review: String
 )
 
+data class GroupVideoCallFeedback(
+    val patient: Int,
+    val group_appointment: Int,
+    val therapist_rating: Double,
+    val therapist_review: String,
+    val service_rating: Double,
+    val service_review: String
+)
+
 @Parcelize
 data class Assessments(
     val id: Int,
@@ -733,6 +769,7 @@ data class ExerciseDashboard(
     val video: String,
     val image: String,
     val type: String,
+    val url: String,
     val likes_count: String,
     val related_videos: Video,
     val related_articles: Articles,
@@ -747,6 +784,7 @@ data class NutritionDashboard(
     val video: String,
     val image: String,
     val type: String,
+    val url: String,
     val likes_count: String,
     val calories: String,
     val time_taken: String,
@@ -763,6 +801,7 @@ data class MindfulnessDashboard(
     val video: String,
     val image: String,
     val type: String,
+    val url: String,
     val likes_count: String,
     val related_videos: Video,
     val related_articles: Articles,
@@ -777,6 +816,7 @@ data class YogaDashboard(
     val video: String,
     val image: String,
     val type: String,
+    val url: String,
     val likes_count: String,
     val related_videos: Video,
     val related_articles: Articles,
@@ -804,13 +844,22 @@ data class AppointmentDocumentData(
 
 @Parcelize
 data class ConsentsRoisDocumentData(
+    val pk: String,
     val name: String,
     val pdf_url: String,
     val date: String,
     val time: String,
+    val description: String,
     val title: String,
     val section: String
 ) : Parcelable
+
+data class ToDoDashboard(
+    val count: Int,
+    val next: String,
+    val previous: String,
+    val results: ArrayList<ToDoData>
+)
 
 @Parcelize
 data class ToDoData(
@@ -1067,11 +1116,18 @@ data class ConsentRoisFormsNotify(
     val id: Int,
     val title: String,
     val type: String,
-    val description: String
+    val description: String,
+    val extra_data: ConsentRoisPk
+) : Parcelable
+
+@Parcelize
+data class ConsentRoisPk(
+    val pk: Int
 ) : Parcelable
 
 data class FormSignature(
     val name: String,
+    val pk: Int,
     val patient_signature: String
 )
 
@@ -1110,6 +1166,11 @@ data class YogaCarePlan(
 
 @Parcelize
 data class RemoveCarePlan(
+    val id: Int
+) : Parcelable
+
+@Parcelize
+data class DeleteToDo(
     val id: Int
 ) : Parcelable
 
@@ -1213,4 +1274,29 @@ data class AddCareBuddy(
     val country: String,
     val address: String,
     val address1: String
+) : Parcelable
+
+@Parcelize
+data class FileDetails(
+    val user: Int,
+    val appt: String,
+    val file_name: String,
+    val file_ext: String,
+    val file: String
+) : Parcelable
+
+@Parcelize
+data class GroupVideoFileDetails(
+    val user: Int,
+    val group_appt: String,
+    val file_name: String,
+    val file_ext: String,
+    val file: String
+) : Parcelable
+
+@Parcelize
+data class CareBuddyDashboard(
+    val name: String,
+    val phone: String,
+    val pk: String
 ) : Parcelable

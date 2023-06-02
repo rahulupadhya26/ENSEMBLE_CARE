@@ -56,7 +56,7 @@ class TransactionStatusFragment : BaseFragment() {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
         getSubTitle().text = ""
-
+        Utils.planName = ""
         preference!![PrefKeys.PREF_STEP] = Utils.PLAN_PAY
 
         if (paymentSts) {
@@ -71,7 +71,12 @@ class TransactionStatusFragment : BaseFragment() {
         } else {
             binding.imgTransaction.setImageResource(R.drawable.cancel)
             binding.txtTransStatus.text = "Transaction Failed"
-            binding.txtTransStatus.setTextColor(ContextCompat.getColor(requireActivity(), R.color.red))
+            binding.txtTransStatus.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.red
+                )
+            )
         }
         binding.txtTransId.text = transSts!!.transaction_id
 

@@ -76,17 +76,38 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
             }
         }
 
-        binding.layoutPhoneCall.setOnClickListener {
-            communicationType = "Audio"
+        if (Utils.selectedCommunicationMode.isNotEmpty()) {
+            when (Utils.selectedCommunicationMode) {
+                "Audio" -> {
+                    onAudioModeClick()
+                }
+                "Video" -> {
+                    onVideoModeClick()
+                }
+                "Text" -> {
+                    onTextModeClick()
+                }
+            }
+        } else {
             binding.layoutPhoneCall.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.white
+                )
+            )
+            binding.imgPhoneCall.imageTintList =
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.primaryGreen
+                    )
+                )
+            binding.txtPhoneCall.setTextColor(
                 ContextCompat.getColor(
                     requireActivity(),
                     R.color.primaryGreen
                 )
             )
-            binding.imgPhoneCall.imageTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
-            binding.txtPhoneCall.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
 
             binding.layoutVideoCall.setCardBackgroundColor(
                 ContextCompat.getColor(
@@ -127,112 +148,21 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
                     R.color.primaryGreen
                 )
             )
+        }
+
+        binding.layoutPhoneCall.setOnClickListener {
+            communicationType = "Audio"
+            onAudioModeClick()
         }
 
         binding.layoutVideoCall.setOnClickListener {
             communicationType = "Video"
-            binding.layoutVideoCall.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.primaryGreen
-                )
-            )
-            binding.imgVideoCall.imageTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
-            binding.txtVideoCall.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
-
-            binding.layoutPhoneCall.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.white
-                )
-            )
-            binding.imgPhoneCall.imageTintList =
-                ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        requireActivity(),
-                        R.color.primaryGreen
-                    )
-                )
-            binding.txtPhoneCall.setTextColor(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.primaryGreen
-                )
-            )
-
-            binding.layoutText.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.white
-                )
-            )
-            binding.imgText.imageTintList =
-                ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        requireActivity(),
-                        R.color.primaryGreen
-                    )
-                )
-            binding.txtText.setTextColor(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.primaryGreen
-                )
-            )
+            onVideoModeClick()
         }
 
         binding.layoutText.setOnClickListener {
             communicationType = "Text"
-            binding.layoutText.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.primaryGreen
-                )
-            )
-            binding.imgText.imageTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
-            binding.txtText.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
-
-            binding.layoutPhoneCall.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.white
-                )
-            )
-            binding.imgPhoneCall.imageTintList =
-                ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        requireActivity(),
-                        R.color.primaryGreen
-                    )
-                )
-            binding.txtPhoneCall.setTextColor(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.primaryGreen
-                )
-            )
-
-            binding.layoutVideoCall.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.white
-                )
-            )
-            binding.imgVideoCall.imageTintList =
-                ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        requireActivity(),
-                        R.color.primaryGreen
-                    )
-                )
-            binding.txtVideoCall.setTextColor(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.primaryGreen
-                )
-            )
+            onTextModeClick()
         }
 
         binding.cardViewPrescription1.setOnClickListener {
@@ -297,6 +227,172 @@ class TherapyBasicDetailsCFragment : BaseFragment() {
                 displayMsg("Alert", "Select the communication mode")
             }
         }
+    }
+
+    private fun onAudioModeClick() {
+        binding.layoutPhoneCall.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.primaryGreen
+            )
+        )
+        binding.imgPhoneCall.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
+        binding.txtPhoneCall.setTextColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.white
+            )
+        )
+
+        binding.layoutVideoCall.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.white
+            )
+        )
+        binding.imgVideoCall.imageTintList =
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
+        binding.txtVideoCall.setTextColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.primaryGreen
+            )
+        )
+
+        binding.layoutText.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.white
+            )
+        )
+        binding.imgText.imageTintList =
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
+        binding.txtText.setTextColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.primaryGreen
+            )
+        )
+    }
+
+    private fun onVideoModeClick() {
+        binding.layoutVideoCall.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.primaryGreen
+            )
+        )
+        binding.imgVideoCall.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
+        binding.txtVideoCall.setTextColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.white
+            )
+        )
+
+        binding.layoutPhoneCall.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.white
+            )
+        )
+        binding.imgPhoneCall.imageTintList =
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
+        binding.txtPhoneCall.setTextColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.primaryGreen
+            )
+        )
+
+        binding.layoutText.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.white
+            )
+        )
+        binding.imgText.imageTintList =
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
+        binding.txtText.setTextColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.primaryGreen
+            )
+        )
+    }
+
+    private fun onTextModeClick() {
+        binding.layoutText.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.primaryGreen
+            )
+        )
+        binding.imgText.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(requireActivity(), R.color.white))
+        binding.txtText.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
+
+        binding.layoutPhoneCall.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.white
+            )
+        )
+        binding.imgPhoneCall.imageTintList =
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
+        binding.txtPhoneCall.setTextColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.primaryGreen
+            )
+        )
+
+        binding.layoutVideoCall.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.white
+            )
+        )
+        binding.imgVideoCall.imageTintList =
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.primaryGreen
+                )
+            )
+        binding.txtVideoCall.setTextColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.primaryGreen
+            )
+        )
     }
 
     override fun onResume() {

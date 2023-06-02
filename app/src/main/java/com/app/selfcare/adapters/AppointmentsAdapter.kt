@@ -54,60 +54,86 @@ class AppointmentsAdapter(
         val item = list[position]
         if (item.is_group_appointment) {
             holder.binding.txtTherapistName.text =
-                if (item.meeting_title == null) "Group Appointment" else item.meeting_title
-            holder.binding.txtAppointmentTherapistType.text = item.doctor_first_name + " " + item.doctor_last_name
-            val dateTime = DateUtils(item.group_appointment.date + " " + "00:00:00")
+                if (item.group_name == null) "Group Appointment" else item.group_name
+            holder.binding.txtAppointmentTherapistType.text =
+                item.doctor_first_name + " " + item.doctor_last_name
+            val dateTime = DateUtils(item.group_appointment!!.date + " " + "00:00:00")
             holder.binding.txtAppointmentDateTime.text =
                 dateTime.getCurrentDay() + ", " +
                         dateTime.getDay() + " " +
                         dateTime.getMonth() + " at " +
                         item.group_appointment.time + " " + item.group_appointment.select_am_or_pm
         } else {
-            holder.binding.txtTherapistName.text = item.doctor_first_name + " " + item.doctor_last_name
-            holder.binding.txtAppointmentTherapistType.text = item.doctor_designation
-            var dateTime = DateUtils(item.appointment.date + " " + "00:00:00")
-            if (item.appointment.booking_date != null) {
-                dateTime = DateUtils(item.appointment.booking_date + " " + "00:00:00")
+            if (item.appointment_type == "Training_appointment") {
+                holder.binding.txtTherapistName.text =
+                    item.host!!.first_name + " " + item.host.last_name
+                holder.binding.txtAppointmentTherapistType.text = item.title + " (Training Session)"
+                val dateTime = DateUtils(item.date.replace("-", " "))
+                holder.binding.txtAppointmentDateTime.text =
+                    dateTime.getCurrentDay() + ", " +
+                            dateTime.getDay() + " " +
+                            dateTime.getMonth() + " at " +
+                            item.start_time.dropLast(3) + " - " +
+                            item.end_time.dropLast(3)
+            } else {
+                holder.binding.txtTherapistName.text =
+                    item.doctor_first_name + " " + item.doctor_last_name
+                holder.binding.txtAppointmentTherapistType.text = item.doctor_designation
+                var dateTime = DateUtils(item.appointment!!.date + " " + "00:00:00")
+                if (item.appointment.booking_date != null) {
+                    dateTime = DateUtils(item.appointment.booking_date + " " + "00:00:00")
+                }
+                holder.binding.txtAppointmentDateTime.text =
+                    dateTime.getCurrentDay() + ", " +
+                            dateTime.getDay() + " " +
+                            dateTime.getMonth() + " at " +
+                            item.appointment.time_slot.starting_time.dropLast(3) + " - " +
+                            item.appointment.time_slot.ending_time.dropLast(3)
             }
-            holder.binding.txtAppointmentDateTime.text =
-                dateTime.getCurrentDay() + ", " +
-                        dateTime.getDay() + " " +
-                        dateTime.getMonth() + " at " +
-                        item.appointment.time_slot.starting_time.dropLast(3) + " - " +
-                        item.appointment.time_slot.ending_time.dropLast(3)
         }
 
         if (!item.is_group_appointment) {
-            when (item.appointment.type_of_visit) {
-                "Video" -> {
-                    holder.binding.appointmentCall.setImageResource(R.drawable.video)
-                    holder.binding.appointmentCall.imageTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.primaryGreen
-                            )
+            if (item.appointment_type == "Training_appointment") {
+                holder.binding.appointmentCall.setImageResource(R.drawable.video)
+                holder.binding.appointmentCall.imageTintList =
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.primaryGreen
                         )
-                }
-                "Audio" -> {
-                    holder.binding.appointmentCall.setImageResource(R.drawable.telephone)
-                    holder.binding.appointmentCall.imageTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.primaryGreen
+                    )
+            } else {
+                when (item.appointment!!.type_of_visit) {
+                    "Video" -> {
+                        holder.binding.appointmentCall.setImageResource(R.drawable.video)
+                        holder.binding.appointmentCall.imageTintList =
+                            ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    context,
+                                    R.color.primaryGreen
+                                )
                             )
-                        )
-                }
-                else -> {
-                    holder.binding.appointmentCall.setImageResource(R.drawable.chat)
-                    holder.binding.appointmentCall.imageTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.primaryGreen
+                    }
+                    "Audio" -> {
+                        holder.binding.appointmentCall.setImageResource(R.drawable.telephone)
+                        holder.binding.appointmentCall.imageTintList =
+                            ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    context,
+                                    R.color.primaryGreen
+                                )
                             )
-                        )
+                    }
+                    else -> {
+                        holder.binding.appointmentCall.setImageResource(R.drawable.chat)
+                        holder.binding.appointmentCall.imageTintList =
+                            ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    context,
+                                    R.color.primaryGreen
+                                )
+                            )
+                    }
                 }
             }
         } else {
@@ -122,23 +148,40 @@ class AppointmentsAdapter(
         } else {
             holder.binding.appointListImgUser.visibility = View.VISIBLE
             holder.binding.appointListGroupImg.visibility = View.GONE
-            Glide.with(context).load(BaseActivity.baseURL.dropLast(5) + item.doctor_photo)
-                .placeholder(R.drawable.doctor_img)
-                .transform(CenterCrop(), RoundedCorners(5))
-                .into(holder.binding.appointListImgUser)
+            if (item.appointment_type == "Training_appointment") {
+                Glide.with(context).load(BaseActivity.baseURL.dropLast(5) + item.host!!.photo)
+                    .placeholder(R.drawable.doctor_img)
+                    .transform(CenterCrop(), RoundedCorners(5))
+                    .into(holder.binding.appointListImgUser)
+            } else {
+                Glide.with(context).load(BaseActivity.baseURL.dropLast(5) + item.doctor_photo)
+                    .placeholder(R.drawable.doctor_img)
+                    .transform(CenterCrop(), RoundedCorners(5))
+                    .into(holder.binding.appointListImgUser)
+            }
         }
 
         if (!item.is_group_appointment) {
-            when (item.appointment.status) {
-                5 -> {
-                    holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
-                    holder.binding.txtCancelledAppt.visibility = View.VISIBLE
-                }
-                6 -> {
-                    holder.binding.txtCancelledAppt.visibility = View.GONE
-                    holder.binding.txtMissedByProviderOrYou.visibility = View.VISIBLE
-                }
-                else -> {
+            if (item.appointment_type == "Training_appointment") {
+                holder.binding.txtCancelledAppt.visibility = View.GONE
+                holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
+            } else {
+                if (item.appointment!!.status != null) {
+                    when (item.appointment!!.status) {
+                        5 -> {
+                            holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
+                            holder.binding.txtCancelledAppt.visibility = View.VISIBLE
+                        }
+                        6 -> {
+                            holder.binding.txtCancelledAppt.visibility = View.GONE
+                            holder.binding.txtMissedByProviderOrYou.visibility = View.VISIBLE
+                        }
+                        else -> {
+                            holder.binding.txtCancelledAppt.visibility = View.GONE
+                            holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
+                        }
+                    }
+                } else {
                     holder.binding.txtCancelledAppt.visibility = View.GONE
                     holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
                 }

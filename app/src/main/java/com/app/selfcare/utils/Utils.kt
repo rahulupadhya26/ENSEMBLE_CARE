@@ -122,6 +122,7 @@ object Utils {
     var employer = ""
     var refEmp = false
     var userType = "Patient"
+    var planName = ""
 
     var selectedSymptoms = ""
     var selectedStreet = ""
@@ -154,6 +155,7 @@ object Utils {
     const val WELLNESS_MUSIC = "music"
     const val WELLNESS_MINDFULNESS = "mindfulness"
     const val WELLNESS_YOGA = "yoga"
+    const val RESOURCE = "resource"
     const val FAVORITES = "favorites"
 
     const val NAVIGATE_FROM_DASHBOARD = "fromDashboard"

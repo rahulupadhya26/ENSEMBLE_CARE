@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -15,10 +16,7 @@ import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.adapters.NutritionSliderAdapter
 import com.app.selfcare.controller.OnNutritionDashboardItemClickListener
-import com.app.selfcare.data.ExerciseDashboard
-import com.app.selfcare.data.Nutrition
 import com.app.selfcare.data.NutritionDashboard
-import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentNutritionBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
@@ -100,7 +98,7 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
         binding.cardViewNutritionSnacks.setOnClickListener {
             replaceFragment(
                 DetailFragment.newInstance(
-                    binding.txtNutritionSnacks.text.toString(),
+                    binding.txtNutritionSnacks.text.toString().dropLast(1),
                     Utils.WELLNESS_NUTRITION
                 ),
                 R.id.layout_home,
@@ -202,10 +200,7 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
                                         nutritionDashboardDataList[0].nutrition_name
                                     binding.txtNutritionTimeTaken1.text =
                                         nutritionDashboardDataList[0].time_taken
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + nutritionDashboardDataList[0].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgNutrition1)
+                                    displayVideoThumbnail(nutritionDashboardDataList[0], binding.imgNutrition1)
 
                                     binding.cardViewNutritionCard2.visibility = View.GONE
                                 } else if (nutritionDashboardDataList.size >= 2) {
@@ -214,20 +209,18 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
                                         nutritionDashboardDataList[0].nutrition_name
                                     binding.txtNutritionTimeTaken1.text =
                                         nutritionDashboardDataList[0].time_taken
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + nutritionDashboardDataList[0].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgNutrition1)
+                                    displayVideoThumbnail(nutritionDashboardDataList[0], binding.imgNutrition1)
 
                                     binding.cardViewNutritionCard2.visibility = View.VISIBLE
                                     binding.txtNutrition2.text =
                                         nutritionDashboardDataList[1].nutrition_name
                                     binding.txtNutritionTimeTaken2.text =
                                         nutritionDashboardDataList[1].time_taken
-                                    Glide.with(requireActivity())
+                                    displayVideoThumbnail(nutritionDashboardDataList[1], binding.imgNutrition2)
+                                    /*Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + nutritionDashboardDataList[1].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgNutrition2)
+                                        .into(binding.imgNutrition2)*/
                                 }
                             } else {
                                 binding.cardViewNutritionCard1.visibility = View.GONE
@@ -262,6 +255,18 @@ class NutritionFragment : BaseFragment(), OnNutritionDashboardItemClickListener 
             )
         }
         handler.postDelayed(runnable!!, 1000)
+    }
+
+    private fun displayVideoThumbnail(data: NutritionDashboard, imageView: ImageView) {
+        val videoImg = if (data.url.isNotEmpty() && data.url.contains("youtube")) {
+            val videoId: String = data.url.split("v=")[1]
+            "http://img.youtube.com/vi/$videoId/hqdefault.jpg" //high quality thumbnail
+        } else {
+            BaseActivity.baseURL.dropLast(5) + data.image
+        }
+        Glide.with(requireActivity()).load(videoImg)
+            .transform(CenterCrop(), RoundedCorners(5))
+            .into(imageView)
     }
 
     private val sliderRunnable: Runnable = Runnable {

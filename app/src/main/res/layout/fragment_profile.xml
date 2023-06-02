@@ -85,7 +85,6 @@
                             android:layout_marginTop="@dimen/_5dp"
                             android:layout_marginEnd="@dimen/_5dp"
                             android:layout_marginBottom="@dimen/_5dp"
-                            app:cardBackgroundColor="@color/primaryGreen"
                             app:cardCornerRadius="40dp">
 
                             <ImageView

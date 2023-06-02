@@ -5,12 +5,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnToDoItemClickListener
 import com.app.selfcare.data.ToDoData
+import com.app.selfcare.databinding.JournalMenuBinding
 import com.app.selfcare.databinding.LayoutItemTodoDataListBinding
+import com.app.selfcare.databinding.TodoMenuBinding
 import com.app.selfcare.utils.DateUtils
 
 class ToDoDataListAdapter(
@@ -57,7 +62,7 @@ class ToDoDataListAdapter(
             if (item.is_completed) {
                 txtToDoCompleted.visibility = View.VISIBLE
                 layoutCompletedToDo.visibility = View.VISIBLE
-                radioButtonToDo.visibility = View.GONE
+                layoutNotCompletedToDo.visibility = View.GONE
                 radioButtonToDo.isChecked = true
                 txtToDoDate.text =
                     toDoUpdatedDate.getDay() + " " + toDoUpdatedDate.getMonth() + " " + toDoUpdatedDate.getYear() + ", " + toDoUpdatedDate.getTime()
@@ -85,11 +90,24 @@ class ToDoDataListAdapter(
                 txtToDoCompleted.visibility = View.GONE
                 radioButtonToDo.isChecked = false
                 layoutCompletedToDo.visibility = View.GONE
-                radioButtonToDo.visibility = View.VISIBLE
+                layoutNotCompletedToDo.visibility = View.VISIBLE
             }
 
             radioButtonToDo.setOnClickListener {
-                adapterItemClick.onToDoItemClickListener(item)
+                adapterItemClick.onToDoItemClickListener(radioButtonToDo, false, "", item)
+            }
+
+            imgToDoDeleteMenu.setOnClickListener {
+                adapterItemClick.onToDoItemClickListener(
+                    imgToDoDeleteMenu,
+                    true,
+                    "Incomplete",
+                    item
+                )
+            }
+
+            imgToDoMenu.setOnClickListener {
+                adapterItemClick.onToDoItemClickListener(imgToDoMenu, true, "Complete", item)
             }
         }
     }

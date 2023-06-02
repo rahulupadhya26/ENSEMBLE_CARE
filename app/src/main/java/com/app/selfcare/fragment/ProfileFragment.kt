@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.app.selfcare.BaseActivity
@@ -22,7 +21,6 @@ import com.app.selfcare.R
 import com.app.selfcare.data.PartProfileData
 import com.app.selfcare.data.PatientId
 import com.app.selfcare.data.ProfileData
-import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentProfileBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
@@ -391,6 +389,10 @@ class ProfileFragment : BaseFragment() {
                             responseBody = respBody[0]
                             val jsonObject = JSONObject(responseBody)
                             preference!![PrefKeys.PREF_PHOTO] = jsonObject.getString("photo")
+                            preference!![PrefKeys.PREF_FNAME] = jsonObject.getString("first_name")
+                            preference!![PrefKeys.PREF_MNAME] = jsonObject.getString("middle_name")
+                            preference!![PrefKeys.PREF_LNAME] = jsonObject.getString("last_name")
+                            preference!![PrefKeys.PREF_DOB] = jsonObject.getString("dob")
                             popBackStack()
                         } catch (e: Exception) {
                             hideProgress()

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgTrainingSessionCloseChatScreen"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/_5dp"
+            android:padding="@dimen/_5dp"
+            android:src="@mipmap/ic_action_close" />
+
+        <TextView
+            android:id="@+id/txtTrainerChatName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgTrainingSessionCloseChatScreen"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_22sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutTrainingSessionChatMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/textTrainingSessionMessageList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/relativeLayoutTrainingSessionMessageText" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutTrainingSessionMessageText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#F9E6E6">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginEnd="@dimen/_5dp"
+                android:layout_marginBottom="@dimen/_10dp">
+
+                <ImageView
+                    android:id="@+id/imgTrainingSessionAddFile"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:padding="@dimen/_5dp"
+                    android:src="@drawable/add" />
+
+                <EditText
+                    android:id="@+id/editTextTrainingSessionMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    android:layout_toStartOf="@+id/layoutTrainingSessionSend"
+                    android:layout_toEndOf="@+id/imgTrainingSessionAddFile"
+                    android:background="@drawable/bg_corner_rounded_edittext"
+                    android:backgroundTint="@color/white"
+                    android:hint="Message"
+                    android:maxLines="6"
+                    android:padding="@dimen/_10dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sp" />
+
+                <RelativeLayout
+                    android:id="@+id/layoutTrainingSessionSend"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/bg_round_gray"
+                    android:backgroundTint="@color/primaryGreen">
+
+                    <ImageView
+                        android:id="@+id/imgTrainingSessionSend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:padding="@dimen/_10dp"
+                        android:src="@drawable/send"
+                        app:tint="@color/white" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutTrainingSessionWebViewFile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imgTrainingSessionCloseFileWebView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/_5dp"
+            android:padding="@dimen/_5dp"
+            android:src="@mipmap/ic_action_close"
+            app:tint="#5F6368" />
+
+        <WebView
+            android:id="@+id/webViewTrainingSessionFile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/imgTrainingSessionCloseFileWebView" />
+
+    </RelativeLayout>
+
+</LinearLayout>

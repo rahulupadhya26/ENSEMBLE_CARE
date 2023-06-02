@@ -13,6 +13,7 @@ import com.app.selfcare.controller.IOnBackPressed
 import com.app.selfcare.data.AddOn
 import com.app.selfcare.data.Plan
 import com.app.selfcare.databinding.FragmentAddOnBinding
+import com.app.selfcare.utils.Utils
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -64,6 +65,8 @@ class AddOnFragment : BaseFragment(), IOnBackPressed {
         binding.imgAddOnBack.setOnClickListener {
             popBackStack()
         }
+
+        Utils.planName = plan!!.name
 
         binding.txtAddOnPrice.text = "$" + addOn!!.monthly_price
 

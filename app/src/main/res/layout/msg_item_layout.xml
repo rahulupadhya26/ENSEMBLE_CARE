@@ -1,36 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:id="@+id/item_layout_l"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="5dp">
 
-        <TextView
-            android:id="@+id/item_name_l"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/shape_circle_red"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:lines="1"
-            android:textColor="@color/white"
-            android:textSize="10dp" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layoutReceiverUser"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:cardCornerRadius="15dp"
+            android:layout_alignParentStart="true">
+
+            <ImageView
+                android:id="@+id/imgUserPicLeft"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user_pic"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/item_name_l"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_circle_red"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10sp" />
+
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/item_msg_l"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/item_name_l"
-            android:background="@drawable/icon_msg_l"
-            android:gravity="center"
+            android:layout_marginStart="@dimen/_5dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_toEndOf="@+id/layoutReceiverUser"
+            android:background="@drawable/receiver_chat_background"
             android:padding="10dp"
             android:textColor="@color/black"
             android:visibility="gone" />
@@ -40,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/item_name_l"
+            android:layout_toRightOf="@+id/layoutReceiverUser"
             android:background="@drawable/icon_msg_l"
             android:gravity="center"
             android:padding="5dp"
@@ -52,31 +70,50 @@
         android:id="@+id/item_layout_r"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_margin="10dp">
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp">
 
-        <TextView
-            android:id="@+id/item_name_r"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/shape_circle_green"
-            android:ellipsize="marquee"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="10dp"
-            android:singleLine="true" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layoutSenderUser"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:cardCornerRadius="15dp"
+            android:layout_alignParentEnd="true">
+
+            <ImageView
+                android:id="@+id/imgUserPicRight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user_pic"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/item_name_r"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_circle_green"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10sp" />
+
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/item_msg_r"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/item_name_r"
-            android:background="@drawable/icon_msg_r"
-            android:gravity="center"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_5dp"
+            android:layout_toStartOf="@+id/layoutSenderUser"
+            android:background="@drawable/sender_chat_background"
             android:padding="10dp"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:visibility="gone" />
 
         <ImageView
@@ -84,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/item_name_r"
+            android:layout_toLeftOf="@+id/layoutSenderUser"
             android:background="@drawable/icon_msg_r"
             android:gravity="center"
             android:padding="5dp"

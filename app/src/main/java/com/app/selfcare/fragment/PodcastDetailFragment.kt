@@ -3,7 +3,6 @@ package com.app.selfcare.fragment
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.res.ColorStateList
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.AsyncTask
@@ -15,11 +14,9 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import androidx.core.content.ContextCompat
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.data.Podcast
-import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentPodcastDetailBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -443,7 +440,9 @@ class PodcastDetailFragment : BaseFragment() {
         super.onDestroyView()
         if (mediaPlayer != null) {
             audioHandler.removeCallbacks(updater)
-            handler1.removeCallbacks(runnable1)
+            if (::runnable1.isInitialized) {
+                handler1.removeCallbacks(runnable1)
+            }
             mediaPlayer?.stop()
             mediaPlayer?.reset()
         }

@@ -102,7 +102,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
             Pair("our terms", View.OnClickListener {
                 val termsApplyDialog = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
                 val termsApplyDialogView: View = layoutInflater.inflate(
-                    R.layout.dialog_plan_terms_apply, null
+                    R.layout.dialog_register_part_terms_conditions, null
                 )
                 termsApplyDialog.setContentView(termsApplyDialogView)
                 termsApplyDialog.behavior.isFitToContents = false
@@ -153,76 +153,33 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                 }
                             }
 
-                            selectedPlan = planLists[0].name
-
                             binding.txtCardViewPlan1.text = planLists[0].name
                             binding.txtPlan1.text = planLists[0].name
                             binding.txtCardViewPlan2.text = planLists[1].name
                             binding.txtPlan2.text = planLists[1].name
 
-                            binding.txtPlanMonthlyPrice.text = "$" + planLists[0].monthly_price
-                            binding.txtPlanQuarterlyPrice.text = "$" + planLists[0].quarterly_price
-                            binding.txtPlanAnnuallyPrice.text = "$" + planLists[0].annually_price
-
-                            binding.txtMonthlySessions.text =
-                                planLists[0].no_of_sessions.toString() + " Sessions"
-                            binding.txtQuarterlySessions.text =
-                                (planLists[0].no_of_sessions * 3).toString() + " Sessions"
-                            binding.txtAnnuallySessions.text =
-                                (planLists[0].no_of_sessions * 12).toString() + " Sessions"
-
-                            binding.txtPlan1.visibility = View.GONE
-                            binding.cardViewPlan1.visibility = View.VISIBLE
-                            binding.txtPlan2.visibility = View.VISIBLE
-                            binding.cardViewPlan2.visibility = View.GONE
-                            binding.tick1.visibility = View.INVISIBLE
-                            binding.tick2.visibility = View.INVISIBLE
-                            binding.tick3.visibility = View.INVISIBLE
+                            if (Utils.planName.isNotEmpty()) {
+                                when (Utils.planName) {
+                                    planLists[0].name -> {
+                                        selectPlanA(planLists)
+                                    }
+                                    planLists[1].name -> {
+                                        selectPlanB(planLists)
+                                    }
+                                    else -> {
+                                        selectPlanA(planLists)
+                                    }
+                                }
+                            } else {
+                                selectPlanA(planLists)
+                            }
 
                             binding.txtPlan1.setOnClickListener {
-                                selectedPlan = planLists[0].name
-                                binding.txtPlan1.visibility = View.GONE
-                                binding.cardViewPlan1.visibility = View.VISIBLE
-                                binding.txtPlan2.visibility = View.VISIBLE
-                                binding.cardViewPlan2.visibility = View.GONE
-                                binding.tick1.visibility = View.INVISIBLE
-                                binding.tick2.visibility = View.INVISIBLE
-                                binding.tick3.visibility = View.INVISIBLE
-                                binding.txtPlanMonthlyPrice.text = "$" + planLists[0].monthly_price
-                                binding.txtPlanQuarterlyPrice.text =
-                                    "$" + planLists[0].quarterly_price
-                                binding.txtPlanAnnuallyPrice.text =
-                                    "$" + planLists[0].annually_price
-
-                                binding.txtMonthlySessions.text =
-                                    planLists[0].no_of_sessions.toString() + " Sessions"
-                                binding.txtQuarterlySessions.text =
-                                    (planLists[0].no_of_sessions * 3).toString() + " Sessions"
-                                binding.txtAnnuallySessions.text =
-                                    (planLists[0].no_of_sessions * 12).toString() + " Sessions"
+                                selectPlanA(planLists)
                             }
 
                             binding.txtPlan2.setOnClickListener {
-                                selectedPlan = planLists[1].name
-                                binding.txtPlan2.visibility = View.GONE
-                                binding.cardViewPlan2.visibility = View.VISIBLE
-                                binding.txtPlan1.visibility = View.VISIBLE
-                                binding.cardViewPlan1.visibility = View.GONE
-                                binding.tick1.visibility = View.VISIBLE
-                                binding.tick2.visibility = View.VISIBLE
-                                binding.tick3.visibility = View.VISIBLE
-                                binding.txtPlanMonthlyPrice.text = "$" + planLists[1].monthly_price
-                                binding.txtPlanQuarterlyPrice.text =
-                                    "$" + planLists[1].quarterly_price
-                                binding.txtPlanAnnuallyPrice.text =
-                                    "$" + planLists[1].annually_price
-
-                                binding.txtMonthlySessions.text =
-                                    planLists[1].no_of_sessions.toString() + " Sessions"
-                                binding.txtQuarterlySessions.text =
-                                    (planLists[1].no_of_sessions * 3).toString() + " Sessions"
-                                binding.txtAnnuallySessions.text =
-                                    (planLists[1].no_of_sessions * 12).toString() + " Sessions"
+                                selectPlanB(planLists)
                             }
 
                             binding.txtMonthlyPlanTerms.makeLinks(
@@ -230,7 +187,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                     val termsApplyDialog =
                                         BottomSheetDialog(requireActivity(), R.style.SheetDialog)
                                     val termsApplyDialogView: View = layoutInflater.inflate(
-                                        R.layout.dialog_plan_terms_apply, null
+                                        R.layout.dialog_register_part_terms_conditions, null
                                     )
                                     termsApplyDialog.setContentView(termsApplyDialogView)
                                     termsApplyDialog.behavior.isFitToContents = false
@@ -245,7 +202,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                     val termsApplyDialog =
                                         BottomSheetDialog(requireActivity(), R.style.SheetDialog)
                                     val termsApplyDialogView: View = layoutInflater.inflate(
-                                        R.layout.dialog_plan_terms_apply, null
+                                        R.layout.dialog_register_part_terms_conditions, null
                                     )
                                     termsApplyDialog.setContentView(termsApplyDialogView)
                                     termsApplyDialog.behavior.isFitToContents = false
@@ -260,7 +217,7 @@ class PlanFragment : BaseFragment(), AdapterCallback {
                                     val termsApplyDialog =
                                         BottomSheetDialog(requireActivity(), R.style.SheetDialog)
                                     val termsApplyDialogView: View = layoutInflater.inflate(
-                                        R.layout.dialog_plan_terms_apply, null
+                                        R.layout.dialog_register_part_terms_conditions, null
                                     )
                                     termsApplyDialog.setContentView(termsApplyDialogView)
                                     termsApplyDialog.behavior.isFitToContents = false
@@ -335,6 +292,54 @@ class PlanFragment : BaseFragment(), AdapterCallback {
             )
         }
         handler.postDelayed(runnable!!, 1000)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun selectPlanA(planLists: ArrayList<Plan>) {
+        selectedPlan = planLists[0].name
+        binding.txtPlan1.visibility = View.GONE
+        binding.cardViewPlan1.visibility = View.VISIBLE
+        binding.txtPlan2.visibility = View.VISIBLE
+        binding.cardViewPlan2.visibility = View.GONE
+        binding.tick1.visibility = View.INVISIBLE
+        binding.tick2.visibility = View.INVISIBLE
+        binding.tick3.visibility = View.INVISIBLE
+        binding.txtPlanMonthlyPrice.text = "$" + planLists[0].monthly_price
+        binding.txtPlanQuarterlyPrice.text =
+            "$" + planLists[0].quarterly_price
+        binding.txtPlanAnnuallyPrice.text =
+            "$" + planLists[0].annually_price
+
+        binding.txtMonthlySessions.text =
+            planLists[0].no_of_sessions.toString() + " Sessions"
+        binding.txtQuarterlySessions.text =
+            (planLists[0].no_of_sessions * 3).toString() + " Sessions"
+        binding.txtAnnuallySessions.text =
+            (planLists[0].no_of_sessions * 12).toString() + " Sessions"
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun selectPlanB(planLists: ArrayList<Plan>) {
+        selectedPlan = planLists[1].name
+        binding.txtPlan2.visibility = View.GONE
+        binding.cardViewPlan2.visibility = View.VISIBLE
+        binding.txtPlan1.visibility = View.VISIBLE
+        binding.cardViewPlan1.visibility = View.GONE
+        binding.tick1.visibility = View.VISIBLE
+        binding.tick2.visibility = View.VISIBLE
+        binding.tick3.visibility = View.VISIBLE
+        binding.txtPlanMonthlyPrice.text = "$" + planLists[1].monthly_price
+        binding.txtPlanQuarterlyPrice.text =
+            "$" + planLists[1].quarterly_price
+        binding.txtPlanAnnuallyPrice.text =
+            "$" + planLists[1].annually_price
+
+        binding.txtMonthlySessions.text =
+            planLists[1].no_of_sessions.toString() + " Sessions"
+        binding.txtQuarterlySessions.text =
+            (planLists[1].no_of_sessions * 3).toString() + " Sessions"
+        binding.txtAnnuallySessions.text =
+            (planLists[1].no_of_sessions * 12).toString() + " Sessions"
     }
 
     companion object {

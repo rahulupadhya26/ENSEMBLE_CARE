@@ -106,6 +106,7 @@ class TherapistDetailFragment : BaseFragment() {
         }
 
         binding.btnConfirmDoctorDetail.setOnClickListener {
+            Utils.selectedCommunicationMode = ""
             if (Utils.providerId.isNotEmpty() &&
                 Utils.providerType.isNotEmpty() &&
                 Utils.providerName.isNotEmpty()
@@ -120,72 +121,86 @@ class TherapistDetailFragment : BaseFragment() {
     }
 
     private fun displayRating(rating: String) {
-        when (rating) {
-            "1" -> {
-                binding.detailFilledStar1.visibility = View.VISIBLE
-                binding.detailEmptyStar1.visibility = View.VISIBLE
-                binding.detailEmptyStar2.visibility = View.VISIBLE
-                binding.detailEmptyStar3.visibility = View.VISIBLE
-                binding.detailEmptyStar4.visibility = View.VISIBLE
+        if (rating != null) {
+            when (rating) {
+                "1" -> {
+                    binding.detailFilledStar1.visibility = View.VISIBLE
+                    binding.detailEmptyStar1.visibility = View.VISIBLE
+                    binding.detailEmptyStar2.visibility = View.VISIBLE
+                    binding.detailEmptyStar3.visibility = View.VISIBLE
+                    binding.detailEmptyStar4.visibility = View.VISIBLE
 
-                binding.detailFilledStar2.visibility = View.GONE
-                binding.detailFilledStar3.visibility = View.GONE
-                binding.detailFilledStar4.visibility = View.GONE
-                binding.detailFilledStar5.visibility = View.GONE
-                binding.detailEmptyStar5.visibility = View.GONE
-            }
-            "2" -> {
-                binding.detailFilledStar1.visibility = View.VISIBLE
-                binding.detailFilledStar2.visibility = View.VISIBLE
-                binding.detailEmptyStar1.visibility = View.VISIBLE
-                binding.detailEmptyStar2.visibility = View.VISIBLE
-                binding.detailEmptyStar3.visibility = View.VISIBLE
+                    binding.detailFilledStar2.visibility = View.GONE
+                    binding.detailFilledStar3.visibility = View.GONE
+                    binding.detailFilledStar4.visibility = View.GONE
+                    binding.detailFilledStar5.visibility = View.GONE
+                    binding.detailEmptyStar5.visibility = View.GONE
+                }
+                "2" -> {
+                    binding.detailFilledStar1.visibility = View.VISIBLE
+                    binding.detailFilledStar2.visibility = View.VISIBLE
+                    binding.detailEmptyStar1.visibility = View.VISIBLE
+                    binding.detailEmptyStar2.visibility = View.VISIBLE
+                    binding.detailEmptyStar3.visibility = View.VISIBLE
 
-                binding.detailFilledStar3.visibility = View.GONE
-                binding.detailFilledStar4.visibility = View.GONE
-                binding.detailFilledStar5.visibility = View.GONE
-                binding.detailEmptyStar4.visibility = View.GONE
-                binding.detailEmptyStar5.visibility = View.GONE
-            }
-            "3" -> {
-                binding.detailFilledStar1.visibility = View.VISIBLE
-                binding.detailFilledStar2.visibility = View.VISIBLE
-                binding.detailFilledStar3.visibility = View.VISIBLE
-                binding.detailEmptyStar1.visibility = View.VISIBLE
-                binding.detailEmptyStar2.visibility = View.VISIBLE
+                    binding.detailFilledStar3.visibility = View.GONE
+                    binding.detailFilledStar4.visibility = View.GONE
+                    binding.detailFilledStar5.visibility = View.GONE
+                    binding.detailEmptyStar4.visibility = View.GONE
+                    binding.detailEmptyStar5.visibility = View.GONE
+                }
+                "3" -> {
+                    binding.detailFilledStar1.visibility = View.VISIBLE
+                    binding.detailFilledStar2.visibility = View.VISIBLE
+                    binding.detailFilledStar3.visibility = View.VISIBLE
+                    binding.detailEmptyStar1.visibility = View.VISIBLE
+                    binding.detailEmptyStar2.visibility = View.VISIBLE
 
-                binding.detailFilledStar4.visibility = View.GONE
-                binding.detailFilledStar5.visibility = View.GONE
-                binding.detailEmptyStar3.visibility = View.GONE
-                binding.detailEmptyStar4.visibility = View.GONE
-                binding.detailEmptyStar5.visibility = View.GONE
-            }
-            "4" -> {
-                binding.detailFilledStar1.visibility = View.VISIBLE
-                binding.detailFilledStar2.visibility = View.VISIBLE
-                binding.detailFilledStar3.visibility = View.VISIBLE
-                binding.detailFilledStar4.visibility = View.VISIBLE
-                binding.detailEmptyStar1.visibility = View.VISIBLE
+                    binding.detailFilledStar4.visibility = View.GONE
+                    binding.detailFilledStar5.visibility = View.GONE
+                    binding.detailEmptyStar3.visibility = View.GONE
+                    binding.detailEmptyStar4.visibility = View.GONE
+                    binding.detailEmptyStar5.visibility = View.GONE
+                }
+                "4" -> {
+                    binding.detailFilledStar1.visibility = View.VISIBLE
+                    binding.detailFilledStar2.visibility = View.VISIBLE
+                    binding.detailFilledStar3.visibility = View.VISIBLE
+                    binding.detailFilledStar4.visibility = View.VISIBLE
+                    binding.detailEmptyStar1.visibility = View.VISIBLE
 
-                binding.detailFilledStar5.visibility = View.GONE
-                binding.detailEmptyStar2.visibility = View.GONE
-                binding.detailEmptyStar3.visibility = View.GONE
-                binding.detailEmptyStar4.visibility = View.GONE
-                binding.detailEmptyStar5.visibility = View.GONE
-            }
-            "5" -> {
-                binding.detailFilledStar1.visibility = View.VISIBLE
-                binding.detailFilledStar2.visibility = View.VISIBLE
-                binding.detailFilledStar3.visibility = View.VISIBLE
-                binding.detailFilledStar4.visibility = View.VISIBLE
-                binding.detailFilledStar5.visibility = View.VISIBLE
+                    binding.detailFilledStar5.visibility = View.GONE
+                    binding.detailEmptyStar2.visibility = View.GONE
+                    binding.detailEmptyStar3.visibility = View.GONE
+                    binding.detailEmptyStar4.visibility = View.GONE
+                    binding.detailEmptyStar5.visibility = View.GONE
+                }
+                "5" -> {
+                    binding.detailFilledStar1.visibility = View.VISIBLE
+                    binding.detailFilledStar2.visibility = View.VISIBLE
+                    binding.detailFilledStar3.visibility = View.VISIBLE
+                    binding.detailFilledStar4.visibility = View.VISIBLE
+                    binding.detailFilledStar5.visibility = View.VISIBLE
 
-                binding.detailEmptyStar1.visibility = View.GONE
-                binding.detailEmptyStar2.visibility = View.GONE
-                binding.detailEmptyStar3.visibility = View.GONE
-                binding.detailEmptyStar4.visibility = View.GONE
-                binding.detailEmptyStar5.visibility = View.GONE
+                    binding.detailEmptyStar1.visibility = View.GONE
+                    binding.detailEmptyStar2.visibility = View.GONE
+                    binding.detailEmptyStar3.visibility = View.GONE
+                    binding.detailEmptyStar4.visibility = View.GONE
+                    binding.detailEmptyStar5.visibility = View.GONE
+                }
             }
+        } else {
+            binding.detailFilledStar1.visibility = View.VISIBLE
+            binding.detailFilledStar2.visibility = View.VISIBLE
+            binding.detailFilledStar3.visibility = View.VISIBLE
+            binding.detailFilledStar4.visibility = View.VISIBLE
+            binding.detailFilledStar5.visibility = View.VISIBLE
+
+            binding.detailEmptyStar1.visibility = View.GONE
+            binding.detailEmptyStar2.visibility = View.GONE
+            binding.detailEmptyStar3.visibility = View.GONE
+            binding.detailEmptyStar4.visibility = View.GONE
+            binding.detailEmptyStar5.visibility = View.GONE
         }
     }
 

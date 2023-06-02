@@ -2,15 +2,28 @@ package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
+import android.app.ProgressDialog
+import android.content.ContentResolver
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.provider.OpenableColumns
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnFocusChangeListener
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -20,30 +33,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.BuildConfig
 import com.app.selfcare.R
-import com.app.selfcare.adapters.ChatMessageAdapter
 import com.app.selfcare.adapters.MessageAdapter
-import com.app.selfcare.controller.OnChatMessageClickListener
 import com.app.selfcare.controller.OnMessageClickListener
-import com.app.selfcare.data.ChatMessages
-import com.app.selfcare.data.GetAppointment
-import com.app.selfcare.data.MessageBean
-import com.app.selfcare.data.MessageListBean
-import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.data.*
 import com.app.selfcare.databinding.FragmentTextAppointmentBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.realTimeMessaging.ChatManager
-import com.app.selfcare.services.SelfCareApplication
 import com.app.selfcare.utils.DateUtils
 import com.app.selfcare.utils.MessageUtil
 import com.app.selfcare.utils.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import io.agora.CallBack
-import io.agora.ConnectionListener
-import io.agora.chat.*
 import io.agora.rtm.*
+import org.json.JSONObject
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -60,7 +67,7 @@ private const val ARG_PARAM4 = "param4"
  * Use the [TextAppointmentFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMessageClickListener {
+class TextAppointmentFragment : BaseFragment(), OnMessageClickListener {
     // TODO: Rename and change types of parameters
     private var appointment: GetAppointment? = null
     private var RTC_TOKEN: String? = null
@@ -82,9 +89,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
     private var mChannelMemberCount = 1
 
     private val mMessageBeanList: ArrayList<MessageBean> = ArrayList()
-    private val mMessageList: ArrayList<ChatMessages> = ArrayList()
     private var mMessageAdapter: MessageAdapter? = null
-    private var mChatMessageAdapter: ChatMessageAdapter? = null
 
     // Number of seconds displayed
     // on the stopwatch.
@@ -96,10 +101,9 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
     private var wasRunning = false
 
     private var time: String = ""
-    var mFileMessage: ChatMessage? = null
-    private val APP_ID = BuildConfig.appId
 
     private lateinit var binding: FragmentTextAppointmentBinding
+    private var isFileView: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,7 +128,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
         return R.layout.fragment_text_appointment
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
@@ -157,50 +161,119 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
             e.printStackTrace()
         }
 
-        var dateTime = DateUtils(appointment!!.appointment.date + " " + "00:00:00")
-        if (appointment!!.appointment.booking_date != null) {
-            dateTime = DateUtils(appointment!!.appointment.booking_date + " " + "00:00:00")
+        var dateTime = DateUtils(appointment!!.appointment!!.date + " " + "00:00:00")
+        if (appointment!!.appointment!!.booking_date != null) {
+            dateTime = DateUtils(appointment!!.appointment!!.booking_date + " " + "00:00:00")
         }
         binding.txtTextAppointStartTime.text =
-            appointment!!.appointment.time_slot.starting_time.dropLast(3)
+            appointment!!.appointment!!.time_slot.starting_time.dropLast(3)
         binding.txtTextAppointStartDate.text =
             dateTime.getDay3LettersName() + ", " + dateTime.getMonth() + " " + dateTime.getDay()
         binding.txtTextAppointEndTime.text =
-            appointment!!.appointment.time_slot.ending_time.dropLast(3)
+            appointment!!.appointment!!.time_slot.ending_time.dropLast(3)
         binding.txtTextAppointEndDate.text =
             dateTime.getDay3LettersName() + ", " + dateTime.getMonth() + " " + dateTime.getDay()
 
         reverseTimer((appointment!!.duration * 60).toLong(), binding.txtTextAppointTimeTaken)
 
-        binding.imgAddFile.setOnClickListener {
-            var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
-            chooseFile.type = "*/*"
-            chooseFile = Intent.createChooser(chooseFile, "Choose a file")
-            startActivityForResult(chooseFile, PICKFILE_REQUEST_CODE)
+        binding.imgCloseFileWebView.setOnClickListener {
+            binding.layoutWebViewFile.visibility = View.GONE
+            binding.webViewFile.clearCache(true)
+            binding.webViewFile.clearHistory()
+            binding.webViewFile.clearFormData()
+            if (isFileView) {
+                binding.layoutViewFile.visibility = View.VISIBLE
+            } else {
+                binding.layoutChatMessage.visibility = View.VISIBLE
+            }
         }
+
+        binding.imgViewFiles.setOnClickListener {
+            val fileList: ArrayList<MessageBean> = ArrayList()
+            if (mMessageBeanList.isNotEmpty()) {
+                for (i in 0 until mMessageBeanList.size) {
+                    val rtmMessage = mMessageBeanList[i].getMessage()
+                    if (rtmMessage!!.messageType != RtmMessageType.TEXT) {
+                        fileList.add(mMessageBeanList[i])
+                    }
+                }
+                if (fileList.isNotEmpty()) {
+                    isFileView = true
+                    binding.layoutViewFile.visibility = View.VISIBLE
+                    val layoutManager =
+                        LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+                    layoutManager.orientation = RecyclerView.VERTICAL
+                    binding.recyclerviewFileList.setHasFixedSize(true)
+
+                    mMessageAdapter = MessageAdapter(
+                        requireActivity(),
+                        fileList,
+                        this,
+                        preference!![PrefKeys.PREF_PHOTO, ""]!!,
+                        appointment!!.doctor_photo
+                    )
+                    binding.recyclerviewFileList.layoutManager = layoutManager
+                    binding.recyclerviewFileList.adapter = mMessageAdapter
+                } else {
+                    binding.layoutViewFile.visibility = View.GONE
+                    displayMsg("Alert", "Files are not shared")
+                }
+            } else {
+                binding.layoutViewFile.visibility = View.GONE
+                displayMsg("Alert", "Messages are not found")
+            }
+        }
+
+        binding.imgCloseViewFile.setOnClickListener {
+            isFileView = false
+            binding.layoutViewFile.visibility = View.GONE
+            binding.layoutChatMessage.visibility = View.VISIBLE
+        }
+
+        binding.imgAddFile.setOnClickListener {
+            val mimeTypes = arrayOf("image/jpeg", "image/png", "image/gif", "application/pdf")
+            var intent: Intent
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+            } else {
+                intent = Intent(Intent.ACTION_GET_CONTENT)
+            }
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                intent.type = if (mimeTypes.size == 1) mimeTypes[0] else "*/*"
+                if (mimeTypes.isNotEmpty()) {
+                    intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+                }
+            } else {
+                var mimeTypesStr = ""
+                for (mimeType in mimeTypes) {
+                    mimeTypesStr += "$mimeType|"
+                }
+                intent.type = mimeTypesStr.substring(0, mimeTypesStr.length - 1)
+            }
+            try {
+                intent = Intent.createChooser(intent, "Select a file")
+                startActivityForResult(intent, PICKFILE_REQUEST_CODE)
+                //sActivityResultLauncher.launch(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        /*binding.editTextTextAppointMessage.onFocusChangeListener =
+            OnFocusChangeListener { v, hasFocus ->
+                if(v.hasFocus()){
+                    binding.textAppointMessageList.scrollToPosition(0)
+                } else{
+                    binding.textAppointMessageList.scrollToPosition(mMessageBeanList.size - 1)
+                }
+            }*/
 
         binding.layoutTextAppointSend.setOnClickListener {
             val msg: String = getText(binding.editTextTextAppointMessage)
             if (msg != "") {
-                /*mPeerId = appointment!!.doctor_first_name + " " + appointment!!.doctor_last_name
-                val clientName =
-                    preference!![PrefKeys.PREF_FNAME, ""]!!.take(1) + "" + preference!![PrefKeys.PREF_LNAME, ""]!!.take(
-                        1
-                    )
-                val messageBean = ChatMessages(ChatMessage.Type.TXT, msg, clientName, true)
-                mMessageList.add(messageBean)
-                mChatMessageAdapter!!.notifyItemRangeChanged(mMessageList.size, 1)
-                binding.textAppointMessageList.scrollToPosition(mMessageList.size - 1)
-                val message = ChatMessage.createTextSendMessage(msg, mPeerId)
-                message.setMessageStatusCallback(object : CallBack {
-                    override fun onSuccess() {
-                    }
-
-                    override fun onError(code: Int, error: String?) {
-                    }
-
-                })
-                ChatClient.getInstance().chatManager().sendMessage(message)*/
                 val message = mRtmClient!!.createMessage()
                 message.text = msg
                 val patientName =
@@ -219,183 +292,169 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
             }
             binding.editTextTextAppointMessage.setText("")
         }
-        /*val options = ChatOptions()
-        options.appKey = APP_ID
-        ChatClient.getInstance().init(requireActivity(), options)
-        loginToAgora()*/
 
-        mChatManager = SelfCareApplication.instance.getChatManager()
-        mRtmClient = mChatManager!!.getRtmClient()
+        mRtmClient = RtmClient.createInstance(
+            requireActivity(),
+            BuildConfig.appId,
+            object : RtmClientListener {
+                override fun onConnectionStateChanged(state: Int, reason: Int) {
+                    runOnUiThread {
+                        when (state) {
+                            RtmStatusCode.ConnectionState.CONNECTION_STATE_RECONNECTING -> showToast(
+                                getString(R.string.reconnecting)
+                            )
+                            RtmStatusCode.ConnectionState.CONNECTION_STATE_ABORTED -> {
+                                showToast(getString(R.string.account_offline))
+                                requireActivity().setResult(MessageUtil.ACTIVITY_RESULT_CONN_ABORTED)
+                                popBackStack()
+                            }
+                        }
+                    }
+                }
+
+                override fun onMessageReceived(message: RtmMessage?, peerId: String?) {
+                    runOnUiThread {
+                        if (peerId == mPeerId) {
+                            val messageBean = MessageBean(peerId, message, false)
+                            messageBean.setBackground(getMessageColor(peerId))
+                            mMessageBeanList.add(messageBean)
+                            mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
+                            binding.textAppointMessageList.scrollToPosition(mMessageBeanList.size - 1)
+                        } else {
+                            MessageUtil.addMessageBean(peerId!!, message)
+                        }
+                    }
+                }
+
+                override fun onImageMessageReceivedFromPeer(p0: RtmImageMessage?, p1: String?) {
+                }
+
+                override fun onFileMessageReceivedFromPeer(p0: RtmFileMessage?, p1: String?) {
+                    Log.i("File received", "Hurrray ")
+                }
+
+                override fun onMediaUploadingProgress(p0: RtmMediaOperationProgress?, p1: Long) {
+                }
+
+                override fun onMediaDownloadingProgress(p0: RtmMediaOperationProgress?, p1: Long) {
+                }
+
+                override fun onTokenExpired() {
+                }
+
+                override fun onPeersOnlineStatusChanged(p0: MutableMap<String, Int>?) {
+                }
+
+            })
+
         if (!Utils.rtmLoggedIn) {
             doLogin()
         }
     }
 
-    private fun initListener() {
-        // Adds message event callbacks.
-        ChatClient.getInstance().chatManager().addMessageListener { messages: List<ChatMessage> ->
-            mMessageBeanList.clear()
-            val targetName =
-                appointment!!.doctor_first_name.take(1) + "" + appointment!!.doctor_last_name.take(
-                    1
-                )
-            for (message in messages) {
-                val account = message.from
-                var messageBean: ChatMessages? = null
-                when (message.type) {
-                    ChatMessage.Type.TXT -> {
-                        messageBean = ChatMessages(
-                            message.type,
-                            (message.body as TextMessageBody).message,
-                            message.from, false
-                        )
-                    }
-                    else -> {
-                        val callBack: CallBack = object : CallBack {
-                            @Override
-                            override fun onSuccess() {
-                                // Download successfully
-                                // After the download finishes, get the URI of the local file.
-                                val fileMessageBody = message.body as NormalFileMessageBody
-                                val fileRemoteUrl = fileMessageBody.remoteUrl
-                                val fileLocalUri = fileMessageBody.localUri
-                                messageBean = ChatMessages(
-                                    message.type,
-                                    fileLocalUri.toString(),
-                                    message.from, false
-                                )
-                            }
-
-                            override fun onProgress(progress: Int, status: String) {
-                                // Show progress
-                            }
-
-                            override fun onError(code: Int, error: String) {
-                                // Download failed
-                            }
-                        }
-                        message.setMessageStatusCallback(callBack)
-                        ChatClient.getInstance().chatManager().downloadAttachment(message)
-                    }
-                }
-                messageBean!!.setBackground(getMessageColor(account))
-                mMessageList.add(messageBean!!)
-                mChatMessageAdapter!!.notifyItemRangeChanged(mMessageList.size, 1)
-                binding.textAppointMessageList.scrollToPosition(mMessageList.size - 1)
-            }
-
-            /*for (message in messages) {
-                val builder = StringBuilder()
-                builder.append("Receive a ").append(message.type.name)
-                    .append(" message from: ").append(message.from)
-                if (message.type == ChatMessage.Type.TXT) {
-                    builder.append(" content:")
-                        .append((message.body as TextMessageBody).message)
-                }
-            }*/
-        }
-
-        // Adds connection event callbacks.
-        ChatClient.getInstance().addConnectionListener(object : ConnectionListener {
-            override fun onConnected() {
-                //showLog("onConnected", false)
-            }
-
-            override fun onDisconnected(error: Int) {
-                //showLog("onDisconnected: $error", false)
-            }
-
-            override fun onLogout(errorCode: Int) {
-                //showLog("User needs to log out: $errorCode", false)
-                ChatClient.getInstance().logout(false, null)
-            }
-
-            // This callback occurs when the token expires. When the callback is triggered, the app client must get a new token from the app server and logs in to the app again.
-            override fun onTokenExpired() {
-                //showLog("ConnectionListener onTokenExpired", true)
-            }
-
-            // This callback occurs when the token is about to expire.
-            override fun onTokenWillExpire() {
-                //showLog("ConnectionListener onTokenWillExpire", true)
-            }
-        })
-    }
-
-    private fun loginToAgora() {
-        ChatClient.getInstance().loginWithAgoraToken(
-            preference!![PrefKeys.PREF_EMAIL, ""],
-            RTM_TOKEN,
-            object : CallBack {
-                override fun onSuccess() {
-                    //showLog("Sign in success!", true)
-                    val layoutManager = LinearLayoutManager(requireActivity())
-                    layoutManager.orientation = RecyclerView.VERTICAL
-                    mChatMessageAdapter = ChatMessageAdapter(
-                        requireActivity(),
-                        mMessageList,
-                        this@TextAppointmentFragment
-                    )
-                    binding.textAppointMessageList.layoutManager = layoutManager
-                    binding.textAppointMessageList.adapter = mMessageAdapter
-                    initListener()
-                }
-
-                override fun onError(code: Int, error: String) {
-                    Log.i("Error $code", error)
-                    //showLog(error, true)
-                }
-            })
-    }
-
-    // Logs out.
-    private fun signOut() {
-        if (ChatClient.getInstance().isLoggedInBefore) {
-            ChatClient.getInstance().logout(true, object : CallBack {
-                override fun onSuccess() {
-                    MessageUtil.cleanMessageListBeanList()
-                    //showLog("Sign out success!", true)
-                }
-
-                override fun onError(code: Int, error: String) {
-                    //showLog(error, true)
-                }
-            })
-        } else {
-            //showLog("You were not logged in", false)
-        }
-    }
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICKFILE_REQUEST_CODE && resultCode == RESULT_OK) {
-            // Get the file's content URI from the incoming Intent
-            val fileLocalUri: Uri = data!!.data!!
-            val clientName =
-                preference!![PrefKeys.PREF_FNAME, ""]!!.take(1) + "" + preference!![PrefKeys.PREF_LNAME, ""]!!.take(
-                    1
-                )
-
-            /*val messageBean =
-                ChatMessages(ChatMessage.Type.FILE, fileLocalUri.toString(), clientName, true)
-            mMessageList.add(messageBean)
-            mChatMessageAdapter!!.notifyItemRangeChanged(mMessageList.size, 1)
-            binding.textAppointMessageList.scrollToPosition(mMessageList.size - 1)
-            // Set fileLocalUri as the URI of the file message on the local device.
-            mFileMessage = ChatMessage.createFileSendMessage(fileLocalUri, mPeerId)
-            // Sets the chat type as one-to-one chat, group chat, or chatroom.
-            mFileMessage!!.chatType = ChatMessage.ChatType.Chat
-            mFileMessage!!.setMessageStatusCallback(object : CallBack {
-                override fun onSuccess() {
+            if (data != null) {
+                data.data.let { returnUri ->
+                    requireActivity().contentResolver.query(returnUri!!, null, null, null, null)
+                }?.use { cursor ->
+                    /*
+                 * Get the column indexes of the data in the Cursor,
+                 * move to the first row in the Cursor, get the data,
+                 * and display it.
+                 */
+                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+                    cursor.moveToFirst()
+                    val selectedFile = data?.data
+                    convertToString(
+                        selectedFile!!,
+                        cursor.getString(nameIndex),
+                        cursor.getLong(sizeIndex)
+                    )
                 }
-
-                override fun onError(code: Int, error: String?) {
-                }
-
-            })
-            ChatClient.getInstance().chatManager().sendMessage(mFileMessage)*/
+            }
         }
+    }
+
+    private fun convertToString(uri: Uri, fileName: String, fileSize: Long) {
+        if (fileSize <= 10000000) {
+            val uriString = uri.toString()
+            val fileType = getMimeType(uri)
+            Log.d("data", "onActivityResult: uri$uriString")
+            //            myFile = new File(uriString);
+            //            ret = myFile.getAbsolutePath();
+            try {
+                val inputStream: InputStream =
+                    requireActivity().contentResolver.openInputStream(uri)!!
+                val bytes = getBytes(inputStream)
+                var document = Base64.encodeToString(bytes, Base64.NO_WRAP)
+                /*val document =
+                    "JVBERi0xLjMKMyAwIG9iago8PC9UeXBlIC9QYWdlCi9QYXJlbnQgMSAwIFIKL1Jlc291cmNlcyAyIDAgUgovQ29udGVudHMgNCAwIFI+PgplbmRvYmoKNCAwIG9iago8PC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggNjQ3Pj4Kc3RyZWFtCnicnZbBctowFEX3fMVbtjNBlmRZsndtSNLSaVMK7qJLBz8cN8YmspxM/r6ygdrgpDMVCyHEWOceJD3B4cuEkkDB8+QyBu+GAQsIpRBv4DreD3Fgqh9itkuBDlqdTR5tl1FuWxGJQ6szsI/7jLAIpJREMYhTePerajQs4zks8bHB2sAmLzCFulmvsa43TVG8kPcQ/7Ys+DGhkO1D+MD4WS5xMvRqLh4SPwBplRgHbkMICVPOiQxBI6ygzc0DdtKe5KbWK+xyLzHLa6MTk1cl3DbbO9R9TB4JEjInEI8UkWJIWnxfxStv6V173Pcok1INQJ1QEHEihItQoBQJaIe5TbY4MnCZ+WAwmPqTXePkCVZ5md2PssuIKOmUPbAR/Q5wlRiEagM3eWEZYwsHxtGih1AxpXzKKfdHDsIeiMjJweeEBfsNZc/ADaI9B2vMnzAdWzhQjhY9htFRei6IYE7paUSE2m/S5GWLpYFvVfrKLnIgHJP3iHlpUJdo4DIpH+wyX8BMY5obqDRc4Z3tzBKdggfLxqbpPlzAz8V85EsZUb6Lrwht2YpOfJe4QY3lGt+qAS60g/sAN1t8nH39HMeXIfx9nXsJFRHqdJKEFG2dakGxTso6WXdVbWUS09QjIxfO0agHzartrkBjS/1qUOpHToEkfujkJFhbufalenizPOfmfuzkwDk69aAr3CXadPvCFqNFVZvBr/d/d5Rg9kunO8qPZFsmusXEAnf3Vfnm5nShHLQHGMrYlPtUiJCPriY/7N5cPJTfFo0WcL1N8gLm45LoMvsxfz+9NnmK9cOHvEzzZGdXjWTVE8nLs7V79a9Q2I/8A6lkVwMCEgWH6pEhMI/1hD/eriz+CmVuZHN0cmVhbQplbmRvYmoKMSAwIG9iago8PC9UeXBlIC9QYWdlcwovS2lkcyBbMyAwIFIgXQovQ291bnQgMQovTWVkaWFCb3ggWzAgMCA1OTUuMjggODQxLjg5XQo+PgplbmRvYmoKNSAwIG9iago8PC9UeXBlIC9Gb250Ci9CYXNlRm9udCAvSGVsdmV0aWNhLUJvbGQKL1N1YnR5cGUgL1R5cGUxCi9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nCj4+CmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL0ZvbnQKL0Jhc2VGb250IC9IZWx2ZXRpY2EtT2JsaXF1ZQovU3VidHlwZSAvVHlwZTEKL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcKPj4KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvRm9udAovQmFzZUZvbnQgL1RpbWVzLVJvbWFuCi9TdWJ0eXBlIC9UeXBlMQovRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZwo+PgplbmRvYmoKOCAwIG9iago8PC9UeXBlIC9Gb250Ci9CYXNlRm9udCAvSGVsdmV0aWNhCi9TdWJ0eXBlIC9UeXBlMQovRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZwo+PgplbmRvYmoKMiAwIG9iago8PAovUHJvY1NldCBbL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSV0KL0ZvbnQgPDwKL0YxIDUgMCBSCi9GMiA2IDAgUgovRjMgNyAwIFIKL0Y0IDggMCBSCj4+Ci9YT2JqZWN0IDw8Cj4+Cj4+CmVuZG9iago5IDAgb2JqCjw8Ci9Qcm9kdWNlciAoRlBERiAxLjcpCi9DcmVhdGlvbkRhdGUgKEQ6MjAyMzAyMDQwMDE0MzkpCj4+CmVuZG9iagoxMCAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMSAwIFIKPj4KZW5kb2JqCnhyZWYKMCAxMQowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDA4MDQgMDAwMDAgbiAKMDAwMDAwMTI5MCAwMDAwMCBuIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwODcgMDAwMDAgbiAKMDAwMDAwMDg5MSAwMDAwMCBuIAowMDAwMDAwOTkyIDAwMDAwIG4gCjAwMDAwMDEwOTYgMDAwMDAgbiAKMDAwMDAwMTE5NCAwMDAwMCBuIAowMDAwMDAxNDI0IDAwMDAwIG4gCjAwMDAwMDE0OTkgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSAxMQovUm9vdCAxMCAwIFIKL0luZm8gOSAwIFIKPj4Kc3RhcnR4cmVmCjE1NDkKJSVFT0YK"*/
+                sendFile(
+                    appointment!!.appointment!!.appointment_id,
+                    fileName.split(".")[0],
+                    fileType.split("/")[1],
+                    "data:$fileType;base64,$document"
+                ) { response ->
+                    hideProgress()
+                    Log.i("Response", response.toString())
+                    val jsonObj = JSONObject(response.toString())
+                    val message = mRtmClient!!.createMessage()
+                    val msg = "$fileName," + jsonObj.getString("file")
+                    val list: MutableList<String> = ArrayList()
+                    list.add(fileName)
+                    list.add(jsonObj.getString("file"))
+
+                    message.rawMessage = msg.toByteArray()
+                    sendChannelMessage(message)
+                    //message.text = "$fileName,"+jsonObj.getString("file")
+                    val patientName =
+                        preference!![PrefKeys.PREF_FNAME, ""]!!.take(1) + "" + preference!![PrefKeys.PREF_LNAME, ""]!!.take(
+                            1
+                        )
+                    message.rawMessage = msg.toByteArray()
+                    val messageBean = MessageBean(patientName, message, true)
+                    mMessageBeanList.add(messageBean)
+                    mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
+                    binding.textAppointMessageList.scrollToPosition(mMessageBeanList.size - 1)
+                }
+            } catch (e: java.lang.Exception) {
+                // TODO: handle exception
+                e.printStackTrace()
+                Log.d("error", "onActivityResult: $e")
+            }
+        } else {
+            displayMsg("Alert", "File size should not exceed more than 10 MB")
+        }
+    }
+
+    private fun getMimeType(uri: Uri): String {
+        var mimeType = ""
+        try {
+            mimeType = if (uri.scheme.equals(ContentResolver.SCHEME_CONTENT)) {
+                val cr = requireActivity().contentResolver
+                cr.getType(uri)!!
+            } else {
+                val fileExt: String = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExt.lowercase())!!
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return mimeType
+    }
+
+    @Throws(IOException::class)
+    private fun getBytes(inputStream: InputStream): ByteArray? {
+        val byteBuffer = ByteArrayOutputStream()
+        val bufferSize = 1024
+        val buffer = ByteArray(bufferSize)
+        var len = 0
+        while (inputStream.read(buffer).also { len = it } != -1) {
+            byteBuffer.write(buffer, 0, len)
+        }
+        return byteBuffer.toByteArray()
     }
 
     private fun reverseTimer(secs: Long, tv: TextView) {
@@ -430,12 +489,12 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
                     doLogout()
                     Utils.rtmLoggedIn = false
                     sendApptStatus(
-                        appointment!!.appointment.appointment_id.toString(),
+                        appointment!!.appointment!!.appointment_id.toString(),
                         actualStartTime!!, actualEndTime!!, duration!!
                     ) {
                         clearPreviousFragmentStack()
                         replaceFragmentNoBackStack(
-                            TherapistFeedbackFragment.newInstance(appointment!!.appointment.appointment_id.toString()),
+                            TherapistFeedbackFragment.newInstance(appointment!!),
                             R.id.layout_home,
                             TherapistFeedbackFragment.TAG
                         )
@@ -462,12 +521,12 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
             //signOut()
             Utils.rtmLoggedIn = false
             sendApptStatus(
-                appointment!!.appointment.appointment_id.toString(),
+                appointment!!.appointment!!.appointment_id.toString(),
                 actualStartTime!!, actualEndTime!!, duration!!
             ) {
                 clearPreviousFragmentStack()
                 replaceFragmentNoBackStack(
-                    TherapistFeedbackFragment.newInstance(appointment!!.appointment.appointment_id.toString()),
+                    TherapistFeedbackFragment.newInstance(appointment!!),
                     R.id.layout_home,
                     TherapistFeedbackFragment.TAG
                 )
@@ -544,7 +603,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
             if (RTM_TOKEN!!.isNotEmpty()) {
                 mRtmClient!!.login(
                     RTM_TOKEN!!,
-                    preference!![PrefKeys.PREF_EMAIL, ""],
+                    preference!![PrefKeys.PREF_USER_ID, "0"]!!,
                     object : ResultCallback<Void?> {
                         override fun onSuccess(responseInfo: Void?) {
                             Utils.rtmLoggedIn = true
@@ -559,12 +618,14 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
                         }
 
                         override fun onFailure(errorInfo: ErrorInfo) {
+                            val text: CharSequence =
+                                "User: failed to log in to Signaling!$errorInfo"
                             Log.i(
                                 VideoCallFragment.TAG,
                                 "login failed: " + errorInfo.errorDescription
                             )
                             runOnUiThread {
-                                displayToast(getString(R.string.login_failed))
+                                displayToast(text.toString())
                             }
                         }
                     })
@@ -583,14 +644,12 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
         actualStartTime = startTime.getTime()
         running = true
         runTimer()
-        mClientListener = rtmClientListener
-        mChatManager!!.registerListener(mClientListener)
         mIsPeerToPeerMode = false
         val targetName =
             appointment!!.doctor_first_name + " " + appointment!!.doctor_last_name
         if (mIsPeerToPeerMode) {
             mPeerId = targetName
-            binding.txtTextAppointName.text = mPeerId
+            //binding.txtTextAppointName.text = mPeerId
 
             // load history chat records
             val messageListBean = MessageUtil.getExistMessageListBean(mPeerId)
@@ -609,7 +668,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
         } else {
             mChannelName = targetName
             mChannelMemberCount = 1
-            binding.txtTextAppointName.text = mChannelName
+            //binding.txtTextAppointName.text = mChannelName
             /*onlineChatView!!.txtTherapistChatName.text = MessageFormat.format(
                 "{0}({1})",
                 mChannelName,
@@ -618,9 +677,16 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
             createAndJoinChannel()
         }
         runOnUiThread {
-            val layoutManager = LinearLayoutManager(requireActivity())
+            val layoutManager =
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             layoutManager.orientation = RecyclerView.VERTICAL
-            mMessageAdapter = MessageAdapter(requireActivity(), mMessageBeanList, this)
+            mMessageAdapter = MessageAdapter(
+                requireActivity(),
+                mMessageBeanList,
+                this,
+                preference!![PrefKeys.PREF_PHOTO, ""]!!,
+                appointment!!.doctor_photo
+            )
             binding.textAppointMessageList.layoutManager = layoutManager
             binding.textAppointMessageList.adapter = mMessageAdapter
         }
@@ -678,7 +744,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
         // step 2: join the channel
         mRtmChannel!!.join(object : ResultCallback<Void?> {
             override fun onSuccess(responseInfo: Void?) {
-                Log.i(OnlineChatFragment.TAG, "join channel success")
+                Log.i(TAG, "join channel success")
                 runOnUiThread {
                     //showToast("join channel success")
                 }
@@ -686,7 +752,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
             }
 
             override fun onFailure(errorInfo: ErrorInfo) {
-                Log.e(OnlineChatFragment.TAG, "join channel failed")
+                Log.e(TAG, "join channel failed")
                 runOnUiThread {
                     showToast(getString(R.string.join_channel_failed))
                     showToast(errorInfo.errorDescription + " - " + errorInfo.errorCode)
@@ -710,7 +776,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
 
             override fun onFailure(errorInfo: ErrorInfo) {
                 Log.e(
-                    OnlineChatFragment.TAG,
+                    TAG,
                     "failed to get channel members, err: " + errorInfo.errorCode
                 )
             }
@@ -755,44 +821,6 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
     }
 
     /**
-     * API CALLBACK: rtm event listener
-     */
-    private val rtmClientListener = object : RtmClientListener {
-        override fun onConnectionStateChanged(state: Int, reason: Int) {
-            runOnUiThread {
-                when (state) {
-                    RtmStatusCode.ConnectionState.CONNECTION_STATE_RECONNECTING -> showToast(
-                        getString(R.string.reconnecting)
-                    )
-                    RtmStatusCode.ConnectionState.CONNECTION_STATE_ABORTED -> {
-                        showToast(getString(R.string.account_offline))
-                        requireActivity().setResult(MessageUtil.ACTIVITY_RESULT_CONN_ABORTED)
-                        popBackStack()
-                    }
-                }
-            }
-        }
-
-        override fun onMessageReceived(message: RtmMessage, peerId: String) {
-            runOnUiThread {
-                if (peerId == mPeerId) {
-                    val messageBean = MessageBean(peerId, message, false)
-                    messageBean.setBackground(getMessageColor(peerId))
-                    mMessageBeanList.add(messageBean)
-                    mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
-                    binding.textAppointMessageList.scrollToPosition(mMessageBeanList.size - 1)
-                } else {
-                    MessageUtil.addMessageBean(peerId, message)
-                }
-            }
-        }
-
-        override fun onTokenExpired() {}
-        override fun onTokenPrivilegeWillExpire() {}
-        override fun onPeersOnlineStatusChanged(map: Map<String, Int>) {}
-    }
-
-    /**
      * API CALLBACK: rtm channel event listener
      */
     private val myChannelListener = object : RtmChannelListener {
@@ -805,13 +833,21 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
                         1
                     )
                 val account = fromMember.userId
-                Log.i(OnlineChatFragment.TAG, "onMessageReceived account = $account msg = $message")
+                Log.i(TAG, "onMessageReceived account = $account msg = $message")
                 val messageBean = MessageBean(targetName, message, false)
                 messageBean.setBackground(getMessageColor(account))
                 mMessageBeanList.add(messageBean)
                 mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
                 binding.textAppointMessageList.scrollToPosition(mMessageBeanList.size - 1)
             }
+        }
+
+        override fun onImageMessageReceived(p0: RtmImageMessage?, p1: RtmChannelMember?) {
+
+        }
+
+        override fun onFileMessageReceived(p0: RtmFileMessage?, p1: RtmChannelMember?) {
+            Log.i("File received", "Hurrray ")
         }
 
         override fun onMemberJoined(member: RtmChannelMember) {
@@ -841,7 +877,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
     private fun refreshChannelTitle() {
         val titleFormat = getString(R.string.channel_title)
         val title = String.format(titleFormat, mChannelName, mChannelMemberCount)
-        binding.txtTextAppointName.text = mChannelName
+        //binding.txtTextAppointName.text = mChannelName
     }
 
     private fun showToast(text: String) {
@@ -859,6 +895,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
      */
     private fun doLogout() {
         try {
+            leaveAndReleaseChannel()
             if (mRtmClient != null) {
                 mRtmClient!!.logout(null)
                 MessageUtil.cleanMessageListBeanList()
@@ -894,10 +931,68 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnChatMe
     }
 
     override fun onItemClick(message: MessageBean?) {
+        binding.layoutChatMessage.visibility = View.GONE
+        binding.layoutViewFile.visibility = View.GONE
+        binding.layoutWebViewFile.visibility = View.VISIBLE
+        val browser = binding.webViewFile.settings
+        browser.javaScriptEnabled = true
+        browser.builtInZoomControls = true
+        browser.pluginState = WebSettings.PluginState.ON
+        browser.loadWithOverviewMode = true
+        browser.useWideViewPort = true
+        binding.webViewFile.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                view?.loadUrl(url!!)
+                return true
+            }
+        }
+        binding.webViewFile.webViewClient = object : WebViewClient() {
+            private var mProgressDialog: ProgressDialog? = null
+            override fun onPageFinished(view: WebView, url: String?) {
+                view.settings.loadsImagesAutomatically = true
+                binding.webViewFile.visibility = View.VISIBLE
+                //progressView.setVisibility(View.VISIBLE);
+                dismissProgressDialog()
+                view.loadUrl("javascript:clickFunction(){  })()")
+            }
 
-    }
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                showProgressDialog()
+            }
 
-    override fun onItemClick(message: ChatMessages?) {
+            override fun onReceivedError(
+                view: WebView?,
+                errorCode: Int,
+                description: String?,
+                failingUrl: String?
+            ) {
+                dismissProgressDialog()
+                Log.e("error", description!!)
+            }
 
+            private fun showProgressDialog() {
+                dismissProgressDialog()
+                mProgressDialog = ProgressDialog.show(mContext, "", "Loading...")
+            }
+
+            private fun dismissProgressDialog() {
+                if (mProgressDialog != null && mProgressDialog!!.isShowing) {
+                    mProgressDialog!!.dismiss()
+                    mProgressDialog = null
+                }
+            }
+        }
+
+        val mMessage = String(message!!.getMessage()!!.rawMessage)
+        val mMsgArr = mMessage.split(",")
+        if (mMsgArr[1].contains("pdf")) {
+            binding.webViewFile.loadUrl(
+                "http://docs.google.com/gview?embedded=true&url=" + BaseActivity.baseURL.dropLast(
+                    5
+                ) + mMsgArr[1]
+            )
+        } else {
+            binding.webViewFile.loadUrl(BaseActivity.baseURL.dropLast(5) + mMsgArr[1])
+        }
     }
 }

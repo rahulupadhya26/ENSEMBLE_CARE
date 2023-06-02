@@ -1,21 +1,29 @@
 package com.app.selfcare.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.adapters.ToDoListAdapter
 import com.app.selfcare.controller.OnToDoItemClickListener
+import com.app.selfcare.data.DeleteToDo
 import com.app.selfcare.data.PatientId
+import com.app.selfcare.data.ToDoDashboard
 import com.app.selfcare.data.ToDoData
 import com.app.selfcare.data.UpdateToDo
 import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentToDoBinding
+import com.app.selfcare.databinding.JournalMenuBinding
+import com.app.selfcare.databinding.TodoMenuBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.google.gson.Gson
@@ -115,20 +123,20 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
                             val status = respBody[1]
                             responseBody = respBody[0]
                             val toDoType: Type =
-                                object : TypeToken<ArrayList<ToDoData?>?>() {}.type
-                            val toDoList: ArrayList<ToDoData> =
+                                object : TypeToken<ToDoDashboard?>() {}.type
+                            val toDoList: ToDoDashboard =
                                 Gson().fromJson(responseBody, toDoType)
 
-                            if (toDoList.isNotEmpty()) {
+                            if (toDoList.results.isNotEmpty()) {
                                 binding.txtNoToDoList.visibility = View.GONE
                                 binding.recyclerViewToDoDateDateList.visibility = View.VISIBLE
                                 val sortedList =
-                                    toDoList.sortedWith(
+                                    toDoList.results.sortedWith(
                                         compareByDescending<ToDoData> { it.created_on }.then(
                                             compareBy { it.is_completed })
                                     )
 
-                                val toDoMap = sortedList.groupBy { it.created_on.dropLast(9) }
+                                val toDoMap = sortedList.groupBy { it.created_on }
 
                                 binding.recyclerViewToDoDateDateList.apply {
                                     layoutManager = LinearLayoutManager(
@@ -169,7 +177,7 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
         handler.postDelayed(runnable!!, 1000)
     }
 
-    private fun updateToDoList(toDoData: ToDoData) {
+    private fun updateToDoList(isCompleted: Boolean, toDoData: ToDoData) {
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
@@ -182,7 +190,7 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
                             toDoData.title,
                             toDoData.description,
                             toDoData.end_date,
-                            is_completed = true
+                            is_completed = isCompleted
                         ),
                         getAccessToken()
                     )
@@ -221,6 +229,75 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
         handler.postDelayed(runnable!!, 1000)
     }
 
+    private fun deleteToDo(toDoData: ToDoData) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .deleteToDo("PI0009", DeleteToDo(toDoData.id), getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            displayToDoList()
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                displayToDoList()
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    private var popup: PopupWindow? = null
+
+    @SuppressLint("RestrictedApi")
+    private fun showPopUp(view: View, isComplete: Boolean, toDoData: ToDoData) {
+        val toDoMenu = TodoMenuBinding.inflate(layoutInflater)
+        val v: View = toDoMenu.root
+        val layoutToDoUpdate: LinearLayout = toDoMenu.layoutToDoUpdate
+        val layoutToDoDelete: LinearLayout = toDoMenu.layoutToDoDelete
+        popup = PopupWindow(v, 500, RelativeLayout.LayoutParams.WRAP_CONTENT, true)
+        if (isComplete) {
+            layoutToDoUpdate.visibility = View.VISIBLE
+        } else {
+            layoutToDoUpdate.visibility = View.GONE
+        }
+        popup!!.contentView.setOnClickListener {
+            popup!!.dismiss()
+        }
+        layoutToDoUpdate.setOnClickListener {
+            popup!!.dismiss()
+            updateToDoList(false, toDoData)
+        }
+        layoutToDoDelete.setOnClickListener {
+            popup!!.dismiss()
+            deleteToDo(toDoData)
+        }
+        popup!!.showAsDropDown(view, -500, 0)
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -243,7 +320,20 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
         const val TAG = "Screen_todo_list"
     }
 
-    override fun onToDoItemClickListener(toDoData: ToDoData) {
-        updateToDoList(toDoData)
+    override fun onToDoItemClickListener(
+        view: View,
+        showPopup: Boolean,
+        status: String,
+        toDoData: ToDoData
+    ) {
+        if (showPopup) {
+            if (status == "Complete") {
+                showPopUp(view, true, toDoData)
+            } else {
+                showPopUp(view, false, toDoData)
+            }
+        } else {
+            updateToDoList(true, toDoData)
+        }
     }
 }

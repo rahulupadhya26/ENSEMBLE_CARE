@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Thank you for subscribing to Ensemble Care"
+            android:text="Thank you for subscribing to EnsembleCare"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/black"
             android:textSize="@dimen/_26sp"

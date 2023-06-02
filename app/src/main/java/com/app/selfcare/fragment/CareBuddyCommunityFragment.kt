@@ -84,11 +84,6 @@ class CareBuddyCommunityFragment : BaseFragment(), OnCareBuddyItemClickListener 
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
-
     private fun displayCareBuddy() {
         fetchAddCareBuddy { response ->
             val careBuddyType: Type = object : TypeToken<ArrayList<CareBuddy?>?>() {}.type

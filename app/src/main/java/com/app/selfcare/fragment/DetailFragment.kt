@@ -87,7 +87,8 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
-        binding.txtDetailTitle.text = category!!
+        binding.txtDetailTitle.text = getCapsSentences(category!!)
+        binding.txtDetailTitle.isSelected = true
 
         onClickEvents()
 
@@ -113,6 +114,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 binding.txtDetailArticlesTitle.text = "Articles"
                 getExerciseDetail()
             }
+
             Utils.WELLNESS_NUTRITION -> {
                 binding.imgDetailBackground.setColorFilter(resources.getColor(R.color.white))
                 updateStatusBarColor(R.color.white)
@@ -123,6 +125,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 binding.txtDetailArticlesTitle.text = "Recipes"
                 getNutritionDetail()
             }
+
             Utils.WELLNESS_MINDFULNESS -> {
                 binding.imgDetailBackground.setImageResource(R.drawable.mindfulness_back_img)
                 //frameLayoutDetail.background = resources.getDrawable(R.drawable.mindfulness_back_img)
@@ -134,6 +137,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 binding.txtDetailArticlesTitle.text = "Articles"
                 getMindfulnessDetail()
             }
+
             Utils.WELLNESS_YOGA -> {
                 binding.imgDetailBackground.setImageResource(R.drawable.yoga_background)
                 updateStatusBarColor(R.color.yoga_status_bar)
@@ -144,6 +148,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 binding.txtDetailArticlesTitle.text = "Articles"
                 getYogaDetail()
             }
+
             Utils.WELLNESS_MUSIC -> {
                 binding.imgDetailBackground.setImageResource(R.drawable.music_background)
                 updateStatusBarColor(R.color.music_status_bar)
@@ -164,7 +169,8 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
             }
 
             override fun afterTextChanged(editable: Editable) {
-                filterData(editable.toString())
+                if (editable.toString().isNotEmpty())
+                    filterData(editable.toString())
             }
         })
     }
@@ -252,6 +258,9 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                             binding.layoutShimmerDetailDisplayArticles.stopShimmer()
                             binding.layoutShimmerDetailDisplayArticles.visibility = View.GONE
                             binding.detailSearch.visibility = View.VISIBLE
+                            binding.txtDetailVideoSeeAll.visibility = View.VISIBLE
+                            binding.txtDetailPodcastSeeAll.visibility = View.VISIBLE
+                            binding.txtDetailArticleSeeAll.visibility = View.VISIBLE
                             binding.cardViewDetailNoVideos.visibility = View.GONE
                             binding.cardViewDetailNoArticles.visibility = View.GONE
                             binding.cardViewDetailNoPodcasts.visibility = View.GONE
@@ -279,6 +288,9 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                             binding.layoutShimmerDetailDisplayArticles.stopShimmer()
                             binding.layoutShimmerDetailDisplayArticles.visibility = View.GONE
                             binding.detailSearch.visibility = View.GONE
+                            binding.txtDetailVideoSeeAll.visibility = View.GONE
+                            binding.txtDetailPodcastSeeAll.visibility = View.GONE
+                            binding.txtDetailArticleSeeAll.visibility = View.GONE
                             binding.cardViewDetailNoVideos.visibility = View.VISIBLE
                             binding.cardViewDetailNoArticles.visibility = View.VISIBLE
                             binding.cardViewDetailNoPodcasts.visibility = View.VISIBLE
@@ -303,6 +315,9 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                             binding.layoutShimmerDetailDisplayArticles.stopShimmer()
                             binding.layoutShimmerDetailDisplayArticles.visibility = View.GONE
                             binding.detailSearch.visibility = View.GONE
+                            binding.txtDetailVideoSeeAll.visibility = View.GONE
+                            binding.txtDetailPodcastSeeAll.visibility = View.GONE
+                            binding.txtDetailArticleSeeAll.visibility = View.GONE
                             binding.cardViewDetailNoVideos.visibility = View.VISIBLE
                             binding.cardViewDetailNoArticles.visibility = View.VISIBLE
                             binding.cardViewDetailNoPodcasts.visibility = View.VISIBLE
@@ -424,7 +439,6 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
     private fun displayVideoList(videoList: ArrayList<Video>) {
         if (videoList.isNotEmpty()) {
             binding.layoutDetailDisplayVideos.visibility = View.VISIBLE
-            binding.cardViewDetailNoVideos.visibility = View.GONE
             if (videoList.size == 1) {
                 isFavouriteVideo1 = videoList[0].is_favourite
                 binding.layoutDetailVideoList1.visibility = View.VISIBLE
@@ -444,7 +458,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 }
                 binding.layoutDetailVideoList2.visibility = View.GONE
             } else if (videoList.size >= 2) {
-                isFavouriteVideo2 = videoList[1].is_favourite
+                isFavouriteVideo1 = videoList[0].is_favourite
                 binding.layoutDetailVideoList1.visibility = View.VISIBLE
                 setVideoImage(videoList[0], binding.detailVideoBanner1)
                 binding.detailVideoTitle1.text = videoList[0].name
@@ -461,6 +475,7 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                     binding.detailFavTitle1.text = "Add to favorites"
                 }
 
+                isFavouriteVideo2 = videoList[1].is_favourite
                 binding.layoutDetailVideoList2.visibility = View.VISIBLE
                 setVideoImage(videoList[1], binding.detailVideoBanner2)
                 binding.detailVideoTitle2.text = videoList[1].name
@@ -540,7 +555,6 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
             }
         } else {
             binding.layoutDetailDisplayVideos.visibility = View.GONE
-            binding.cardViewDetailNoVideos.visibility = View.VISIBLE
         }
     }
 
@@ -557,8 +571,8 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
 
     private fun displayPodcastList(podcastList: ArrayList<Podcast>) {
         if (podcastList.isNotEmpty()) {
+            binding.layoutPodcastDetailData.visibility = View.VISIBLE
             binding.recyclerViewDetailPodcast.visibility = View.VISIBLE
-            binding.cardViewDetailNoPodcasts.visibility = View.GONE
             binding.recyclerViewDetailPodcast.apply {
                 layoutManager = LinearLayoutManager(mActivity!!, RecyclerView.HORIZONTAL, false)
                 adapter =
@@ -570,15 +584,15 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                     )
             }
         } else {
+            binding.layoutPodcastDetailData.visibility = View.GONE
             binding.recyclerViewDetailPodcast.visibility = View.GONE
-            binding.cardViewDetailNoPodcasts.visibility = View.VISIBLE
         }
     }
 
     private fun displayArticleList(articleList: ArrayList<Articles>) {
         if (articleList.isNotEmpty()) {
-            binding.layoutDetailDisplayArticles.visibility = View.VISIBLE
-            binding.cardViewDetailNoArticles.visibility = View.GONE
+            binding.layoutArticleDetailData.visibility = View.VISIBLE
+            //binding.cardViewDetailNoArticles.visibility = View.GONE
             if (articleList.size == 1) {
                 binding.layoutDetailArticleList1.visibility = View.VISIBLE
                 binding.cardViewDetailArticle1.visibility = View.VISIBLE
@@ -661,8 +675,8 @@ class DetailFragment : BaseFragment(), OnPodcastItemClickListener {
                 )
             }
         } else {
-            binding.layoutDetailDisplayArticles.visibility = View.GONE
-            binding.cardViewDetailNoArticles.visibility = View.VISIBLE
+            binding.layoutArticleDetailData.visibility = View.GONE
+            //binding.cardViewDetailNoArticles.visibility = View.VISIBLE
         }
     }
 

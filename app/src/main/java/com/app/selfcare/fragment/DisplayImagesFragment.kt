@@ -69,6 +69,12 @@ class DisplayImagesFragment : BaseFragment() {
             indicator = requireView().findViewById(R.id.displayImageIndicator) as CircleIndicator
             indicator.setViewPager(binding.viewPager)
         }
+
+        if(imageList!!.size <= 1){
+            binding.displayImageIndicator.visibility = View.GONE
+        } else {
+            binding.displayImageIndicator.visibility = View.VISIBLE
+        }
     }
 
     companion object {

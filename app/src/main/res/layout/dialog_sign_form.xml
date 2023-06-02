@@ -34,7 +34,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/fontfamily"
-            android:text="Consent to treatment"
             android:textSize="@dimen/_20sp"
             android:textColor="@color/black"
             android:textStyle="bold"/>
@@ -59,7 +58,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="@dimen/_5dp"
-            android:layout_marginBottom="@dimen/_5dp">
+            android:layout_marginBottom="@dimen/_5dp"
+            android:gravity="center">
 
             <LinearLayout
                 android:id="@+id/btnClearFormSigned"
@@ -74,6 +74,7 @@
                     android:text="Clear"
                     android:textSize="@dimen/_14sp"
                     android:padding="@dimen/_10dp"
+                    android:gravity="center"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
             </LinearLayout>
@@ -84,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/fontfamily"
-            android:text="All the documents can be viewed in Dashboard -> Documents"
+            android:text="Signed documents can be viewed in documents"
             android:textSize="@dimen/_10sp"
             android:textColor="#998787"
             android:layout_marginBottom="@dimen/_10dp"

@@ -111,9 +111,8 @@ dependencies {
     implementation 'com.madgag.spongycastle:prov:1.54.0.0'
     implementation 'com.madgag.spongycastle:pkix:1.54.0.0'
     implementation 'com.madgag.spongycastle:pg:1.54.0.0'
+    implementation 'io.agora.rtm:rtm-sdk:1.4.0'
     implementation 'io.agora.rtc:full-sdk:4.0.1'
-    implementation 'io.agora.rtm:rtm-sdk:1.5.3'
-    implementation("io.agora.rtc:chat-sdk:1.1.0")
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.data.YogaDashboard
@@ -170,28 +171,22 @@ class YogaCoachFragment : BaseFragment() {
                                     binding.layoutYoga1.visibility = View.VISIBLE
                                     binding.txtYogaName1.text =
                                         yogaDashboardDataList[0].yoga_name
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + yogaDashboardDataList[0].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgYogaBackground1)
+
+                                    displayVideoThumbnail(yogaDashboardDataList[0], binding.imgYogaBackground1)
 
                                     binding.layoutYoga2.visibility = View.GONE
                                 } else if (yogaDashboardDataList.size >= 2) {
                                     binding.layoutYoga1.visibility = View.VISIBLE
                                     binding.txtYogaName1.text =
                                         yogaDashboardDataList[0].yoga_name
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + yogaDashboardDataList[0].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgYogaBackground1)
+
+                                    displayVideoThumbnail(yogaDashboardDataList[0], binding.imgYogaBackground1)
 
                                     binding.layoutYoga2.visibility = View.VISIBLE
                                     binding.txtYogaName2.text =
                                         yogaDashboardDataList[1].yoga_name
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + yogaDashboardDataList[1].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgYogaBackground2)
+
+                                    displayVideoThumbnail(yogaDashboardDataList[1], binding.imgYogaBackground2)
                                 }
 
                             } else {
@@ -228,6 +223,18 @@ class YogaCoachFragment : BaseFragment() {
         handler.postDelayed(runnable!!, 1000)
     }
 
+    private fun displayVideoThumbnail(data: YogaDashboard, imageView: ImageView) {
+        val videoImg = if (data.url.isNotEmpty() && data.url.contains("youtube")) {
+            val videoId: String = data.url.split("v=")[1]
+            "http://img.youtube.com/vi/$videoId/hqdefault.jpg" //high quality thumbnail
+        } else {
+            BaseActivity.baseURL.dropLast(5) + data.image
+        }
+        Glide.with(requireActivity()).load(videoImg)
+            .transform(CenterCrop(), RoundedCorners(5))
+            .into(imageView)
+    }
+
     private fun displayRespectiveScreen(yogaDashboard: YogaDashboard) {
         if (yogaDashboard.type != null) {
             when (yogaDashboard.type) {
@@ -250,7 +257,10 @@ class YogaCoachFragment : BaseFragment() {
                 }
                 "Article" -> {
                     replaceFragment(
-                        NewsDetailFragment.newInstance(yogaDashboard.related_articles, Utils.WELLNESS_YOGA),
+                        NewsDetailFragment.newInstance(
+                            yogaDashboard.related_articles,
+                            Utils.WELLNESS_YOGA
+                        ),
                         R.id.layout_home,
                         NewsDetailFragment.TAG
                     )

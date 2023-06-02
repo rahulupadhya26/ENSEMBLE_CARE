@@ -19,10 +19,7 @@ import android.util.Base64
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Patterns
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -36,6 +33,7 @@ import com.app.selfcare.controller.IController
 import com.app.selfcare.controller.IFragment
 import com.app.selfcare.crypto.DecryptionImpl
 import com.app.selfcare.data.*
+import com.app.selfcare.databinding.DialogLogoutBinding
 import com.app.selfcare.databinding.DisplayImageBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper
@@ -79,6 +77,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     protected var runnable: Runnable? = null
     var preference: SharedPreferences? = null
     private lateinit var displayImageBinding: DisplayImageBinding
+    private lateinit var dialogLogoutBinding: DialogLogoutBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -99,7 +98,6 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
             root = inflater.inflate(getLayout(), container, false)
         return root
     }
-
 
     override fun addFragment(fragment: Fragment, frameId: Int, fragmentName: String) {
         mActivity!!.addFragment(fragment, frameId, fragmentName)
@@ -280,6 +278,14 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         mActivity!!.uploadVideo()
     }
 
+    override fun selectFile() {
+        mActivity!!.selectFile()
+    }
+
+    override fun getFileUri(): Uri {
+        return mActivity!!.getFileUri()
+    }
+
     override fun clearTempFormData() {
         mActivity!!.clearTempFormData()
     }
@@ -439,6 +445,47 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         handler.postDelayed(runnable!!, 1000)
     }
 
+    fun careBuddyLogin(
+        email: String,
+        pass: String,
+        myCallback: (result: String?) -> Unit
+    ) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .careBuddyLogin(Login(email, pass))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            saveCareBuddyDetails(JSONObject(responseBody), pass)
+                            myCallback.invoke("")
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+
+                    }, { error ->
+                        hideProgress()
+                        if ((error as HttpException).code() == 401) {
+                            displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
     private fun saveUserDetails(jsonObj: JSONObject, password: String) {
         preference!![PrefKeys.PREF_USER_ID] = jsonObj.getJSONObject("patient").getString("user")
         preference!![PrefKeys.PREF_EMAIL] = jsonObj.getString("email")
@@ -462,6 +509,34 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
             jsonObj.getJSONObject("patient").getString("selected_dissorder")
         preference!![PrefKeys.PREF_PASS] = password
         preference!![PrefKeys.PREF_IS_LOGGEDIN] = true
+        saveTokens(jsonObj.getString("refresh"), jsonObj.getString("access"))
+    }
+
+    private fun saveCareBuddyDetails(jsonObj: JSONObject, password: String) {
+        preference!![PrefKeys.PREF_USER_ID] = jsonObj.getJSONObject("carebuddy").getString("user")
+        preference!![PrefKeys.PREF_CARE_BUDDY_EMAIL] = jsonObj.getString("email")
+        preference!![PrefKeys.PREF_PHONE_NO] = jsonObj.getString("phone")
+        preference!![PrefKeys.PREF_FNAME] =
+            jsonObj.getJSONObject("carebuddy").getString("first_name")
+        preference!![PrefKeys.PREF_LNAME] =
+            jsonObj.getJSONObject("carebuddy").getString("last_name")
+        preference!![PrefKeys.PREF_PHOTO] = jsonObj.getJSONObject("carebuddy").getString("photo")
+        preference!![PrefKeys.PREF_RELATIONSHIP] =
+            jsonObj.getJSONObject("carebuddy").getString("relation")
+        preference!![PrefKeys.PREF_ADDRESS] =
+            jsonObj.getJSONObject("carebuddy").getString("address")
+        preference!![PrefKeys.PREF_ADDRESS1] =
+            jsonObj.getJSONObject("carebuddy").getString("address1")
+        preference!![PrefKeys.PREF_COUNTRY] =
+            jsonObj.getJSONObject("carebuddy").getString("country")
+        preference!![PrefKeys.PREF_STATE] = jsonObj.getJSONObject("carebuddy").getString("state")
+        preference!![PrefKeys.PREF_CITY] = jsonObj.getJSONObject("carebuddy").getString("city")
+        preference!![PrefKeys.PREF_ZIPCODE] =
+            jsonObj.getJSONObject("carebuddy").getString("zip_code")
+        preference!![PrefKeys.PREF_PATIENT_ID] =
+            jsonObj.getJSONObject("carebuddy").getString("client")
+        preference!![PrefKeys.PREF_CARE_BUDDY_PASS] = password
+        preference!![PrefKeys.PREF_IS_CARE_BUDDY_LOGGEDIN] = true
         saveTokens(jsonObj.getString("refresh"), jsonObj.getString("access"))
     }
 
@@ -703,7 +778,21 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     }
 
     fun displayConfirmPopup() {
-        val builder = AlertDialog.Builder(requireActivity())
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialogLogoutBinding = DialogLogoutBinding.inflate(layoutInflater)
+        val view = dialogLogoutBinding.root
+        dialog.setContentView(view)
+        dialog.setCanceledOnTouchOutside(true)
+        dialogLogoutBinding.txtLogoutBtn.setOnClickListener {
+            dialog.dismiss()
+            clearCache()
+        }
+        dialogLogoutBinding.txtCancelBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+        /*val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle("Alert")
         builder.setMessage("Would you like to exit the App?")
         builder.setPositiveButton(android.R.string.yes) { dialog, _ ->
@@ -713,18 +802,19 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         builder.setNegativeButton(android.R.string.no) { dialog, _ ->
             dialog.dismiss()
         }
-        builder.show()
+        builder.show()*/
     }
 
     fun clearCache() {
         preference!![PrefKeys.PREF_IS_LOGGEDIN] = false
+        preference!![PrefKeys.PREF_IS_CARE_BUDDY_LOGGEDIN] = false
         getHeader().visibility = View.GONE
         swipeSliderEnable(false)
         displayToast("You have logged out")
         replaceFragmentNoBackStack(LoginFragment(), R.id.layout_home, LoginFragment.TAG)
     }
 
-    fun Fragment?.runOnUiThread(action: () -> Unit) {
+    fun Fragment?.runOnUiThread(action: Runnable) {
         this ?: return
         if (!isAdded) return // Fragment not attached to an Activity
         activity?.runOnUiThread(action)
@@ -1111,6 +1201,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         isFavorite: Boolean,
         myCallback: (result: String?) -> Unit
     ) {
+        showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
@@ -1118,6 +1209,55 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                         FavoriteData(id, type, isFavorite),
                         getAccessToken()
                     )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                userLogin(
+                                    preference!![PrefKeys.PREF_EMAIL]!!,
+                                    preference!![PrefKeys.PREF_PASS]!!
+                                ) { result ->
+
+                                }
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun getResourceFavData(myCallback: (result: String?) -> Unit) {
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getResourceFavoriteData(getAccessToken())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -1191,7 +1331,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                                 startActivity(
                                     Intent.createChooser(
                                         shareIntent,
-                                        "Shared via Ensemble care user"
+                                        "Shared via EnsembleCare user"
                                     )
                                 )
                             }
@@ -1206,14 +1346,14 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                 if (text.isNotEmpty()) {
                     val shareIntent = Intent()
                     shareIntent.action = Intent.ACTION_SEND
-                    shareIntent.putExtra(Intent.EXTRA_TITLE, "Shared via Ensemble care user")
+                    shareIntent.putExtra(Intent.EXTRA_TITLE, "Shared via EnsembleCare user")
                     shareIntent.putExtra(Intent.EXTRA_TEXT, text)
                     shareIntent.type = "text/plain"
                     shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     startActivity(
                         Intent.createChooser(
                             shareIntent,
-                            "Shared via Ensemble care user"
+                            "Shared via EnsembleCare user"
                         )
                     )
                 }
@@ -1245,7 +1385,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                                 startActivity(
                                     Intent.createChooser(
                                         shareIntent,
-                                        "Shared via Ensemble care user"
+                                        "Shared via EnsembleCare user"
                                     )
                                 )
                             }
@@ -1359,9 +1499,9 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     fun getToken(appointment: GetAppointment, myCallback: (result: String?) -> Unit) {
         showProgress()
         val id = if (appointment.is_group_appointment) {
-            appointment.group_appointment.id
+            appointment.group_appointment!!.id
         } else {
-            appointment.appointment.appointment_id
+            appointment.appointment!!.appointment_id
         }
         runnable = Runnable {
             mCompositeDisposable.add(
@@ -1406,14 +1546,66 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     fun getGroupApptToken(appointment: GetAppointment, myCallback: (result: String?) -> Unit) {
         showProgress()
         val id = if (appointment.is_group_appointment) {
-            appointment.group_appointment.id
+            appointment.group_appointment!!.id
         } else {
-            appointment.appointment.appointment_id
+            appointment.appointment!!.appointment_id
         }
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getGroupApptToken(GetGroupApptToken(id), getAccessToken())
+                    .getGroupApptToken(
+                        GetGroupApptToken(
+                            id,
+                            preference!![PrefKeys.PREF_EMAIL, ""]!!
+                        ), getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            myCallback.invoke(responseBody)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            //displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                clearCache()
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun getTrainingSessionToken(
+        appointment: GetAppointment,
+        myCallback: (result: String?) -> Unit
+    ) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getTrainingSessionToken(
+                        GetTrainingSessionToken(
+                            appointment.id,
+                            preference!![PrefKeys.PREF_EMAIL, ""]!!
+                        ), getAccessToken()
+                    )
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -1689,7 +1881,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                     .cancelAppointment(
                         CancelAppointment(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
-                            appointment.appointment.appointment_id
+                            appointment.appointment!!.appointment_id
                         ), getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -1718,6 +1910,133 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                             ) { result ->
                                 clearCache()
                             }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun getCapsSentences(tagName: String): String {
+        val splits = tagName.lowercase(Locale.getDefault()).split(" ").toTypedArray()
+        val sb = StringBuilder()
+        for (i in splits.indices) {
+            val eachWord = splits[i]
+            if (i > 0 && eachWord.isNotEmpty()) {
+                sb.append(" ")
+            }
+            val cap = (eachWord.substring(0, 1).uppercase(Locale.getDefault())
+                    + eachWord.substring(1))
+            sb.append(cap)
+        }
+        return sb.toString()
+    }
+
+    fun sendFile(
+        apptId: Int,
+        fileName: String,
+        fileExt: String,
+        file: String,
+        myCallback: (result: String?) -> Unit
+    ) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendFile(
+                        "PI0071",
+                        FileDetails(
+                            preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
+                            apptId.toString(),
+                            fileName,
+                            fileExt,
+                            file
+                        ),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                clearCache()
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            clearCache()
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun sendFileGroupVideoCall(
+        apptId: Int,
+        fileName: String,
+        fileExt: String,
+        file: String,
+        myCallback: (result: String?) -> Unit
+    ) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendFileGroupVideo(
+                        "PI0071",
+                        GroupVideoFileDetails(
+                            preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
+                            apptId.toString(),
+                            fileName,
+                            fileExt,
+                            file
+                        ),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "401") {
+                                clearCache()
+                            } else {
+                                myCallback.invoke(responseBody)
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            clearCache()
                         } else {
                             displayAfterLoginErrorMsg(error)
                         }

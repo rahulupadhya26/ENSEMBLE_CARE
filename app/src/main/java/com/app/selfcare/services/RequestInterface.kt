@@ -50,6 +50,9 @@ interface RequestInterface {
     @POST("login/")
     fun login(@Body user: Login): Single<ResponseBody>
 
+    @POST("carebuddy/login/")
+    fun careBuddyLogin(@Body user: Login): Single<ResponseBody>
+
     @POST("send_otp/")
     fun sendOtp(@Body sendOtp: SendOtp): Single<ResponseBody>
 
@@ -182,6 +185,13 @@ interface RequestInterface {
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 
+    @POST("create/")
+    fun sendGroupVideoFeedback(
+        @Query("table_id") table_id: String,
+        @Body feedback: GroupVideoCallFeedback,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
     @GET("patient/assign_assessments_list/")
     fun getAssessments(
         @Header("Authorization") auth: String
@@ -230,6 +240,12 @@ interface RequestInterface {
     @POST("get_agora_token/")
     fun getGroupApptToken(
         @Body list: GetGroupApptToken,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("get_agora_token/")
+    fun getTrainingSessionToken(
+        @Body list: GetTrainingSessionToken,
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 
@@ -499,10 +515,36 @@ interface RequestInterface {
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 
-    @POST("create/")
+    @POST("carebuddy/create")
     fun createCareBuddyData(
         @Query("table_id") table_id: String,
         @Body addCareBuddy: AddCareBuddy,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("create/")
+    fun sendFile(
+        @Query("table_id") table_id: String,
+        @Body fileDetails: FileDetails,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("create/")
+    fun sendFileGroupVideo(
+        @Query("table_id") table_id: String,
+        @Body fileDetails: GroupVideoFileDetails,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @HTTP(method = "DELETE", path = "delete/", hasBody = true)
+    fun deleteToDo(
+        @Query("table_id") table_id: String,
+        @Body deleteToDo: DeleteToDo,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @GET("carebuddy/client_list")
+    fun getCareBuddyDashboardData(
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 }

@@ -208,7 +208,7 @@ class AddCareBuddyFragment : BaseFragment() {
                         view.setTextColor(Color.GRAY)
                     } else {
                         //here it is possible to define color for other items by
-                        //view.setTextColor(Color.BLACK)
+                        view.setTextColor(Color.BLACK)
                     }
                     return view
                 }

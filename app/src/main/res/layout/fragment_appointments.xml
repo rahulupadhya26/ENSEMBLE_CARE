@@ -46,7 +46,8 @@
                 android:layout_centerInParent="true"
                 android:padding="@dimen/_10dp"
                 android:src="@drawable/ic_refresh"
-                app:tint="@color/primaryGreen" />
+                app:tint="@color/primaryGreen"
+                android:visibility="gone"/>
         </RelativeLayout>
 
         <RelativeLayout

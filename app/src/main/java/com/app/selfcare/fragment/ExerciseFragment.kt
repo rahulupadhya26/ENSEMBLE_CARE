@@ -1,14 +1,25 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
+import com.app.selfcare.adapters.DashboardPodcastAdapter
+import com.app.selfcare.adapters.ExerciseDashboardAdapter
+import com.app.selfcare.controller.OnExerciseDashboardItemClickListener
 import com.app.selfcare.data.ExerciseDashboard
+import com.app.selfcare.data.NutritionDashboard
 import com.app.selfcare.data.Video
 import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentExerciseBinding
@@ -24,6 +35,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
 import retrofit2.HttpException
+import java.lang.Math.abs
 import java.lang.reflect.Type
 import java.util.ArrayList
 
@@ -37,11 +49,12 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ExerciseFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ExerciseFragment : BaseFragment() {
+class ExerciseFragment : BaseFragment(), OnExerciseDashboardItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentExerciseBinding
+    private var sliderHandler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,7 +142,8 @@ class ExerciseFragment : BaseFragment() {
     }
 
     private fun displayExerciseData() {
-        showProgress()
+        binding.shimmerFeaturedWorkoutExercise.visibility = View.VISIBLE
+        binding.viewPagerFeaturedWorkout.visibility = View.GONE
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
@@ -139,6 +153,7 @@ class ExerciseFragment : BaseFragment() {
                     .subscribe({ result ->
                         try {
                             hideProgress()
+                            binding.shimmerFeaturedWorkoutExercise.visibility = View.GONE
                             var responseBody = result.string()
                             Log.d("Response Body", responseBody)
                             val respBody = responseBody.split("|")
@@ -150,17 +165,53 @@ class ExerciseFragment : BaseFragment() {
                                 Gson().fromJson(responseBody, exerciseDashboardDataType)
 
                             if (exerciseDashboardDataList.isNotEmpty()) {
-                                binding.hsvFeaturedWorkout.visibility = View.VISIBLE
+                                binding.viewPagerFeaturedWorkout.visibility = View.VISIBLE
                                 binding.txtNoFeaturedWorkout.visibility = View.GONE
 
-                                if (exerciseDashboardDataList.size == 1) {
+                                val viewPagerAdapter =
+                                    ExerciseDashboardAdapter(
+                                        requireActivity(),
+                                        exerciseDashboardDataList,
+                                        binding.viewPagerFeaturedWorkout,
+                                        this
+                                    )
+                                binding.viewPagerFeaturedWorkout.adapter = viewPagerAdapter
+                                binding.viewPagerFeaturedWorkout.currentItem = 0
+                                binding.viewPagerFeaturedWorkout.clipToPadding = false
+                                binding.viewPagerFeaturedWorkout.clipChildren = false
+                                binding.viewPagerFeaturedWorkout.offscreenPageLimit = 3
+                                binding.viewPagerFeaturedWorkout.getChildAt(0).overScrollMode =
+                                    RecyclerView.OVER_SCROLL_NEVER
+                                val compositePageTransform = CompositePageTransformer()
+                                compositePageTransform.addTransformer(MarginPageTransformer(50))
+                                compositePageTransform.addTransformer { page, position ->
+                                    val r: Float = 1 - abs(position)
+                                    page.scaleY = 0.85f + r * 0.15f
+                                }
+                                binding.viewPagerFeaturedWorkout.setPageTransformer(compositePageTransform)
+                                binding.viewPagerFeaturedWorkout.registerOnPageChangeCallback(object :
+                                    ViewPager2.OnPageChangeCallback() {
+                                    override fun onPageSelected(position: Int) {
+                                        super.onPageSelected(position)
+                                        sliderHandler.removeCallbacks(sliderRunnable)
+                                        sliderHandler.postDelayed(sliderRunnable, 5000)
+                                    }
+                                })
+                                /*binding.recyclerViewFeaturedWorkoutExercise.apply {
+                                    layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
+                                    adapter =
+                                        ExerciseDashboardAdapter(
+                                            requireActivity(),
+                                            exerciseDashboardDataList,
+                                            this@ExerciseFragment
+                                        )
+                                }*/
+
+                                /*if (exerciseDashboardDataList.size == 1) {
                                     binding.cardViewExerciseData1.visibility = View.VISIBLE
                                     binding.txtExerciseName1.text =
                                         exerciseDashboardDataList[0].exercise_name
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[0].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgExercise1)
+                                    displayVideoThumbnail(exerciseDashboardDataList[0], binding.imgExercise1)
 
                                     binding.cardViewExerciseData2.visibility = View.GONE
                                     binding.cardViewExerciseData3.visibility = View.GONE
@@ -168,52 +219,43 @@ class ExerciseFragment : BaseFragment() {
                                     binding.cardViewExerciseData1.visibility = View.VISIBLE
                                     binding.txtExerciseName1.text =
                                         exerciseDashboardDataList[0].exercise_name
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[0].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgExercise1)
+                                    displayVideoThumbnail(exerciseDashboardDataList[0], binding.imgExercise1)
 
                                     binding.cardViewExerciseData2.visibility = View.VISIBLE
                                     binding.txtExerciseName2.text =
                                         exerciseDashboardDataList[1].exercise_name
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[1].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgExercise2)
+                                    displayVideoThumbnail(exerciseDashboardDataList[1], binding.imgExercise2)
 
                                     binding.cardViewExerciseData3.visibility = View.GONE
                                 } else if (exerciseDashboardDataList.size >= 3) {
                                     binding.cardViewExerciseData1.visibility = View.VISIBLE
                                     binding.txtExerciseName1.text =
                                         exerciseDashboardDataList[0].exercise_name
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[0].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgExercise1)
+
+                                    displayVideoThumbnail(exerciseDashboardDataList[0], binding.imgExercise1)
 
                                     binding.cardViewExerciseData2.visibility = View.VISIBLE
                                     binding.txtExerciseName2.text =
                                         exerciseDashboardDataList[1].exercise_name
-                                    Glide.with(requireActivity())
-                                        .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[1].image)
-                                        .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgExercise2)
+
+                                    displayVideoThumbnail(exerciseDashboardDataList[1], binding.imgExercise2)
 
                                     binding.cardViewExerciseData3.visibility = View.VISIBLE
                                     binding.txtExerciseName3.text =
                                         exerciseDashboardDataList[2].exercise_name
-                                    Glide.with(requireActivity())
+                                    displayVideoThumbnail(exerciseDashboardDataList[2], binding.imgExercise3)
+                                    *//*Glide.with(requireActivity())
                                         .load(BaseActivity.baseURL.dropLast(5) + exerciseDashboardDataList[2].image)
                                         .transform(CenterCrop(), RoundedCorners(5))
-                                        .into(binding.imgExercise3)
-                                }
+                                        .into(binding.imgExercise3)*//*
+                                }*/
 
                             } else {
-                                binding.hsvFeaturedWorkout.visibility = View.GONE
+                                binding.viewPagerFeaturedWorkout.visibility = View.GONE
                                 binding.txtNoFeaturedWorkout.visibility = View.VISIBLE
                             }
 
-                            binding.cardViewExerciseData1.setOnClickListener {
+                            /*binding.cardViewExerciseData1.setOnClickListener {
                                 displayRespectiveScreen(exerciseDashboardDataList[0])
                             }
 
@@ -223,11 +265,13 @@ class ExerciseFragment : BaseFragment() {
 
                             binding.cardViewExerciseData3.setOnClickListener {
                                 displayRespectiveScreen(exerciseDashboardDataList[2])
-                            }
+                            }*/
 
                         } catch (e: Exception) {
                             hideProgress()
                             displayToast("Something went wrong.. Please try after sometime")
+                            binding.shimmerFeaturedWorkoutExercise.visibility = View.GONE
+                            binding.txtNoFeaturedWorkout.visibility = View.VISIBLE
                         }
                     }, { error ->
                         hideProgress()
@@ -241,10 +285,38 @@ class ExerciseFragment : BaseFragment() {
                         } else {
                             displayAfterLoginErrorMsg(error)
                         }
+                        binding.shimmerFeaturedWorkoutExercise.visibility = View.GONE
+                        binding.txtNoFeaturedWorkout.visibility = View.VISIBLE
                     })
             )
         }
         handler.postDelayed(runnable!!, 1000)
+    }
+
+    private val sliderRunnable: Runnable = Runnable {
+        binding.viewPagerFeaturedWorkout.currentItem = binding.viewPagerFeaturedWorkout.currentItem + 1
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sliderHandler.removeCallbacks(sliderRunnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sliderHandler.postDelayed(sliderRunnable, 3000)
+    }
+
+    private fun displayVideoThumbnail(data: ExerciseDashboard, imageView: ImageView) {
+        val videoImg = if (data.url.isNotEmpty() && data.url.contains("youtube")) {
+            val videoId: String = data.url.split("v=")[1]
+            "http://img.youtube.com/vi/$videoId/hqdefault.jpg" //high quality thumbnail
+        } else {
+            BaseActivity.baseURL.dropLast(5) + data.image
+        }
+        Glide.with(requireActivity()).load(videoImg)
+            .transform(CenterCrop(), RoundedCorners(5))
+            .into(imageView)
     }
 
     private fun displayRespectiveScreen(exerciseDashboard: ExerciseDashboard) {
@@ -293,5 +365,9 @@ class ExerciseFragment : BaseFragment() {
             }
 
         const val TAG = "Screen_Exercise"
+    }
+
+    override fun onExerciseDashboardItemClickListener(exerciseDashboard: ExerciseDashboard) {
+        displayRespectiveScreen(exerciseDashboard)
     }
 }

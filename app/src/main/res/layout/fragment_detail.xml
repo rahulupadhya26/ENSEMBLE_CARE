@@ -2,9 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayoutDetail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/frameLayoutDetail"
     tools:context=".fragment.DetailFragment">
 
     <ImageView
@@ -40,15 +40,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_toEndOf="@+id/detailBack"
                 android:layout_toStartOf="@+id/imgDetailFav"
+                android:layout_toEndOf="@+id/detailBack"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:gravity="center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:scrollHorizontally="true"
                 android:textAppearance="@style/fontfamily"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_28sp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:text="Transcendental awareness"
                 android:textStyle="bold" />
 
             <ImageView
@@ -71,19 +74,19 @@
             android:layout_marginEnd="@dimen/_15dp"
             android:background="@drawable/bg_corner_rounded_edittext"
             android:backgroundTint="@color/white"
+            android:elevation="@dimen/_5dp"
             android:hint="Search"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
             android:paddingStart="@dimen/_10dp"
             android:paddingTop="@dimen/_5dp"
             android:paddingEnd="@dimen/_10dp"
             android:paddingBottom="@dimen/_5dp"
-            android:inputType="text"
-            android:imeOptions="actionDone"
-            android:maxLines="1"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/black"
             android:textColorHint="#5F6368"
-            android:textSize="@dimen/_18sp"
-            android:elevation="@dimen/_5dp"/>
+            android:textSize="@dimen/_18sp" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -148,8 +151,8 @@
                             android:layout_marginStart="@dimen/_10dp"
                             android:layout_marginEnd="@dimen/_10dp"
                             android:orientation="horizontal"
-                            android:weightSum="1"
-                            android:visibility="gone">
+                            android:visibility="gone"
+                            android:weightSum="1">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/cardViewDetailVideo1"
@@ -244,8 +247,8 @@
                             android:layout_marginStart="@dimen/_10dp"
                             android:layout_marginEnd="@dimen/_10dp"
                             android:orientation="horizontal"
-                            android:weightSum="1"
-                            android:visibility="gone">
+                            android:visibility="gone"
+                            android:weightSum="1">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/cardViewDetailVideo2"
@@ -368,9 +371,9 @@
                                     <ImageView
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
+                                        android:background="@color/shimmer_color"
                                         android:contentDescription="@string/app_name"
-                                        android:scaleType="fitCenter"
-                                        android:background="@color/shimmer_color"/>
+                                        android:scaleType="fitCenter" />
 
                                 </androidx.cardview.widget.CardView>
 
@@ -390,20 +393,20 @@
                                         <TextView
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
+                                            android:background="@color/shimmer_color"
                                             android:textAppearance="@style/fontfamily"
                                             android:textColor="@color/black"
-                                            android:background="@color/shimmer_color"
                                             android:textSize="@dimen/_16sp" />
 
                                         <TextView
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="-5dp"
+                                            android:background="@color/shimmer_color"
                                             android:ellipsize="end"
                                             android:maxLines="2"
                                             android:textAppearance="@style/fontfamily"
                                             android:textColor="#978181"
-                                            android:background="@color/shimmer_color"
                                             android:textSize="@dimen/_12sp" />
 
                                     </LinearLayout>
@@ -426,11 +429,11 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="center"
+                                            android:background="@color/shimmer_color"
                                             android:ellipsize="end"
                                             android:maxLines="3"
                                             android:textAppearance="@style/fontfamily"
                                             android:textColor="@color/primaryGreen"
-                                            android:background="@color/shimmer_color"
                                             android:textSize="@dimen/_14sp" />
 
                                     </LinearLayout>
@@ -457,9 +460,9 @@
                                     <ImageView
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
+                                        android:background="@color/shimmer_color"
                                         android:contentDescription="@string/app_name"
                                         android:scaleType="fitCenter"
-                                        android:background="@color/shimmer_color"
                                         app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -481,18 +484,18 @@
                                         <TextView
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
+                                            android:background="@color/shimmer_color"
                                             android:textAppearance="@style/fontfamily"
                                             android:textColor="@color/black"
-                                            android:background="@color/shimmer_color"
                                             android:textSize="@dimen/_16sp" />
 
                                         <TextView
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="-5dp"
+                                            android:background="@color/shimmer_color"
                                             android:ellipsize="end"
                                             android:maxLines="2"
-                                            android:background="@color/shimmer_color"
                                             android:textAppearance="@style/fontfamily"
                                             android:textColor="#978181"
                                             android:textSize="@dimen/_12sp" />
@@ -517,11 +520,11 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="center"
+                                            android:background="@color/shimmer_color"
                                             android:ellipsize="end"
                                             android:maxLines="3"
                                             android:textAppearance="@style/fontfamily"
                                             android:textColor="@color/primaryGreen"
-                                            android:background="@color/shimmer_color"
                                             android:textSize="@dimen/_14sp" />
 
                                     </LinearLayout>
@@ -537,20 +540,20 @@
                         android:id="@+id/cardViewDetailNoVideos"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
-                        android:layout_weight="0.5"
-                        app:cardCornerRadius="@dimen/_10dp"
-                        app:cardElevation="@dimen/_5dp"
                         android:layout_marginStart="@dimen/_10dp"
                         android:layout_marginEnd="@dimen/_10dp"
-                        app:cardUseCompatPadding="true"
-                        android:visibility="gone">
+                        android:layout_weight="0.5"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/_10dp"
+                        app:cardElevation="@dimen/_5dp"
+                        app:cardUseCompatPadding="true">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_toStartOf="@+id/txtVideoSeeAll"
-                            android:text="Currently there are no videos."
                             android:gravity="center"
+                            android:text="Currently there are no videos."
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/localBackground"
                             android:textSize="@dimen/_16sp"
@@ -603,9 +606,9 @@
                         android:id="@+id/recyclerViewDetailPodcast"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginStart="@dimen/_10dp"
                         android:layout_marginEnd="@dimen/_10dp"
+                        android:orientation="horizontal"
                         android:visibility="gone"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -621,12 +624,14 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
                             android:layout_marginStart="@dimen/_10dp"
-                            android:layout_marginEnd="@dimen/_10dp">
+                            android:layout_marginEnd="@dimen/_10dp"
+                            android:orientation="horizontal">
 
                             <include layout="@layout/layout_item_shimmer_podcast" />
+
                             <include layout="@layout/layout_item_shimmer_podcast" />
+
                             <include layout="@layout/layout_item_shimmer_podcast" />
 
                         </LinearLayout>
@@ -637,20 +642,20 @@
                         android:id="@+id/cardViewDetailNoPodcasts"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
-                        android:layout_weight="0.5"
-                        app:cardCornerRadius="@dimen/_10dp"
-                        app:cardElevation="@dimen/_5dp"
                         android:layout_marginStart="@dimen/_10dp"
                         android:layout_marginEnd="@dimen/_10dp"
-                        app:cardUseCompatPadding="true"
-                        android:visibility="gone">
+                        android:layout_weight="0.5"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/_10dp"
+                        app:cardElevation="@dimen/_5dp"
+                        app:cardUseCompatPadding="true">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_toStartOf="@+id/txtVideoSeeAll"
-                            android:text="Currently there are no podcasts"
                             android:gravity="center"
+                            android:text="Currently there are no podcasts"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/localBackground"
                             android:textSize="@dimen/_16sp"
@@ -712,8 +717,8 @@
                             android:layout_marginStart="@dimen/_10dp"
                             android:layout_marginEnd="@dimen/_10dp"
                             android:orientation="horizontal"
-                            android:weightSum="1"
-                            android:visibility="gone">
+                            android:visibility="gone"
+                            android:weightSum="1">
 
                             <LinearLayout
                                 android:id="@+id/cardViewDetailArticle1"
@@ -744,15 +749,15 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:layout_marginStart="@dimen/_5dp"
+                                    android:layout_marginTop="-5dp"
+                                    android:layout_marginEnd="@dimen/_5dp"
                                     android:ellipsize="end"
                                     android:maxLines="2"
                                     android:textAppearance="@style/fontfamily"
                                     android:textColor="@color/black"
-                                    android:textStyle="bold"
-                                    android:layout_marginStart="@dimen/_5dp"
-                                    android:layout_marginEnd="@dimen/_5dp"
-                                    android:layout_marginTop="-5dp"
-                                    android:textSize="@dimen/_14sp" />
+                                    android:textSize="@dimen/_14sp"
+                                    android:textStyle="bold" />
 
                             </LinearLayout>
 
@@ -785,15 +790,15 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:layout_marginStart="@dimen/_5dp"
+                                    android:layout_marginTop="-5dp"
+                                    android:layout_marginEnd="@dimen/_5dp"
                                     android:ellipsize="end"
                                     android:maxLines="2"
                                     android:textAppearance="@style/fontfamily"
                                     android:textColor="@color/black"
-                                    android:textStyle="bold"
-                                    android:layout_marginStart="@dimen/_5dp"
-                                    android:layout_marginEnd="@dimen/_5dp"
-                                    android:layout_marginTop="-5dp"
-                                    android:textSize="@dimen/_14sp" />
+                                    android:textSize="@dimen/_14sp"
+                                    android:textStyle="bold" />
 
                             </LinearLayout>
 
@@ -806,8 +811,8 @@
                             android:layout_marginStart="@dimen/_10dp"
                             android:layout_marginEnd="@dimen/_10dp"
                             android:orientation="horizontal"
-                            android:weightSum="1"
-                            android:visibility="gone">
+                            android:visibility="gone"
+                            android:weightSum="1">
 
                             <LinearLayout
                                 android:id="@+id/cardViewDetailArticle3"
@@ -838,15 +843,15 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:layout_marginStart="@dimen/_5dp"
+                                    android:layout_marginTop="-5dp"
+                                    android:layout_marginEnd="@dimen/_5dp"
                                     android:ellipsize="end"
                                     android:maxLines="2"
                                     android:textAppearance="@style/fontfamily"
                                     android:textColor="@color/black"
-                                    android:textStyle="bold"
-                                    android:layout_marginStart="@dimen/_5dp"
-                                    android:layout_marginEnd="@dimen/_5dp"
-                                    android:layout_marginTop="-5dp"
-                                    android:textSize="@dimen/_14sp" />
+                                    android:textSize="@dimen/_14sp"
+                                    android:textStyle="bold" />
 
                             </LinearLayout>
 
@@ -879,15 +884,15 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:layout_marginStart="@dimen/_5dp"
+                                    android:layout_marginTop="-5dp"
+                                    android:layout_marginEnd="@dimen/_5dp"
                                     android:ellipsize="end"
                                     android:maxLines="2"
                                     android:textAppearance="@style/fontfamily"
                                     android:textColor="@color/black"
-                                    android:textStyle="bold"
-                                    android:layout_marginStart="@dimen/_5dp"
-                                    android:layout_marginEnd="@dimen/_5dp"
-                                    android:layout_marginTop="-5dp"
-                                    android:textSize="@dimen/_14sp" />
+                                    android:textSize="@dimen/_14sp"
+                                    android:textStyle="bold" />
 
                             </LinearLayout>
 
@@ -934,8 +939,8 @@
                                         <ImageView
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:scaleType="fitCenter"
-                                            android:background="@color/shimmer_color"/>
+                                            android:background="@color/shimmer_color"
+                                            android:scaleType="fitCenter" />
 
                                     </androidx.cardview.widget.CardView>
 
@@ -943,17 +948,17 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
+                                        android:layout_marginStart="@dimen/_5dp"
+                                        android:layout_marginTop="-5dp"
+                                        android:layout_marginEnd="@dimen/_5dp"
+                                        android:background="@color/shimmer_color"
                                         android:ellipsize="end"
                                         android:maxLines="2"
+                                        android:paddingStart="@dimen/_5dp"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="@color/black"
-                                        android:textStyle="bold"
-                                        android:layout_marginStart="@dimen/_5dp"
-                                        android:layout_marginEnd="@dimen/_5dp"
-                                        android:layout_marginTop="-5dp"
-                                        android:paddingStart="@dimen/_5dp"
-                                        android:background="@color/shimmer_color"
-                                        android:textSize="@dimen/_14sp" />
+                                        android:textSize="@dimen/_14sp"
+                                        android:textStyle="bold" />
 
                                 </LinearLayout>
 
@@ -973,8 +978,8 @@
                                         <ImageView
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:scaleType="fitCenter"
-                                            android:background="@color/shimmer_color"/>
+                                            android:background="@color/shimmer_color"
+                                            android:scaleType="fitCenter" />
 
                                     </androidx.cardview.widget.CardView>
 
@@ -982,17 +987,17 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
+                                        android:layout_marginStart="@dimen/_5dp"
+                                        android:layout_marginTop="-5dp"
+                                        android:layout_marginEnd="@dimen/_5dp"
+                                        android:background="@color/shimmer_color"
                                         android:ellipsize="end"
                                         android:maxLines="2"
+                                        android:paddingStart="@dimen/_5dp"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="@color/black"
-                                        android:textStyle="bold"
-                                        android:background="@color/shimmer_color"
-                                        android:layout_marginStart="@dimen/_5dp"
-                                        android:layout_marginEnd="@dimen/_5dp"
-                                        android:layout_marginTop="-5dp"
-                                        android:paddingStart="@dimen/_5dp"
-                                        android:textSize="@dimen/_14sp" />
+                                        android:textSize="@dimen/_14sp"
+                                        android:textStyle="bold" />
 
                                 </LinearLayout>
 
@@ -1022,8 +1027,8 @@
                                         <ImageView
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:scaleType="fitCenter"
-                                            android:background="@color/shimmer_color"/>
+                                            android:background="@color/shimmer_color"
+                                            android:scaleType="fitCenter" />
 
                                     </androidx.cardview.widget.CardView>
 
@@ -1031,17 +1036,17 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
+                                        android:layout_marginStart="@dimen/_5dp"
+                                        android:layout_marginTop="-5dp"
+                                        android:layout_marginEnd="@dimen/_5dp"
+                                        android:background="@color/shimmer_color"
                                         android:ellipsize="end"
                                         android:maxLines="2"
+                                        android:paddingStart="@dimen/_5dp"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="@color/black"
-                                        android:textStyle="bold"
-                                        android:layout_marginStart="@dimen/_5dp"
-                                        android:layout_marginEnd="@dimen/_5dp"
-                                        android:layout_marginTop="-5dp"
-                                        android:paddingStart="@dimen/_5dp"
-                                        android:background="@color/shimmer_color"
-                                        android:textSize="@dimen/_14sp" />
+                                        android:textSize="@dimen/_14sp"
+                                        android:textStyle="bold" />
 
                                 </LinearLayout>
 
@@ -1061,8 +1066,8 @@
                                         <ImageView
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:scaleType="fitCenter"
-                                            android:background="@color/shimmer_color"/>
+                                            android:background="@color/shimmer_color"
+                                            android:scaleType="fitCenter" />
 
                                     </androidx.cardview.widget.CardView>
 
@@ -1070,17 +1075,17 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
+                                        android:layout_marginStart="@dimen/_5dp"
+                                        android:layout_marginTop="-5dp"
+                                        android:layout_marginEnd="@dimen/_5dp"
+                                        android:background="@color/shimmer_color"
                                         android:ellipsize="end"
                                         android:maxLines="2"
+                                        android:paddingStart="@dimen/_5dp"
                                         android:textAppearance="@style/fontfamily"
                                         android:textColor="@color/black"
-                                        android:textStyle="bold"
-                                        android:background="@color/shimmer_color"
-                                        android:layout_marginStart="@dimen/_5dp"
-                                        android:layout_marginEnd="@dimen/_5dp"
-                                        android:layout_marginTop="-5dp"
-                                        android:paddingStart="@dimen/_5dp"
-                                        android:textSize="@dimen/_14sp" />
+                                        android:textSize="@dimen/_14sp"
+                                        android:textStyle="bold" />
 
                                 </LinearLayout>
 
@@ -1094,20 +1099,20 @@
                         android:id="@+id/cardViewDetailNoArticles"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
-                        android:layout_weight="0.5"
-                        app:cardCornerRadius="@dimen/_10dp"
-                        app:cardElevation="@dimen/_5dp"
                         android:layout_marginStart="@dimen/_10dp"
                         android:layout_marginEnd="@dimen/_10dp"
-                        app:cardUseCompatPadding="true"
-                        android:visibility="gone">
+                        android:layout_weight="0.5"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/_10dp"
+                        app:cardElevation="@dimen/_5dp"
+                        app:cardUseCompatPadding="true">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_toStartOf="@+id/txtVideoSeeAll"
-                            android:text="Currently there are no articles"
                             android:gravity="center"
+                            android:text="Currently there are no articles"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/localBackground"
                             android:textSize="@dimen/_16sp"

@@ -83,6 +83,12 @@ class SplashFragment : BaseFragment() {
                             BottomNavigationFragment.TAG
                         )
                     }
+                } else if (preference!![PrefKeys.PREF_IS_CARE_BUDDY_LOGGEDIN, false]!!) {
+                    replaceFragmentNoBackStack(
+                        CareBuddyDashboardFragment(),
+                        R.id.layout_home,
+                        CareBuddyDashboardFragment.TAG
+                    )
                 } else {
                     replaceFragmentNoBackStack(
                         WelcomeFragment(),
@@ -120,6 +126,7 @@ class SplashFragment : BaseFragment() {
                                 InsuranceVerifyFragment.TAG
                             )
                         }
+
                         Utils.VOB_STATUS_COMPLETED -> {
                             val planDetails = PlanDetails(
                                 planDetailJsonObj.getInt("id"),
@@ -143,6 +150,7 @@ class SplashFragment : BaseFragment() {
                                 InsuranceVerifyFragment.TAG
                             )
                         }
+
                         Utils.VOB_STATUS_FAILED -> {
                             replaceFragmentNoBackStack(
                                 InsuranceVerifyFragment.newInstance(null, Utils.VOB_FAILED, null),

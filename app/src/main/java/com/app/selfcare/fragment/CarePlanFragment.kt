@@ -84,6 +84,46 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
                 BottomNavigationFragment.TAG
             )
         }
+
+        binding.layoutTaskProgressCalories.setOnClickListener {
+            replaceFragment(
+                NutritionCarePlanFragment.newInstance(selectedDayNo),
+                R.id.layout_home,
+                NutritionCarePlanFragment.TAG
+            )
+        }
+
+        binding.layoutTaskProgressExercise.setOnClickListener {
+            replaceFragment(
+                ExerciseCarePlanFragment.newInstance(selectedDayNo),
+                R.id.layout_home,
+                ExerciseCarePlanFragment.TAG
+            )
+        }
+
+        binding.layoutTaskProgressMusic.setOnClickListener {
+            replaceFragment(
+                MusicCarePlanFragment.newInstance(selectedDayNo),
+                R.id.layout_home,
+                MusicCarePlanFragment.TAG
+            )
+        }
+
+        binding.layoutTaskProgressMindfulness.setOnClickListener {
+            replaceFragment(
+                MindfulnessCarePlanFragment.newInstance(selectedDayNo),
+                R.id.layout_home,
+                MindfulnessCarePlanFragment.TAG
+            )
+        }
+
+        binding.layoutTaskProgressYoga.setOnClickListener {
+            replaceFragment(
+                YogaCarePlanFragment.newInstance(selectedDayNo),
+                R.id.layout_home,
+                YogaCarePlanFragment.TAG
+            )
+        }
     }
 
     private fun getCarePlanTaskDetails(dayNumber: Int) {
@@ -129,11 +169,11 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
             binding.layoutTaskProgressTaskCompleted.visibility = View.GONE
         }
 
-        if (dayWiseCarePlan.plan.calories != null && dayWiseCarePlan.plan.calories.toString() != "{}") {
-            if (dayWiseCarePlan.plan.calories.completed != null)
+        if (dayWiseCarePlan.plan.nutrition != null && dayWiseCarePlan.plan.nutrition.toString() != "{}") {
+            if (dayWiseCarePlan.plan.nutrition.completed != null)
                 binding.txtCaloriesData.text =
-                    dayWiseCarePlan.plan.calories.completed.dropLast(4) + " of " +
-                            dayWiseCarePlan.plan.calories.total.dropLast(4) + " mins"
+                    dayWiseCarePlan.plan.nutrition.completed.dropLast(4) + " of " +
+                            dayWiseCarePlan.plan.nutrition.total.dropLast(4) + " mins"
             else
                 binding.layoutTaskProgressCalories.visibility = View.GONE
         } else {

@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Rect
@@ -29,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.loader.content.CursorLoader
 import com.app.selfcare.controller.IController
 import com.app.selfcare.controller.IOnBackPressed
@@ -77,8 +77,9 @@ class MainActivity : BaseActivity(), IController {
     private var networkConnection: NetworkConnection? = null
     private var spinKit: SpinKitView? = null
     private lateinit var binding: ActivityMainBinding
-    private lateinit var headerBinding:LayoutHeaderBinding
-    private lateinit var headerDrawerBinding:LayoutHeaderDrawerBinding
+    private lateinit var headerBinding: LayoutHeaderBinding
+    private lateinit var headerDrawerBinding: LayoutHeaderDrawerBinding
+    private val PICKFILE_REQUEST_CODE = 9
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -435,6 +436,39 @@ class MainActivity : BaseActivity(), IController {
         getBottomNavigation()!!.selectedItemId = id
     }
 
+    private var mUri: Uri? = null
+
+    override fun selectFile() {
+        chooseFile()
+    }
+
+    override fun getFileUri(): Uri {
+        return mUri!!
+    }
+
+    private fun chooseFile() {
+        val mimeTypes = arrayOf("image/jpeg", "image/png", "image/gif", "application/pdf")
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            intent.type = if (mimeTypes.size == 1) mimeTypes[0] else "*/*"
+            if (mimeTypes.isNotEmpty()) {
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+            }
+        } else {
+            var mimeTypesStr = ""
+            for (mimeType in mimeTypes) {
+                mimeTypesStr += "$mimeType|"
+            }
+            intent.type = mimeTypesStr.substring(0, mimeTypesStr.length - 1)
+        }
+
+        startActivityForResult(
+            Intent.createChooser(intent, "Select a file"),
+            PICKFILE_REQUEST_CODE
+        )
+    }
+
     private fun takePicture() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
@@ -505,7 +539,7 @@ class MainActivity : BaseActivity(), IController {
         }
     }
 
-    private lateinit var pictureDialog:DialogPictureOptionBinding
+    private lateinit var pictureDialog: DialogPictureOptionBinding
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun displayPictureDialog(type: String) {
@@ -722,6 +756,10 @@ class MainActivity : BaseActivity(), IController {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
+        } else if (requestCode == PICKFILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                this.mUri = data.data
+            }
         }
     }
 
@@ -741,6 +779,7 @@ class MainActivity : BaseActivity(), IController {
 
     private fun clearCache() {
         preference!![PrefKeys.PREF_IS_LOGGEDIN] = false
+        preference!![PrefKeys.PREF_IS_CARE_BUDDY_LOGGEDIN] = false
         getHeader().visibility = View.GONE
         swipeSliderEnable(false)
         replaceFragmentNoBackStack(LoginFragment(), R.id.layout_home, LoginFragment.TAG)
