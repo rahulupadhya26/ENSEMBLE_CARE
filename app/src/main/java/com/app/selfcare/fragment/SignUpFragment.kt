@@ -10,25 +10,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.data.Register
 import com.app.selfcare.data.SendOtp
 import com.app.selfcare.data.VerifyOtp
-import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentSignUpBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.Utils
-import com.google.android.material.internal.ViewUtils.hideKeyboard
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.HttpException
-import java.lang.Error
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -299,11 +294,15 @@ class SignUpFragment : BaseFragment() {
             Utils.employer,
             Utils.employeeId,
             Utils.gender,
-            Utils.prefLang
+            Utils.prefLang,
+            ethnicity = Utils.ethnicity,
+            role = Utils.role
         )
         preference!![PrefKeys.PREF_REG] = registerData
         preference!![PrefKeys.PREF_GENDER] = Utils.gender
         preference!![PrefKeys.PREF_PREFERRED_LANG] = Utils.prefLang
+        preference!![PrefKeys.PREF_ETHNICITY] = Utils.ethnicity
+        preference!![PrefKeys.PREF_ROLE] = Utils.role
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(

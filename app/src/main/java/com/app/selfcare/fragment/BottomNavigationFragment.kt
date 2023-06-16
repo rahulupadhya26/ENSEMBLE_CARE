@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.app.selfcare.R
 import com.app.selfcare.databinding.FragmentBottomNavigationBinding
+import com.app.selfcare.preference.PrefKeys
+import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.Utils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -177,25 +180,33 @@ class BottomNavigationFragment : BaseFragment() {
     }
 
     private fun navigateWellness() {
-        Utils.bottomNav = Utils.BOTTOM_NAV_WELLNESS
-        binding.imgCoaches.visibility = View.GONE
-        binding.cardViewCoaches.visibility = View.VISIBLE
+        if (preference!![PrefKeys.PREF_INTEREST_SELECTED, false]!!) {
+            Utils.bottomNav = Utils.BOTTOM_NAV_WELLNESS
+            binding.imgCoaches.visibility = View.GONE
+            binding.cardViewCoaches.visibility = View.VISIBLE
 
-        binding.imgActivity.visibility = View.VISIBLE
-        binding.cardViewActivity.visibility = View.GONE
+            binding.imgActivity.visibility = View.VISIBLE
+            binding.cardViewActivity.visibility = View.GONE
 
-        binding.imgDashboard.visibility = View.VISIBLE
-        binding.cardViewDashboard.visibility = View.GONE
+            binding.imgDashboard.visibility = View.VISIBLE
+            binding.cardViewDashboard.visibility = View.GONE
 
-        binding.imgCrisis.visibility = View.VISIBLE
-        binding.cardViewCrisis.visibility = View.GONE
+            binding.imgCrisis.visibility = View.VISIBLE
+            binding.cardViewCrisis.visibility = View.GONE
 
-        replaceFragmentNoBackStack(
-            CoachesFragment(),
-            R.id.layoutContent,
-            CoachesFragment.TAG
-        )
-        binding.fab.visibility = View.GONE
+            replaceFragmentNoBackStack(
+                CoachesFragment(),
+                R.id.layoutContent,
+                CoachesFragment.TAG
+            )
+            binding.fab.visibility = View.GONE
+        } else {
+            replaceFragmentNoBackStack(
+                InterestFragment.newInstance("wellness"),
+                R.id.layout_home,
+                InterestFragment.TAG
+            )
+        }
     }
 
     private fun navigateCrisis() {
@@ -231,6 +242,7 @@ class BottomNavigationFragment : BaseFragment() {
                     )*/
                     return@OnNavigationItemSelectedListener true
                 }
+
                 R.id.navigation_activity -> {
                     /*replaceFragmentNoBackStack(
                         ExploreFragment(),
@@ -240,11 +252,13 @@ class BottomNavigationFragment : BaseFragment() {
                     //displayMsg("Message", "Screen under development")
                     return@OnNavigationItemSelectedListener true
                 }
+
                 R.id.navigation_personal_trainer -> {
                     //replaceFragmentNoBackStack(CoachesFragment(),R.id.layoutContent,CoachesFragment.TAG)
                     //displayMsg("Message", "Screen under development")
                     return@OnNavigationItemSelectedListener true
                 }
+
                 R.id.navigation_crisis -> {
                     /*replaceFragmentNoBackStack(
                         HealthInfoFragment(),

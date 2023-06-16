@@ -18,6 +18,7 @@ import com.app.selfcare.adapters.JournalListAdapter
 import com.app.selfcare.controller.OnJournalItemClickListener
 import com.app.selfcare.data.Journal
 import com.app.selfcare.data.JournalDashboard
+import com.app.selfcare.data.Patient
 import com.app.selfcare.data.PatientId
 import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentJournalBinding
@@ -109,8 +110,7 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
             }
 
             override fun afterTextChanged(editable: Editable) {
-                if (editable.toString().isNotEmpty())
-                    filterOne(editable.toString())
+                filterOne(editable.toString())
             }
         })
 
@@ -161,7 +161,7 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                 getEncryptedRequestInterface()
                     .getRequiredData(
                         "PI0017",
-                        PatientId(preference!![PrefKeys.PREF_PATIENT_ID, 0]!!),
+                        Patient(preference!![PrefKeys.PREF_PATIENT_ID, 0]!!),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())

@@ -6,15 +6,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.CommunityFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/layoutCommunityOption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_5dp">
+            android:layout_margin="@dimen/_5dp"
+            android:layout_alignParentTop="true">
 
             <ImageView
                 android:id="@+id/communityBack"
@@ -36,24 +38,44 @@
                 android:textSize="@dimen/_20sp"
                 android:textStyle="bold" />
 
-        </RelativeLayout>
+            <ImageView
+                android:id="@+id/companionAdd"
+                android:layout_width="@dimen/_40dp"
+                android:layout_height="@dimen/_40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/_5dp"
+                android:padding="@dimen/_5dp"
+                android:src="@drawable/add"
+                app:tint="@color/black"
+                android:visibility="gone"/>
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayoutCommunities"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabIndicatorColor="@color/primaryGreen"
-            app:tabIndicatorHeight="@dimen/_2dp"
-            app:tabIndicatorFullWidth="true"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/primaryGreen"
-            app:tabTextColor="#C3B0B0"/>
+        </RelativeLayout>
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPagerCommunities"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@+id/tabLayoutCommunities"
+            android:layout_below="@+id/layoutCommunityOption"
             android:background="#F1F5FC"/>
-    </LinearLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutCommunities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabTextAppearance="@style/customTabText"
+            app:tabIndicatorColor="@color/primaryGreen"
+            app:tabIndicatorHeight="@dimen/_2dp"
+            app:tabSelectedTextAppearance="@style/customTabText"
+            app:tabIndicatorFullWidth="false"
+            app:tabGravity="fill"
+            app:tabIndicator="@null"
+            android:layout_alignParentBottom="true"
+            android:elevation="@dimen/_10dp"
+            app:tabSelectedTextColor="@color/primaryGreen"
+            app:tabTextColor="#908A94"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

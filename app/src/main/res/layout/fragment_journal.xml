@@ -69,8 +69,7 @@
             <ScrollView
                 android:id="@+id/scrollViewJournal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/et_search">
+                android:layout_height="wrap_content">
 
                 <RelativeLayout
                     android:layout_width="match_parent"

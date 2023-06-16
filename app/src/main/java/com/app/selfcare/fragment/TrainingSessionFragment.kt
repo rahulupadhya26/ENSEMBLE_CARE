@@ -34,6 +34,7 @@ import com.app.selfcare.BaseActivity
 import com.app.selfcare.BuildConfig
 import com.app.selfcare.R
 import com.app.selfcare.adapters.MessageAdapter
+import com.app.selfcare.controller.OnBottomReachedListener
 import com.app.selfcare.controller.OnMessageClickListener
 import com.app.selfcare.data.GetAppointment
 import com.app.selfcare.data.MessageBean
@@ -70,7 +71,7 @@ private const val ARG_PARAM4 = "param4"
  * Use the [TrainingSessionFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TrainingSessionFragment : BaseFragment(), OnMessageClickListener {
+class TrainingSessionFragment : BaseFragment(), OnMessageClickListener, OnBottomReachedListener {
     // TODO: Rename and change types of parameters
     private var appointment: GetAppointment? = null
     private var RTC_TOKEN: String? = null
@@ -637,7 +638,7 @@ class TrainingSessionFragment : BaseFragment(), OnMessageClickListener {
         runOnUiThread {
             val layoutManager = LinearLayoutManager(requireActivity())
             layoutManager.orientation = RecyclerView.VERTICAL
-            mMessageAdapter = MessageAdapter(requireActivity(), mMessageBeanList, this, preference!![PrefKeys.PREF_PHOTO, ""]!!, appointment!!.doctor_photo)
+            mMessageAdapter = MessageAdapter(requireActivity(), mMessageBeanList, this, preference!![PrefKeys.PREF_PHOTO, ""]!!, appointment!!.doctor_photo, this)
             onlineChatView.textTrainingSessionMessageList.layoutManager = layoutManager
             onlineChatView.textTrainingSessionMessageList.adapter = mMessageAdapter
         }
@@ -978,5 +979,9 @@ class TrainingSessionFragment : BaseFragment(), OnMessageClickListener {
         } else {
             onlineChatView.webViewTrainingSessionFile.loadUrl(BaseActivity.baseURL.dropLast(5) + mMsgArr[1])
         }
+    }
+
+    override fun onBottomReached(position: Int) {
+
     }
 }

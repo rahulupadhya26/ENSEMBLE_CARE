@@ -51,11 +51,124 @@
                     android:layout_marginStart="@dimen/_10dp"
                     android:textStyle="bold" />
 
+                <LinearLayout
+                    android:id="@+id/layoutSearchByEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Search by Email"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16sp"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/etCareBuddySearchEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:background="@drawable/edittext_rectangle_bg"
+                        android:padding="@dimen/_10dp"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:maxLength="50"
+                        android:maxLines="1"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textColorHint="#A3A1A1"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnSearchEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/buttonBackground"
+                        app:backgroundTint="#38A387"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:text="Search by Email"/>
+
+                    <LinearLayout
+                        android:id="@+id/layoutAddCompanion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <CheckBox
+                            android:id="@+id/checkboxSearchedEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sp"
+                            android:checked="false"
+                            android:layout_marginStart="@dimen/_10dp"/>
+
+                        <Button
+                            android:id="@+id/btnAddEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/buttonBackground"
+                            app:backgroundTint="#38A387"
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:text="Add"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnSearchByEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/buttonBackground"
+                    app:backgroundTint="@color/primaryGreen"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:text="Search by Email"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="OR"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sp"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnAddByEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/buttonBackground"
+                    app:backgroundTint="@color/primaryGreen"
+                    android:layout_marginBottom="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:text="Add by Email"/>
+
             </LinearLayout>
 
             <ScrollView
+                android:id="@+id/scrollViewAddCareBuddy"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -424,7 +537,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="match_parent"

@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
+import com.app.selfcare.controller.OnBottomReachedListener
 import com.app.selfcare.controller.OnMessageClickListener
 import com.app.selfcare.data.MessageBean
 import com.app.selfcare.databinding.MsgItemLayoutBinding
@@ -16,12 +17,14 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import io.agora.rtm.RtmMessageType
 
+
 class MessageAdapter(
     val context: Context,
     val list: List<MessageBean>,
     val listener: OnMessageClickListener,
     val photo: String,
-    private val receiverPhoto: String
+    private val receiverPhoto: String,
+    private val onBottomReachedListener: OnBottomReachedListener?
 ) :
     RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
@@ -69,6 +72,7 @@ class MessageAdapter(
                     itemImgR.visibility = View.GONE
                     itemImgL.visibility = View.GONE
                 }
+
                 else -> {
                     val text = String(rtmMessage.rawMessage)
                     val textArr = text.split(",")
@@ -140,6 +144,10 @@ class MessageAdapter(
                 if (rtmMessage.messageType == RtmMessageType.RAW) {
                     listener.onItemClick(bean)
                 }
+            }
+
+            if (position == 0) {
+                onBottomReachedListener!!.onBottomReached(position);
             }
         }
     }

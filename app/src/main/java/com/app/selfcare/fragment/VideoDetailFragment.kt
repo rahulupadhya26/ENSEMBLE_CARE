@@ -28,7 +28,7 @@ private const val ARG_PARAM3 = "param3"
 class VideoDetailFragment : BaseFragment(), IOnBackPressed {
     // TODO: Rename and change types of parameters
     private var videoDetail: Video? = null
-    private var param2: String? = null
+    private var url: String? = null
     private var expoPlayerUtils: ExpoPlayerUtils? = null
     private lateinit var binding: FragmentVideoDetailBinding
 
@@ -36,7 +36,7 @@ class VideoDetailFragment : BaseFragment(), IOnBackPressed {
         super.onCreate(savedInstanceState)
         arguments?.let {
             videoDetail = it.getParcelable(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            url = it.getString(ARG_PARAM2)
         }
     }
 
@@ -61,6 +61,8 @@ class VideoDetailFragment : BaseFragment(), IOnBackPressed {
 
         if (videoDetail != null)
             displayVideoDetails()
+        else
+            expoPlayerUtils!!.initializePlayer(mActivity!!, binding.videosPlayer, url)
     }
 
     private fun displayVideoDetails() {
@@ -72,8 +74,13 @@ class VideoDetailFragment : BaseFragment(), IOnBackPressed {
         binding.imgVideo.visibility = View.GONE
         binding.videosPlayer.visibility = View.VISIBLE
         expoPlayerUtils = ExpoPlayerUtils()
-        expoPlayerUtils!!.initializePlayer(mActivity!!, binding.videosPlayer, videoDetail!!.video_url)
+        expoPlayerUtils!!.initializePlayer(
+            mActivity!!,
+            binding.videosPlayer,
+            videoDetail!!.video_url
+        )
         binding.imgVideoPlay.visibility = View.GONE
+
     }
 
     override fun onPause() {
@@ -101,7 +108,7 @@ class VideoDetailFragment : BaseFragment(), IOnBackPressed {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(videoDetail: Video? = null, param2: String = "", videoId: String = "") =
+        fun newInstance(videoDetail: Video? = null, param2: String = "") =
             VideoDetailFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, videoDetail)

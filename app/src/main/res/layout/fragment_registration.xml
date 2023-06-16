@@ -57,7 +57,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_20dp"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/_20dp">
 
                 <!--<com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -242,6 +243,54 @@
                     android:textStyle="bold"
                     android:textColorHint="#807B7B"
                     android:background="@drawable/edittext_background_box"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ethnicity"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_background_box"
+                    android:padding="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp">
+
+                    <Spinner
+                        android:id="@+id/spinnerSignUpEthnicity"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp" />
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Military Status"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/primaryGreen"
+                    android:textSize="@dimen/_16sp"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_background_box"
+                    android:padding="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp">
+
+                    <Spinner
+                        android:id="@+id/spinnerSignUpStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp" />
+                </RelativeLayout>
 
                 <TextView
                     android:layout_width="match_parent"

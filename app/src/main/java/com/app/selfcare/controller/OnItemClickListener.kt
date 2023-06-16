@@ -1,7 +1,33 @@
 package com.app.selfcare.controller
 
 import android.view.View
-import com.app.selfcare.data.*
+import com.app.selfcare.data.Articles
+import com.app.selfcare.data.Assessments
+import com.app.selfcare.data.CareBuddy
+import com.app.selfcare.data.CareBuddyDashboard
+import com.app.selfcare.data.CareDay
+import com.app.selfcare.data.CareDayIndividualTaskDetail
+import com.app.selfcare.data.CarePlans
+import com.app.selfcare.data.ChatRoomMsgBean
+import com.app.selfcare.data.CoachType
+import com.app.selfcare.data.ConsentRois
+import com.app.selfcare.data.ConsentsRoisDocumentData
+import com.app.selfcare.data.EventCommunity
+import com.app.selfcare.data.ExerciseDashboard
+import com.app.selfcare.data.ForumData
+import com.app.selfcare.data.GetAppointment
+import com.app.selfcare.data.Goal
+import com.app.selfcare.data.GroupAppointment
+import com.app.selfcare.data.Journal
+import com.app.selfcare.data.MessageBean
+import com.app.selfcare.data.NutritionDashboard
+import com.app.selfcare.data.Plan
+import com.app.selfcare.data.Podcast
+import com.app.selfcare.data.RecommendedData
+import com.app.selfcare.data.Therapist
+import com.app.selfcare.data.TimeSlot
+import com.app.selfcare.data.ToDoData
+import com.app.selfcare.data.Video
 
 interface OnItemTherapistImageClickListener {
     fun onItemTherapistImageClickListener(therapist: Therapist)
@@ -63,6 +89,10 @@ interface OnMessageClickListener {
     fun onItemClick(message: MessageBean?)
 }
 
+interface OnChatRoomMessageClickListener {
+    fun onItemClick(message: ChatRoomMsgBean?)
+}
+
 interface OnRecommendedItemClickListener {
     fun onRecommendedItemClickListener(recommendedData: RecommendedData)
 }
@@ -115,13 +145,21 @@ interface OnEventItemClickListener {
 }
 
 interface OnCareBuddyItemClickListener {
-    fun onCareBuddyItemClickListener(careBuddy: CareBuddy)
+    fun onCareBuddyItemClickListener(careBuddy: CareBuddy, isCall: Boolean, isChat: Boolean)
 }
 
 interface OnCareBuddyDashboardItemClickListener {
-    fun onCareBuddyDashboardItemClickListener(careBuddyDashboard: CareBuddyDashboard)
+    fun onCareBuddyDashboardItemClickListener(careBuddyDashboard: CareBuddyDashboard, isCall: Boolean, isChat: Boolean)
 }
 
 interface OnExerciseDashboardItemClickListener {
     fun onExerciseDashboardItemClickListener(exerciseDashboard: ExerciseDashboard)
+}
+
+interface OnForumItemClickListener {
+    fun onForumItemClickListener(forumData: ForumData)
+}
+
+interface OnBottomReachedListener {
+    fun onBottomReached(position: Int)
 }

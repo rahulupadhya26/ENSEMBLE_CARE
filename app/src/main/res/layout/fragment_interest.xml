@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.InterestFragment">
+
+    <ImageView
+        android:id="@+id/imgInterest"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:padding="@dimen/_5dp"
+        android:src="@drawable/journal_resource_back"
+        app:tint="@color/primaryGreen" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/_10dp"
+        android:layout_marginTop="@dimen/_5dp"
+        android:layout_marginEnd="@dimen/_10dp"
+        android:layout_below="@+id/imgInterest"
+        android:layout_above="@+id/layoutInterestBottom"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose your interests"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5dp"
+            android:text="Personalize your experience by choosing what you like!\nYou can add up to 5 interests "
+            android:textAppearance="@style/fontfamily"
+            android:textColor="#898383"
+            android:textSize="@dimen/_12sp" />
+
+        <LinearLayout
+            android:id="@+id/layoutInterestList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/etInterestSearch"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginBottom="@dimen/_5dp"
+                android:background="@drawable/bg_box_border_grey"
+                android:hint="Search for interests"
+                android:maxLines="1"
+                android:paddingStart="@dimen/_15dp"
+                android:paddingTop="@dimen/_10dp"
+                android:paddingBottom="@dimen/_10dp"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:textColorHint="#D9D9D9"
+                android:textSize="@dimen/_14sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/recyclerViewInterests"
+                android:visibility="gone"/>
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/chipGroupInterest"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtNoInterests"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="@style/fontfamily"
+            android:text="Currently there are no interests available"
+            android:textSize="@dimen/_14sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@color/localBackground"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutInterestBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5dp"
+            android:text="You can easily adjust your interests at any time through the settings."
+            android:textAppearance="@style/fontfamily"
+            android:textColor="#908B8B"
+            android:textSize="@dimen/_12sp" />
+
+        <Button
+            android:id="@+id/btnSelectedInterests"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            style="@style/buttonBackground"
+            android:layout_marginBottom="@dimen/_15dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:text="Continue"
+            android:textSize="@dimen/_14sp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

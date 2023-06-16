@@ -518,7 +518,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_2dp">
+                            android:layout_marginTop="@dimen/_5dp">
 
                             <TextView
                                 android:id="@+id/txtCrisisLifeLine"
@@ -529,6 +529,7 @@
                                 android:textColor="@color/black"
                                 android:clickable="true"
                                 android:textColorLink="#830CDB"
+                                android:lineSpacingMultiplier="1.4"
                                 android:textSize="@dimen/_14sp"
                                 android:focusable="true" />
 
@@ -550,6 +551,7 @@
                                 android:clickable="true"
                                 android:textColorLink="#830CDB"
                                 android:textSize="@dimen/_14sp"
+                                android:lineSpacingMultiplier="1.4"
                                 android:focusable="true" />
 
                         </LinearLayout>
@@ -568,6 +570,7 @@
                                 android:text="@string/crisis_screen_disaster_distress_helpline"
                                 android:textColor="@color/black"
                                 android:clickable="true"
+                                android:lineSpacingMultiplier="1.4"
                                 android:textColorLink="#830CDB"
                                 android:textSize="@dimen/_14sp" />
 
@@ -599,6 +602,7 @@
                                 android:textColor="@color/black"
                                 android:textColorLink="#830CDB"
                                 android:clickable="true"
+                                android:lineSpacingMultiplier="1.4"
                                 android:textSize="@dimen/_14sp" />
 
                         </LinearLayout>
@@ -617,6 +621,7 @@
                                 android:text="@string/crisis_screen_national_child"
                                 android:textColor="@color/black"
                                 android:textColorLink="#830CDB"
+                                android:lineSpacingMultiplier="1.4"
                                 android:clickable="true"
                                 android:textSize="@dimen/_14sp" />
 
@@ -637,6 +642,7 @@
                                 android:textColor="@color/black"
                                 android:textColorLink="#830CDB"
                                 android:clickable="true"
+                                android:lineSpacingMultiplier="1.4"
                                 android:textSize="@dimen/_14sp" />
 
                         </LinearLayout>
@@ -667,6 +673,7 @@
                                 android:textColor="@color/black"
                                 android:textColorLink="#830CDB"
                                 android:clickable="true"
+                                android:lineSpacingMultiplier="1.4"
                                 android:textSize="@dimen/_14sp" />
 
                         </LinearLayout>
@@ -684,6 +691,7 @@
                                 android:textAppearance="@style/fontfamily"
                                 android:text="@string/the_trevor_project"
                                 android:textColor="@color/black"
+                                android:lineSpacingMultiplier="1.4"
                                 android:textColorLink="#830CDB"
                                 android:clickable="true"
                                 android:textSize="@dimen/_14sp" />
@@ -715,6 +723,7 @@
                                 android:text="@string/elders"
                                 android:textColor="@color/black"
                                 android:textColorLink="#830CDB"
+                                android:lineSpacingMultiplier="1.4"
                                 android:clickable="true"
                                 android:textSize="@dimen/_14sp" />
 
@@ -746,6 +755,7 @@
                                 android:text="@string/veterans"
                                 android:textColor="@color/black"
                                 android:textColorLink="#830CDB"
+                                android:lineSpacingMultiplier="1.4"
                                 android:clickable="true"
                                 android:textSize="@dimen/_14sp" />
 

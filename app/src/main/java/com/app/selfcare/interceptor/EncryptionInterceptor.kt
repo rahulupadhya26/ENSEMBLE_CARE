@@ -18,6 +18,8 @@ class EncryptionInterceptor(private val mEncryptionStrategy: CryptoStrategy?) :
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
+        var reqUrl = request.url.toString()
+        reqUrl = reqUrl.replace("%2F", "/").replace("%3F", "?").replace("%40", "@")
         val rawBody = request.body
         var encryptedBody: String? = ""
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -27,7 +29,7 @@ class EncryptionInterceptor(private val mEncryptionStrategy: CryptoStrategy?) :
                     val rawBodyStr: String = requestBodyToString(rawBody)
                     encryptedBody = if (Utils.CONST_ENCRYPT_DECRYPT) {
                         val json = JSONObject()
-                        json.put("msg",mEncryptionStrategy.encrypt(rawBodyStr)).toString()
+                        json.put("msg", mEncryptionStrategy.encrypt(rawBodyStr)).toString()
                         //mEncryptionStrategy.encrypt(json.toString())
                     } else {
                         rawBodyStr
@@ -47,14 +49,17 @@ class EncryptionInterceptor(private val mEncryptionStrategy: CryptoStrategy?) :
         }
 
         //        request = request.newBuilder().header("User-Agent", "Your-App-Name");
-        if (body != null) {
-            request = request.newBuilder()
+        request = if (body != null) {
+            request.newBuilder()
+                .url(reqUrl)
                 .header("Content-Type", "application/json")
                 .header("Content-Length", body!!.contentLength().toString())
                 .method(request.method, body).build()
         } else {
-            request = request.newBuilder()
-                .header("Content-Type", "application/json").build()
+            request.newBuilder()
+                .url(reqUrl)
+                .header("Content-Type", "application/json")
+                .build()
         }
 
         return chain.proceed(request)

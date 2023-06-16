@@ -166,7 +166,7 @@ class ExpoPlayerUtils {
                         e.printStackTrace()
                     }
                 }
-            }.extract(youtubeLink)
+            }.extract(youtubeLink, true, true)
         } catch (e: Exception) {
             e.printStackTrace()
         }

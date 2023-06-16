@@ -17,6 +17,8 @@ class PrefKeys {
         const val PREF_MNAME = "mname"
         const val PREF_LNAME = "lname"
         const val PREF_DOB = "dob"
+        const val PREF_ETHNICITY = "ethnicity"
+        const val PREF_ROLE = "role"
         const val PREF_SSN = "ssn"
         const val PREF_GENDER = "gender"
         const val PREF_ADDRESS = "address"
@@ -46,5 +48,8 @@ class PrefKeys {
         const val PREF_NEXT_QUESTION_ID = "next_question_id"
         const val PREF_SET_ANSWER = "set_answer"
         const val PREF_INSURANCE_VERIFICATION = "insurance_verified"
+        const val PREF_IS_COLUMBIA_SEVERITY = "is_columbia_severity"
+        const val PREF_NOTIFY_ID = "notify_id"
+        const val PREF_INTEREST_SELECTED = "interest_selected"
     }
 }

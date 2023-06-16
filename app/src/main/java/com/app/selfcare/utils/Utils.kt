@@ -113,6 +113,8 @@ object Utils {
     var ssn = ""
     var dob = ""
     var gender = ""
+    var role = ""
+    var ethnicity = ""
     var prefLang = ""
     var email = ""
     var phoneNo = ""

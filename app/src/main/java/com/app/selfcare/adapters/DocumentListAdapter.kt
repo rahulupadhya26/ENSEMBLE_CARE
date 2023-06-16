@@ -113,6 +113,30 @@ class DocumentListAdapter(
                     }
                 }
             }
+
+            if (item.Forms != null) {
+                layoutDocumentFormsList.visibility = View.VISIBLE
+                val childLayoutManager = LinearLayoutManager(
+                    recyclerViewFormsView.context,
+                    LinearLayoutManager.VERTICAL,
+                    false
+                )
+                childLayoutManager.initialPrefetchItemCount = 4
+                recyclerViewFormsView.apply {
+                    layoutManager = childLayoutManager
+                    adapter =
+                        ConsentsRoisViewAdapter(context, item.Forms, adapterConsentRoisItem)
+                    setRecycledViewPool(viewPool)
+                }
+
+                layoutDocumentForms.setOnClickListener {
+                    if (recyclerViewFormsView.isVisible) {
+                        recyclerViewFormsView.visibility = View.GONE
+                    } else {
+                        recyclerViewFormsView.visibility = View.VISIBLE
+                    }
+                }
+            }
         }
     }
 

@@ -42,13 +42,13 @@ class CarePlanMusicTaskListAdapter(
             val item = list[position]
 
             txtMusicCompletedTaskTitle.text = item.duration
-            txtMusicCompletedTaskSubTitle.text = item.task_detail.details.name
+            txtMusicCompletedTaskSubTitle.text = item.task_detail.details.music_name
 
             txtMusicPendingTaskTitle.text = item.duration
-            txtMusicPendingTaskSubTitle.text = item.task_detail.details.name
+            txtMusicPendingTaskSubTitle.text = item.task_detail.details.music_name
 
             txtMusicPendingLaterTaskTitle.text = item.duration
-            txtMusicPendingLaterTaskSubTitle.text = item.task_detail.details.name
+            txtMusicPendingLaterTaskSubTitle.text = item.task_detail.details.music_name
 
             if (item.is_completed) {
                 layoutMusicPendingTask.visibility = View.GONE

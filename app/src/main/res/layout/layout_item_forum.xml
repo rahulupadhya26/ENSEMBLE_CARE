@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/layoutForumItem"
+    android:layout_marginStart="@dimen/_5dp"
+    android:layout_marginEnd="@dimen/_5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_10dp"
+        android:layout_marginTop="@dimen/_5dp"
+        android:layout_marginBottom="@dimen/_5dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewForumIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:cardCornerRadius="25dp">
+
+            <ImageView
+                android:id="@+id/imgForum"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/txtForumLetter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#E7A1A1"
+                android:gravity="center"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_24sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/_10dp">
+
+            <TextView
+                android:id="@+id/txtForumName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtForumDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="#BC9393"
+                android:textSize="@dimen/_10sp"
+                android:textStyle="bold"
+                android:maxLines="2"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#E4C3C3"
+        android:layout_marginStart="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_10dp"
+        android:layout_marginTop="@dimen/_5dp"
+        android:layout_marginBottom="@dimen/_5dp"/>
+
+</LinearLayout>

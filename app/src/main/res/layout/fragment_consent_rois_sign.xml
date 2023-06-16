@@ -21,12 +21,13 @@
             android:layout_centerInParent="true"
             android:padding="@dimen/_8dp"
             android:src="@drawable/journal_resource_back"
-            app:tint="@color/primaryGreen" />
+            app:tint="@color/primaryGreen"/>
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_centerInParent="true"
+            android:gravity="center"
             android:text="Consent Form"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/black"

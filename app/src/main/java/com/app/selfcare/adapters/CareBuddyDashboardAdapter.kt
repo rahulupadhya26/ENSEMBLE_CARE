@@ -47,7 +47,7 @@ class CareBuddyDashboardAdapter(
         holder.binding.txtCareBuddyDashboardName.text = item.name
 
         holder.binding.layoutCareBuddyDashboard.setOnClickListener {
-            adapterItemClickListener!!.onCareBuddyDashboardItemClickListener(item)
+            adapterItemClickListener!!.onCareBuddyDashboardItemClickListener(item, false, false)
         }
     }
 

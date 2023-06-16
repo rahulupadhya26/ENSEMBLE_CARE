@@ -49,13 +49,13 @@ class CarePlanYogaTaskListAdapter(
             val item = list[position]
 
             txtYogaCompletedTaskTitle.text = item.duration
-            txtYogaCompletedTaskSubTitle.text = item.task_detail.details.name
+            txtYogaCompletedTaskSubTitle.text = item.task_detail.details.yoga_name
 
             txtYogaPendingTaskTitle.text = item.duration
-            txtYogaPendingTaskSubTitle.text = item.task_detail.details.name
+            txtYogaPendingTaskSubTitle.text = item.task_detail.details.yoga_name
 
             txtYogaPendingLaterTaskTitle.text = item.duration
-            txtYogaPendingLaterTaskSubTitle.text = item.task_detail.details.name
+            txtYogaPendingLaterTaskSubTitle.text = item.task_detail.details.yoga_name
 
             if (item.is_completed) {
                 layoutYogaPendingTask.visibility = View.GONE

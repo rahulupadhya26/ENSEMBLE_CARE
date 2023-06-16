@@ -126,7 +126,6 @@
             android:id="@+id/txtNoCarePlanAssigned"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="CarePlan has not been assigned to Tom Oliver"
             android:textAppearance="@style/fontfamily"
             android:textColor="@color/black"
             android:gravity="center"

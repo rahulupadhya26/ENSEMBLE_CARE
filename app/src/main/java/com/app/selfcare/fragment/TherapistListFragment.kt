@@ -16,6 +16,7 @@ import com.app.selfcare.R
 import com.app.selfcare.adapters.SpecialistAdapter
 import com.app.selfcare.controller.OnItemTherapistImageClickListener
 import com.app.selfcare.controller.OnTherapistItemClickListener
+import com.app.selfcare.data.Patient
 import com.app.selfcare.data.PatientId
 import com.app.selfcare.data.Therapist
 import com.app.selfcare.databinding.DialogSameDayAppointmentBinding
@@ -139,7 +140,7 @@ class TherapistListFragment : BaseFragment(), OnItemTherapistImageClickListener,
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
                     .getTherapistList(
-                        PatientId(preference!![PrefKeys.PREF_PATIENT_ID, 0]!!),
+                        Patient(preference!![PrefKeys.PREF_PATIENT_ID, 0]!!),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())

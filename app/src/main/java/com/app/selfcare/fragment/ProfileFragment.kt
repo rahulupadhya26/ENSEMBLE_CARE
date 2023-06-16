@@ -2,6 +2,7 @@ package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -14,11 +15,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.data.PartProfileData
+import com.app.selfcare.data.Patient
 import com.app.selfcare.data.PatientId
 import com.app.selfcare.data.ProfileData
 import com.app.selfcare.databinding.FragmentProfileBinding
@@ -63,6 +66,10 @@ class ProfileFragment : BaseFragment() {
     private var relationshipsData: Array<String>? = null
     private var selectedPreferredLang: String = "English"
     private var preferredLanguageData: Array<String>? = null
+    private var selectedEthnicity: String? = null
+    private var ethnicityData: Array<String>? = null
+    private var selectedStatus: String? = null
+    private var statusData: Array<String>? = null
     private var createPictureDialog: BottomSheetDialog? = null
     private lateinit var binding: FragmentProfileBinding
 
@@ -193,6 +200,8 @@ class ProfileFragment : BaseFragment() {
         preference!![PrefKeys.PREF_MARTIAL_STATUS] = profileData.marital_status
         preference!![PrefKeys.PREF_GENDER] = profileData.gender
         preference!![PrefKeys.PREF_PREFERRED_LANG] = profileData.preffered_language
+        preference!![PrefKeys.PREF_ETHNICITY] = profileData.ethnicity
+        preference!![PrefKeys.PREF_ROLE] = profileData.role
         preference!![PrefKeys.PREF_RELATIONSHIP] = profileData.relation_to
         preference!![PrefKeys.PREF_PHOTO] = profileData.photo
         selectedGender = profileData.gender
@@ -222,6 +231,8 @@ class ProfileFragment : BaseFragment() {
         genderSpinner()
         preferredLanguageSpinner()
         relationshipsSpinner()
+        ethnicitySpinner()
+        statusSpinner()
     }
 
     private fun getProfileDetails(myCallback: (result: String?) -> Unit) {
@@ -231,7 +242,7 @@ class ProfileFragment : BaseFragment() {
                 getEncryptedRequestInterface()
                     .getRequiredData(
                         "PI0002",
-                        PatientId(preference!![PrefKeys.PREF_PATIENT_ID]!!),
+                        Patient(preference!![PrefKeys.PREF_PATIENT_ID]!!),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -283,59 +294,68 @@ class ProfileFragment : BaseFragment() {
                 //if (getText(etProfileMname).isNotEmpty()) {
                 if (getText(binding.etProfileLname).isNotEmpty()) {
                     if (getText(binding.spinnerProfileGender).isNotEmpty()) {
-                        //if (getText(etProfileCity).isNotEmpty()) {
-                        //if (getText(etProfileState).isNotEmpty()) {
-                        //if (getText(etProfileAddress).isNotEmpty()) {
-                        //if (getText(etProfileZipcode).isNotEmpty()) {
-                        if (binding.txtProfileDob.text.toString().isNotEmpty()) {
-                            when (preference!![PrefKeys.PREF_SELECTED_THERAPY, ""]!!) {
-                                "Teen" -> {
-                                    if (getAge(binding.txtProfileDob.text.toString()) in 13..17) {
-                                        updateProfileData()
-                                    } else {
-                                        displayMsg(
-                                            "Alert",
-                                            "Age must be greater than 12 years and less than 18 years."
-                                        )
+                        if (getText(binding.spinnerProfileEthnicity).isNotEmpty()) {
+                            if (getText(binding.spinnerProfileRole).isNotEmpty()) {
+                            //if (getText(etProfileCity).isNotEmpty()) {
+                            //if (getText(etProfileState).isNotEmpty()) {
+                            //if (getText(etProfileAddress).isNotEmpty()) {
+                            //if (getText(etProfileZipcode).isNotEmpty()) {
+                            if (binding.txtProfileDob.text.toString().isNotEmpty()) {
+                                when (preference!![PrefKeys.PREF_SELECTED_THERAPY, ""]!!) {
+                                    "Teen" -> {
+                                        if (getAge(binding.txtProfileDob.text.toString()) in 13..17) {
+                                            updateProfileData()
+                                        } else {
+                                            displayMsg(
+                                                "Alert",
+                                                "Age must be greater than 12 years and less than 18 years."
+                                            )
+                                        }
+                                    }
+
+                                    else -> {
+                                        if (getAge(binding.txtProfileDob.text.toString()) > 18) {
+                                            updateProfileData()
+                                        } else {
+                                            displayMsg(
+                                                "Alert",
+                                                "Age must be more than 18 years."
+                                            )
+                                        }
                                     }
                                 }
-                                else -> {
-                                    if (getAge(binding.txtProfileDob.text.toString()) > 18) {
-                                        updateProfileData()
-                                    } else {
-                                        displayMsg(
-                                            "Alert",
-                                            "Age must be more than 18 years."
-                                        )
-                                    }
-                                }
+                            } else {
+                                displayMsg("Alert", "Date of birth cannot be blank")
+                            }
+                            /*} else {
+                                setEditTextError(
+                                    etProfileZipcode,
+                                    "ZipCode cannot be empty!"
+                                )
+                            }*/
+                            /*} else {
+                                setEditTextError(
+                                    etProfileAddress,
+                                    "Address cannot be empty!"
+                                )
+                            }*/
+                            /*} else {
+                                setEditTextError(
+                                    etProfileState,
+                                    "State cannot be empty!"
+                                )
+                            }*/
+                            /*} else {
+                                setEditTextError(etProfileCity, "City cannot be empty!")
+                            }*/
+                            } else {
+                                displayMsg("Alert", "Select the Military Status")
                             }
                         } else {
-                            displayMsg("Alert", "Date of birth cannot be blank")
+                            displayMsg("Alert", "Select the Ethnicity")
                         }
-                        /*} else {
-                            setEditTextError(
-                                etProfileZipcode,
-                                "ZipCode cannot be empty!"
-                            )
-                        }*/
-                        /*} else {
-                            setEditTextError(
-                                etProfileAddress,
-                                "Address cannot be empty!"
-                            )
-                        }*/
-                        /*} else {
-                            setEditTextError(
-                                etProfileState,
-                                "State cannot be empty!"
-                            )
-                        }*/
-                        /*} else {
-                            setEditTextError(etProfileCity, "City cannot be empty!")
-                        }*/
                     } else {
-                        displayMsg("Alert", "Select the gender")
+                        displayMsg("Alert", "Select the Gender")
                     }
                 } else {
                     setEditTextError(binding.etProfileLname, "Last name cannot be empty!")
@@ -370,7 +390,9 @@ class ProfileFragment : BaseFragment() {
             getText(binding.etProfileAddress2),
             getText(binding.etProfileCountry),
             selectedGender,
-            selectedPreferredLang
+            selectedPreferredLang,
+            selectedEthnicity,
+            selectedStatus
         )
         showProgress()
         runnable = Runnable {
@@ -432,10 +454,12 @@ class ProfileFragment : BaseFragment() {
                     maskedNumber.append(ssnNumber[index])
                     index++
                 }
+
                 'X' -> {
                     maskedNumber.append(element)
                     index++
                 }
+
                 else -> {
                     maskedNumber.append(element)
                 }
@@ -449,7 +473,10 @@ class ProfileFragment : BaseFragment() {
         if (preference!![PrefKeys.PREF_GENDER, ""]!!.isNotEmpty()) {
             Handler().postDelayed({
                 if (binding.spinnerProfileGender != null)
-                    binding.spinnerProfileGender.setText(preference!![PrefKeys.PREF_GENDER, ""]!!, false)
+                    binding.spinnerProfileGender.setText(
+                        preference!![PrefKeys.PREF_GENDER, ""]!!,
+                        false
+                    )
             }, 300)
         }
         genderData = resources.getStringArray(R.array.gender)
@@ -524,6 +551,66 @@ class ProfileFragment : BaseFragment() {
         }
     }
 
+    private fun statusSpinner() {
+        try {
+            if (preference!![PrefKeys.PREF_ROLE, ""]!!.isNotEmpty()) {
+                Handler().postDelayed({
+                    if (binding.spinnerProfileRole != null)
+                        binding.spinnerProfileRole.setText(
+                            preference!![PrefKeys.PREF_ROLE, ""]!!,
+                            false
+                        )
+                }, 300)
+            }
+            statusData = resources.getStringArray(R.array.status)
+            val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+                requireActivity(), R.layout.spinner_dropdown_custom_item, statusData!!
+            )
+            binding.spinnerProfileRole.setAdapter(adapter)
+            binding.spinnerProfileRole.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, arg1, position, id ->
+                    //TODO: You can your own logic.
+                    selectedStatus = statusData!![position]
+                }
+
+            binding.spinnerProfileRole.setOnClickListener {
+                binding.spinnerProfileRole.showDropDown()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun ethnicitySpinner() {
+        try {
+            if (preference!![PrefKeys.PREF_ETHNICITY, ""]!!.isNotEmpty()) {
+                Handler().postDelayed({
+                    if (binding.spinnerProfileEthnicity != null)
+                        binding.spinnerProfileEthnicity.setText(
+                            preference!![PrefKeys.PREF_ETHNICITY, ""]!!,
+                            false
+                        )
+                }, 300)
+            }
+            ethnicityData = resources.getStringArray(R.array.ethnicity)
+            val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+                requireActivity(), R.layout.spinner_dropdown_custom_item, ethnicityData!!
+            )
+            binding.spinnerProfileEthnicity.setAdapter(adapter)
+            binding.spinnerProfileEthnicity.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, arg1, position, id ->
+                    //TODO: You can your own logic.
+                    selectedEthnicity = ethnicityData!![position]
+                }
+
+            binding.spinnerProfileEthnicity.setOnClickListener {
+                binding.spinnerProfileEthnicity.showDropDown()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     /*private fun martialStatus() {
         if (preference!![PrefKeys.PREF_MARTIAL_STATUS, ""]!!.isNotEmpty()) {
             Handler().postDelayed({
@@ -575,6 +662,8 @@ class ProfileFragment : BaseFragment() {
         genderSpinner()
         preferredLanguageSpinner()
         relationshipsSpinner()
+        ethnicitySpinner()
+        statusSpinner()
         //martialStatus()
     }
 

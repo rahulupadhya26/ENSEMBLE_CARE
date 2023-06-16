@@ -16,11 +16,16 @@ import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentSplashBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.Utils
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONObject
+import java.lang.reflect.Type
+import java.util.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -66,22 +71,58 @@ class SplashFragment : BaseFragment() {
         Handler().postDelayed(Runnable { // This method will be executed once the timer is over
             if (preference!![PrefKeys.PREF_USER_ID, ""]!!.isNotEmpty()) {
                 if (preference!![PrefKeys.PREF_IS_LOGGEDIN, false]!!) {
-                    if (preference!![PrefKeys.PREF_STEP, 0]!! == Utils.REGISTER) {
-                        if (preference!![PrefKeys.PREF_INSURANCE_VERIFICATION, false]!!) {
-                            checkVOB()
+                    if (preference!![PrefKeys.PREF_IS_COLUMBIA_SEVERITY, ""]!!.isNotEmpty()) {
+                        if (preference!![PrefKeys.PREF_STEP, 0]!! == Utils.REGISTER) {
+                            if (preference!![PrefKeys.PREF_INSURANCE_VERIFICATION, false]!!) {
+                                checkVOB()
+                            } else {
+                                replaceFragmentNoBackStack(
+                                    RegisterPartCFragment(),
+                                    R.id.layout_home,
+                                    RegisterPartCFragment.TAG
+                                )
+                            }
                         } else {
                             replaceFragmentNoBackStack(
-                                RegisterPartCFragment(),
+                                BottomNavigationFragment(),
                                 R.id.layout_home,
-                                RegisterPartCFragment.TAG
+                                BottomNavigationFragment.TAG
                             )
                         }
                     } else {
-                        replaceFragmentNoBackStack(
-                            BottomNavigationFragment(),
-                            R.id.layout_home,
-                            BottomNavigationFragment.TAG
-                        )
+                        val columbiaSeverity: String? =
+                            preference!![PrefKeys.PREF_IS_COLUMBIA_SEVERITY, ""]
+                        if (columbiaSeverity!!.isNotEmpty()) {
+                            val consentRoisNotifyType: Type =
+                                object : TypeToken<ConsentRoisFormsNotify?>() {}.type
+                            var consentRoisFormsNotifyList: ArrayList<ConsentRoisFormsNotify> =
+                                arrayListOf()
+                            consentRoisFormsNotifyList =
+                                Gson().fromJson(columbiaSeverity, consentRoisNotifyType)
+                            replaceFragment(
+                                ConsentRoisSignFragment.newInstance(consentRoisFormsNotifyList),
+                                R.id.layout_home,
+                                ConsentRoisSignFragment.TAG
+                            )
+                        } else {
+                            if (preference!![PrefKeys.PREF_STEP, 0]!! == Utils.REGISTER) {
+                                if (preference!![PrefKeys.PREF_INSURANCE_VERIFICATION, false]!!) {
+                                    checkVOB()
+                                } else {
+                                    replaceFragmentNoBackStack(
+                                        RegisterPartCFragment(),
+                                        R.id.layout_home,
+                                        RegisterPartCFragment.TAG
+                                    )
+                                }
+                            } else {
+                                replaceFragmentNoBackStack(
+                                    BottomNavigationFragment(),
+                                    R.id.layout_home,
+                                    BottomNavigationFragment.TAG
+                                )
+                            }
+                        }
                     }
                 } else if (preference!![PrefKeys.PREF_IS_CARE_BUDDY_LOGGEDIN, false]!!) {
                     replaceFragmentNoBackStack(

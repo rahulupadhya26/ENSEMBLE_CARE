@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/item_layout_l"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layoutReceiverUser"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:cardCornerRadius="15dp"
+            android:layout_alignParentStart="true">
+
+            <ImageView
+                android:id="@+id/imgUserPicLeft"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user_pic"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/item_name_l"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_circle_red"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/layoutMsgLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_toEndOf="@+id/layoutReceiverUser"
+            android:background="@drawable/receiver_chat_background"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/itemSenderName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:textSize="@dimen/_12sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:paddingStart="@dimen/_5dp"
+                    android:paddingEnd="@dimen/_5dp"/>
+
+                <TextView
+                    android:id="@+id/itemSenderDateTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:textSize="@dimen/_10sp"
+                    android:textColor="#5f6368"
+                    android:paddingEnd="@dimen/_5dp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/item_msg_l"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:textSize="@dimen/_12sp"
+                android:textColor="@color/black"
+                android:paddingStart="@dimen/_5dp"
+                android:paddingEnd="@dimen/_5dp"
+                android:layout_marginTop="@dimen/_2dp"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/item_img_l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/layoutReceiverUser"
+            android:background="@drawable/icon_msg_l"
+            android:gravity="center"
+            android:padding="5dp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/item_layout_r"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layoutSenderUser"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:cardCornerRadius="15dp"
+            android:layout_alignParentEnd="true">
+
+            <ImageView
+                android:id="@+id/imgUserPicRight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user_pic"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/item_name_r"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_circle_green"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/layoutMsgRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_5dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_toStartOf="@+id/layoutSenderUser"
+            android:background="@drawable/sender_chat_background"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/itemReceiverName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:textSize="@dimen/_12sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:paddingStart="@dimen/_5dp"
+                    android:paddingEnd="@dimen/_5dp"/>
+
+                <TextView
+                    android:id="@+id/itemReceiverDateTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:textSize="@dimen/_10sp"
+                    android:textColor="#5f6368"
+                    android:paddingEnd="@dimen/_5dp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/item_msg_r"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/fontfamily"
+                android:textSize="@dimen/_12sp"
+                android:textColor="@color/black"
+                android:paddingStart="@dimen/_5dp"
+                android:paddingEnd="@dimen/_5dp"
+                android:layout_marginTop="@dimen/_2dp"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/item_img_r"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/layoutSenderUser"
+            android:background="@drawable/icon_msg_r"
+            android:gravity="center"
+            android:padding="5dp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

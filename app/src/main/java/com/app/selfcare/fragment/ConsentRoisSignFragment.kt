@@ -2,7 +2,6 @@ package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
-import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -14,15 +13,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
-import com.app.selfcare.data.ConsentRois
 import com.app.selfcare.data.ConsentRoisFormsNotify
 import com.app.selfcare.data.FormSignature
 import com.app.selfcare.data.NotifyStatus
 import com.app.selfcare.databinding.DialogSignFormBinding
-import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentConsentRoisSignBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.SignatureView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -45,8 +43,7 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
     // TODO: Rename and change types of parameters
     //private var consentRois: ArrayList<ConsentRois>? = null
     private var consentRoisFormsNotifyList: ArrayList<ConsentRoisFormsNotify>? = null
-
-    //private var consentRoisObj: ConsentRois? = null
+    private var isFromJournal: Boolean = false
     private var signedCount: Int = 0
     var bSigned: Boolean = false
     private var createSignFormSheet: BottomSheetDialog? = null
@@ -57,6 +54,7 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
         arguments?.let {
             //consentRois = it.getParcelableArrayList(ARG_PARAM1)
             consentRoisFormsNotifyList = it.getParcelableArrayList(ARG_PARAM1)
+            isFromJournal = it.getBoolean(ARG_PARAM2)
             //consentRoisObj = it.getParcelable(ARG_PARAM3)
         }
     }
@@ -81,15 +79,24 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
+        if (isFromJournal) {
+            binding.consentFormBack.visibility = View.GONE
+        } else {
+            binding.consentFormBack.visibility = View.VISIBLE
+        }
+
         binding.consentFormBack.setOnClickListener {
-            //popBackStack()
-            setBottomNavigation(null)
-            setLayoutBottomNavigation(null)
-            replaceFragmentNoBackStack(
-                BottomNavigationFragment(),
-                R.id.layout_home,
-                BottomNavigationFragment.TAG
-            )
+            if (isFromJournal) {
+                popBackStack()
+            } else {
+                setBottomNavigation(null)
+                setLayoutBottomNavigation(null)
+                replaceFragmentNoBackStack(
+                    BottomNavigationFragment(),
+                    R.id.layout_home,
+                    BottomNavigationFragment.TAG
+                )
+            }
         }
 
         val browser = binding.webviewConsentRoisForm.settings
@@ -147,54 +154,27 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
 
         displayForms()
 
-        /*if (consentRois != null) {
-            consentFormSign.visibility = View.VISIBLE
-
-        } else {
-            consentFormSign.visibility = View.GONE
-            if (consentRoisObj != null) {
-                if (consentRoisObj!!.key.contains("consent", true)) {
-                    webviewConsentRoisForm.loadUrl(
-                        BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentRoisObj!!.key + "/" + getAccessToken().drop(
-                            7
-                        )
-                    )
-                } else {
-                    webviewConsentRoisForm.loadUrl(
-                        BaseActivity.baseURL.dropLast(5) + "/patient/roi_mobile/" + consentRoisObj!!.key + "/" + getAccessToken().drop(
-                            7
-                        )
-                    )
-                }
-            }
-        }*/
-
-
         binding.consentFormSign.setOnClickListener {
             displaySignaturePad()
         }
-
-        /*if (consentRois!!.isCompleted) {
-            webviewConsentRoisForm.loadUrl(
-                "http://docs.google.com/gview?embedded=true&url=" + BaseActivity.baseURL.dropLast(5) + consentRois!!.pdf_file_url
-            )
-        } else {
-            webviewConsentRoisForm.loadUrl(
-                BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentRois!!.key + "/" + getAccessToken().drop(
-                    7
-                )
-            )
-        }*/
     }
 
     private fun displayForms() {
         if (signedCount < consentRoisFormsNotifyList!!.size) {
-            if (consentRoisFormsNotifyList!![signedCount].description.contains("consent", true)) {
-                binding.webviewConsentRoisForm.loadUrl(
-                    BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentRoisFormsNotifyList!![signedCount].description + "/" + consentRoisFormsNotifyList!![signedCount].extra_data.pk + "/" + getAccessToken().drop(
-                        7
+            if (consentRoisFormsNotifyList!![signedCount].type.contains("consent", true)) {
+                if (consentRoisFormsNotifyList!![signedCount].extra_data.category == null) {
+                    binding.webviewConsentRoisForm.loadUrl(
+                        BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentRoisFormsNotifyList!![signedCount].description + "/" + consentRoisFormsNotifyList!![signedCount].extra_data.pk + "/" + getAccessToken().drop(
+                            7
+                        )
                     )
-                )
+                } else {
+                    binding.webviewConsentRoisForm.loadUrl(
+                        BaseActivity.baseURL.dropLast(5) + "/patient/form_mobile/" + consentRoisFormsNotifyList!![signedCount].description + "/" + consentRoisFormsNotifyList!![signedCount].extra_data.pk + "/" + getAccessToken().drop(
+                            7
+                        )
+                    )
+                }
             } else {
                 binding.webviewConsentRoisForm.loadUrl(
                     BaseActivity.baseURL.dropLast(5) + "/patient/roi_mobile/" + consentRoisFormsNotifyList!![signedCount].description + "/" + consentRoisFormsNotifyList!![signedCount].extra_data.pk + "/" + getAccessToken().drop(
@@ -205,17 +185,25 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
         } else {
             val builder = AlertDialog.Builder(mActivity!!)
             builder.setTitle("Message")
-            builder.setMessage("Consent/ROI’s Completed")
+            if (!isFromJournal) {
+                builder.setMessage("Consent/ROI’s Completed")
+            } else {
+                builder.setMessage("Columbia Severity Form Completed")
+            }
             builder.setPositiveButton("OK") { dialog, which ->
                 dialog.dismiss()
-                //popBackStack()
-                setBottomNavigation(null)
-                setLayoutBottomNavigation(null)
-                replaceFragmentNoBackStack(
-                    BottomNavigationFragment(),
-                    R.id.layout_home,
-                    BottomNavigationFragment.TAG
-                )
+                if (isFromJournal) {
+                    preference!![PrefKeys.PREF_IS_COLUMBIA_SEVERITY] = ""
+                    popBackStack()
+                } else {
+                    setBottomNavigation(null)
+                    setLayoutBottomNavigation(null)
+                    replaceFragmentNoBackStack(
+                        BottomNavigationFragment(),
+                        R.id.layout_home,
+                        BottomNavigationFragment.TAG
+                    )
+                }
             }
             builder.setCancelable(false)
             builder.show()
@@ -247,7 +235,12 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
                             if (createSignFormSheet!! != null) {
                                 createSignFormSheet!!.dismiss()
                             }
-                            updateNotificationStatus(consentRoisFormsNotifyList!![signedCount].id)
+                            if (!isFromJournal) {
+                                updateNotificationStatus(consentRoisFormsNotifyList!![signedCount].id)
+                            } else {
+                                signedCount += 1
+                                displayForms()
+                            }
                         } catch (e: Exception) {
                             hideProgress()
                             e.printStackTrace()
@@ -322,6 +315,11 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
         createSignFormSheet!!.setCanceledOnTouchOutside(true)
         //createSignFormSheet.behavior.isDraggable = false
         formSignDialog.txtFormTitle.text = consentRoisFormsNotifyList!![signedCount].title
+        if(isFromJournal){
+            formSignDialog.txtViewDocument.visibility = View.GONE
+        } else {
+            formSignDialog.txtViewDocument.visibility = View.VISIBLE
+        }
         formSignDialog.formSignatureView.setOnSignedListener(this)
         formSignDialog.formSignatureView.clear()
         formSignDialog.btnClearFormSigned.setOnClickListener {
@@ -350,15 +348,11 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(
-            param1: ArrayList<ConsentRoisFormsNotify>?
-            /*, param2: ArrayList<ConsentRois>?,
-            param3: ConsentRois?*/
-        ) =
+        fun newInstance(param1: ArrayList<ConsentRoisFormsNotify>?, param2: Boolean = false) =
             ConsentRoisSignFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(ARG_PARAM1, param1)
-                    //putParcelableArrayList(ARG_PARAM2, param2)
+                    putBoolean(ARG_PARAM2, param2)
                     //putParcelable(ARG_PARAM3, param3)
                 }
             }

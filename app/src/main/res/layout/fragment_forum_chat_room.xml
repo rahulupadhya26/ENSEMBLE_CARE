@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.ForumChatRoomFragment">
+
+    <RelativeLayout
+        android:id="@+id/layoutChatRoom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layoutChatRoomLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@color/white"
+            android:elevation="@dimen/_5dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/textChatRoomBack"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:padding="@dimen/_5dp"
+                    android:src="@drawable/journal_resource_back"
+                    app:tint="@color/primaryGreen" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toStartOf="@+id/cardViewChatRoom"
+                    android:layout_toEndOf="@+id/textChatRoomBack"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtChatRoomtName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/_5dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:padding="@dimen/_5dp"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewChatRoom"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="@dimen/_5dp"
+                    app:cardCornerRadius="15dp">
+
+                    <ImageView
+                        android:id="@+id/imgChatRoom"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/user_pic"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txtChatRoom"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/square_background"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="45sp"
+                android:paddingBottom="@dimen/_5dp"
+                android:paddingEnd="@dimen/_10dp">
+
+                <TextView
+                    android:id="@+id/txtChatRoomDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sp"
+                    android:maxLines="2"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layoutChatRoomLabel">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/chatRoomMessageList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/relativeLayoutChatRoomMessageText"/>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutChatRoomMessageText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#F9E6E6">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_10dp">
+
+                    <EditText
+                        android:id="@+id/editTextChatRoomMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_5dp"
+                        android:layout_toStartOf="@+id/layoutChatRoomSend"
+                        android:background="@drawable/bg_corner_rounded_images"
+                        android:backgroundTint="@color/white"
+                        android:hint="Message"
+                        android:maxLines="6"
+                        android:padding="@dimen/_10dp"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_10sp" />
+
+                    <RelativeLayout
+                        android:id="@+id/layoutChatRoomSend"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/bg_round_gray"
+                        android:backgroundTint="@color/primaryGreen">
+
+                        <ImageView
+                            android:id="@+id/imgSend"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/send"
+                            app:tint="@color/white" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

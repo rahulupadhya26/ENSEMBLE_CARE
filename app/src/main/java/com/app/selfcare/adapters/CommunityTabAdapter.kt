@@ -4,7 +4,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.app.selfcare.fragment.CareBuddyCommunityFragment
+import com.app.selfcare.fragment.CompanionFragment
 import com.app.selfcare.fragment.EventsCommunityFragment
+import com.app.selfcare.fragment.ForumFragment
 
 class CommunityTabAdapter(
     fm: FragmentManager,
@@ -17,8 +19,17 @@ class CommunityTabAdapter(
             0 -> {
                 EventsCommunityFragment()
             }
-            else -> {
+
+            1 -> {
+                CompanionFragment()
+            }
+
+            2 -> {
                 CareBuddyCommunityFragment()
+            }
+
+            else -> {
+                ForumFragment()
             }
         }
     }

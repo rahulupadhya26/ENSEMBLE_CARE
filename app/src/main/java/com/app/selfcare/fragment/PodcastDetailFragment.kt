@@ -33,6 +33,7 @@ import kotlin.math.max
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param3"
 
 /**
  * A simple [Fragment] subclass.
@@ -43,6 +44,7 @@ class PodcastDetailFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var podcast: Podcast? = null
     private var wellnessType: String? = null
+    private var mediaUrl: String? = null
     private var mediaPlayer: MediaPlayer? = null
     private val audioHandler = Handler()
     var progressAlive = false
@@ -58,6 +60,7 @@ class PodcastDetailFragment : BaseFragment() {
         arguments?.let {
             podcast = it.getParcelable(ARG_PARAM1)
             wellnessType = it.getString(ARG_PARAM2)
+            mediaUrl = it.getString(ARG_PARAM3)
         }
     }
 
@@ -82,32 +85,35 @@ class PodcastDetailFragment : BaseFragment() {
         updateStatusBarColor(R.color.black)
         mediaPlayer = MediaPlayer()
 
-        Glide.with(requireActivity())
-            .load(BaseActivity.baseURL.dropLast(5) + podcast!!.podcast_image)
-            .transform(CenterCrop(), RoundedCorners(5))
-            .into(binding.imgPodcastArtistLarge)
+        if (podcast != null) {
+            Glide.with(requireActivity())
+                .load(BaseActivity.baseURL.dropLast(5) + podcast!!.podcast_image)
+                .transform(CenterCrop(), RoundedCorners(5))
+                .into(binding.imgPodcastArtistLarge)
 
-        Glide.with(requireActivity())
-            .load(BaseActivity.baseURL.dropLast(5) + podcast!!.podcast_image)
-            .transform(CenterCrop(), RoundedCorners(5))
-            .into(binding.imgPodcastArtistSmall)
+            Glide.with(requireActivity())
+                .load(BaseActivity.baseURL.dropLast(5) + podcast!!.podcast_image)
+                .transform(CenterCrop(), RoundedCorners(5))
+                .into(binding.imgPodcastArtistSmall)
 
-        binding.txtPodcastTitle.text = podcast!!.name
-        binding.txtPodcastArtist.text = podcast!!.artist
-        binding.txtPodcastSubTitle.text = podcast!!.description
-        isFavourite = podcast!!.is_favourite
+            binding.txtPodcastTitle.text = podcast!!.name
+            binding.txtPodcastArtist.text = podcast!!.artist
+            binding.txtPodcastSubTitle.text = podcast!!.description
+            isFavourite = podcast!!.is_favourite
 
-        runOnUiThread {
-            if (podcast!!.is_favourite) {
-                binding.imgFav.setImageResource(R.drawable.favorite)
-            } else {
-                binding.imgFav.setImageResource(R.drawable.favourite_white)
+            runOnUiThread {
+                if (podcast!!.is_favourite) {
+                    binding.imgFav.setImageResource(R.drawable.favorite)
+                } else {
+                    binding.imgFav.setImageResource(R.drawable.favourite_white)
+                }
             }
+            prepareMediaPlayer(podcast!!.podcast_url)
+        } else {
+            prepareMediaPlayer(mediaUrl!!)
         }
 
         onClickEvents()
-
-        prepareMediaPlayer(podcast!!.podcast_url)
 
         binding.podcastSeekbar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
@@ -459,11 +465,12 @@ class PodcastDetailFragment : BaseFragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: Podcast?, param2: String) =
+        fun newInstance(param1: Podcast?, param2: String, param3: String = "") =
             PodcastDetailFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM3, param3)
                 }
             }
 

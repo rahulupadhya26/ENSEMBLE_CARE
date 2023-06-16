@@ -68,7 +68,7 @@ interface RequestInterface {
     @POST("select/")
     fun getRequiredData(
         @Query("table_id") table_id: String,
-        @Body id: PatientId,
+        @Body id: Patient,
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 
@@ -95,7 +95,7 @@ interface RequestInterface {
 
     @POST("patient/available_doctor/")
     fun getTherapistList(
-        @Body list: PatientId,
+        @Body list: Patient,
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 
@@ -545,6 +545,101 @@ interface RequestInterface {
 
     @GET("carebuddy/client_list")
     fun getCareBuddyDashboardData(
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @GET("carebuddy/care_plan_list/{id}")
+    fun getCareBuddyCarePlanDayWiseData(
+        @Path("id") id: String,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @GET("carebuddy/care_plan/{id}")
+    fun getCareBuddyDayWiseCarePlanData(
+        @Path("id") id: String,
+        @Query("day_no") dayNo: Int,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @GET("carebuddy/add_carebuddy")
+    fun searchByEmail(
+        @Query("email") email: String,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("carebuddy/add_carebuddy")
+    fun sendSelectedEmail(
+        @Query("email", encoded = true) email: String,
+        @Body sendSelectedEmail: SendSelectedEmail,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @GET("patient/interests/")
+    fun getInterestData(
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("patient/interests/")
+    fun sendInterestData(
+        @Body sendSelectedInterests: SendSelectedInterests,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("{partLink}")
+    fun sendAssignedToDoSign(
+        @Path("partLink") partLink: String,
+        @Body toDoSignature: ToDoSignature
+    ): Single<ResponseBody>
+
+    @POST("create/")
+    fun sendCallLog(
+        @Query("table_id") table_id: String,
+        @Body callLog: CallLog,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("patient/notification_api/")
+    fun setCareBuddyNotification(
+        @Body type: NotificationType,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @GET("select_all/")
+    fun getForumData(
+        @Query("table_id") table_id: String,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @GET("get_agora_token/")
+    fun getChatRoomToken(
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("create/")
+    fun sendChatRoomMsg(
+        @Query("table_id") table_id: String,
+        @Body chatMsg: ChatMsg,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("select/")
+    fun getPreviousMsgs(
+        @Query("table_id") table_id: String,
+        @Body prevMsg: PrevMsg,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("select/")
+    fun getNextPreviousMsgs(
+        @Query("page") page: String,
+        @Query("table_id") table_id: String,
+        @Body prevMsg: PrevMsg,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @GET("user_basic_details")
+    fun getUserBasicDetails(
+        @Query("user_id") user_id: Int,
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 }

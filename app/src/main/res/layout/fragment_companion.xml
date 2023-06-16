@@ -1,0 +1,1069 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".fragment.CompanionFragment">
+
+    <LinearLayout
+        android:id="@+id/layoutNoCompanion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:src="@drawable/carebuddy_group"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CareBuddy can keep you motivated while doing your tasks"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="#20c997"
+            android:gravity="center"
+            android:textSize="@dimen/_14sp"
+            android:layout_marginStart="@dimen/_20dp"
+            android:layout_marginEnd="@dimen/_20dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:textStyle="bold"
+            android:padding="@dimen/_10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutCompanionList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/_10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_corner_rounded_edittext"
+            android:backgroundTint="#F0E8E8"
+            android:layout_margin="@dimen/_5dp">
+
+            <ImageView
+                android:layout_width="@dimen/_15dp"
+                android:layout_height="@dimen/_15dp"
+                android:src="@drawable/search"
+                app:tint="#5F6368"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_10dp"/>
+
+            <EditText
+                android:id="@+id/etCompanionSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Search"
+                android:padding="@dimen/_10dp"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:textColorHint="#5F6368"
+                android:textSize="@dimen/_12sp"
+                android:maxLines="1"
+                android:background="@android:color/transparent"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginStart="@dimen/_5dp"
+            android:layout_marginEnd="@dimen/_5dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:textAppearance="@style/fontfamily"
+            android:textSize="@dimen/_12sp"
+            android:textStyle="bold"
+            android:text="Companions"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recyclerViewCompanionCareBuddy"
+            android:layoutAnimation="@anim/layout_animation_slide_from_bottom"
+            android:visibility="gone"/>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerCompanionCareBuddy"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:animationCache="true"
+            app:shimmer_repeat_mode="restart"
+            app:shimmer_shape="radial">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon1"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon1"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode1"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon2"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon2"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode2"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon3"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon3"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode3"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon4"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon4"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode4"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon5"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon5"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode5"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon6"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon6"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode6"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon7"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon7"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode7"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon8"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon8"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode8"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon9"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon9"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode9"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon10"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon10"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode10"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewCompanionCareBuddyIcon11"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="25dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/shimmer_color" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toEndOf="@+id/cardViewCompanionCareBuddyIcon11"
+                        android:layout_toStartOf="@+id/layoutCompanionCareBuddyMode11"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"
+                            android:background="@color/shimmer_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="#BC9393"
+                            android:textSize="@dimen/_10sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_2dp"
+                            android:background="@color/shimmer_color"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCompanionCareBuddyMode11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/call_community"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_40dp"
+                            android:layout_height="@dimen/_40dp"
+                            android:padding="@dimen/_10dp"
+                            android:src="@drawable/mode_comment"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewReachOut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="@dimen/_20dp"
+        app:cardElevation="@dimen/_10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingStart="@dimen/_15dp"
+            android:paddingEnd="@dimen/_15dp"
+            android:paddingTop="@dimen/_5dp"
+            android:paddingBottom="@dimen/_5dp">
+
+            <ImageView
+                android:layout_width="@dimen/_30dp"
+                android:layout_height="@dimen/_30dp"
+                android:padding="@dimen/_5dp"
+                android:src="@drawable/emergency_911" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Reach out"
+                android:layout_marginStart="@dimen/_5dp"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="#E91010"
+                android:textSize="@dimen/_12sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

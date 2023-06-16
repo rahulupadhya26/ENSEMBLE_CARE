@@ -831,6 +831,7 @@
                     android:layout_marginTop="@dimen/_5dp"/>
 
                 <TextView
+                    android:id="@+id/txtPhone1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/fontfamily"
@@ -842,6 +843,7 @@
                     android:layout_marginTop="@dimen/_10dp"/>
 
                 <TextView
+                    android:id="@+id/txtPhone2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/fontfamily"
@@ -922,6 +924,7 @@
                         android:textAppearance="@style/fontfamily"
                         android:text="@string/crisis_lifeline"
                         android:textColor="@color/black"
+                        android:lineSpacingMultiplier="1.4"
                         android:textColorLink="#830CDB"
                         android:textSize="@dimen/_16sp" />
 
@@ -931,7 +934,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:layout_marginStart="@dimen/_10dp">
 
                     <TextView
@@ -950,6 +953,7 @@
                         android:text="@string/crisis_text_line"
                         android:textColor="@color/black"
                         android:textColorLink="#830CDB"
+                        android:lineSpacingMultiplier="1.4"
                         android:textSize="@dimen/_16sp" />
 
                 </LinearLayout>
@@ -958,7 +962,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:layout_marginStart="@dimen/_10dp">
 
                     <TextView
@@ -977,6 +981,7 @@
                         android:text="@string/disaster_distress_helpline"
                         android:textColor="@color/black"
                         android:textColorLink="#830CDB"
+                        android:lineSpacingMultiplier="1.4"
                         android:textSize="@dimen/_16sp" />
 
                 </LinearLayout>
@@ -994,7 +999,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:layout_marginStart="@dimen/_10dp">
 
                     <TextView
@@ -1013,6 +1018,7 @@
                         android:text="@string/trans_lifeline"
                         android:textColor="@color/black"
                         android:textColorLink="#830CDB"
+                        android:lineSpacingMultiplier="1.4"
                         android:textSize="@dimen/_16sp" />
 
                 </LinearLayout>
@@ -1021,7 +1027,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:layout_marginStart="@dimen/_10dp">
 
                     <TextView
@@ -1039,6 +1045,7 @@
                         android:textAppearance="@style/fontfamily"
                         android:text="@string/the_trevor_project"
                         android:textColor="@color/black"
+                        android:lineSpacingMultiplier="1.4"
                         android:textColorLink="#830CDB"
                         android:textSize="@dimen/_16sp" />
 
@@ -1076,6 +1083,7 @@
                         android:textAppearance="@style/fontfamily"
                         android:text="@string/crisis_screen_national_domestic"
                         android:textColor="@color/black"
+                        android:lineSpacingMultiplier="1.4"
                         android:textColorLink="#830CDB"
                         android:clickable="true"
                         android:textSize="@dimen/_16sp" />
@@ -1086,7 +1094,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:layout_marginStart="@dimen/_10dp">
 
                     <TextView
@@ -1105,6 +1113,7 @@
                         android:text="@string/crisis_screen_national_child"
                         android:textColor="@color/black"
                         android:textColorLink="#830CDB"
+                        android:lineSpacingMultiplier="1.4"
                         android:clickable="true"
                         android:textSize="@dimen/_16sp" />
 
@@ -1114,7 +1123,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:layout_marginStart="@dimen/_10dp">
 
                     <TextView
@@ -1132,6 +1141,7 @@
                         android:textAppearance="@style/fontfamily"
                         android:text="@string/crisis_screen_national_sexual"
                         android:textColor="@color/black"
+                        android:lineSpacingMultiplier="1.4"
                         android:textColorLink="#830CDB"
                         android:clickable="true"
                         android:textSize="@dimen/_16sp" />
@@ -1152,7 +1162,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/_2dp"
+                    android:layout_marginTop="@dimen/_5dp"
                     android:layout_marginStart="@dimen/_10dp">
 
                     <TextView
@@ -1171,6 +1181,7 @@
                         android:text="@string/elders"
                         android:textColor="@color/black"
                         android:textColorLink="#830CDB"
+                        android:lineSpacingMultiplier="1.4"
                         android:clickable="true"
                         android:textSize="@dimen/_16sp" />
 
@@ -1210,6 +1221,7 @@
                         android:text="@string/veterans"
                         android:textColor="@color/black"
                         android:textColorLink="#830CDB"
+                        android:lineSpacingMultiplier="1.4"
                         android:clickable="true"
                         android:textSize="@dimen/_16sp" />
 

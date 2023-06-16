@@ -52,13 +52,13 @@ class CarePlanMindfulnessTaskListAdapter(
             val item = list[position]
 
             txtMindfulnessCompletedTaskTitle.text = item.duration
-            txtMindfulnessCompletedTaskSubTitle.text = item.task_detail.details.name
+            txtMindfulnessCompletedTaskSubTitle.text = item.task_detail.details.mindfulness_name
 
             txtMindfulnessPendingTaskTitle.text = item.duration
-            txtMindfulnessPendingTaskSubTitle.text = item.task_detail.details.name
+            txtMindfulnessPendingTaskSubTitle.text = item.task_detail.details.mindfulness_name
 
             txtMindfulnessPendingLaterTaskTitle.text = item.duration
-            txtMindfulnessPendingLaterTaskSubTitle.text = item.task_detail.details.name
+            txtMindfulnessPendingLaterTaskSubTitle.text = item.task_detail.details.mindfulness_name
 
             if (item.is_completed) {
                 layoutMindfulnessPendingTask.visibility = View.GONE

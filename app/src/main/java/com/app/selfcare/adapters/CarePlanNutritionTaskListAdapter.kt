@@ -52,13 +52,13 @@ class CarePlanNutritionTaskListAdapter(
             val item = list[position]
 
             txtNutritionCompletedTaskTitle.text = item.duration
-            txtNutritionCompletedTaskSubTitle.text = item.task_detail.details.name
+            txtNutritionCompletedTaskSubTitle.text = item.task_detail.details.nutrition_name
 
             txtNutritionPendingTaskTitle.text = item.duration
-            txtNutritionPendingTaskSubTitle.text = item.task_detail.details.name
+            txtNutritionPendingTaskSubTitle.text = item.task_detail.details.nutrition_name
 
             txtNutritionPendingLaterTaskTitle.text = item.duration
-            txtNutritionPendingLaterTaskSubTitle.text = item.task_detail.details.name
+            txtNutritionPendingLaterTaskSubTitle.text = item.task_detail.details.nutrition_name
 
             if (item.is_completed) {
                 layoutNutritionPendingTask.visibility = View.GONE

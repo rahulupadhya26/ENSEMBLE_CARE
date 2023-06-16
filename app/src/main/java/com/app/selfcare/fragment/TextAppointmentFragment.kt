@@ -34,6 +34,7 @@ import com.app.selfcare.BaseActivity
 import com.app.selfcare.BuildConfig
 import com.app.selfcare.R
 import com.app.selfcare.adapters.MessageAdapter
+import com.app.selfcare.controller.OnBottomReachedListener
 import com.app.selfcare.controller.OnMessageClickListener
 import com.app.selfcare.data.*
 import com.app.selfcare.databinding.FragmentTextAppointmentBinding
@@ -67,7 +68,7 @@ private const val ARG_PARAM4 = "param4"
  * Use the [TextAppointmentFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TextAppointmentFragment : BaseFragment(), OnMessageClickListener {
+class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottomReachedListener {
     // TODO: Rename and change types of parameters
     private var appointment: GetAppointment? = null
     private var RTC_TOKEN: String? = null
@@ -210,7 +211,8 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener {
                         fileList,
                         this,
                         preference!![PrefKeys.PREF_PHOTO, ""]!!,
-                        appointment!!.doctor_photo
+                        appointment!!.doctor_photo,
+                        this
                     )
                     binding.recyclerviewFileList.layoutManager = layoutManager
                     binding.recyclerviewFileList.adapter = mMessageAdapter
@@ -685,7 +687,8 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener {
                 mMessageBeanList,
                 this,
                 preference!![PrefKeys.PREF_PHOTO, ""]!!,
-                appointment!!.doctor_photo
+                appointment!!.doctor_photo,
+                this
             )
             binding.textAppointMessageList.layoutManager = layoutManager
             binding.textAppointMessageList.adapter = mMessageAdapter
@@ -994,5 +997,9 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener {
         } else {
             binding.webViewFile.loadUrl(BaseActivity.baseURL.dropLast(5) + mMsgArr[1])
         }
+    }
+
+    override fun onBottomReached(position: Int) {
+
     }
 }

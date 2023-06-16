@@ -39,6 +39,7 @@ import com.app.selfcare.adapters.MessageAdapter
 import com.app.selfcare.adapters.SmallVideoViewAdapter
 import com.app.selfcare.controller.AGEventHandler
 import com.app.selfcare.controller.DuringCallEventHandler
+import com.app.selfcare.controller.OnBottomReachedListener
 import com.app.selfcare.controller.OnMessageClickListener
 import com.app.selfcare.data.*
 import com.app.selfcare.databinding.DialogOnlineChatBinding
@@ -75,7 +76,8 @@ private const val ARG_PARAM4 = "param4"
  * Use the [GroupVideoCallFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class GroupVideoCallFragment : BaseFragment(), DuringCallEventHandler, OnMessageClickListener {
+class GroupVideoCallFragment : BaseFragment(), DuringCallEventHandler, OnMessageClickListener,
+    OnBottomReachedListener {
     // TODO: Rename and change types of parameters
     private var token: String? = null
     private var channelName: String? = null
@@ -309,6 +311,7 @@ class GroupVideoCallFragment : BaseFragment(), DuringCallEventHandler, OnMessage
                             RtmStatusCode.ConnectionState.CONNECTION_STATE_RECONNECTING -> displayToast(
                                 getString(R.string.reconnecting)
                             )
+
                             RtmStatusCode.ConnectionState.CONNECTION_STATE_ABORTED -> {
                                 displayToast(getString(R.string.account_offline))
                             }
@@ -659,11 +662,13 @@ class GroupVideoCallFragment : BaseFragment(), DuringCallEventHandler, OnMessage
                     )
                 }
             }
+
             AGEventHandler.EVENT_TYPE_ON_USER_VIDEO_MUTED -> {
                 peerUid = data[0] as Int
                 muted = data[1] as Boolean
                 doHideTargetView(peerUid, muted)
             }
+
             AGEventHandler.EVENT_TYPE_ON_USER_VIDEO_STATS -> {
                 val stats = data[0] as IRtcEngineEventHandler.RemoteVideoStats
                 if (Constant.SHOW_VIDEO_INFO) {
@@ -699,6 +704,7 @@ class GroupVideoCallFragment : BaseFragment(), DuringCallEventHandler, OnMessage
                     mGridVideoViewContainer!!.cleanVideoInfo()
                 }
             }
+
             AGEventHandler.EVENT_TYPE_ON_SPEAKER_STATS -> {
                 val infos = data[0] as Array<IRtcEngineEventHandler.AudioVolumeInfo>
                 // local guy, ignore it
@@ -723,6 +729,7 @@ class GroupVideoCallFragment : BaseFragment(), DuringCallEventHandler, OnMessage
                     )
                 }
             }
+
             AGEventHandler.EVENT_TYPE_ON_APP_ERROR -> {}
             AGEventHandler.EVENT_TYPE_ON_DATA_CHANNEL_MSG -> {}
             AGEventHandler.EVENT_TYPE_ON_AGORA_MEDIA_ERROR -> {}
@@ -1003,7 +1010,14 @@ class GroupVideoCallFragment : BaseFragment(), DuringCallEventHandler, OnMessage
         runOnUiThread {
             val layoutManager = LinearLayoutManager(requireActivity())
             layoutManager.orientation = RecyclerView.VERTICAL
-            mMessageAdapter = MessageAdapter(requireActivity(), mMessageBeanList, this, preference!![PrefKeys.PREF_PHOTO, ""]!!, appointment!!.doctor_photo)
+            mMessageAdapter = MessageAdapter(
+                requireActivity(),
+                mMessageBeanList,
+                this,
+                preference!![PrefKeys.PREF_PHOTO, ""]!!,
+                appointment!!.doctor_photo,
+                this
+            )
             dialogBinding.chatMessageList.layoutManager = layoutManager
             dialogBinding.chatMessageList.adapter = mMessageAdapter
         }
@@ -1032,10 +1046,13 @@ class GroupVideoCallFragment : BaseFragment(), DuringCallEventHandler, OnMessage
                         when (errorCode) {
                             RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_TIMEOUT, RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_FAILURE ->
                                 showToast(getString(R.string.send_msg_failed))
+
                             RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_PEER_UNREACHABLE ->
                                 showToast(getString(R.string.peer_offline))
+
                             RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_CACHED_BY_SERVER ->
                                 showToast(getString(R.string.message_cached))
+
                             else -> {
                                 showToast(errorInfo.errorDescription + " - " + errorInfo.errorCode)
                             }
@@ -1117,6 +1134,7 @@ class GroupVideoCallFragment : BaseFragment(), DuringCallEventHandler, OnMessage
                         RtmStatusCode.ChannelMessageError.CHANNEL_MESSAGE_ERR_TIMEOUT,
                         RtmStatusCode.ChannelMessageError.CHANNEL_MESSAGE_ERR_FAILURE ->
                             showToast(getString(R.string.send_msg_failed))
+
                         else -> showToast(errorInfo.errorDescription + " - " + errorInfo.errorCode)
                     }
                 }
@@ -1515,5 +1533,9 @@ class GroupVideoCallFragment : BaseFragment(), DuringCallEventHandler, OnMessage
         } else {
             dialogBinding.webViewGroupVideoFile.loadUrl(BaseActivity.baseURL.dropLast(5) + mMsgArr[1])
         }
+    }
+
+    override fun onBottomReached(position: Int) {
+
     }
 }

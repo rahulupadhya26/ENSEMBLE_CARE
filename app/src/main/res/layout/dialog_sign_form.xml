@@ -82,13 +82,14 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/txtViewDocument"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/fontfamily"
-            android:text="Signed documents can be viewed in documents"
+            android:text="Signed documents can be viewed under document section in Home screen"
             android:textSize="@dimen/_10sp"
             android:textColor="#998787"
-            android:layout_marginBottom="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_5dp"
             android:textStyle="bold"/>
 
 
@@ -98,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
-            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginTop="@dimen/_5dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="@dimen/_10dp"
             android:textSize="@dimen/_16sp"

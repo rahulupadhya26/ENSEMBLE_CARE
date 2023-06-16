@@ -65,31 +65,57 @@ class CommunityFragment : BaseFragment() {
             )
         }
 
+        binding.companionAdd.setOnClickListener {
+            replaceFragment(
+                AddCareBuddyFragment(),
+                R.id.layout_home,
+                AddCareBuddyFragment.TAG
+            )
+        }
+
         val icons = intArrayOf(
             R.drawable.local_activity,
-            R.drawable.relax
+            R.drawable.relax,
+            R.drawable.volunteer_activism,
+            R.drawable.diversity_1
         )
 
         binding.tabLayoutCommunities.removeAllTabs()
         binding.viewPagerCommunities.removeAllViewsInLayout()
-        binding.tabLayoutCommunities.addTab(binding.tabLayoutCommunities.newTab().setText("Events").setIcon(icons[0]))
-        binding.tabLayoutCommunities.addTab(binding.tabLayoutCommunities.newTab().setText("CareBuddy").setIcon(icons[1]))
+        binding.tabLayoutCommunities.addTab(
+            binding.tabLayoutCommunities.newTab().setText("Events").setIcon(icons[0])
+        )
+        binding.tabLayoutCommunities.addTab(
+            binding.tabLayoutCommunities.newTab().setText("Companion").setIcon(icons[1])
+        )
+        binding.tabLayoutCommunities.addTab(
+            binding.tabLayoutCommunities.newTab().setText("CareBuddy").setIcon(icons[2])
+        )
+        binding.tabLayoutCommunities.addTab(
+            binding.tabLayoutCommunities.newTab().setText("Forum").setIcon(icons[3])
+        )
         binding.tabLayoutCommunities.tabGravity = TabLayout.GRAVITY_FILL
-        val adapter = CommunityTabAdapter(childFragmentManager, binding.tabLayoutCommunities.tabCount)
+        val adapter =
+            CommunityTabAdapter(childFragmentManager, binding.tabLayoutCommunities.tabCount)
         binding.viewPagerCommunities.adapter = adapter
         binding.viewPagerCommunities.addOnPageChangeListener(
-            TabLayout.TabLayoutOnPageChangeListener(
-                binding.tabLayoutCommunities
-            )
+            TabLayout.TabLayoutOnPageChangeListener(binding.tabLayoutCommunities)
         )
-        binding.tabLayoutCommunities.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tabLayoutCommunities.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 binding.viewPagerCommunities.currentItem = tab.position
+                if (tab.position == 1) {
+                    binding.companionAdd.visibility = View.VISIBLE
+                } else {
+                    binding.companionAdd.visibility = View.GONE
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
+
     }
 
     companion object {
@@ -110,6 +136,7 @@ class CommunityFragment : BaseFragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_Community"
     }
 }

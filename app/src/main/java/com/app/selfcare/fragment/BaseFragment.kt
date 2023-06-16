@@ -383,8 +383,8 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     }
 
     @Synchronized
-    fun getSyncHealthRequestInterface(syncHealthUrl: String): RequestInterface {
-        return mActivity!!.getSyncHealthRequestInterface(syncHealthUrl)
+    fun getReqRespInterface(): RequestInterface {
+        return mActivity!!.getReqRespInterface()
     }
 
     fun getAccessToken(): String {
@@ -839,12 +839,15 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
             "Individual" -> {
                 selectedTherapyId = 3
             }
+
             "Teen" -> {
                 selectedTherapyId = 1
             }
+
             "Couple" -> {
                 selectedTherapyId = 2
             }
+
             "LGBTQ" -> {
                 selectedTherapyId = 4
             }
@@ -881,9 +884,11 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                                 "500" -> {
                                     displayToast("Something went wrong.. Please try after sometime")
                                 }
+
                                 "400" -> {
                                     displayToast("Something went wrong.. Please try after sometime")
                                 }
+
                                 "201" -> {
                                     replaceFragmentNoBackStack(
                                         QuestionnaireFragment.newInstance(selectedTherapy),
@@ -891,6 +896,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                                         QuestionnaireFragment.TAG
                                     )
                                 }
+
                                 "208" -> {
                                     replaceFragmentNoBackStack(
                                         QuestionnaireFragment.newInstance(selectedTherapy),
@@ -1307,9 +1313,11 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
             "Video" -> {
 
             }
+
             "Article" -> {
 
             }
+
             "Podcast" -> {
                 if (text.isNotEmpty() && link.isNotEmpty() && imgLink.isNotEmpty()) {
                     val imageUrl = BaseActivity.baseURL.dropLast(5) + imgLink
@@ -1342,6 +1350,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                         })
                 }
             }
+
             "Journal" -> {
                 if (text.isNotEmpty()) {
                     val shareIntent = Intent()
@@ -1358,6 +1367,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                     )
                 }
             }
+
             "Quote" -> {
                 if (text.isNotEmpty() && imgLink.isNotEmpty()) {
                     val imageUrl = BaseActivity.baseURL.dropLast(5) + imgLink
@@ -1639,7 +1649,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         handler.postDelayed(runnable!!, 1000)
     }
 
-    fun CheckBox.addClickableLink(
+    fun TextView.addClickableLink(
         fullText: String,
         linkText: SpannableString,
         callback: () -> Unit
@@ -1782,10 +1792,12 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                     matrix.postRotate(90F)
                     Log.d("EXIF", "Exif: $orientation")
                 }
+
                 3 -> {
                     matrix.postRotate(180F)
                     Log.d("EXIF", "Exif: $orientation")
                 }
+
                 8 -> {
                     matrix.postRotate(270F)
                     Log.d("EXIF", "Exif: $orientation")
@@ -1862,7 +1874,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                                 preference!![PrefKeys.PREF_EMAIL]!!,
                                 preference!![PrefKeys.PREF_PASS]!!
                             ) { result ->
-
+                                clearCache()
                             }
                         } else {
                             displayAfterLoginErrorMsg(error)
@@ -2035,6 +2047,133 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                     }, { error ->
                         hideProgress()
                         //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            clearCache()
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun detectSeverity(text: String): Boolean {
+        val keywords = listOf(
+            "suicide",
+            "kill myself",
+            "end my life",
+            "commit suicide",
+            "kill someone",
+            "murder",
+            "take a life",
+            "kill",
+            "Self harm",
+            "Depression",
+            "Despair",
+            "Hopelessness",
+            "cut down",
+            "hurt",
+            "put away",
+            "waste",
+            "finish",
+            "destroy",
+            "knock off",
+            "kill off",
+            "put down",
+            "self murder",
+            "homicide",
+            "killing",
+            "murdering",
+            "bloody",
+            "brutal",
+            "cruel",
+            "ruthless",
+            "violent",
+            "rubout",
+            "slaying",
+            "death"
+        )
+
+        // Preprocessing
+        val lowercaseText = text.toLowerCase()
+        val pattern = Pattern.compile("\\b\\w+\\b")
+        val matcher = pattern.matcher(lowercaseText)
+
+        // Keyword Matching
+        while (matcher.find()) {
+            val token = matcher.group()
+            if (keywords.contains(token)) {
+                return true  // Trigger Columbia Severity Rating screen
+            }
+        }
+        return false
+    }
+
+    fun sendCallLog(contactNo: String) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendCallLog(
+                        "PI0072",
+                        CallLog(preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(), contactNo),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            val sIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$contactNo"))
+                            startActivity(sIntent)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        if ((error as HttpException).code() == 401) {
+                            clearCache()
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun getUserDetails(userId: Int, myCallback: (result: String?) -> Unit) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .getUserBasicDetails(userId, getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            myCallback.invoke(responseBody)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
                         if ((error as HttpException).code() == 401) {
                             clearCache()
                         } else {

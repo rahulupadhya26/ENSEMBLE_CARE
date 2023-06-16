@@ -219,7 +219,9 @@ data class Register(
     val employee_id: String,
     val gender: String,
     val preffered_language: String,
-    val access_code: String = "XYZ123"
+    val access_code: String = "XYZ123",
+    val ethnicity: String,
+    val role: String
 ) : Parcelable
 
 data class SendOtp(
@@ -243,6 +245,11 @@ data class PaymentStatus(
 )
 
 data class PatientId(
+    val patient_id: Int,
+    val is_assign: String
+)
+
+data class Patient(
     val patient_id: Int
 )
 
@@ -373,6 +380,7 @@ data class ProfileData(
     val updated_at: String,
     val note: String,
     val preffered_language: String,
+    val role: String,
     val user: String,
     val parental_consent: String
 )
@@ -394,7 +402,9 @@ data class PartProfileData(
     val address1: String,
     val country: String,
     val gender: String?,
-    val preffered_language: String?
+    val preffered_language: String?,
+    val ethnicity: String?,
+    val role: String?
 )
 
 data class AppointmentReq(
@@ -827,7 +837,8 @@ data class YogaDashboard(
 data class Documents(
     val date: String,
     val Appointment: ArrayList<AppointmentDocumentData>?,
-    val Consents: ArrayList<ConsentsRoisDocumentData>?
+    val Consents: ArrayList<ConsentsRoisDocumentData>?,
+    val Forms: ArrayList<ConsentsRoisDocumentData>?
 ) : Parcelable
 
 @Parcelize
@@ -849,6 +860,7 @@ data class ConsentsRoisDocumentData(
     val pdf_url: String,
     val date: String,
     val time: String,
+    val category:String,
     val description: String,
     val title: String,
     val section: String
@@ -864,13 +876,16 @@ data class ToDoDashboard(
 @Parcelize
 data class ToDoData(
     val id: Int,
+    val assessment_link: String,
     val title: String,
     val description: String,
     val end_date: String,
     val created_on: String,
     val is_completed: Boolean,
+    val is_assign: String,
     val updated_on: String,
-    val patient_id: Int
+    val patient_id: Int,
+    val assessment: Int
 ) : Parcelable
 
 @Parcelize
@@ -1005,11 +1020,16 @@ data class CareDayTaskDetail(
 
 @Parcelize
 data class TaskDetails(
-    val name: String,
+    val yoga_name: String,
+    val nutrition_name: String,
+    val exercise_name: String,
+    val mindfulness_name: String,
+    val music_name: String,
     val category: String,
     val video: String,
     val image: String,
-    val type: String
+    val type: String,
+    val url: String
 ) : Parcelable
 
 @Parcelize
@@ -1122,7 +1142,8 @@ data class ConsentRoisFormsNotify(
 
 @Parcelize
 data class ConsentRoisPk(
-    val pk: Int
+    val pk: Int,
+    val category: String?
 ) : Parcelable
 
 data class FormSignature(
@@ -1299,4 +1320,68 @@ data class CareBuddyDashboard(
     val name: String,
     val phone: String,
     val pk: String
+) : Parcelable
+
+@Parcelize
+data class InterestData(
+    val interests: ArrayList<String>
+) : Parcelable
+
+@Parcelize
+data class SendSelectedEmail(
+    val email: String,
+    val relation: String = "carebuddy"
+) : Parcelable
+
+@Parcelize
+data class SendSelectedInterests(
+    val interests: ArrayList<String>
+) : Parcelable
+
+data class ToDoSignature(
+    val patient_signature: String
+)
+
+data class CallLog(
+    val client: Int,
+    val contact_no: String
+)
+
+data class NotificationType(
+    val type: String
+)
+
+data class ChatMsg(
+    val client: String,
+    val message: String,
+    val chat_room: String
+)
+
+data class PrevMsg(
+    val chat_room: String
+)
+
+@Parcelize
+data class ForumData(
+    val id: Int,
+    val name: String,
+    val created_at: String,
+    val updated_on: String,
+    val description: String,
+    val max_size: Int,
+    val image: String,
+    val admin: Int
+) : Parcelable
+
+@Parcelize
+data class ChatRoomMsgs(
+    val id: Int = 0,
+    val client_name: String = "",
+    val client_photo: String = "",
+    val user_id: Int = 0,
+    val message: String = "",
+    val created_at: String = "",
+    val updated_at: String = "",
+    val client: Int = 0,
+    val chat_room: Int = 0
 ) : Parcelable

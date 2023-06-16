@@ -18,7 +18,10 @@ import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.text.Html
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -27,18 +30,30 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.BuildConfig
 import com.app.selfcare.R
+import com.app.selfcare.adapters.CareBuddyAdapter
+import com.app.selfcare.data.CallLog
+import com.app.selfcare.data.CareBuddy
+import com.app.selfcare.data.FetchCareBuddyList
 import com.app.selfcare.databinding.FragmentCrisisManagementBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.utils.InternalLinkMovementMethod
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
+import java.lang.reflect.Type
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -51,7 +66,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CrisisManagementFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CrisisManagementFragment : BaseFragment() {
+class CrisisManagementFragment : BaseFragment(), InternalLinkMovementMethod.OnLinkClickedListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -95,24 +110,25 @@ class CrisisManagementFragment : BaseFragment() {
             replaceFragmentNoBackStack(
                 SettingsFragment(),
                 R.id.layout_home,
-                ProfileFragment.TAG
+                SettingsFragment.TAG
             )
         }
 
-        binding.txtCrisisCall.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtCrisisLifeLine.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtCrisisCall.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtCrisisLifeLine.movementMethod = InternalLinkMovementMethod(this)
         binding.txtCrisisTextLine.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtDisasterHelpline.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtNationalViolence.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtNationalChildAbuse.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtNationalSexualAssault.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtTransLifeLine.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtTrevorProject.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtElderDisability.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtVeteranCrisis.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtDisasterHelpline.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtNationalViolence.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtNationalChildAbuse.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtNationalSexualAssault.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtTransLifeLine.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtTrevorProject.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtElderDisability.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtVeteranCrisis.movementMethod = InternalLinkMovementMethod(this)
 
         checkLocationPermission()
 
+        binding.txtCrisisCall.movementMethod = InternalLinkMovementMethod(this)
     }
 
     private fun checkLocationPermission() {
@@ -322,9 +338,11 @@ class CrisisManagementFragment : BaseFragment() {
                 Activity.RESULT_OK -> {
                     getLocation()
                 }
+
                 Activity.RESULT_CANCELED -> {
                     enableGPS()
                 }
+
                 else -> {}
             }
         }
@@ -417,5 +435,12 @@ class CrisisManagementFragment : BaseFragment() {
         const val TAG = "Screen_Crisis_Management"
         private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
         private const val REQUEST_CHECK_SETTINGS = 15
+    }
+
+    override fun onLinkClicked(url: String?): Boolean {
+        if (!url!!.contains("http") && !url.contains("sms")) {
+            sendCallLog(url)
+        }
+        return false
     }
 }

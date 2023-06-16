@@ -2,7 +2,6 @@ package com.app.selfcare.fragment
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.telephony.PhoneNumberUtils
 import android.text.Editable
@@ -16,18 +15,16 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.app.selfcare.R
 import com.app.selfcare.data.AddCareBuddy
-import com.app.selfcare.data.PartProfileData
-import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
+import com.app.selfcare.data.SendSelectedEmail
 import com.app.selfcare.databinding.FragmentAddCareBuddyBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
-import com.app.selfcare.preference.PreferenceHelper.set
-import com.app.selfcare.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.util.*
+import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,6 +45,9 @@ class AddCareBuddyFragment : BaseFragment() {
     private var selectedRelationship: String = ""
     private var relationshipsData: Array<String>? = null
     private lateinit var binding: FragmentAddCareBuddyBinding
+    private var name = ""
+    private var email = ""
+    private var photo = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +83,41 @@ class AddCareBuddyFragment : BaseFragment() {
             popBackStack()
         }
 
-        binding.etCareBuddyPhoneNo.addTextChangedListener(object : PhoneNumberFormattingTextWatcher("US") {
+        binding.btnAddByEmail.setOnClickListener {
+            binding.layoutSearchByEmail.visibility = View.GONE
+            binding.btnSearchByEmail.visibility = View.VISIBLE
+            binding.btnAddByEmail.visibility = View.GONE
+            binding.scrollViewAddCareBuddy.visibility = View.VISIBLE
+            binding.layoutBottomSendInvitation.visibility = View.VISIBLE
+        }
+
+        binding.btnSearchByEmail.setOnClickListener {
+            binding.layoutSearchByEmail.visibility = View.VISIBLE
+            binding.btnSearchByEmail.visibility = View.GONE
+            binding.btnAddByEmail.visibility = View.VISIBLE
+            binding.scrollViewAddCareBuddy.visibility = View.GONE
+            binding.layoutBottomSendInvitation.visibility = View.GONE
+        }
+
+        binding.btnSearchEmail.setOnClickListener {
+            binding.layoutAddCompanion.visibility = View.GONE
+            if (isValidText(binding.etCareBuddySearchEmail)) {
+                searchByEmail()
+            } else {
+                setEditTextError(binding.etCareBuddySearchEmail, "Enter Email")
+            }
+        }
+
+        binding.btnAddEmail.setOnClickListener {
+            if (binding.checkboxSearchedEmail.isChecked) {
+                sendSelectedEmail()
+            } else {
+                displayMsg("Alert", "Please select the CareBuddy")
+            }
+        }
+
+        binding.etCareBuddyPhoneNo.addTextChangedListener(object :
+            PhoneNumberFormattingTextWatcher("US") {
             private var mFormatting = false
             private var mAfter = 0
 
@@ -235,6 +269,88 @@ class AddCareBuddyFragment : BaseFragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun searchByEmail() {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .searchByEmail(getText(binding.etCareBuddySearchEmail), getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            val jsonObj = JSONObject(responseBody)
+                            name = jsonObj.getString("name")
+                            email = jsonObj.getString("email")
+                            photo = jsonObj.getString("photo")
+                            binding.layoutAddCompanion.visibility = View.VISIBLE
+                            binding.checkboxSearchedEmail.isChecked = false
+                            binding.checkboxSearchedEmail.text = name
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            clearCache()
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    private fun sendSelectedEmail() {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .sendSelectedEmail(
+                        getText(binding.etCareBuddySearchEmail),
+                        SendSelectedEmail(email),
+                        getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            popBackStack()
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            clearCache()
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
     }
 
     private fun sendCareBuddyDetails() {

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
 import com.app.selfcare.adapters.AppointmentsAdapter
 import com.app.selfcare.adapters.EventCommunityAdapter
@@ -21,6 +22,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.reflect.Type
 
@@ -68,9 +70,20 @@ class EventsCommunityFragment : BaseFragment(), OnEventItemClickListener {
         getSubTitle().visibility = View.GONE
 
         displayEvents()
+
+        binding.cardViewAssistant.setOnClickListener {
+            replaceFragment(
+                CommonWebViewFragment.newInstance(
+                    BaseActivity.baseURL.dropLast(5) + "/patient/ai_assistant?client=" + preference!![PrefKeys.PREF_PATIENT_ID, ""],
+                    ""
+                ),
+                R.id.layout_home,
+                CommonWebViewFragment.TAG
+            )
+        }
     }
 
-    private fun displayEvents(){
+    private fun displayEvents() {
         getEventsList { response ->
             val eventCommunityType: Type = object : TypeToken<ArrayList<EventCommunity?>?>() {}.type
             val eventCommunityList: ArrayList<EventCommunity> =
@@ -154,6 +167,7 @@ class EventsCommunityFragment : BaseFragment(), OnEventItemClickListener {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_Events_Community"
     }
 

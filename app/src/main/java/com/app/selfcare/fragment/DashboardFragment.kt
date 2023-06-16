@@ -26,8 +26,10 @@ import com.app.selfcare.adapters.*
 import com.app.selfcare.controller.*
 import com.app.selfcare.data.*
 import com.app.selfcare.databinding.DialogAppointmentCancelledAlertBinding
+import com.app.selfcare.databinding.DialogDisplayReachOutSuccessBinding
 import com.app.selfcare.databinding.DialogInspirationBinding
 import com.app.selfcare.databinding.DialogPlanSubscriptionAlertBinding
+import com.app.selfcare.databinding.DialogReachOutAttentionBinding
 import com.app.selfcare.databinding.FragmentDashboardBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
@@ -91,6 +93,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
     private var apptCancelledAlertDialog: Dialog? = null
     private var isGetNotification: Boolean = false
     private lateinit var binding: FragmentDashboardBinding
+    private var notifyId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -338,6 +341,33 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
         }
     }
 
+    private fun displayReachOutSentSuccess(jsonObj: JSONObject) {
+        notifyId = jsonObj.getInt("id")
+        val phoneNo = jsonObj.getString("extra_data")
+        val reachOutAttentionDialog = Dialog(requireActivity())
+        reachOutAttentionDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        reachOutAttentionDialog.setCancelable(false)
+        reachOutAttentionDialog.setCanceledOnTouchOutside(false)
+        val reachOutAttentionStatus = DialogReachOutAttentionBinding.inflate(layoutInflater)
+        val view = reachOutAttentionStatus.root
+        reachOutAttentionDialog.setContentView(view)
+        reachOutAttentionStatus.txtReachOutAttentionName.text = jsonObj.getString("description")
+        reachOutAttentionStatus.txtReachOutPhoneNo.text = phoneNo
+        reachOutAttentionStatus.cardViewReachOutPhoneNo.setOnClickListener {
+            val sIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${phoneNo}"))
+            startActivity(sIntent)
+        }
+        reachOutAttentionStatus.cardViewReachOutAttention.setOnClickListener {
+            reachOutAttentionDialog.dismiss()
+            if (notifyId != 0)
+                updateNotificationStatus(notifyId) {
+                    val sIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${phoneNo}"))
+                    startActivity(sIntent)
+                }
+        }
+        reachOutAttentionDialog.show()
+    }
+
     private fun showMessageToUser() {
         val c = Calendar.getInstance()
         when (c[Calendar.HOUR_OF_DAY]) {
@@ -414,12 +444,21 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
         }
 
         binding.layoutResource.setOnClickListener {
-            clearPreviousFragmentStack()
-            replaceFragmentNoBackStack(
-                ResourcesFragment(),
-                R.id.layout_home,
-                ResourcesFragment.TAG
-            )
+            if (preference!![PrefKeys.PREF_INTEREST_SELECTED, false]!!) {
+                clearPreviousFragmentStack()
+                replaceFragmentNoBackStack(
+                    ResourcesFragment(),
+                    R.id.layout_home,
+                    ResourcesFragment.TAG
+                )
+            } else {
+                clearPreviousFragmentStack()
+                replaceFragmentNoBackStack(
+                    InterestFragment.newInstance("resources"),
+                    R.id.layout_home,
+                    InterestFragment.TAG
+                )
+            }
         }
 
         binding.layoutDocuments.setOnClickListener {
@@ -434,9 +473,9 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
         binding.layoutGoals.setOnClickListener {
             clearPreviousFragmentStack()
             replaceFragmentNoBackStack(
-                ToDoFragment(),
+                ToDoTabbedFragment(),
                 R.id.layout_home,
-                ToDoFragment.TAG
+                ToDoTabbedFragment.TAG
             )
         }
 
@@ -480,6 +519,11 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
     @SuppressLint("SetTextI18n")
     private fun displayAppointments() {
         binding.itemsSwipeToRefresh.isRefreshing = false
+        binding.cardViewShimmerAppointment.startShimmer()
+        binding.cardViewShimmerAppointment.visibility = View.VISIBLE
+        binding.cardViewAppointment.visibility = View.GONE
+        binding.txtNoAppointments.visibility = View.GONE
+        binding.txtViewAllAppointments.visibility = View.GONE
         getAppointmentList { response ->
             val appointmentType: Type =
                 object : TypeToken<GetAppointmentList?>() {}.type
@@ -758,6 +802,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
     @SuppressLint("SetTextI18n")
     private fun displayDashboardNotifications() {
         binding.itemsSwipeToRefresh.isRefreshing = false
+        binding.cardViewNotify.visibility = View.GONE
         var consentRoisCount = 0
         if (!isGetNotification) {
             isGetNotification = !isGetNotification
@@ -780,7 +825,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                 .contains("Appointment", ignoreCase = true)
                         ) {
                             displayAppointmentCancelledAlert(jsonObj)
-                        } else if (jsonObj.getString("title")
+                        } else if (jsonObj.getString("type")
                                 .contains("Consent", ignoreCase = true)
                         ) {
                             consentRoisCount += 1
@@ -789,7 +834,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                             val consentRoisNotify: ConsentRoisFormsNotify =
                                 Gson().fromJson(jsonObj.toString(), consentRoisNotifyType)
                             consentRoisFormsNotifyList.add(consentRoisNotify)
-                        } else if (jsonObj.getString("title")
+                        } else if (jsonObj.getString("type")
                                 .contains("ROI", ignoreCase = true)
                         ) {
                             consentRoisCount += 1
@@ -802,6 +847,10 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                 .contains("Plan", ignoreCase = true)
                         ) {
                             displayPlanSubscriptionAlert(jsonObj)
+                        } else if (jsonObj.getString("type")
+                                .contains("Reach Out", ignoreCase = true)
+                        ) {
+                            displayReachOutSentSuccess(jsonObj)
                         }
                     }
                     if (consentRoisCount > 0) {
@@ -893,7 +942,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                 preference!![PrefKeys.PREF_EMAIL]!!,
                                 preference!![PrefKeys.PREF_PASS]!!
                             ) { result ->
-                                getToken(appointment)
+                                clearCache()
                             }
                         } else {
                             displayAfterLoginErrorMsg(error)
@@ -1095,7 +1144,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                 preference!![PrefKeys.PREF_EMAIL]!!,
                                 preference!![PrefKeys.PREF_PASS]!!
                             ) { result ->
-                                displayAppointments()
+                                clearCache()
                             }
                         } else {
                             binding.cardViewShimmerAppointment.stopShimmer()
@@ -1143,7 +1192,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                                 preference!![PrefKeys.PREF_EMAIL]!!,
                                 preference!![PrefKeys.PREF_PASS]!!
                             ) { result ->
-                                cancelAppointment(appointment)
+                                clearCache()
                             }
                         } else {
                             displayAfterLoginErrorMsg(error)
@@ -1184,7 +1233,17 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                         }
                     }, { error ->
                         hideProgress()
-                        displayToast("Error ${error.localizedMessage}")
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            userLogin(
+                                preference!![PrefKeys.PREF_EMAIL]!!,
+                                preference!![PrefKeys.PREF_PASS]!!
+                            ) { result ->
+                                clearCache()
+                            }
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
                     })
             )
         }

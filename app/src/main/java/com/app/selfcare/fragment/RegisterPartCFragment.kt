@@ -93,7 +93,7 @@ class RegisterPartCFragment : BaseFragment() {
             popBackStack()
         }*/
 
-        binding.checkboxCoveredSelfPay.addClickableLink(
+        binding.txtCoveredSelfPay.addClickableLink(
             "I hereby acknowledge and agree to abide by the terms and conditions set forth by EnsembleCare.",
             SpannableString("terms and conditions")
         ) {
@@ -109,7 +109,7 @@ class RegisterPartCFragment : BaseFragment() {
             createRegisterTermsConditions.show()
         }
 
-        binding.checkboxCoveredEAP.addClickableLink(
+        binding.txtCoveredEAP.addClickableLink(
             "I hereby acknowledge and agree to abide by the terms and conditions set forth by EnsembleCare.",
             SpannableString("terms and conditions")
         ) {
@@ -125,7 +125,7 @@ class RegisterPartCFragment : BaseFragment() {
             createRegisterTermsConditions.show()
         }
 
-        binding.checkboxCoveredInsurance.addClickableLink(
+        binding.txtCoveredInsurance.addClickableLink(
             "I hereby acknowledge and agree to abide by the terms and conditions set forth by EnsembleCare.",
             SpannableString("terms and conditions")
         ) {

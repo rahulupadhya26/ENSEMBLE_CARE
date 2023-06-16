@@ -71,9 +71,9 @@ dependencies {
     }
     //noinspection GradleCompatible
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
     //noinspection GradleCompatible
@@ -83,8 +83,8 @@ dependencies {
     implementation 'android.arch.lifecycle:livedata:1.1.1'
     implementation 'android.arch.lifecycle:viewmodel:1.1.1'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
     testImplementation 'junit:junit:4.13.2'
     //noinspection GradleCompatible
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -105,21 +105,21 @@ dependencies {
     implementation 'com.scottyab:secure-preferences-lib:0.1.7'
     implementation "com.koushikdutta.ion:ion:2.1.8"
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
     implementation 'com.madgag.spongycastle:core:1.58.0.0'
     implementation 'com.madgag.spongycastle:prov:1.54.0.0'
     implementation 'com.madgag.spongycastle:pkix:1.54.0.0'
     implementation 'com.madgag.spongycastle:pg:1.54.0.0'
-    implementation 'io.agora.rtm:rtm-sdk:1.4.0'
+    implementation 'io.agora.rtm:rtm-sdk:1.4.10'
     implementation 'io.agora.rtc:full-sdk:4.0.1'
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.stripe:stripe-android:20.17.0'
-    implementation 'com.github.HaarigerHarald:android-youtubeExtractor:master-SNAPSHOT'
+    implementation 'com.github.HaarigerHarald:android-youtubeExtractor:v1.7.0'
     implementation('com.google.android.gms:play-services-fitness:21.1.0')
-    implementation('com.google.android.gms:play-services-auth:20.4.1')
+    implementation('com.google.android.gms:play-services-auth:20.5.0')
     implementation 'com.google.mlkit:image-labeling-custom:17.0.1'
     implementation 'com.google.mlkit:linkfirebase:17.0.0'
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")

@@ -83,17 +83,11 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
     }
 
     private fun onClickEvents() {
-        binding.toDoBack.setOnClickListener {
-            setBottomNavigation(null)
-            setLayoutBottomNavigation(null)
-            replaceFragmentNoBackStack(
-                BottomNavigationFragment(),
-                R.id.layout_home,
-                BottomNavigationFragment.TAG
-            )
+        binding.swipeRefreshLayoutPersonalToDO.setOnRefreshListener {
+            displayToDoList()
         }
 
-        binding.imgToDoAdd.setOnClickListener {
+        binding.cardViewToDoAdd.setOnClickListener {
             replaceFragment(
                 AddToDoFragment(),
                 R.id.layout_home,
@@ -103,13 +97,14 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
     }
 
     private fun displayToDoList() {
+        binding.swipeRefreshLayoutPersonalToDO.isRefreshing = false
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
                     .getToDoData(
                         "PI0009",
-                        PatientId(preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt()),
+                        PatientId(preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(), "False"),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())

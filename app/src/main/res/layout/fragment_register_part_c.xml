@@ -87,16 +87,25 @@
                 android:id="@+id/layoutCoveredSelfPay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_5dp"
+                android:layout_marginBottom="@dimen/_5dp">
 
                 <CheckBox
                     android:id="@+id/checkboxCoveredSelfPay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:paddingTop="@dimen/_2dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_14sp"
+                    android:paddingStart="@dimen/_20dp"/>
+
+                <TextView
+                    android:id="@+id/txtCoveredSelfPay"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5dp"
-                    android:layout_marginBottom="@dimen/_5dp"
-                    android:gravity="top"
-                    android:paddingTop="@dimen/_5dp"
                     android:text="@string/covered_self_pay"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
@@ -108,17 +117,26 @@
                 android:id="@+id/layoutCoveredInsurance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_5dp"
+                android:layout_marginBottom="@dimen/_5dp"
                 android:visibility="gone">
 
                 <CheckBox
                     android:id="@+id/checkboxCoveredInsurance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:paddingTop="@dimen/_2dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:paddingStart="@dimen/_20dp"
+                    android:textSize="@dimen/_14sp" />
+
+                <TextView
+                    android:id="@+id/txtCoveredInsurance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5dp"
-                    android:layout_marginBottom="@dimen/_5dp"
-                    android:gravity="top"
-                    android:paddingTop="@dimen/_5dp"
                     android:text="@string/covered_insurance"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
@@ -227,16 +245,24 @@
                     android:id="@+id/layoutCoveredEAP"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
 
                     <CheckBox
                         android:id="@+id/checkboxCoveredEAP"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:paddingTop="@dimen/_2dp"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp" />
+
+                    <TextView
+                        android:id="@+id/txtCoveredEAP"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_5dp"
-                        android:layout_marginBottom="@dimen/_5dp"
-                        android:gravity="top"
-                        android:paddingTop="@dimen/_5dp"
                         android:text="@string/covered_eap"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/black"

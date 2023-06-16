@@ -35,6 +35,7 @@ import com.app.selfcare.BaseActivity
 import com.app.selfcare.BuildConfig
 import com.app.selfcare.R
 import com.app.selfcare.adapters.MessageAdapter
+import com.app.selfcare.controller.OnBottomReachedListener
 import com.app.selfcare.controller.OnMessageClickListener
 import com.app.selfcare.data.FileDetails
 import com.app.selfcare.data.GetAppointment
@@ -79,7 +80,7 @@ private const val ARG_PARAM4 = "param4"
  * Use the [VideoCallFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class VideoCallFragment : BaseFragment(), OnMessageClickListener {
+class VideoCallFragment : BaseFragment(), OnMessageClickListener, OnBottomReachedListener {
     // TODO: Rename and change types of parameters
     private var appointment: GetAppointment? = null
     private var RTC_TOKEN: String? = null
@@ -835,7 +836,8 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
                 mMessageBeanList,
                 this,
                 preference!![PrefKeys.PREF_PHOTO, ""]!!,
-                appointment!!.doctor_photo
+                appointment!!.doctor_photo,
+                this
             )
             onlineChatView.chatMessageList.layoutManager = layoutManager
             onlineChatView.chatMessageList.adapter = mMessageAdapter
@@ -1378,5 +1380,9 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener {
         } else {
             onlineChatView.webViewGroupVideoFile.loadUrl(BaseActivity.baseURL.dropLast(5) + mMsgArr[1])
         }
+    }
+
+    override fun onBottomReached(position: Int) {
+
     }
 }

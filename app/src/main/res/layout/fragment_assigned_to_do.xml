@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:id="@+id/swipeRefreshLayoutAssignedToDo"
+    tools:context=".fragment.AssignedToDoFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewAssignedToDoList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp"
+            android:layoutAnimation="@anim/layout_animation_slide_from_bottom"/>
+
+        <TextView
+            android:id="@+id/txtNoAssignedToDoList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/_10dp"
+            android:gravity="center"
+            android:padding="@dimen/_10dp"
+            android:text="Currently you don't have any Assigned ToDo's\n"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/localBackground"
+            android:textSize="@dimen/_16sp"
+            android:visibility="gone"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -49,7 +49,12 @@ class ToDoDataListAdapter(
             val item = list[position]
             radioButtonToDo.text = item.title
             txtToDoTitle.text = item.title
-            txtToDoDesc.text = item.description
+            if (item.description != null) {
+                txtToDoDesc.visibility = View.VISIBLE
+                txtToDoDesc.text = item.description
+            } else {
+                txtToDoDesc.visibility = View.GONE
+            }
             val endDate = DateUtils(item.end_date + " 00:00:00")
             val toDoUpdatedDate = DateUtils(item.updated_on.replace("-", " "))
             /*if (DateMethods().isToday(endDate.mDate)) {
@@ -91,6 +96,14 @@ class ToDoDataListAdapter(
                 radioButtonToDo.isChecked = false
                 layoutCompletedToDo.visibility = View.GONE
                 layoutNotCompletedToDo.visibility = View.VISIBLE
+            }
+
+            if (item.is_assign == "True") {
+                imgToDoDeleteMenu.visibility = View.GONE
+                imgToDoMenu.visibility = View.GONE
+            } else {
+                imgToDoDeleteMenu.visibility = View.VISIBLE
+                imgToDoMenu.visibility = View.VISIBLE
             }
 
             radioButtonToDo.setOnClickListener {

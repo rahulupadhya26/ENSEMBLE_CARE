@@ -1,9 +1,11 @@
 package com.app.selfcare.fragment
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -25,6 +27,7 @@ import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.DateUtils
+import com.app.selfcare.utils.InternalLinkMovementMethod
 import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -48,7 +51,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [QuestionnaireFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
+class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLinkMovementMethod.OnLinkClickedListener {
     // TODO: Rename and change types of parameters
     private var therapy: String? = null
     private var param2: String? = null
@@ -134,17 +137,17 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
             setQuestion()
         }*/
         
-        binding.txtCall911.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtSuicideCrisisLifeLine.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtCall911.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtSuicideCrisisLifeLine.movementMethod = InternalLinkMovementMethod(this)
         binding.txtResourceCrisisTextLine.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtDisasterDistressHelpLine.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtTransLifeLine.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtResourceTrevorProject.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtResourceNationalViolence.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtResourceNationalChildAbuse.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtResourceNationalSexualAssault.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtResourceElderDisability.movementMethod = LinkMovementMethod.getInstance()
-        binding.txtResourceVeteranCrisis.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtDisasterDistressHelpLine.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtTransLifeLine.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResourceTrevorProject.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResourceNationalViolence.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResourceNationalChildAbuse.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResourceNationalSexualAssault.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResourceElderDisability.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResourceVeteranCrisis.movementMethod = InternalLinkMovementMethod(this)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -2922,5 +2925,11 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener {
             displayToast("Error while reading the file.")
         }
         return stringBuilder.toString()
+    }
+
+    override fun onLinkClicked(url: String?): Boolean {
+        val sIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$url"))
+        startActivity(sIntent)
+        return false
     }
 }

@@ -70,6 +70,8 @@ class ViewFormsFragment : BaseFragment() {
         if (consentsRoisDocumentData != null) {
             if (consentsRoisDocumentData!!.title.contains("Consents")) {
                 binding.txtViewFormName.text = "Consent form"
+            } else if (consentsRoisDocumentData!!.title.contains("Forms")) {
+                binding.txtViewFormName.text = "Forms"
             } else {
                 binding.txtViewFormName.text = "ROI form"
             }
@@ -121,8 +123,12 @@ class ViewFormsFragment : BaseFragment() {
             }
         }
 
-        val docUrl = if (consentsRoisDocumentData!!.title.contains("Consents")) {
+        val docUrl = if (consentsRoisDocumentData!!.title.contains("Consents", ignoreCase = true)) {
             BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentsRoisDocumentData!!.description + "/" + consentsRoisDocumentData!!.pk + "/" + getAccessToken().drop(
+                7
+            )
+        } else if (consentsRoisDocumentData!!.title.contains("Forms", ignoreCase = true)) {
+            BaseActivity.baseURL.dropLast(5) + "/patient/form_mobile/" + consentsRoisDocumentData!!.description + "/" + consentsRoisDocumentData!!.pk + "/" + getAccessToken().drop(
                 7
             )
         } else {

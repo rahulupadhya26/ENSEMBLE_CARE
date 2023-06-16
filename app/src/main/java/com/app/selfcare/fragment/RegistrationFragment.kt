@@ -5,10 +5,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
-import android.text.TextUtils.isEmpty
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -17,13 +15,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.data.Register
-import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
 import com.app.selfcare.databinding.FragmentRegistrationBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.utils.Utils
 import com.google.gson.Gson
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,6 +42,10 @@ class RegistrationFragment : BaseFragment() {
     private var genderData: Array<String>? = null
     private var selectedPrefLang: String? = null
     private var prefLangData: Array<String>? = null
+    private var selectedEthnicity: String? = null
+    private var ethnicityData: Array<String>? = null
+    private var selectedStatus: String? = null
+    private var statusData: Array<String>? = null
     private var register: Register? = null
     private var selectedTherapy: String? = null
     private lateinit var binding: FragmentRegistrationBinding
@@ -94,6 +94,8 @@ class RegistrationFragment : BaseFragment() {
 
         genderSpinner()
         preferredLangSpinner()
+        statusSpinner()
+        ethnicitySpinner()
         setDobCalender()
 
         onClickEvents()
@@ -254,6 +256,124 @@ class RegistrationFragment : BaseFragment() {
         }
     }
 
+    private fun statusSpinner() {
+        try {
+            statusData = resources.getStringArray(R.array.status)
+
+            val adapter = object : ArrayAdapter<String>(
+                requireActivity(),
+                R.layout.spinner_dropdown_custom_item, statusData!!
+            ) {
+                override fun isEnabled(position: Int): Boolean {
+                    return position != 0
+                }
+
+                override fun getDropDownView(
+                    position: Int,
+                    convertView: View?,
+                    parent: ViewGroup
+                ): View {
+                    val view: TextView =
+                        super.getDropDownView(position, convertView, parent) as TextView
+                    //set the color of first item in the drop down list to gray
+                    if (position == 0) {
+                        view.setTextColor(Color.GRAY)
+                    } else {
+                        //here it is possible to define color for other items by
+                        //view.setTextColor(Color.BLACK)
+                    }
+                    return view
+                }
+            }
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_custom_item)
+            binding.spinnerSignUpStatus.adapter = adapter
+            if (Utils.gender.isNotEmpty()) {
+                Handler().postDelayed({
+                    if (binding.spinnerSignUpStatus != null)
+                        binding.spinnerSignUpStatus.setSelection(statusData!!.indexOf(Utils.role))
+                }, 300)
+            }
+            binding.spinnerSignUpStatus.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?, position: Int, id: Long
+                ) {
+                    val value = parent.getItemAtPosition(position).toString()
+                    if (value == statusData!![0]) {
+                        (view as TextView).setTextColor(Color.GRAY)
+                    }
+                    selectedStatus = statusData!![position]
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // write code to perform some action
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun ethnicitySpinner() {
+        try {
+            ethnicityData = resources.getStringArray(R.array.ethnicity)
+
+            val adapter = object : ArrayAdapter<String>(
+                requireActivity(),
+                R.layout.spinner_dropdown_custom_item, ethnicityData!!
+            ) {
+                override fun isEnabled(position: Int): Boolean {
+                    return position != 0
+                }
+
+                override fun getDropDownView(
+                    position: Int,
+                    convertView: View?,
+                    parent: ViewGroup
+                ): View {
+                    val view: TextView =
+                        super.getDropDownView(position, convertView, parent) as TextView
+                    //set the color of first item in the drop down list to gray
+                    if (position == 0) {
+                        view.setTextColor(Color.GRAY)
+                    } else {
+                        //here it is possible to define color for other items by
+                        //view.setTextColor(Color.BLACK)
+                    }
+                    return view
+                }
+            }
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_custom_item)
+            binding.spinnerSignUpEthnicity.adapter = adapter
+            if (Utils.gender.isNotEmpty()) {
+                Handler().postDelayed({
+                    if (binding.spinnerSignUpEthnicity != null)
+                        binding.spinnerSignUpEthnicity.setSelection(ethnicityData!!.indexOf(Utils.ethnicity))
+                }, 300)
+            }
+            binding.spinnerSignUpEthnicity.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?, position: Int, id: Long
+                ) {
+                    val value = parent.getItemAtPosition(position).toString()
+                    if (value == ethnicityData!![0]) {
+                        (view as TextView).setTextColor(Color.GRAY)
+                    }
+                    selectedEthnicity = ethnicityData!![position]
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // write code to perform some action
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         genderSpinner()
@@ -295,27 +415,36 @@ class RegistrationFragment : BaseFragment() {
                     if (binding.txtSignupDob.text.toString().isNotEmpty()) {
                         if (selectedGender!! != "Gender") {
                             if (selectedPrefLang!! != "Language") {
-                                when (selectedTherapy) {
-                                    "Teen" -> {
-                                        if (getAge(binding.txtSignupDob.text.toString()) in 13..17) {
-                                            storeAndNavigateToNextScreen()
-                                        } else {
-                                            displayMsg(
-                                                "Alert",
-                                                "Age must be greater than 12 years and less than 18 years."
-                                            )
+                                if (selectedEthnicity!! != "Ethnicity") {
+                                    if (selectedStatus!! != "Military Status") {
+                                        when (selectedTherapy) {
+                                            "Teen" -> {
+                                                if (getAge(binding.txtSignupDob.text.toString()) in 13..17) {
+                                                    storeAndNavigateToNextScreen()
+                                                } else {
+                                                    displayMsg(
+                                                        "Alert",
+                                                        "Age must be greater than 12 years and less than 18 years."
+                                                    )
+                                                }
+                                            }
+
+                                            else -> {
+                                                if (getAge(binding.txtSignupDob.text.toString()) > 18) {
+                                                    storeAndNavigateToNextScreen()
+                                                } else {
+                                                    displayMsg(
+                                                        "Alert",
+                                                        "Age must be more than 18 years."
+                                                    )
+                                                }
+                                            }
                                         }
+                                    } else {
+                                        displayMsg("Alert", "Select the Military Status")
                                     }
-                                    else -> {
-                                        if (getAge(binding.txtSignupDob.text.toString()) > 18) {
-                                            storeAndNavigateToNextScreen()
-                                        } else {
-                                            displayMsg(
-                                                "Alert",
-                                                "Age must be more than 18 years."
-                                            )
-                                        }
-                                    }
+                                } else {
+                                    displayMsg("Alert", "Select the Ethnicity")
                                 }
                             } else {
                                 displayMsg("Alert", "Select the preferred language")
@@ -358,6 +487,8 @@ class RegistrationFragment : BaseFragment() {
         Utils.ssn = getText(binding.etSignUpSSN).replace("-", "")
         Utils.gender = selectedGender!!
         Utils.prefLang = selectedPrefLang!!
+        Utils.ethnicity = selectedEthnicity!!
+        Utils.role = selectedStatus!!
         Utils.dob = binding.txtSignupDob.text.toString()
         replaceFragment(
             RegisterPartBFragment(),

@@ -287,7 +287,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Birth date"
+                    android:text="Birth Date"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_14sp"
@@ -323,6 +323,56 @@
 
                 <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/spinnerProfileGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:imeOptions="actionNext"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:textSize="@dimen/_16sp"
+                    android:cursorVisible="false"
+                    android:completionThreshold="0"
+                    android:clickable="true"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ethnicity"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_14sp"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp"/>
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/spinnerProfileEthnicity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:imeOptions="actionNext"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:textSize="@dimen/_16sp"
+                    android:cursorVisible="false"
+                    android:completionThreshold="0"
+                    android:clickable="true"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Military Status"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_14sp"
+                    android:layout_marginStart="@dimen/_5dp"
+                    android:layout_marginEnd="@dimen/_5dp"
+                    android:layout_marginTop="@dimen/_5dp"/>
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/spinnerProfileRole"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"

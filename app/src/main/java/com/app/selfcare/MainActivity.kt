@@ -41,6 +41,7 @@ import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
+import com.app.selfcare.services.SelfCareService
 import com.app.selfcare.utils.NSFWDetector
 import com.app.selfcare.utils.NetworkConnection
 import com.app.selfcare.utils.Utils
@@ -114,6 +115,14 @@ class MainActivity : BaseActivity(), IController {
             handleClick(item.itemId)
             false
         }
+
+        if (!Utils.isServiceRunning(this, SelfCareService::class.java)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(Intent(this, SelfCareService::class.java))
+            } else {
+                startService(Intent(this, SelfCareService::class.java))
+            }
+        }
         if (!checkPermission()) {
             requestPermission(permissionCode)
         }
@@ -185,6 +194,7 @@ class MainActivity : BaseActivity(), IController {
             R.id.drawer_img_back -> {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
             }
+
             R.id.ic_menu -> {
                 binding.drawerLayout.openDrawer(GravityCompat.START)
             }
@@ -197,6 +207,7 @@ class MainActivity : BaseActivity(), IController {
                 //sendEventLog("", Utils.NAV_LOGOUT)
                 displayConfirmPopup()
             }
+
             R.id.nav_consent -> {
                 replaceFragment(
                     ConsentsListFragment(),
@@ -243,6 +254,10 @@ class MainActivity : BaseActivity(), IController {
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
                 == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+                == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+                == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 == PackageManager.PERMISSION_GRANTED)
     }
 
@@ -257,7 +272,9 @@ class MainActivity : BaseActivity(), IController {
                 Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.ACTIVITY_RECOGNITION,
                 Manifest.permission.READ_CALENDAR,
-                Manifest.permission.WRITE_CALENDAR
+                Manifest.permission.WRITE_CALENDAR,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.POST_NOTIFICATIONS
             ),
             id
         )
@@ -575,6 +592,7 @@ class MainActivity : BaseActivity(), IController {
                     imageView!!.setImageDrawable(null)
                     imageView!!.setImageResource(R.drawable.user_pic)
                 }
+
                 "Insurance" -> {
                     imageView!!.setImageDrawable(null)
                     imageView!!.setImageResource(R.drawable.plusnew)
@@ -599,6 +617,7 @@ class MainActivity : BaseActivity(), IController {
                     selectedOption = 0
                     uploadPicture()
                 }
+
                 1 -> {
                     selectedOption = 1
                     captureImage()
@@ -637,12 +656,14 @@ class MainActivity : BaseActivity(), IController {
                             Toast.makeText(this, "This is an obscene image", Toast.LENGTH_SHORT)
                                 .show()
                         }
+
                         Utils.LABEL_NSFW -> {
                             Glide.with(this)
                                 .load(File(fileName))
                                 .into(imageView!!)
                             //Toast.makeText(this, "SFW with confidence: $confidence", Toast.LENGTH_SHORT).show()
                         }
+
                         else -> {
                             Toast.makeText(
                                 this,

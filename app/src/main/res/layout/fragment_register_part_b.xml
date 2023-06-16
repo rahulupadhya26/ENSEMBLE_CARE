@@ -224,15 +224,42 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/checkboxRegisterTermsConditions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:paddingTop="@dimen/_2dp"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp"
+                        android:paddingStart="@dimen/_20dp"/>
+
+                    <TextView
+                        android:id="@+id/txtRegisterTermsConditions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/register_part_2"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp" />
+
+                </LinearLayout>
+
                 <CheckBox
-                    android:id="@+id/checkboxRegisterTermsConditions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/register_part_2"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
-                    android:paddingStart="@dimen/_10dp"
-                    android:textSize="@dimen/_14sp" />
+                    android:paddingStart="@dimen/_20dp"
+                    android:textSize="@dimen/_14sp"
+                    android:visibility="gone"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"

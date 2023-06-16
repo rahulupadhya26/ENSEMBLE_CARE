@@ -98,7 +98,6 @@ open class BaseActivity : AppCompatActivity(), IFragment {
     }
 
     fun getEncryptedRequestInterface(): RequestInterface {
-
         val httpClient = getHttpClient()
 
         //Encryption Interceptor
@@ -143,15 +142,18 @@ open class BaseActivity : AppCompatActivity(), IFragment {
         return httpClient
     }
 
-    fun getSyncHealthRequestInterface(configUrl: String): RequestInterface {
-
+    fun getReqRespInterface(): RequestInterface {
         val httpClient = getHttpClient()
+        //Encryption Interceptor
+        val encryptionInterceptor = EncryptionInterceptor(EncryptionImpl())
         //Decryption Interceptor
-        val commonInterceptor = CommonInterceptor()
-        httpClient.addInterceptor(commonInterceptor)
+        val decryptionInterceptor = DecryptionInterceptor(DecryptionImpl())
+
+        httpClient.addInterceptor(encryptionInterceptor)
+        httpClient.addInterceptor(decryptionInterceptor)
 
         return Retrofit.Builder()
-            .baseUrl(configUrl).client(httpClient.build())
+            .baseUrl(baseURL.dropLast(5)).client(httpClient.build())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(RequestInterface::class.java)

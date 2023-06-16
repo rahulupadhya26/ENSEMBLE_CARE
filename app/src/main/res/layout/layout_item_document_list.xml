@@ -165,4 +165,48 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layoutDocumentFormsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/layoutDocumentForms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/document_box"
+            android:layout_margin="@dimen/_10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Forms"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/_16sp" />
+
+            <ImageView
+                android:layout_width="@dimen/_30dp"
+                android:layout_height="@dimen/_30dp"
+                android:layout_gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/_5dp"
+                android:src="@drawable/more_than" />
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewFormsView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15dp"
+            android:layout_marginEnd="@dimen/_15dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
 </LinearLayout>

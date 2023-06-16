@@ -2,6 +2,7 @@ package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import android.view.View
 import java.text.SimpleDateFormat
@@ -10,13 +11,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.app.selfcare.R
+import com.app.selfcare.data.ConsentRoisFormsNotify
+import com.app.selfcare.data.ConsentRoisPk
 import com.app.selfcare.data.CreateJournal
 import com.app.selfcare.databinding.FragmentCreateJournalBinding
 import com.app.selfcare.preference.PrefKeys
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import com.app.selfcare.preference.PreferenceHelper.get
+import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.DateUtils
+import com.google.gson.Gson
 import retrofit2.HttpException
 import java.lang.Exception
 
@@ -149,7 +154,32 @@ class CreateJournalFragment : BaseFragment() {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            popBackStack()
+                            if(detectSeverity(getText(binding.editTxtJournal))) {
+                                preference!![PrefKeys.PREF_IS_COLUMBIA_SEVERITY] = ""
+                                val consentRoisFormsNotifyList: ArrayList<ConsentRoisFormsNotify> =
+                                    arrayListOf()
+                                val consentRoisPk = ConsentRoisPk(
+                                    pk = 0,
+                                    category = "form_mobile"
+                                )
+                                val consentRoisFormsNotify = ConsentRoisFormsNotify(
+                                    id = 0,
+                                    title = "Columbia Suicide Severity Form",
+                                    type="consent_form",
+                                    description="columbia_suicide_severity_screen",
+                                    extra_data = consentRoisPk
+                                )
+                                consentRoisFormsNotifyList.add(consentRoisFormsNotify)
+                                preference!![PrefKeys.PREF_IS_COLUMBIA_SEVERITY] = Gson().toJson(consentRoisFormsNotifyList)
+                                popBackStack()
+                                replaceFragment(
+                                    ConsentRoisSignFragment.newInstance(consentRoisFormsNotifyList, true),
+                                    R.id.layout_home,
+                                    ConsentRoisSignFragment.TAG
+                                )
+                            } else {
+                                popBackStack()
+                            }
                         } catch (e: Exception) {
                             hideProgress()
                             displayToast("Something went wrong.. Please try after sometime")

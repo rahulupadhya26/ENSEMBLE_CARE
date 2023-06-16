@@ -106,7 +106,7 @@ class RegisterPartBFragment : BaseFragment() {
             }
         })
 
-        binding.checkboxRegisterTermsConditions.addClickableLink(
+        binding.txtRegisterTermsConditions.addClickableLink(
             "I hereby acknowledge and agree to abide by the terms and conditions set forth by EnsembleCare.",
             SpannableString("terms and conditions")
         ) {

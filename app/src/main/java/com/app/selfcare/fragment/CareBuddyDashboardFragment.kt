@@ -10,15 +10,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.selfcare.BaseActivity
 import com.app.selfcare.R
-import com.app.selfcare.adapters.CareBuddyAdapter
 import com.app.selfcare.adapters.CareBuddyDashboardAdapter
 import com.app.selfcare.controller.OnCareBuddyDashboardItemClickListener
-import com.app.selfcare.controller.OnCareBuddyItemClickListener
-import com.app.selfcare.data.CareBuddy
 import com.app.selfcare.data.CareBuddyDashboard
-import com.app.selfcare.data.FetchCareBuddyList
 import com.app.selfcare.databinding.FragmentCareBuddyDashboardBinding
-import com.app.selfcare.databinding.FragmentLoginBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.bumptech.glide.Glide
@@ -232,7 +227,11 @@ class CareBuddyDashboardFragment : BaseFragment(), OnCareBuddyDashboardItemClick
         const val TAG = "Screen_Care_Buddy_Dashboard"
     }
 
-    override fun onCareBuddyDashboardItemClickListener(careBuddyDashboard: CareBuddyDashboard) {
-
+    override fun onCareBuddyDashboardItemClickListener(careBuddyDashboard: CareBuddyDashboard, isCall: Boolean, isChat: Boolean) {
+        replaceFragment(
+            CareBuddyCarePlanFragment.newInstance(careBuddyDashboard),
+            R.id.layout_home,
+            CareBuddyCarePlanFragment.TAG
+        )
     }
 }

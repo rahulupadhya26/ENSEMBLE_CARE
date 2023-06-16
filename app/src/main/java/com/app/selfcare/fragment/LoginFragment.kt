@@ -98,16 +98,31 @@ class LoginFragment : BaseFragment() {
         binding.btnLogin.setOnClickListener {
             if (getText(binding.editUsername).isNotEmpty()) {
                 if (getText(binding.editPassword).isNotEmpty()) {
-                    userLogin(getText(binding.editUsername), getText(binding.editPassword)) { result ->
-                        Utils.isLoggedInFirstTime = true
-                        preference!![PrefKeys.PREF_IS_REMEMBER_ME] = binding.checkBoxKeepMeSignedIn.isChecked
-                        setBottomNavigation(null)
-                        setLayoutBottomNavigation(null)
-                        replaceFragmentNoBackStack(
-                            BottomNavigationFragment(),
-                            R.id.layout_home,
-                            BottomNavigationFragment.TAG
-                        )
+                    userLogin(
+                        getText(binding.editUsername),
+                        getText(binding.editPassword)
+                    ) { result ->
+                        val selectedPlan = preference!![PrefKeys.PREF_SELECTED_PLAN, ""]
+                        if (selectedPlan != "null" && selectedPlan!!.isNotEmpty()) {
+                            Utils.isLoggedInFirstTime = true
+                            preference!![PrefKeys.PREF_IS_REMEMBER_ME] =
+                                binding.checkBoxKeepMeSignedIn.isChecked
+                            setBottomNavigation(null)
+                            setLayoutBottomNavigation(null)
+                            replaceFragmentNoBackStack(
+                                BottomNavigationFragment(),
+                                R.id.layout_home,
+                                BottomNavigationFragment.TAG
+                            )
+                        } else {
+                            preference!![PrefKeys.PREF_STEP] = Utils.REGISTER
+                            preference!![PrefKeys.PREF_REG] = null
+                            replaceFragmentNoBackStack(
+                                RegisterPartCFragment(),
+                                R.id.layout_home,
+                                RegisterPartCFragment.TAG
+                            )
+                        }
                     }
                 } else {
                     setEditTextError(binding.editPassword, "Password cannot be blank.")
@@ -120,8 +135,12 @@ class LoginFragment : BaseFragment() {
         binding.btnCareBuddyLogin.setOnClickListener {
             if (getText(binding.editCareBuddyEmail).isNotEmpty()) {
                 if (getText(binding.editCareBuddyPassword).isNotEmpty()) {
-                    careBuddyLogin(getText(binding.editCareBuddyEmail), getText(binding.editCareBuddyPassword)) { result ->
-                        preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME] = binding.checkBoxCareBuddyKeepMeSignedIn.isChecked
+                    careBuddyLogin(
+                        getText(binding.editCareBuddyEmail),
+                        getText(binding.editCareBuddyPassword)
+                    ) { result ->
+                        preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME] =
+                            binding.checkBoxCareBuddyKeepMeSignedIn.isChecked
                         replaceFragmentNoBackStack(
                             CareBuddyDashboardFragment(),
                             R.id.layout_home,
@@ -149,7 +168,7 @@ class LoginFragment : BaseFragment() {
         }
     }
 
-    private fun loadLoginData(){
+    private fun loadLoginData() {
         if (preference!![PrefKeys.PREF_IS_REMEMBER_ME, false]!!) {
             binding.checkBoxKeepMeSignedIn.isChecked = true
             binding.editUsername.setText(preference!![PrefKeys.PREF_EMAIL, ""]!!)

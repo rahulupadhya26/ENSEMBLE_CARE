@@ -153,6 +153,7 @@
                                 android:textColor="#BE1414"
                                 android:textSize="@dimen/_12sp"
                                 android:textStyle="bold"
+                                android:paddingBottom="@dimen/_5dp"
                                 android:text="Missed by provider/you"
                                 android:visibility="gone"/>
 
@@ -165,6 +166,7 @@
                                 android:textSize="@dimen/_12sp"
                                 android:textStyle="bold"
                                 android:text="Cancelled"
+                                android:paddingBottom="@dimen/_5dp"
                                 android:visibility="gone"/>
 
                         </LinearLayout>

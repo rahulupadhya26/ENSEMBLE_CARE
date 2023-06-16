@@ -167,7 +167,7 @@ class AppointmentsAdapter(
                 holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
             } else {
                 if (item.appointment!!.status != null) {
-                    when (item.appointment!!.status) {
+                    when (item.appointment.status) {
                         5 -> {
                             holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
                             holder.binding.txtCancelledAppt.visibility = View.VISIBLE

@@ -7,9 +7,11 @@ import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.Location
+import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.IBinder
+import android.os.SystemClock
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -37,6 +39,8 @@ import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONArray
+import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -58,6 +62,8 @@ class SelfCareService : Service() {
     val context: Context = this
     var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
     private var preference: SharedPreferences? = null
+    private lateinit var alarmManager: AlarmManager
+    private lateinit var pendingIntent: PendingIntent
 
     private val fitnessOptions = FitnessOptions.builder()
         .addDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)
@@ -80,11 +86,11 @@ class SelfCareService : Service() {
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
         val notification = notificationBuilder.setOngoing(true)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.mipmap.ic_launcher))
+            .setSmallIcon(R.mipmap.ic_ensemble_care)
+            .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.mipmap.ic_ensemble_care))
             .setPriority(NotificationCompat.PRIORITY_MIN)
             .setCategory(Notification.CATEGORY_SERVICE)
-            .setContentTitle("DiscoverTx")
+            .setContentTitle("EnsembleCare Services")
             .build()
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
             startForeground(1, notification)
@@ -143,29 +149,18 @@ class SelfCareService : Service() {
 
     private fun initialiseTimerTask() {
         timerTask = object : TimerTask() {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun run() {
                 //Log.i(TAG, "Timer is running " + counter++)
                 //Check if journals is added or not, If not added then send notification
-                checkForJournals()
+                //checkForJournals()
                 //Check if personal goals is added or not, If not added then send notification
-                checkForPersonalGoal()
+                //checkForPersonalGoal()
                 //Getting running logs of Health - Steps, distance, calories and heart rate
-                readData()
-                /*//Getting location update of user
-                LocationHelper().startListeningUserLocation(
-                    context, object : MyLocationListener {
-                        override fun onLocationChanged(location: Location?) {
-                            mLocation = location
-                            mLocation?.let {
-                                latitude = it.latitude.toString()
-                                longitude = it.longitude.toString()
-                                //Log.i(TAG, "Latitude: $latitude")
-                                //Log.i(TAG, "Longitude: $longitude")
-                            }
-                        }
-                    })*/
+                //readData()
                 //Post the running logs and location details to server
-                postBackgroundData()
+                //postBackgroundData()
+                getDashboardNotifications()
             }
         }
     }
@@ -178,12 +173,88 @@ class SelfCareService : Service() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getDashboardNotifications() {
+        mCompositeDisposable.add(
+            getEncryptedRequestInterface()
+                .getDashboardNotification("Bearer " + preference!![PrefKeys.PREF_ACCESS_TOKEN, ""]!!)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    try {
+                        var responseBody = result.string()
+                        Log.d("Response Body", responseBody)
+                        val respBody = responseBody.split("|")
+                        val status = respBody[1]
+                        responseBody = respBody[0]
+                        val jsonArr = JSONArray(responseBody)
+                        for (i in 0 until jsonArr.length()) {
+                            val jsonObj = jsonArr.getJSONObject(i)
+                            if (jsonObj.getString("type")
+                                    .contains("Reach Out", ignoreCase = true)
+                            ) {
+                                preference!![PrefKeys.PREF_NOTIFY_ID] = jsonObj.getString("id")
+                                createNotifyChannel(
+                                    jsonObj.getString("title"),
+                                    jsonObj.getString("description")
+                                )
+                                setAlarm(
+                                    jsonObj.getString("title"),
+                                    jsonObj.getString("description")
+                                )
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }, { error ->
+                    Log.e(TAG, error.localizedMessage.toString())
+                })
+        )
+    }
+
+    private fun createNotifyChannel(name: String?, desc: String?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel("ReachOut", name, importance)
+            channel.description = desc
+            channel.enableVibration(true)
+            channel.enableLights(true)
+            channel.lightColor = Color.RED
+            channel.vibrationPattern = longArrayOf(1000, 1000, 1000, 1000, 1000)
+            val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALL)
+            val audioAttributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build()
+            channel.setSound(soundUri, audioAttributes)
+            channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun setAlarm(name: String?, desc: String?) {
+        alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, AlarmReceiver::class.java)
+        intent.putExtra("name", name)
+        intent.putExtra("desc", desc)
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        alarmManager.set(
+            AlarmManager.RTC_WAKEUP,
+            SystemClock.elapsedRealtime() + (1 * 3000),
+            pendingIntent
+        )
+    }
+
     private fun postBackgroundData() {
         try {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .sendHealthInfo("",
-                        HealthInfo(preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
+                    .sendHealthInfo(
+                        "",
+                        HealthInfo(
+                            preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
                             totalSteps.toInt(),
                             totalDistance.toInt(),
                             totalCalories.toInt(),
@@ -340,7 +411,7 @@ class SelfCareService : Service() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
             this, 0 /* Request code */, intent,
-            PendingIntent.FLAG_ONE_SHOT
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
         )
         val channelId = getString(R.string.app_name)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)

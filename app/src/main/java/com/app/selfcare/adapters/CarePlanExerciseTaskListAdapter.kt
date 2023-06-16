@@ -52,13 +52,13 @@ class CarePlanExerciseTaskListAdapter(
             val item = list[position]
 
             txtExerciseCompletedTaskTitle.text = item.duration
-            txtExerciseCompletedTaskSubTitle.text = item.task_detail.details.name
+            txtExerciseCompletedTaskSubTitle.text = item.task_detail.details.exercise_name
 
             txtExercisePendingTaskTitle.text = item.duration
-            txtExercisePendingTaskSubTitle.text = item.task_detail.details.name
+            txtExercisePendingTaskSubTitle.text = item.task_detail.details.exercise_name
 
             txtExercisePendingLaterTaskTitle.text = item.duration
-            txtExercisePendingLaterTaskSubTitle.text = item.task_detail.details.name
+            txtExercisePendingLaterTaskSubTitle.text = item.task_detail.details.exercise_name
 
             if (item.is_completed) {
                 layoutExercisePendingTask.visibility = View.GONE

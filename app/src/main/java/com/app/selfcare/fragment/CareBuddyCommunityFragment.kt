@@ -1,17 +1,26 @@
 package com.app.selfcare.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.selfcare.R
 import com.app.selfcare.adapters.CareBuddyAdapter
+import com.app.selfcare.adapters.CareBuddyCommunityDashboardAdapter
+import com.app.selfcare.controller.OnCareBuddyDashboardItemClickListener
 import com.app.selfcare.controller.OnCareBuddyItemClickListener
 import com.app.selfcare.data.CareBuddy
+import com.app.selfcare.data.CareBuddyDashboard
 import com.app.selfcare.data.FetchCareBuddyList
+import com.app.selfcare.data.NotificationType
 import com.app.selfcare.databinding.FragmentCareBuddyCommunityBinding
 import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
@@ -32,11 +41,13 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CareBuddyCommunityFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CareBuddyCommunityFragment : BaseFragment(), OnCareBuddyItemClickListener {
+class CareBuddyCommunityFragment : BaseFragment(), OnCareBuddyDashboardItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentCareBuddyCommunityBinding
+    private var careBuddyList: ArrayList<CareBuddyDashboard> = arrayListOf()
+    private var adapter: CareBuddyCommunityDashboardAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,36 +78,41 @@ class CareBuddyCommunityFragment : BaseFragment(), OnCareBuddyItemClickListener 
 
         displayCareBuddy()
 
-        binding.cardViewListAddCareBuddy.setOnClickListener {
-            replaceFragment(
-                AddCareBuddyFragment(),
-                R.id.layout_home,
-                AddCareBuddyFragment.TAG
-            )
-        }
+        binding.etCareBuddySearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+            }
 
-        binding.cardViewAddCareBuddy.setOnClickListener {
-            replaceFragment(
-                AddCareBuddyFragment(),
-                R.id.layout_home,
-                AddCareBuddyFragment.TAG
-            )
-        }
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                if (editable.toString().isNotEmpty())
+                    filterOne(editable.toString())
+                else
+                    binding.recyclerViewCareBuddyList.apply {
+                        layoutManager =
+                            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+                        adapter = CareBuddyCommunityDashboardAdapter(
+                            mActivity!!,
+                            careBuddyList, this@CareBuddyCommunityFragment
+                        )
+                    }
+            }
+        })
     }
 
     private fun displayCareBuddy() {
         fetchAddCareBuddy { response ->
-            val careBuddyType: Type = object : TypeToken<ArrayList<CareBuddy?>?>() {}.type
-            val careBuddyList: ArrayList<CareBuddy> =
-                Gson().fromJson(response, careBuddyType)
+            val careBuddyType: Type = object : TypeToken<ArrayList<CareBuddyDashboard?>?>() {}.type
+            careBuddyList = Gson().fromJson(response, careBuddyType)
             if (careBuddyList.isNotEmpty()) {
                 binding.layoutListCareBuddy.visibility = View.VISIBLE
                 binding.recyclerViewCareBuddyList.visibility = View.VISIBLE
-                binding.cardViewListAddCareBuddy.visibility = View.VISIBLE
                 binding.layoutAddCareBuddy.visibility = View.GONE
                 binding.recyclerViewCareBuddyList.apply {
-                    layoutManager = GridLayoutManager(mActivity!!, 2)
-                    adapter = CareBuddyAdapter(
+                    layoutManager =
+                        LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+                    adapter = CareBuddyCommunityDashboardAdapter(
                         requireActivity(),
                         careBuddyList, this@CareBuddyCommunityFragment
                     )
@@ -104,21 +120,21 @@ class CareBuddyCommunityFragment : BaseFragment(), OnCareBuddyItemClickListener 
             } else {
                 binding.recyclerViewCareBuddyList.visibility = View.GONE
                 binding.layoutListCareBuddy.visibility = View.GONE
-                binding.cardViewListAddCareBuddy.visibility = View.GONE
                 binding.layoutAddCareBuddy.visibility = View.VISIBLE
             }
         }
     }
 
     private fun fetchAddCareBuddy(myCallback: (result: String?) -> Unit) {
+        binding.layoutListCareBuddy.visibility = View.VISIBLE
+        binding.shimmerCareBuddy.startShimmer()
+        binding.shimmerCareBuddy.visibility = View.VISIBLE
+        binding.recyclerViewCareBuddyList.visibility = View.GONE
+        binding.layoutAddCareBuddy.visibility = View.GONE
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .getCareBuddyData(
-                        "PI0069",
-                        FetchCareBuddyList(preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt()),
-                        getAccessToken()
-                    )
+                    .getCareBuddyDashboardData(getAccessToken())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -154,6 +170,36 @@ class CareBuddyCommunityFragment : BaseFragment(), OnCareBuddyItemClickListener 
         handler.postDelayed(runnable!!, 1000)
     }
 
+    private fun filterOne(text: String) {
+        val filteredNames = ArrayList<CareBuddyDashboard>()
+        careBuddyList.filterTo(filteredNames) {
+            it.name.toLowerCase().contains(
+                text.toLowerCase()
+            )
+        }
+
+        if (text.isEmpty()) {
+            binding.recyclerViewCareBuddyList.apply {
+                layoutManager =
+                    LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+                adapter = CareBuddyCommunityDashboardAdapter(
+                    mActivity!!,
+                    careBuddyList, this@CareBuddyCommunityFragment
+                )
+            }
+        } else {
+            val layoutManager =
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+            adapter = CareBuddyCommunityDashboardAdapter(
+                mActivity!!,
+                careBuddyList, this
+            )
+            adapter!!.filterList(filteredNames)
+            binding.recyclerViewCareBuddyList.layoutManager = layoutManager
+            binding.recyclerViewCareBuddyList.adapter = adapter
+        }
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -176,11 +222,22 @@ class CareBuddyCommunityFragment : BaseFragment(), OnCareBuddyItemClickListener 
         const val TAG = "Screen_CareBuddy_Community"
     }
 
-    override fun onCareBuddyItemClickListener(careBuddy: CareBuddy) {
-        replaceFragment(
-            ViewCareBuddyFragment.newInstance(careBuddy),
-            R.id.layout_home,
-            ViewCareBuddyFragment.TAG
-        )
+    override fun onCareBuddyDashboardItemClickListener(
+        careBuddyDashboard: CareBuddyDashboard,
+        isCall: Boolean,
+        isChat: Boolean
+    ) {
+        if (isCall) {
+            val sIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${careBuddyDashboard.phone}"))
+            startActivity(sIntent)
+        } else if (isChat) {
+
+        } else {
+            replaceFragment(
+                CareBuddyCarePlanFragment.newInstance(careBuddyDashboard),
+                R.id.layout_home,
+                CareBuddyCarePlanFragment.TAG
+            )
+        }
     }
 }

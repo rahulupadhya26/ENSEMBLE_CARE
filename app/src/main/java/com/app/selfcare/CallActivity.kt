@@ -37,6 +37,7 @@ import com.app.selfcare.adapters.MessageAdapter
 import com.app.selfcare.adapters.SmallVideoViewAdapter
 import com.app.selfcare.controller.AGEventHandler
 import com.app.selfcare.controller.DuringCallEventHandler
+import com.app.selfcare.controller.OnBottomReachedListener
 import com.app.selfcare.controller.OnMessageClickListener
 import com.app.selfcare.crypto.DecryptionImpl
 import com.app.selfcare.crypto.EncryptionImpl
@@ -76,7 +77,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener {
+class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener,
+    OnBottomReachedListener {
     // should only be modified under UI thread
     private val mUidsList = HashMap<Int, SurfaceView>() // uid = 0 || uid == EngineConfig.mUid
     var mLayoutType = LAYOUT_TYPE_DEFAULT
@@ -1128,7 +1130,8 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
                 mMessageBeanList,
                 this,
                 preference!![PrefKeys.PREF_PHOTO, ""]!!,
-                ""
+                "",
+                this
             )
             dialogBinding.chatMessageList.layoutManager = layoutManager
             dialogBinding.chatMessageList.adapter = mMessageAdapter
@@ -1581,5 +1584,9 @@ class CallActivity : BaseClass(), DuringCallEventHandler, OnMessageClickListener
         } else {
             dialogBinding.webViewGroupVideoFile.loadUrl(BaseActivity.baseURL.dropLast(5) + mMsgArr[1])
         }
+    }
+
+    override fun onBottomReached(position: Int) {
+
     }
 }

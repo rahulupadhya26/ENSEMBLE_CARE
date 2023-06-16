@@ -284,6 +284,7 @@ class ResourcesFragment : BaseFragment(), OnPodcastItemClickListener {
                 }
                 binding.layoutVideoList2.visibility = View.GONE
             } else if (videoList.size >= 2) {
+                isFavouriteVideo1 = videoList[0].is_favourite
                 isFavouriteVideo2 = videoList[1].is_favourite
                 binding.layoutVideoList1.visibility = View.VISIBLE
                 setVideoImage(videoList[0], binding.videoBanner1)
