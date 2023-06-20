@@ -11,6 +11,7 @@ import com.app.selfcare.R
 import com.app.selfcare.adapters.CarePlanDayListAdapter
 import com.app.selfcare.adapters.CarePlanMusicTaskListAdapter
 import com.app.selfcare.controller.OnCarePlanDayItemClickListener
+import com.app.selfcare.controller.OnCarePlanTaskViewClickListener
 import com.app.selfcare.data.CareDayIndividualTaskDetail
 import com.app.selfcare.data.DayWiseCarePlan
 import com.app.selfcare.databinding.FragmentActivityCarePlanBinding
@@ -29,7 +30,8 @@ private const val ARG_PARAM2 = "param2"
  * Use the [MusicCarePlanFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MusicCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener {
+class MusicCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
+    OnCarePlanTaskViewClickListener {
     // TODO: Rename and change types of parameters
     private var musicCarePlanDayNumber: Int = 0
     private var param2: String? = null
@@ -96,7 +98,7 @@ class MusicCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener {
             )
             adapter = CarePlanMusicTaskListAdapter(
                 mActivity!!,
-                musicTaskDetails
+                musicTaskDetails, this@MusicCarePlanFragment
             )
         }
     }
@@ -126,5 +128,36 @@ class MusicCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener {
     override fun onCarePlanDayItemClickListener(dayNumber: Int) {
         selectedDayNo = dayNumber
         getMusicCarePlanTaskDetails(selectedDayNo)
+    }
+
+    override fun onCarePlanTaskViewClickListener(careDayIndividualTaskDetail: CareDayIndividualTaskDetail) {
+        when (careDayIndividualTaskDetail.task_detail.details.type) {
+            "Video" -> {
+                replaceFragment(
+                    VideoDetailFragment.newInstance(
+                        null,
+                        careDayIndividualTaskDetail.task_detail.details.url
+                    ),
+                    R.id.layout_home,
+                    VideoDetailFragment.TAG
+                )
+            }
+
+            "Podcast" -> {
+                replaceFragment(
+                    PodcastDetailFragment.newInstance(
+                        null,
+                        "",
+                        careDayIndividualTaskDetail.task_detail.details.url
+                    ),
+                    R.id.layout_home,
+                    PodcastDetailFragment.TAG
+                )
+            }
+
+            "Article" -> {
+
+            }
+        }
     }
 }

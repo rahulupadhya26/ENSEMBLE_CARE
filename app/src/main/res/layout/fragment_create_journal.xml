@@ -16,7 +16,6 @@
         android:layout_margin="@dimen/_10dp">
 
         <RelativeLayout
-            android:id="@+id/createJournalBack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -24,6 +23,7 @@
             android:layout_marginBottom="@dimen/_5dp">
 
             <ImageView
+                android:id="@+id/createJournalBack"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="@dimen/_10dp"
@@ -281,16 +281,24 @@
         android:id="@+id/fabSpeechToText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/_20dp"
         android:layout_marginBottom="@dimen/_40dp"
         android:backgroundTint="@color/white"
         android:contentDescription="@string/app_name"
-        app:borderWidth="0dp"
-        app:maxImageSize="30dp"
-        app:srcCompat="@android:drawable/ic_menu_call"
-        app:tint="@color/primaryGreen"
+        app:srcCompat="@drawable/mute_img"
+        app:maxImageSize="@dimen/_30dp"
+        app:tint="@color/primaryGreen"/>
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/btn_unmute"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:layout_marginBottom="@dimen/_40dp"
         android:visibility="gone"/>
 
 </RelativeLayout>

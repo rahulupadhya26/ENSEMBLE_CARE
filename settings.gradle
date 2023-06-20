@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 rootProject.name = "SelfCare"
 include ':app'
 include ':agorauikit_android'
+include ':youtubeExtractor'

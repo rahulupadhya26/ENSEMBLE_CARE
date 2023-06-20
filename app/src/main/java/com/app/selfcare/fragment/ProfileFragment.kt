@@ -296,58 +296,59 @@ class ProfileFragment : BaseFragment() {
                     if (getText(binding.spinnerProfileGender).isNotEmpty()) {
                         if (getText(binding.spinnerProfileEthnicity).isNotEmpty()) {
                             if (getText(binding.spinnerProfileRole).isNotEmpty()) {
-                            //if (getText(etProfileCity).isNotEmpty()) {
-                            //if (getText(etProfileState).isNotEmpty()) {
-                            //if (getText(etProfileAddress).isNotEmpty()) {
-                            //if (getText(etProfileZipcode).isNotEmpty()) {
-                            if (binding.txtProfileDob.text.toString().isNotEmpty()) {
-                                when (preference!![PrefKeys.PREF_SELECTED_THERAPY, ""]!!) {
-                                    "Teen" -> {
-                                        if (getAge(binding.txtProfileDob.text.toString()) in 13..17) {
-                                            updateProfileData()
-                                        } else {
-                                            displayMsg(
-                                                "Alert",
-                                                "Age must be greater than 12 years and less than 18 years."
-                                            )
+                                //if (getText(etProfileCity).isNotEmpty()) {
+                                //if (getText(etProfileState).isNotEmpty()) {
+                                //if (getText(etProfileAddress).isNotEmpty()) {
+                                //if (getText(etProfileZipcode).isNotEmpty()) {
+                                updateProfileData()
+                                /*if (binding.txtProfileDob.text.toString().isNotEmpty()) {
+                                    when (preference!![PrefKeys.PREF_SELECTED_THERAPY, ""]!!) {
+                                        "Teen" -> {
+                                            if (getAge(binding.txtProfileDob.text.toString()) in 13..17) {
+                                                updateProfileData()
+                                            } else {
+                                                displayMsg(
+                                                    "Alert",
+                                                    "Age must be greater than 12 years and less than 18 years."
+                                                )
+                                            }
                                         }
-                                    }
 
-                                    else -> {
-                                        if (getAge(binding.txtProfileDob.text.toString()) > 18) {
-                                            updateProfileData()
-                                        } else {
-                                            displayMsg(
-                                                "Alert",
-                                                "Age must be more than 18 years."
-                                            )
+                                        else -> {
+                                            if (getAge(binding.txtProfileDob.text.toString()) > 18) {
+                                                updateProfileData()
+                                            } else {
+                                                displayMsg(
+                                                    "Alert",
+                                                    "Age must be more than 18 years."
+                                                )
+                                            }
                                         }
                                     }
-                                }
-                            } else {
-                                displayMsg("Alert", "Date of birth cannot be blank")
-                            }
-                            /*} else {
-                                setEditTextError(
-                                    etProfileZipcode,
-                                    "ZipCode cannot be empty!"
-                                )
-                            }*/
-                            /*} else {
-                                setEditTextError(
-                                    etProfileAddress,
-                                    "Address cannot be empty!"
-                                )
-                            }*/
-                            /*} else {
-                                setEditTextError(
-                                    etProfileState,
-                                    "State cannot be empty!"
-                                )
-                            }*/
-                            /*} else {
-                                setEditTextError(etProfileCity, "City cannot be empty!")
-                            }*/
+                                } else {
+                                    displayMsg("Alert", "Date of birth cannot be blank")
+                                }*/
+                                /*} else {
+                                    setEditTextError(
+                                        etProfileZipcode,
+                                        "ZipCode cannot be empty!"
+                                    )
+                                }*/
+                                /*} else {
+                                    setEditTextError(
+                                        etProfileAddress,
+                                        "Address cannot be empty!"
+                                    )
+                                }*/
+                                /*} else {
+                                    setEditTextError(
+                                        etProfileState,
+                                        "State cannot be empty!"
+                                    )
+                                }*/
+                                /*} else {
+                                    setEditTextError(etProfileCity, "City cannot be empty!")
+                                }*/
                             } else {
                                 displayMsg("Alert", "Select the Military Status")
                             }

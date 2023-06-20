@@ -48,7 +48,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
 import retrofit2.HttpException
+import java.text.SimpleDateFormat
 import java.util.ArrayList
+import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -191,14 +193,17 @@ class ForumChatRoomFragment : BaseFragment(), OnChatRoomMessageClickListener,
                         for (chatRoomMsg in mChatRoomMsgs) {
                             if (peerId!!.toInt() == chatRoomMsg.user_id) {
                                 isFound = true
+                                val dateTimeFormat = "MM/dd/yyyy-HH:mm:ss"
+                                val sdf = SimpleDateFormat(dateTimeFormat)
+                                val formattedDate = sdf.format(Calendar.getInstance().time)
                                 roomMsg = ChatRoomMsgs(
                                     chatRoomMsg.id,
                                     chatRoomMsg.client_name,
                                     chatRoomMsg.client_photo,
                                     chatRoomMsg.user_id,
                                     message!!.text,
-                                    "",
-                                    "",
+                                    formattedDate,
+                                    formattedDate,
                                     chatRoomMsg.client,
                                     chatRoomMsg.chat_room
                                 )
@@ -636,6 +641,9 @@ class ForumChatRoomFragment : BaseFragment(), OnChatRoomMessageClickListener,
             runOnUiThread {
                 var isFound = false
                 var roomMsg = ChatRoomMsgs()
+                val dateTimeFormat = "MM/dd/yyyy-HH:mm:ss"
+                val sdf = SimpleDateFormat(dateTimeFormat)
+                val formattedDate = sdf.format(Calendar.getInstance().time)
                 for (chatRoomMsg in mChatRoomMsgs) {
                     if (fromMember.userId.toInt() == chatRoomMsg.user_id) {
                         isFound = true
@@ -645,8 +653,8 @@ class ForumChatRoomFragment : BaseFragment(), OnChatRoomMessageClickListener,
                             chatRoomMsg.client_photo,
                             chatRoomMsg.user_id,
                             message.text,
-                            "",
-                            "",
+                            formattedDate,
+                            formattedDate,
                             chatRoomMsg.client,
                             chatRoomMsg.chat_room
                         )
@@ -662,8 +670,8 @@ class ForumChatRoomFragment : BaseFragment(), OnChatRoomMessageClickListener,
                             jsonObject.getString("photo"),
                             fromMember.userId!!.toInt(),
                             message.text,
-                            "",
-                            "",
+                            formattedDate,
+                            formattedDate,
                             fromMember.userId.toInt(),
                             forumData!!.id
                         )

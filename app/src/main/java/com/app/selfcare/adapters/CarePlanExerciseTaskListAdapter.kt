@@ -5,21 +5,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.app.selfcare.R
 import com.app.selfcare.controller.OnCarePlanPendingTaskItemClickListener
+import com.app.selfcare.controller.OnCarePlanTaskViewClickListener
 import com.app.selfcare.data.CareDayIndividualTaskDetail
 import com.app.selfcare.databinding.LayoutItemCarePlanExerciseTaskBinding
-import com.app.selfcare.databinding.LayoutItemGoalBinding
-import com.skydoves.progressview.ProgressView
 
 class CarePlanExerciseTaskListAdapter(
     private val context: Context,
     private val list: ArrayList<CareDayIndividualTaskDetail>,
-    private val adapterClick: OnCarePlanPendingTaskItemClickListener
+    private val adapterClick: OnCarePlanPendingTaskItemClickListener,
+    private val itemClick: OnCarePlanTaskViewClickListener
 ) :
     RecyclerView.Adapter<CarePlanExerciseTaskListAdapter.ViewHolder>() {
 
@@ -98,6 +94,10 @@ class CarePlanExerciseTaskListAdapter(
                 } else {
                     progressExercisePendingLaterTask.visibility = View.GONE
                 }
+            }
+
+            layoutExercisePendingTaskBox.setOnClickListener {
+                itemClick.onCarePlanTaskViewClickListener(item)
             }
 
             cardViewExercisePendingTask.setOnClickListener {

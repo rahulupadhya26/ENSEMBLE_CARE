@@ -15,8 +15,8 @@ import at.huber.youtubeExtractor.YouTubeExtractor
 import at.huber.youtubeExtractor.YtFile
 import com.app.selfcare.MainActivity
 import com.app.selfcare.R
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -28,14 +28,14 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 
 class ExpoPlayerUtils {
 
-    private var player: SimpleExoPlayer? = null
+    private var player: ExoPlayer? = null
     private var currentWindow = 0
     private var playbackPosition: Long = 0
     private var fullscreen = false
     private var playWhenReady: Boolean = true
 
     fun initializePlayer(context: Context, playerView: PlayerView, videoUrl: String?) {
-        player = SimpleExoPlayer.Builder(context).build()
+        player = ExoPlayer.Builder(context).build()
         playerView.player = player
 
         if (videoUrl!!.contains("youtube")) {
@@ -166,7 +166,7 @@ class ExpoPlayerUtils {
                         e.printStackTrace()
                     }
                 }
-            }.extract(youtubeLink, true, true)
+            }.extract(youtubeLink)
         } catch (e: Exception) {
             e.printStackTrace()
         }

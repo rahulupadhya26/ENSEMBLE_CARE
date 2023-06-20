@@ -60,6 +60,16 @@
             android:name=".services.SelfCareService"
             android:enabled="true" />
 
+        <service
+            android:name=".services.PushNotificationService"
+            android:exported="false">
+            <intent-filter>
+                <action
+                    android:name="com.google.firebase.MESSAGING_EVENT">
+                </action>
+            </intent-filter>
+        </service>
+
         <receiver android:name=".services.AlarmReceiver"/>
 
         <receiver

@@ -51,7 +51,8 @@ class CareBuddyCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener
     private var careBuddy: CareBuddyDashboard? = null
     private var param2: String? = null
     private lateinit var binding: FragmentCareBuddyCarePlanBinding
-    private var selectedDayNo: Int = 1
+    private var selectedDayNo: Int = 0
+    private lateinit var mAdapter: CarePlanDayListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +83,9 @@ class CareBuddyCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener
 
         onClickEvents()
 
-        selectedDayNo = 1
+        binding.swipeRefreshCareBuddyCarePlan.setOnRefreshListener {
+            displayCareBuddyCarePlanData()
+        }
 
         displayCareBuddyCarePlanData()
 
@@ -109,12 +112,18 @@ class CareBuddyCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener
 
     @SuppressLint("SetTextI18n")
     private fun displayCareBuddyCarePlanData() {
+        binding.swipeRefreshCareBuddyCarePlan.isRefreshing = false
         getCareBuddyCarePlanDayWiseData { response ->
             val carePlanType: Type =
                 object : TypeToken<CarePlans?>() {}.type
             val carePlanList: CarePlans =
                 Gson().fromJson(response, carePlanType)
             if (carePlanList.days.isNotEmpty()) {
+                selectedDayNo = if (carePlanList.current_day <= carePlanList.days.size) {
+                    carePlanList.current_day
+                } else {
+                    1
+                }
                 binding.recyclerViewCarePlanDayList.visibility = View.VISIBLE
                 binding.recyclerViewCarePlanDayWiseData.visibility = View.VISIBLE
                 binding.txtNoCarePlanAssigned.visibility = View.GONE
@@ -127,7 +136,6 @@ class CareBuddyCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener
                         carePlanList.days.size, selectedDayNo, "", this@CareBuddyCarePlanFragment
                     )
                 }
-
                 callCareBuddyDayWiseCarePlanData(selectedDayNo)
             } else {
                 binding.recyclerViewCarePlanDayList.visibility = View.GONE
@@ -145,7 +153,15 @@ class CareBuddyCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener
                 object : TypeToken<DayWiseCarePlan?>() {}.type
             val dayWiseCarePlan: DayWiseCarePlan =
                 Gson().fromJson(response, dayWiseCarePlanType)
-
+            binding.recyclerViewCarePlanDayList.apply {
+                layoutManager = LinearLayoutManager(
+                    requireActivity(), RecyclerView.HORIZONTAL, false
+                )
+                adapter = CarePlanDayListAdapter(
+                    mActivity!!,
+                    dayWiseCarePlan.total_days, dayNo, "", this@CareBuddyCarePlanFragment
+                )
+            }
             val tasks: ArrayList<CareDayIndividualTaskDetail> = arrayListOf()
             if (dayWiseCarePlan.plan.tasks.yoga != null && dayWiseCarePlan.plan.tasks.yoga.isNotEmpty())
                 tasks.addAll(dayWiseCarePlan.plan.tasks.yoga)
@@ -278,6 +294,7 @@ class CareBuddyCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener
     }
 
     override fun onCarePlanDayItemClickListener(dayNumber: Int) {
+        selectedDayNo = dayNumber
         callCareBuddyDayWiseCarePlanData(dayNumber)
     }
 

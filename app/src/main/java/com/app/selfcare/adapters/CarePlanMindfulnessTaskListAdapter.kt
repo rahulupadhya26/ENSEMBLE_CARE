@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnCarePlanPendingTaskItemClickListener
+import com.app.selfcare.controller.OnCarePlanTaskViewClickListener
 import com.app.selfcare.data.CareDayIndividualTaskDetail
 import com.app.selfcare.databinding.LayoutItemCarePlanMindfulnessTaskBinding
 import com.app.selfcare.databinding.LayoutItemGoalBinding
@@ -19,7 +20,8 @@ import com.skydoves.progressview.ProgressView
 class CarePlanMindfulnessTaskListAdapter(
     private val context: Context,
     private val list: ArrayList<CareDayIndividualTaskDetail>,
-    private val adapterClick: OnCarePlanPendingTaskItemClickListener
+    private val adapterClick: OnCarePlanPendingTaskItemClickListener,
+    private val itemClick: OnCarePlanTaskViewClickListener
 ) :
     RecyclerView.Adapter<CarePlanMindfulnessTaskListAdapter.ViewHolder>() {
 
@@ -98,6 +100,10 @@ class CarePlanMindfulnessTaskListAdapter(
                 } else {
                     progressMindfulnessPendingLaterTask.visibility = View.GONE
                 }
+            }
+
+            layoutMindfulnessPendingTaskBox.setOnClickListener {
+                itemClick.onCarePlanTaskViewClickListener(item)
             }
 
             cardViewMindfulnessPendingTask.setOnClickListener {

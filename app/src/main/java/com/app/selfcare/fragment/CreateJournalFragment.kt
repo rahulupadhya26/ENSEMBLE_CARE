@@ -1,29 +1,31 @@
 package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
-import androidx.fragment.app.Fragment
-import android.view.View
-import java.text.SimpleDateFormat
-import java.util.*
+import android.speech.RecognizerIntent
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.app.selfcare.R
 import com.app.selfcare.data.ConsentRoisFormsNotify
 import com.app.selfcare.data.ConsentRoisPk
 import com.app.selfcare.data.CreateJournal
 import com.app.selfcare.databinding.FragmentCreateJournalBinding
 import com.app.selfcare.preference.PrefKeys
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.DateUtils
 import com.google.gson.Gson
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
-import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -65,7 +67,7 @@ class CreateJournalFragment : BaseFragment() {
         return R.layout.fragment_create_journal
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
@@ -113,6 +115,28 @@ class CreateJournalFragment : BaseFragment() {
             popBackStack()
         }*/
 
+        binding.fabSpeechToText.setOnClickListener {
+            // Get the Intent action
+            val sttIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            // Language model defines the purpose, there are special models for other use cases, like search.
+            sttIntent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            // Adding an extra language, you can use any language from the Locale class.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            // Text that shows up on the Speech input prompt.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
+            try {
+                // Start the intent for a result, and pass in our request code.
+                startActivityForResult(sttIntent, REQUEST_CODE_STT)
+            } catch (e: ActivityNotFoundException) {
+                // Handling error when the service is not available.
+                e.printStackTrace()
+                displayToast("Your device does not support STT.")
+            }
+        }
+
         binding.createJournalBack.setOnClickListener {
             if (getText(binding.editTxtJournalTitle).isNotEmpty()) {
                 if (getText(binding.editTxtJournal).isNotEmpty()) {
@@ -125,6 +149,32 @@ class CreateJournalFragment : BaseFragment() {
             } else {
                 //setEditTextError(edit_txt_journal_title, "Title cannot be empty!")
                 popBackStack()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            // Handle the result for our request code.
+            REQUEST_CODE_STT -> {
+                // Safety checks to ensure data is available.
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    // Retrieve the result array.
+                    val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    // Ensure result array is not null or empty to avoid errors.
+                    if (!result.isNullOrEmpty()) {
+                        // Recognized text is in the first position.
+                        val recognizedText = result[0]
+                        // Do what you want with the recognized text.
+                        val text = getText(binding.editTxtJournal)
+                        if (text.isEmpty()) {
+                            binding.editTxtJournal.setText("$text$recognizedText")
+                        } else {
+                            binding.editTxtJournal.setText("$text $recognizedText")
+                        }
+                    }
+                }
             }
         }
     }
@@ -154,7 +204,7 @@ class CreateJournalFragment : BaseFragment() {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            if(detectSeverity(getText(binding.editTxtJournal))) {
+                            if (detectSeverity(getText(binding.editTxtJournal))) {
                                 preference!![PrefKeys.PREF_IS_COLUMBIA_SEVERITY] = ""
                                 val consentRoisFormsNotifyList: ArrayList<ConsentRoisFormsNotify> =
                                     arrayListOf()
@@ -165,15 +215,19 @@ class CreateJournalFragment : BaseFragment() {
                                 val consentRoisFormsNotify = ConsentRoisFormsNotify(
                                     id = 0,
                                     title = "Columbia Suicide Severity Form",
-                                    type="consent_form",
-                                    description="columbia_suicide_severity_screen",
+                                    type = "consent_form",
+                                    description = "columbia_suicide_severity_screen",
                                     extra_data = consentRoisPk
                                 )
                                 consentRoisFormsNotifyList.add(consentRoisFormsNotify)
-                                preference!![PrefKeys.PREF_IS_COLUMBIA_SEVERITY] = Gson().toJson(consentRoisFormsNotifyList)
+                                preference!![PrefKeys.PREF_IS_COLUMBIA_SEVERITY] =
+                                    Gson().toJson(consentRoisFormsNotifyList)
                                 popBackStack()
                                 replaceFragment(
-                                    ConsentRoisSignFragment.newInstance(consentRoisFormsNotifyList, true),
+                                    ConsentRoisSignFragment.newInstance(
+                                        consentRoisFormsNotifyList,
+                                        true
+                                    ),
                                     R.id.layout_home,
                                     ConsentRoisSignFragment.TAG
                                 )
@@ -223,5 +277,6 @@ class CreateJournalFragment : BaseFragment() {
             }
 
         const val TAG = "Screen_create_journal"
+        private const val REQUEST_CODE_STT = 1
     }
 }

@@ -71,7 +71,7 @@ class SplashFragment : BaseFragment() {
         Handler().postDelayed(Runnable { // This method will be executed once the timer is over
             if (preference!![PrefKeys.PREF_USER_ID, ""]!!.isNotEmpty()) {
                 if (preference!![PrefKeys.PREF_IS_LOGGEDIN, false]!!) {
-                    if (preference!![PrefKeys.PREF_IS_COLUMBIA_SEVERITY, ""]!!.isNotEmpty()) {
+                    if (preference!![PrefKeys.PREF_IS_COLUMBIA_SEVERITY, ""]!!.isEmpty()) {
                         if (preference!![PrefKeys.PREF_STEP, 0]!! == Utils.REGISTER) {
                             if (preference!![PrefKeys.PREF_INSURANCE_VERIFICATION, false]!!) {
                                 checkVOB()
@@ -93,14 +93,15 @@ class SplashFragment : BaseFragment() {
                         val columbiaSeverity: String? =
                             preference!![PrefKeys.PREF_IS_COLUMBIA_SEVERITY, ""]
                         if (columbiaSeverity!!.isNotEmpty()) {
+                            Utils.bottomNav = Utils.BOTTOM_NAV_DASHBOARD
                             val consentRoisNotifyType: Type =
-                                object : TypeToken<ConsentRoisFormsNotify?>() {}.type
+                                object : TypeToken<ArrayList<ConsentRoisFormsNotify?>?>() {}.type
                             var consentRoisFormsNotifyList: ArrayList<ConsentRoisFormsNotify> =
                                 arrayListOf()
                             consentRoisFormsNotifyList =
                                 Gson().fromJson(columbiaSeverity, consentRoisNotifyType)
                             replaceFragment(
-                                ConsentRoisSignFragment.newInstance(consentRoisFormsNotifyList),
+                                ConsentRoisSignFragment.newInstance(consentRoisFormsNotifyList, true),
                                 R.id.layout_home,
                                 ConsentRoisSignFragment.TAG
                             )

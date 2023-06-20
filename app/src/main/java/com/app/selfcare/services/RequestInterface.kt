@@ -51,7 +51,7 @@ interface RequestInterface {
     fun login(@Body user: Login): Single<ResponseBody>
 
     @POST("carebuddy/login/")
-    fun careBuddyLogin(@Body user: Login): Single<ResponseBody>
+    fun careBuddyLogin(@Body user: CareBuddyLogin): Single<ResponseBody>
 
     @POST("send_otp/")
     fun sendOtp(@Body sendOtp: SendOtp): Single<ResponseBody>

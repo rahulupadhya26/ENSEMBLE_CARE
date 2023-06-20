@@ -58,11 +58,13 @@ class VideoDetailFragment : BaseFragment(), IOnBackPressed {
         getHeader().visibility = View.GONE
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
-
-        if (videoDetail != null)
+        expoPlayerUtils = ExpoPlayerUtils()
+        if (videoDetail != null) {
             displayVideoDetails()
-        else
+        } else {
             expoPlayerUtils!!.initializePlayer(mActivity!!, binding.videosPlayer, url)
+            binding.imgVideoPlay.visibility = View.GONE
+        }
     }
 
     private fun displayVideoDetails() {
@@ -73,7 +75,6 @@ class VideoDetailFragment : BaseFragment(), IOnBackPressed {
         binding.txtVideoDesc.maxLines = 1000
         binding.imgVideo.visibility = View.GONE
         binding.videosPlayer.visibility = View.VISIBLE
-        expoPlayerUtils = ExpoPlayerUtils()
         expoPlayerUtils!!.initializePlayer(
             mActivity!!,
             binding.videosPlayer,

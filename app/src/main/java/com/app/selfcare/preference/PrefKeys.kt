@@ -51,5 +51,6 @@ class PrefKeys {
         const val PREF_IS_COLUMBIA_SEVERITY = "is_columbia_severity"
         const val PREF_NOTIFY_ID = "notify_id"
         const val PREF_INTEREST_SELECTED = "interest_selected"
+        const val PREF_FCM_TOKEN = "fcm_token"
     }
 }

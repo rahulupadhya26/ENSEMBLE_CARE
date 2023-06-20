@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
 import com.app.selfcare.controller.OnCarePlanPendingTaskItemClickListener
+import com.app.selfcare.controller.OnCarePlanTaskViewClickListener
 import com.app.selfcare.data.CareDayIndividualTaskDetail
 import com.app.selfcare.databinding.LayoutItemCarePlanNutritionTaskBinding
 import com.app.selfcare.databinding.LayoutItemGoalBinding
@@ -19,7 +20,8 @@ import com.skydoves.progressview.ProgressView
 class CarePlanNutritionTaskListAdapter(
     private val context: Context,
     private val list: ArrayList<CareDayIndividualTaskDetail>,
-    private val adapterClick: OnCarePlanPendingTaskItemClickListener
+    private val adapterClick: OnCarePlanPendingTaskItemClickListener,
+    private val itemClick: OnCarePlanTaskViewClickListener
 ) :
     RecyclerView.Adapter<CarePlanNutritionTaskListAdapter.ViewHolder>() {
 
@@ -98,6 +100,10 @@ class CarePlanNutritionTaskListAdapter(
                 } else {
                     progressNutritionPendingLaterTask.visibility = View.GONE
                 }
+            }
+
+            layoutNutritionPendingTaskBox.setOnClickListener {
+                itemClick.onCarePlanTaskViewClickListener(item)
             }
 
             cardViewNutritionPendingTask.setOnClickListener {

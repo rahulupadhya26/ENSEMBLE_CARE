@@ -162,7 +162,11 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
     private fun displayForms() {
         if (signedCount < consentRoisFormsNotifyList!!.size) {
             if (consentRoisFormsNotifyList!![signedCount].type.contains("consent", true)) {
-                if (consentRoisFormsNotifyList!![signedCount].extra_data.category == null) {
+                if (consentRoisFormsNotifyList!![signedCount].extra_data.category!!.contains(
+                        "consent",
+                        ignoreCase = true
+                    )
+                ) {
                     binding.webviewConsentRoisForm.loadUrl(
                         BaseActivity.baseURL.dropLast(5) + "/patient/consent_mobile/" + consentRoisFormsNotifyList!![signedCount].description + "/" + consentRoisFormsNotifyList!![signedCount].extra_data.pk + "/" + getAccessToken().drop(
                             7
@@ -315,7 +319,7 @@ class ConsentRoisSignFragment : BaseFragment(), SignatureView.OnSignedListener {
         createSignFormSheet!!.setCanceledOnTouchOutside(true)
         //createSignFormSheet.behavior.isDraggable = false
         formSignDialog.txtFormTitle.text = consentRoisFormsNotifyList!![signedCount].title
-        if(isFromJournal){
+        if (isFromJournal) {
             formSignDialog.txtViewDocument.visibility = View.GONE
         } else {
             formSignDialog.txtViewDocument.visibility = View.VISIBLE

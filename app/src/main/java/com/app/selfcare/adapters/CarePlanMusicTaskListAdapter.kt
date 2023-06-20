@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.selfcare.R
+import com.app.selfcare.controller.OnCarePlanTaskViewClickListener
 import com.app.selfcare.data.CareDayIndividualTaskDetail
 import com.app.selfcare.databinding.LayoutItemCarePlanMusicTaskBinding
 import com.app.selfcare.databinding.LayoutItemGoalBinding
@@ -16,7 +17,8 @@ import com.skydoves.progressview.ProgressView
 
 class CarePlanMusicTaskListAdapter(
     private val context: Context,
-    private val list: ArrayList<CareDayIndividualTaskDetail>
+    private val list: ArrayList<CareDayIndividualTaskDetail>,
+    private val itemClick: OnCarePlanTaskViewClickListener
 ) :
     RecyclerView.Adapter<CarePlanMusicTaskListAdapter.ViewHolder>() {
 
@@ -88,6 +90,10 @@ class CarePlanMusicTaskListAdapter(
                 } else {
                     progressMusicPendingLaterTask.visibility = View.GONE
                 }
+            }
+
+            layoutMusicPendingTaskBox.setOnClickListener {
+                itemClick.onCarePlanTaskViewClickListener(item)
             }
 
             layoutMusicPendingTask.setOnClickListener {

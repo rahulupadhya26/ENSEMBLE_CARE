@@ -153,6 +153,12 @@ data class DoctorDetails(
 
 data class Login(
     val email: String,
+    val password: String,
+    val registration_id: String
+)
+
+data class CareBuddyLogin(
+    val email: String,
     val password: String
 )
 
@@ -860,7 +866,7 @@ data class ConsentsRoisDocumentData(
     val pdf_url: String,
     val date: String,
     val time: String,
-    val category:String,
+    val category: String,
     val description: String,
     val title: String,
     val section: String

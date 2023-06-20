@@ -1,8 +1,12 @@
 package com.app.selfcare.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.ScrollingMovementMethod
@@ -153,10 +157,34 @@ class DetailJournalFragment : BaseFragment(), IOnBackPressed {
             }
 
             override fun afterTextChanged(s: Editable?) {
-
+                if (s.toString().isNotEmpty())
+                    userHasChanged = true
             }
 
         })
+
+        binding.speechToText.setOnClickListener {
+            binding.txtJournalDesc.requestFocus()
+            // Get the Intent action
+            val sttIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            // Language model defines the purpose, there are special models for other use cases, like search.
+            sttIntent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            // Adding an extra language, you can use any language from the Locale class.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            // Text that shows up on the Speech input prompt.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
+            try {
+                // Start the intent for a result, and pass in our request code.
+                startActivityForResult(sttIntent, REQUEST_CODE_STT)
+            } catch (e: ActivityNotFoundException) {
+                // Handling error when the service is not available.
+                e.printStackTrace()
+                displayToast("Your device does not support STT.")
+            }
+        }
     }
 
     private fun updateJournal() {
@@ -264,6 +292,32 @@ class DetailJournalFragment : BaseFragment(), IOnBackPressed {
         popup.show()*/
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            // Handle the result for our request code.
+            REQUEST_CODE_STT -> {
+                // Safety checks to ensure data is available.
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    // Retrieve the result array.
+                    val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    // Ensure result array is not null or empty to avoid errors.
+                    if (!result.isNullOrEmpty()) {
+                        // Recognized text is in the first position.
+                        val recognizedText = result[0]
+                        // Do what you want with the recognized text.
+                        val text = getText(binding.txtJournalDesc)
+                        if (text.isEmpty()) {
+                            binding.txtJournalDesc.setText("$text$recognizedText")
+                        } else {
+                            binding.txtJournalDesc.setText("$text $recognizedText")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -283,6 +337,7 @@ class DetailJournalFragment : BaseFragment(), IOnBackPressed {
             }
 
         const val TAG = "Screen_detailed_journal"
+        private const val REQUEST_CODE_STT = 1
     }
 
     override fun onBackPressed(): Boolean {

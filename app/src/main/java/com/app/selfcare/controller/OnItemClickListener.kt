@@ -128,6 +128,10 @@ interface OnCarePlanPendingTaskItemClickListener {
     )
 }
 
+interface OnCarePlanTaskViewClickListener {
+    fun onCarePlanTaskViewClickListener(careDayIndividualTaskDetail: CareDayIndividualTaskDetail)
+}
+
 interface OnDocumentItemClickListener {
     fun onDocumentItemClickListener(imageList: ArrayList<String>, title: String)
 }
@@ -162,4 +166,9 @@ interface OnForumItemClickListener {
 
 interface OnBottomReachedListener {
     fun onBottomReached(position: Int)
+}
+
+interface PlayerCallBack {
+    fun onItemClickOnItem(albumId: Int?)
+    fun onPlayingEnd()
 }

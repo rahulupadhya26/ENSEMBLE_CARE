@@ -1,6 +1,7 @@
 package com.app.selfcare.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import com.app.selfcare.preference.PrefKeys
 import com.app.selfcare.preference.PreferenceHelper.get
 import com.app.selfcare.preference.PreferenceHelper.set
 import com.app.selfcare.utils.Utils
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -28,6 +31,7 @@ class LoginFragment : BaseFragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentLoginBinding
+    private var fcmToken: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +62,15 @@ class LoginFragment : BaseFragment() {
         getSubTitle().text = ""
 
         loadLoginData()
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+            // Get new FCM registration token
+            preference!![PrefKeys.PREF_FCM_TOKEN] = task.result
+        })
 
         binding.loginBack.setOnClickListener {
             replaceFragmentNoBackStack(
@@ -107,6 +120,7 @@ class LoginFragment : BaseFragment() {
                             Utils.isLoggedInFirstTime = true
                             preference!![PrefKeys.PREF_IS_REMEMBER_ME] =
                                 binding.checkBoxKeepMeSignedIn.isChecked
+                            Utils.bottomNav = Utils.BOTTOM_NAV_DASHBOARD
                             setBottomNavigation(null)
                             setLayoutBottomNavigation(null)
                             replaceFragmentNoBackStack(

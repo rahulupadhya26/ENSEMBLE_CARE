@@ -319,6 +319,7 @@ class SignUpFragment : BaseFragment() {
                             val status = respBody[1]
                             responseBody = respBody[0]
                             preference!![PrefKeys.PREF_REG] = ""
+                            preference!![PrefKeys.PREF_RELATIONSHIP] = ""
                             userLogin(
                                 Utils.email,
                                 Utils.pass

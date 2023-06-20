@@ -413,7 +413,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .login(Login(email, pass))
+                    .login(Login(email, pass, preference!![PrefKeys.PREF_FCM_TOKEN, ""]!!))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -454,7 +454,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .careBuddyLogin(Login(email, pass))
+                    .careBuddyLogin(CareBuddyLogin(email, pass))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -809,6 +809,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         preference!![PrefKeys.PREF_IS_LOGGEDIN] = false
         preference!![PrefKeys.PREF_IS_CARE_BUDDY_LOGGEDIN] = false
         getHeader().visibility = View.GONE
+        Utils.bottomNav = Utils.BOTTOM_NAV_DASHBOARD
         swipeSliderEnable(false)
         displayToast("You have logged out")
         replaceFragmentNoBackStack(LoginFragment(), R.id.layout_home, LoginFragment.TAG)
