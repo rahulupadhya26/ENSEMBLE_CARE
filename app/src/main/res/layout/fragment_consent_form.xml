@@ -114,7 +114,7 @@
                         android:textSize="@dimen/_16sp"
                         android:textStyle="bold" />
 
-                    <com.app.selfcare.utils.SignatureView
+                    <ensemblecare.csardent.com.utils.SignatureView
                         android:id="@+id/signatureView"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"

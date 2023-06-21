@@ -8,7 +8,7 @@
     android:keepScreenOn="true"
     tools:context=".fragment.GroupVideoCallFragment">
 
-    <com.app.selfcare.adapters.GridVideoViewContainer
+    <ensemblecare.csardent.com.adapters.GridVideoViewContainer
         android:id="@+id/grid_video_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.app.selfcare.utils.AGLinearLayout
+        <ensemblecare.csardent.com.utils.AGLinearLayout
             android:id="@+id/extra_ops_container"
             android:layout_width="48dp"
             android:layout_height="wrap_content"
@@ -42,9 +42,9 @@
                 android:scaleType="center"
                 android:src="@drawable/btn_switch_camera_white" />
 
-        </com.app.selfcare.utils.AGLinearLayout>
+        </ensemblecare.csardent.com.utils.AGLinearLayout>
 
-        <com.app.selfcare.utils.AGLinearLayout
+        <ensemblecare.csardent.com.utils.AGLinearLayout
             android:id="@+id/bottom_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -175,7 +175,7 @@
 
             </LinearLayout>
 
-        </com.app.selfcare.utils.AGLinearLayout>
+        </ensemblecare.csardent.com.utils.AGLinearLayout>
 
     </RelativeLayout>
 

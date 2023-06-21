@@ -95,7 +95,7 @@
                     android:background="@drawable/ic_arrow_left_24dp" />
             </RelativeLayout>
 
-            <com.app.selfcare.calendar.SingleRowCalendar
+            <ensemblecare.csardent.com.calendar.SingleRowCalendar
                 android:id="@+id/activityShowAllCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
