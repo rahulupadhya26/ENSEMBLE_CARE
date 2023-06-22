@@ -3,6 +3,7 @@ package ensemblecare.csardent.com.interceptor
 import android.util.Log
 import ensemblecare.csardent.com.crypto.CryptoStrategy
 import ensemblecare.csardent.com.crypto.CryptoUtil.requestBodyToString
+import ensemblecare.csardent.com.utils.DateUtils
 import ensemblecare.csardent.com.utils.Utils
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -11,6 +12,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 
 class EncryptionInterceptor(private val mEncryptionStrategy: CryptoStrategy?) :
@@ -61,7 +64,10 @@ class EncryptionInterceptor(private val mEncryptionStrategy: CryptoStrategy?) :
                 .header("Content-Type", "application/json")
                 .build()
         }
-
+        /*val myFormat = "HH:mm:ss"
+        val sdf = SimpleDateFormat(myFormat)
+        val formattedDate = sdf.format(Calendar.getInstance().time)
+        Log.d("Request - ", " Request time - $formattedDate")*/
         return chain.proceed(request)
     }
 }

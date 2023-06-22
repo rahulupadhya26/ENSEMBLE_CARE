@@ -1319,6 +1319,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
             Result code was: $resultCode
         """.trimIndent()
         Log.e(TAG, message)
+        refreshDashboardData()
     }
 
     private fun oAuthPermissionsApproved() =

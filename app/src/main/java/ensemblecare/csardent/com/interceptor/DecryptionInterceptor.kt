@@ -10,6 +10,8 @@ import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.json.JSONObject
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 
 class DecryptionInterceptor(private val mDecryptionStrategy: CryptoStrategy?) :
@@ -17,6 +19,10 @@ class DecryptionInterceptor(private val mDecryptionStrategy: CryptoStrategy?) :
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val response = chain.proceed(chain.request())
+        /*val myFormat = "HH:mm:ss"
+        val sdf = SimpleDateFormat(myFormat)
+        val formattedDate = sdf.format(Calendar.getInstance().time)
+        Log.d("Response - ", " Response time - $formattedDate")*/
         if (response.isSuccessful) {
             val newResponse = response.newBuilder()
             var contentType = response.header("Content-Type")

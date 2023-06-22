@@ -270,28 +270,6 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
                 }
             }*/
 
-        binding.layoutTextAppointSend.setOnClickListener {
-            val msg: String = getText(binding.editTextTextAppointMessage)
-            if (msg != "") {
-                val message = mRtmClient!!.createMessage()
-                message.text = msg
-                val patientName =
-                    preference!![PrefKeys.PREF_FNAME, ""]!!.take(1) + "" + preference!![PrefKeys.PREF_LNAME, ""]!!.take(
-                        1
-                    )
-                val messageBean = MessageBean(patientName, message, true)
-                mMessageBeanList.add(messageBean)
-                mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
-                binding.textAppointMessageList.scrollToPosition(mMessageBeanList.size - 1)
-                if (mIsPeerToPeerMode) {
-                    sendPeerMessage(message)
-                } else {
-                    sendChannelMessage(message)
-                }
-            }
-            binding.editTextTextAppointMessage.setText("")
-        }
-
         mRtmClient = RtmClient.createInstance(
             requireActivity(),
             BuildConfig.appId,
@@ -346,9 +324,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
 
             })
 
-        if (!Utils.rtmLoggedIn) {
             doLogin()
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -689,6 +665,28 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
             )
             binding.textAppointMessageList.layoutManager = layoutManager
             binding.textAppointMessageList.adapter = mMessageAdapter
+
+            binding.layoutTextAppointSend.setOnClickListener {
+                val msg: String = getText(binding.editTextTextAppointMessage)
+                if (msg != "") {
+                    val message = mRtmClient!!.createMessage()
+                    message.text = msg
+                    val patientName =
+                        preference!![PrefKeys.PREF_FNAME, ""]!!.take(1) + "" + preference!![PrefKeys.PREF_LNAME, ""]!!.take(
+                            1
+                        )
+                    val messageBean = MessageBean(patientName, message, true)
+                    mMessageBeanList.add(messageBean)
+                    mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
+                    binding.textAppointMessageList.scrollToPosition(mMessageBeanList.size - 1)
+                    if (mIsPeerToPeerMode) {
+                        sendPeerMessage(message)
+                    } else {
+                        sendChannelMessage(message)
+                    }
+                }
+                binding.editTextTextAppointMessage.setText("")
+            }
         }
     }
 

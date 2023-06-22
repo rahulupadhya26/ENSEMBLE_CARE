@@ -138,14 +138,9 @@ class CreateJournalFragment : BaseFragment() {
         }
 
         binding.createJournalBack.setOnClickListener {
-            if (getText(binding.editTxtJournalTitle).isNotEmpty()) {
-                if (getText(binding.editTxtJournal).isNotEmpty()) {
-                    //Call create journal api
-                    createJournal()
-                } else {
-                    //setEditTextError(edit_txt_journal, "Description cannot be empty!")
-                    popBackStack()
-                }
+            if (getText(binding.editTxtJournalTitle).isNotEmpty() || getText(binding.editTxtJournal).isNotEmpty()) {
+                //Call create journal api
+                createJournal()
             } else {
                 //setEditTextError(edit_txt_journal_title, "Title cannot be empty!")
                 popBackStack()

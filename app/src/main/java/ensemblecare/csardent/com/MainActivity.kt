@@ -645,7 +645,8 @@ class MainActivity : BaseActivity(), IController {
     private fun loadBitmap(fileName: String) {
         if (imageView != null) {
             bitmapList.add(fileName)
-            if (BitmapFactory.decodeFile(fileName) != null) {
+            val imageBitmap = BitmapFactory.decodeFile(fileName)
+            if (imageBitmap != null) {
                 NSFWDetector.isNSFW(
                     BitmapFactory.decodeFile(fileName),
                     Utils.NSFW_CONFIDENCE_THRESHOLD.toFloat()

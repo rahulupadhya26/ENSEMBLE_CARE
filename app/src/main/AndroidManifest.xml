@@ -119,7 +119,7 @@
 
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
-            android:value="ica" />
+            android:value="ica,model2,model3" />
 
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
