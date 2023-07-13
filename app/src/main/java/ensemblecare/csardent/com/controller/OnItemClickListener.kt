@@ -81,6 +81,10 @@ interface OnGroupAppointmentItemClickListener {
     fun onGroupAppointmentItemClickListener(groupAppointment: GroupAppointment)
 }
 
+interface OnRescheduleAppointment {
+    fun onRescheduleAppointment(appointment: GetAppointment)
+}
+
 interface OnAssessmentItemClickListener {
     fun onAssessmentItemClickListener(assessment: Assessments, type: String, isView: Boolean)
 }
@@ -149,7 +153,7 @@ interface OnEventItemClickListener {
 }
 
 interface OnCareBuddyItemClickListener {
-    fun onCareBuddyItemClickListener(careBuddy: CareBuddy, isCall: Boolean, isChat: Boolean)
+    fun onCareBuddyItemClickListener(careBuddy: CareBuddy, isCall: Boolean, isReachOut: Boolean)
 }
 
 interface OnCareBuddyDashboardItemClickListener {

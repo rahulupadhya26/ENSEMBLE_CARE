@@ -357,9 +357,9 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
             startActivity(sIntent)
         }
         reachOutAttentionStatus.cardViewReachOutAttention.setOnClickListener {
-            reachOutAttentionDialog.dismiss()
             if (notifyId != 0)
                 updateNotificationStatus(notifyId) {
+                    reachOutAttentionDialog.dismiss()
                     val sIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${phoneNo}"))
                     startActivity(sIntent)
                 }
@@ -555,11 +555,10 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                         appointmentDate.getCurrentDay() + ", " +
                                 appointmentDate.getDay() + " " +
                                 appointmentDate.getMonth() + " at " +
-                                appointmentLists.today[0].group_appointment!!.time + " " +
-                                appointmentLists.today[0].group_appointment!!.select_am_or_pm
+                                appointmentLists.today[0].group_appointment!!.starttime.dropLast(3)
                 } else {
                     val appointmentDate =
-                        DateUtils(appointmentLists.today[0].appointment!!.booking_date + " 00:00:00")
+                        DateUtils(appointmentLists.today[0].appointment!!.date + " 00:00:00")
 
                     binding.txtAppointmentDateTime.text =
                         appointmentDate.getCurrentDay() + ", " +
@@ -715,8 +714,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                         appointmentDate.getCurrentDay() + ", " +
                                 appointmentDate.getDay() + " " +
                                 appointmentDate.getMonth() + " at " +
-                                appointmentLists.upcoming[0].group_appointment!!.time + " " +
-                                appointmentLists.upcoming[0].group_appointment!!.select_am_or_pm
+                                appointmentLists.upcoming[0].group_appointment!!.starttime.dropLast(3)
                 } else {
                     val appointmentDate =
                         DateUtils(appointmentLists.upcoming[0].appointment!!.date + " 00:00:00")

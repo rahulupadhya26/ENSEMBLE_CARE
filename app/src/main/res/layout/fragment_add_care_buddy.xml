@@ -31,9 +31,9 @@
                     android:src="@drawable/journal_resource_back" />
 
                 <TextView
+                    android:id="@+id/txtAddCompanionCareBuddyTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Add CareBuddy"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/primaryGreen"
                     android:textSize="@dimen/_20sp"
@@ -42,9 +42,9 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/txtAddCareBuddyDesc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CareBuddy will be able to track your goals and activities."
                     android:textAppearance="@style/fontfamily"
                     android:textColor="#AB8F8F"
                     android:textSize="@dimen/_14sp"

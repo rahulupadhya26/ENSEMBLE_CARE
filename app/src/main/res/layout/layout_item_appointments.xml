@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -31,25 +31,25 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
                         android:layout_weight="0.25"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="vertical">
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_marginStart="@dimen/_5dp"
                             android:layout_marginEnd="@dimen/_5dp"
+                            app:cardBackgroundColor="@color/primaryGreen"
                             app:cardCornerRadius="30dp"
-                            app:cardElevation="0dp"
-                            app:cardBackgroundColor="@color/primaryGreen">
+                            app:cardElevation="0dp">
 
                             <ImageView
                                 android:id="@+id/appointListImgUser"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/user_pic"/>
+                                android:src="@drawable/user_pic" />
 
                             <ImageView
                                 android:id="@+id/appointListGroupImg"
@@ -58,7 +58,7 @@
                                 android:layout_gravity="center"
                                 android:paddingBottom="@dimen/_5dp"
                                 android:src="@drawable/group_appoint"
-                                android:visibility="gone"/>
+                                android:visibility="gone" />
 
                         </androidx.cardview.widget.CardView>
 
@@ -73,7 +73,9 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="@dimen/_5dp">
+                            android:paddingTop="@dimen/_5dp"
+                            android:paddingEnd="@dimen/_5dp"
+                            android:paddingBottom="@dimen/_5dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -120,7 +122,8 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:paddingBottom="@dimen/_2dp">
 
                             <LinearLayout
                                 android:id="@+id/layoutAppointmentDateTime"
@@ -132,7 +135,7 @@
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:src="@drawable/time_icon"
-                                    android:visibility="gone"/>
+                                    android:visibility="gone" />
 
                                 <TextView
                                     android:id="@+id/txtAppointmentDateTime"
@@ -146,6 +149,16 @@
                             </LinearLayout>
 
                             <TextView
+                                android:id="@+id/txtHoldToMoreOptions"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="#DCAFAF"
+                                android:textSize="@dimen/_12sp"
+                                android:text="Press and hold for more options"
+                                android:visibility="gone"/>
+
+                            <TextView
                                 android:id="@+id/txtMissedByProviderOrYou"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -153,21 +166,19 @@
                                 android:textColor="#BE1414"
                                 android:textSize="@dimen/_12sp"
                                 android:textStyle="bold"
-                                android:paddingBottom="@dimen/_5dp"
-                                android:text="Missed by provider/you"
-                                android:visibility="gone"/>
+                                android:visibility="invisible" />
 
                             <TextView
                                 android:id="@+id/txtCancelledAppt"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:paddingBottom="@dimen/_5dp"
+                                android:text="Cancelled"
                                 android:textAppearance="@style/fontfamily"
                                 android:textColor="#544E4E"
                                 android:textSize="@dimen/_12sp"
                                 android:textStyle="bold"
-                                android:text="Cancelled"
-                                android:paddingBottom="@dimen/_5dp"
-                                android:visibility="gone"/>
+                                android:visibility="gone" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -184,9 +195,9 @@
         android:id="@+id/imgCancelAppointment"
         android:layout_width="@dimen/_30dp"
         android:layout_height="@dimen/_30dp"
-        android:src="@drawable/cancel"
-        android:padding="@dimen/_5dp"
         android:layout_alignParentEnd="true"
-        android:visibility="gone"/>
+        android:padding="@dimen/_5dp"
+        android:src="@drawable/cancel"
+        android:visibility="gone" />
 
 </RelativeLayout>

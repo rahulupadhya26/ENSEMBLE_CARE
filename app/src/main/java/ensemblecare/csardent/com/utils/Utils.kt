@@ -106,6 +106,7 @@ object Utils {
     var bottomNav = 0
 
     var isLoggedInFirstTime = false
+    var isMovingAsClient = false
 
     var firstName = ""
     var middleName = ""

@@ -17,6 +17,11 @@ import ensemblecare.csardent.com.utils.DateUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import ensemblecare.csardent.com.controller.OnRescheduleAppointment
+import ensemblecare.csardent.com.utils.DateMethods
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 
 class AppointmentsAdapter(
     val context: Context,
@@ -57,7 +62,7 @@ class AppointmentsAdapter(
                 dateTime.getCurrentDay() + ", " +
                         dateTime.getDay() + " " +
                         dateTime.getMonth() + " at " +
-                        item.group_appointment.time + " " + item.group_appointment.select_am_or_pm
+                        item.group_appointment.starttime.dropLast(3)
         } else {
             if (item.appointment_type == "Training_appointment") {
                 holder.binding.txtTherapistName.text =
@@ -74,10 +79,7 @@ class AppointmentsAdapter(
                 holder.binding.txtTherapistName.text =
                     item.doctor_first_name + " " + item.doctor_last_name
                 holder.binding.txtAppointmentTherapistType.text = item.doctor_designation
-                var dateTime = DateUtils(item.appointment!!.date + " " + "00:00:00")
-                if (item.appointment.booking_date != null) {
-                    dateTime = DateUtils(item.appointment.booking_date + " " + "00:00:00")
-                }
+                val dateTime = DateUtils(item.appointment!!.date + " " + "00:00:00")
                 holder.binding.txtAppointmentDateTime.text =
                     dateTime.getCurrentDay() + ", " +
                             dateTime.getDay() + " " +
@@ -109,6 +111,7 @@ class AppointmentsAdapter(
                                 )
                             )
                     }
+
                     "Audio" -> {
                         holder.binding.appointmentCall.setImageResource(R.drawable.telephone)
                         holder.binding.appointmentCall.imageTintList =
@@ -119,6 +122,7 @@ class AppointmentsAdapter(
                                 )
                             )
                     }
+
                     else -> {
                         holder.binding.appointmentCall.setImageResource(R.drawable.chat)
                         holder.binding.appointmentCall.imageTintList =
@@ -159,7 +163,7 @@ class AppointmentsAdapter(
         if (!item.is_group_appointment) {
             if (item.appointment_type == "Training_appointment") {
                 holder.binding.txtCancelledAppt.visibility = View.GONE
-                holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
+                holder.binding.txtMissedByProviderOrYou.visibility = View.INVISIBLE
             } else {
                 if (item.appointment!!.status != null) {
                     when (item.appointment.status) {
@@ -167,24 +171,52 @@ class AppointmentsAdapter(
                             holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
                             holder.binding.txtCancelledAppt.visibility = View.VISIBLE
                         }
+
                         6 -> {
                             holder.binding.txtCancelledAppt.visibility = View.GONE
                             holder.binding.txtMissedByProviderOrYou.visibility = View.VISIBLE
+                            if (item.appointment.is_client_missed != null || item.appointment.is_provider_missed != null) {
+                                if (item.appointment.is_client_missed) {
+                                    holder.binding.txtMissedByProviderOrYou.text = "Missed by you"
+                                } else if (item.appointment.is_provider_missed) {
+                                    holder.binding.txtMissedByProviderOrYou.text =
+                                        "Missed by provider"
+                                } else {
+                                    holder.binding.txtMissedByProviderOrYou.text =
+                                        "Missed by provider/you"
+                                }
+                            } else {
+                                holder.binding.txtMissedByProviderOrYou.text =
+                                    "Missed by provider/you"
+                            }
                         }
+
+                        7 -> {
+                            holder.binding.txtCancelledAppt.visibility = View.GONE
+                            holder.binding.txtMissedByProviderOrYou.visibility = View.VISIBLE
+                            if (item.appointment.reschedule_by == "Client") {
+                                holder.binding.txtMissedByProviderOrYou.text =
+                                    "Rescheduled by you"
+                            } else {
+                                holder.binding.txtMissedByProviderOrYou.text =
+                                    "Rescheduled by " + item.appointment.reschedule_by
+                            }
+                        }
+
                         else -> {
                             holder.binding.txtCancelledAppt.visibility = View.GONE
-                            holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
+                            holder.binding.txtMissedByProviderOrYou.visibility = View.INVISIBLE
                         }
                     }
                 } else {
                     holder.binding.txtCancelledAppt.visibility = View.GONE
-                    holder.binding.txtMissedByProviderOrYou.visibility = View.GONE
+                    holder.binding.txtMissedByProviderOrYou.visibility = View.INVISIBLE
                 }
             }
         }
 
         if (appointmentType == "Upcoming") {
-            holder.binding.imgCancelAppointment.visibility = View.VISIBLE
+            holder.binding.txtHoldToMoreOptions.visibility = View.VISIBLE
         }
 
         holder.binding.cardViewAppointmentItem.setOnClickListener {
@@ -192,10 +224,11 @@ class AppointmentsAdapter(
                 adapterItemClickListener!!.onAppointmentItemClickListener(item, true)
         }
 
-        holder.binding.imgCancelAppointment.setOnClickListener {
+        holder.binding.cardViewAppointmentItem.setOnLongClickListener {
             if (appointmentType == "Upcoming") {
                 adapterItemClickListener!!.onAppointmentItemClickListener(item, false)
             }
+            false
         }
     }
 

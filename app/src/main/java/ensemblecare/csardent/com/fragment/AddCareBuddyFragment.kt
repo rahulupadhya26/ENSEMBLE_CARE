@@ -37,7 +37,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class AddCareBuddyFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    private var type: String? = null
     private var param2: String? = null
     private var selectedGender: String? = null
     private var genderData: Array<String>? = null
@@ -51,7 +51,7 @@ class AddCareBuddyFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+            type = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -80,6 +80,16 @@ class AddCareBuddyFragment : BaseFragment() {
 
         binding.addCareBuddyBack.setOnClickListener {
             popBackStack()
+        }
+
+        if (type == "Companion") {
+            binding.txtAddCompanionCareBuddyTitle.text = "Add Companion"
+            binding.txtAddCareBuddyDesc.text =
+                "Companion will be able to track your goals and activities."
+        } else {
+            binding.txtAddCompanionCareBuddyTitle.text = "Add CareBuddy"
+            binding.txtAddCareBuddyDesc.text =
+                "CareBuddy will be able to track your goals and activities."
         }
 
         binding.btnAddByEmail.setOnClickListener {
@@ -111,7 +121,7 @@ class AddCareBuddyFragment : BaseFragment() {
             if (binding.checkboxSearchedEmail.isChecked) {
                 sendSelectedEmail()
             } else {
-                displayMsg("Alert", "Please select the CareBuddy")
+                displayMsg("Alert", "Please select the $type")
             }
         }
 
@@ -275,7 +285,11 @@ class AddCareBuddyFragment : BaseFragment() {
         runnable = Runnable {
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
-                    .searchByEmail(getText(binding.etCareBuddySearchEmail), getAccessToken())
+                    .searchByEmail(
+                        getText(binding.etCareBuddySearchEmail),
+                        type!!,
+                        getAccessToken()
+                    )
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
@@ -319,7 +333,7 @@ class AddCareBuddyFragment : BaseFragment() {
                 getEncryptedRequestInterface()
                     .sendSelectedEmail(
                         getText(binding.etCareBuddySearchEmail),
-                        SendSelectedEmail(email),
+                        SendSelectedEmail(email, type!!, type!!),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -366,7 +380,8 @@ class AddCareBuddyFragment : BaseFragment() {
             getText(binding.etCareBuddyZipcode),
             getText(binding.etCareBuddyCountry),
             getText(binding.etCareBuddyAddress1),
-            getText(binding.etCareBuddyAddress2)
+            getText(binding.etCareBuddyAddress2),
+            type!!
         )
         showProgress()
         runnable = Runnable {
@@ -414,7 +429,7 @@ class AddCareBuddyFragment : BaseFragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param1: String, param2: String = "") =
             AddCareBuddyFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)

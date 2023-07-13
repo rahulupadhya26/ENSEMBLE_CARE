@@ -1,5 +1,6 @@
 package ensemblecare.csardent.com.fragment
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AlertDialog
+import ensemblecare.csardent.com.BaseActivity
 import ensemblecare.csardent.com.R
 import ensemblecare.csardent.com.databinding.FragmentCommonWebViewBinding
 
@@ -51,6 +53,7 @@ class CommonWebViewFragment : BaseFragment() {
         return binding.root
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHeader().visibility = View.GONE
@@ -73,11 +76,15 @@ class CommonWebViewFragment : BaseFragment() {
         }
 
         binding.txtCommonUrl.text = screenName
-
-        val browser = binding.webViewCommon.settings
-        browser.javaScriptEnabled = true
-        browser.builtInZoomControls = true
-        browser.pluginState = WebSettings.PluginState.ON
+        binding.webViewCommon.settings.apply {
+            loadWithOverviewMode = true
+            useWideViewPort = true
+            builtInZoomControls = true
+            displayZoomControls = false
+            setSupportZoom(true)
+            javaScriptEnabled = true
+            pluginState = WebSettings.PluginState.ON
+        }
         binding.webViewCommon.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 view?.loadUrl(url!!)
@@ -120,8 +127,14 @@ class CommonWebViewFragment : BaseFragment() {
             }
         }
 
-        binding.webViewCommon.loadUrl(webUrl!!)
-
+        if (webUrl!!.contains("pdf")) {
+            binding.webViewCommon.loadUrl(
+                "http://docs.google.com/gview?embedded=true&url=" +
+                        BaseActivity.baseURL.dropLast(5) + "/media/" + webUrl
+            )
+        } else {
+            binding.webViewCommon.loadUrl(BaseActivity.baseURL.dropLast(5) + webUrl!!)
+        }
     }
 
     companion object {
@@ -142,6 +155,7 @@ class CommonWebViewFragment : BaseFragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
         const val TAG = "Screen_Common_WebView"
     }
 }

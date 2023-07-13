@@ -51,6 +51,22 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/btnCareBuddyMoveAsClient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_20dp"
+            android:layout_marginStart="@dimen/_20dp"
+            android:padding="@dimen/_10dp"
+            android:gravity="center"
+            android:text="Move as Client"
+            android:background="@drawable/bg_box_border_grey"
+            android:backgroundTint="@color/primaryGreen"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14sp"
+            android:textStyle="bold" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -80,7 +80,11 @@ class CompanionFragment : BaseFragment(), OnCareBuddyItemClickListener {
         getCompanionDetails()
 
         binding.cardViewReachOut.setOnClickListener {
-            setCareBuddyNotification()
+            val idList = ArrayList<Int>()
+            companionList.mapTo(idList) { it.id }
+            setCareBuddyNotification(idList){
+                displayReachOutSentSuccess()
+            }
         }
 
         binding.etCompanionSearch.addTextChangedListener(object : TextWatcher {
@@ -121,7 +125,8 @@ class CompanionFragment : BaseFragment(), OnCareBuddyItemClickListener {
                 getEncryptedRequestInterface()
                     .getCareBuddyData(
                         "PI0069",
-                        FetchCareBuddyList(preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt()),
+                        FetchCareBuddyList(preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
+                            "Carebuddy"),
                         getAccessToken()
                     )
                     .observeOn(AndroidSchedulers.mainThread())
@@ -176,41 +181,6 @@ class CompanionFragment : BaseFragment(), OnCareBuddyItemClickListener {
                         } else {
                             binding.shimmerCompanionCareBuddy.stopShimmer()
                             binding.shimmerCompanionCareBuddy.visibility = View.GONE
-                            displayAfterLoginErrorMsg(error)
-                        }
-                    })
-            )
-        }
-        handler.postDelayed(runnable!!, 1000)
-    }
-
-    private fun setCareBuddyNotification() {
-        showProgress()
-        runnable = Runnable {
-            mCompositeDisposable.add(
-                getEncryptedRequestInterface()
-                    .setCareBuddyNotification(NotificationType("Reach Out"), getAccessToken())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ result ->
-                        try {
-                            hideProgress()
-                            var responseBody = result.string()
-                            Log.d("Response Body", responseBody)
-                            val respBody = responseBody.split("|")
-                            val status = respBody[1]
-                            responseBody = respBody[0]
-                            displayReachOutSentSuccess()
-                        } catch (e: Exception) {
-                            hideProgress()
-                            e.printStackTrace()
-                            displayToast("Something went wrong.. Please try after sometime")
-                        }
-                    }, { error ->
-                        hideProgress()
-                        if ((error as HttpException).code() == 401) {
-                            clearCache()
-                        } else {
                             displayAfterLoginErrorMsg(error)
                         }
                     })
@@ -290,13 +260,17 @@ class CompanionFragment : BaseFragment(), OnCareBuddyItemClickListener {
     override fun onCareBuddyItemClickListener(
         careBuddy: CareBuddy,
         isCall: Boolean,
-        isChat: Boolean
+        isReachOut: Boolean
     ) {
         if (isCall) {
             val sIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${careBuddy.phone}"))
             startActivity(sIntent)
-        } else if (isChat) {
-
+        } else if (isReachOut) {
+            val id = ArrayList<Int>()
+            id.add(careBuddy.id)
+            setCareBuddyNotification(arrayListOf(careBuddy.id)){
+                displayReachOutSentSuccess()
+            }
         } else {
             replaceFragment(
                 ViewCareBuddyFragment.newInstance(careBuddy),

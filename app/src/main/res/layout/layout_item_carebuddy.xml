@@ -79,18 +79,19 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/imgCompanionCareBuddyReachOut"
+                android:layout_width="@dimen/_40dp"
+                android:layout_height="@dimen/_40dp"
+                android:padding="@dimen/_10dp"
+                android:src="@drawable/emergency_911"
+                android:visibility="gone"/>
+
+            <ImageView
                 android:id="@+id/imgCompanionCareBuddyCall"
                 android:layout_width="@dimen/_40dp"
                 android:layout_height="@dimen/_40dp"
                 android:padding="@dimen/_10dp"
                 android:src="@drawable/call_community"/>
-
-            <ImageView
-                android:id="@+id/imgCompanionCareBuddyChat"
-                android:layout_width="@dimen/_40dp"
-                android:layout_height="@dimen/_40dp"
-                android:padding="@dimen/_10dp"
-                android:src="@drawable/mode_comment"/>
 
         </LinearLayout>
 

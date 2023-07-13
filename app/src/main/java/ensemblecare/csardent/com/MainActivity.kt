@@ -801,6 +801,7 @@ class MainActivity : BaseActivity(), IController {
     private fun clearCache() {
         preference!![PrefKeys.PREF_IS_LOGGEDIN] = false
         preference!![PrefKeys.PREF_IS_CARE_BUDDY_LOGGEDIN] = false
+        preference!![PrefKeys.PREF_IS_COMPANION_LOGGEDIN] = false
         getHeader().visibility = View.GONE
         swipeSliderEnable(false)
         replaceFragmentNoBackStack(LoginFragment(), R.id.layout_home, LoginFragment.TAG)

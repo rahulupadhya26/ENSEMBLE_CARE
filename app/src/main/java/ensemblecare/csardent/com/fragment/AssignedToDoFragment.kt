@@ -313,11 +313,21 @@ class AssignedToDoFragment : BaseFragment(), OnToDoItemClickListener {
                 showPopUp(view, true, toDoData)
             }
         } else {
-            replaceFragment(
-                AssignedToDoWebViewFragment.newInstance(toDoData),
-                R.id.layout_home,
-                AssignedToDoWebViewFragment.TAG
-            )
+            if (status == "Document") {
+                if (toDoData.document != null) {
+                    replaceFragment(
+                        CommonWebViewFragment.newInstance(toDoData.document, toDoData.title),
+                        R.id.layout_home,
+                        AssignedToDoWebViewFragment.TAG
+                    )
+                }
+            } else {
+                replaceFragment(
+                    AssignedToDoWebViewFragment.newInstance(toDoData),
+                    R.id.layout_home,
+                    AssignedToDoWebViewFragment.TAG
+                )
+            }
         }
     }
 }

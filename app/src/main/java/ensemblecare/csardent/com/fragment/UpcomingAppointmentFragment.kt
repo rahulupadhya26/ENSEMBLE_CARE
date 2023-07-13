@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import ensemblecare.csardent.com.R
 import ensemblecare.csardent.com.adapters.AppointmentsAdapter
 import ensemblecare.csardent.com.controller.OnAppointmentItemClickListener
@@ -19,10 +20,17 @@ import ensemblecare.csardent.com.preference.PrefKeys
 import ensemblecare.csardent.com.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import ensemblecare.csardent.com.controller.OnRescheduleAppointment
+import ensemblecare.csardent.com.databinding.DialogAppointmentOptionsBinding
+import ensemblecare.csardent.com.databinding.DialogPictureOptionBinding
+import ensemblecare.csardent.com.utils.DateMethods
+import ensemblecare.csardent.com.utils.DateUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
 import java.lang.reflect.Type
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,6 +47,8 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentUpcomingAppointmentBinding
+    private var dispOptionsDialog: BottomSheetDialog? = null
+    private lateinit var optionsDialog: DialogAppointmentOptionsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +81,10 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
     }
 
     private fun displayUpcomingAppointments() {
+        binding.shimmerUpcomingAppointmentList.startShimmer()
+        binding.shimmerUpcomingAppointmentList.visibility = View.VISIBLE
+        binding.recyclerViewUpcomingAppointmentList.visibility = View.GONE
+        binding.txtNoUpcomingAppointmentList.visibility = View.GONE
         getAppointmentList { response ->
             val appointmentType: Type = object : TypeToken<GetAppointmentList?>() {}.type
             val appointmentList: GetAppointmentList =
@@ -83,8 +97,11 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
                         LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
                     adapter = AppointmentsAdapter(
                         mActivity!!,
-                        appointmentList.upcoming, "Upcoming", this@UpcomingAppointmentFragment
+                        appointmentList.upcoming,
+                        "Upcoming",
+                        this@UpcomingAppointmentFragment
                     )
+                    adapter!!.notifyDataSetChanged()
                 }
             } else {
                 binding.recyclerViewUpcomingAppointmentList.visibility = View.GONE
@@ -141,6 +158,77 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
         handler.postDelayed(runnable!!, 1000)
     }
 
+    private fun displayOptions(appointment: GetAppointment) {
+        dispOptionsDialog = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+        optionsDialog = DialogAppointmentOptionsBinding.inflate(layoutInflater)
+        val view = optionsDialog.root
+        //val pictureDialog: View = layoutInflater.inflate(R.layout.dialog_appointment_options, null)
+        dispOptionsDialog!!.setContentView(view)
+        dispOptionsDialog!!.setCanceledOnTouchOutside(true)
+
+        val appointmentDateTime = if (appointment.is_group_appointment) {
+            appointment.group_appointment!!.date + " " + appointment.group_appointment.starttime.dropLast(3)
+        } else {
+            appointment.appointment!!.date + " " + appointment.appointment.time_slot.starting_time
+        }
+        val sdf = SimpleDateFormat("MM/dd/yyyy' 'HH:mm:ss")
+        val currentDate = sdf.format(Calendar.getInstance().time)
+        val currentDateTime = DateUtils(currentDate)
+        val appointDateTime = DateUtils(appointmentDateTime)
+        if (!DateMethods().areDatesWithinNHours(
+                appointDateTime.mDate!!,
+                currentDateTime.mDate!!,
+                48
+            )
+        ) {
+            optionsDialog.optionDialogReschedule.visibility = View.VISIBLE
+            optionsDialog.optionDialogCancel.visibility = View.VISIBLE
+        } else {
+            optionsDialog.optionDialogReschedule.visibility = View.GONE
+            optionsDialog.optionDialogCancel.visibility = View.GONE
+        }
+
+        optionsDialog.optionDialogReschedule.setOnClickListener {
+            dispOptionsDialog!!.dismiss()
+            //Reschedule the appointment
+            val appointmentId = if (appointment.is_group_appointment) {
+                appointment.group_appointment!!.id.toString()
+            } else {
+                appointment.appointment!!.appointment_id.toString()
+            }
+            rescheduleAppointment(appointmentId) { response ->
+                displayUpcomingAppointments()
+            }
+        }
+
+        optionsDialog.optionDialogCancel.setOnClickListener {
+            dispOptionsDialog!!.dismiss()
+            val builder = AlertDialog.Builder(requireActivity())
+            builder.setTitle("Alert")
+            builder.setMessage("Do you really want to cancel this appointment?")
+            builder.setPositiveButton("Yes") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+                //Cancel the appointment
+                cancelAppointment(appointment) {
+                    displayUpcomingAppointments()
+                }
+            }
+            //performing cancel action
+            builder.setNeutralButton("Cancel") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
+            val alert = builder.create()
+            alert.setCancelable(false)
+            alert.show()
+        }
+
+        optionsDialog.optionDialogClose.setOnClickListener {
+            dispOptionsDialog!!.dismiss()
+        }
+
+        dispOptionsDialog!!.show()
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -168,23 +256,7 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
         isStartAppointment: Boolean
     ) {
         if (!isStartAppointment) {
-            val builder = AlertDialog.Builder(requireActivity())
-            builder.setTitle("Alert")
-            builder.setMessage("Do you really want to cancel this appointment?")
-            builder.setPositiveButton("Yes") { dialogInterface, _ ->
-                dialogInterface.dismiss()
-                //Cancel the appointment
-                cancelAppointment(appointment) {
-                    displayUpcomingAppointments()
-                }
-            }
-            //performing cancel action
-            builder.setNeutralButton("Cancel") { dialogInterface, _ ->
-                dialogInterface.dismiss()
-            }
-            val alert = builder.create()
-            alert.setCancelable(false)
-            alert.show()
+            displayOptions(appointment)
         }
     }
 }

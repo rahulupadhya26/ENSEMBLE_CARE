@@ -25,6 +25,7 @@ class CommunityFragment : BaseFragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentCommunityBinding
+    private var tabPos = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,18 +66,27 @@ class CommunityFragment : BaseFragment() {
         }
 
         binding.companionAdd.setOnClickListener {
-            replaceFragment(
-                AddCareBuddyFragment(),
-                R.id.layout_home,
-                AddCareBuddyFragment.TAG
-            )
+            if (binding.viewPagerCommunities.currentItem == 1) {
+                replaceFragment(
+                    AddCareBuddyFragment.newInstance("Companion"),
+                    R.id.layout_home,
+                    AddCareBuddyFragment.TAG
+                )
+            } else if (binding.viewPagerCommunities.currentItem == 2) {
+                replaceFragment(
+                    AddCareBuddyFragment.newInstance("Carebuddy"),
+                    R.id.layout_home,
+                    AddCareBuddyFragment.TAG
+                )
+            }
         }
 
         val icons = intArrayOf(
             R.drawable.local_activity,
             R.drawable.relax,
             R.drawable.volunteer_activism,
-            R.drawable.diversity_1
+            R.drawable.diversity_1,
+            R.drawable.assistant
         )
 
         binding.tabLayoutCommunities.removeAllTabs()
@@ -93,6 +103,9 @@ class CommunityFragment : BaseFragment() {
         binding.tabLayoutCommunities.addTab(
             binding.tabLayoutCommunities.newTab().setText("Forum").setIcon(icons[3])
         )
+        binding.tabLayoutCommunities.addTab(
+            binding.tabLayoutCommunities.newTab().setText("AI Chat").setIcon(icons[4])
+        )
         binding.tabLayoutCommunities.tabGravity = TabLayout.GRAVITY_FILL
         val adapter =
             CommunityTabAdapter(childFragmentManager, binding.tabLayoutCommunities.tabCount)
@@ -104,7 +117,7 @@ class CommunityFragment : BaseFragment() {
             TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 binding.viewPagerCommunities.currentItem = tab.position
-                if (tab.position == 1) {
+                if (tab.position == 1 || tab.position == 2) {
                     binding.companionAdd.visibility = View.VISIBLE
                 } else {
                     binding.companionAdd.visibility = View.GONE

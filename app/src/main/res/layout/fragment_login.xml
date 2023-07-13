@@ -212,17 +212,17 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_15dp"
-                    android:layout_marginBottom="@dimen/_15dp">
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#DED1D1"
                         android:layout_centerInParent="true"
                         android:layout_marginStart="@dimen/_10dp"
                         android:layout_marginEnd="@dimen/_10dp"
-                        android:layout_toLeftOf="@+id/txtLoginWithYourEmail"/>
+                        android:layout_toLeftOf="@+id/txtLoginWithYourEmail"
+                        android:background="#DED1D1" />
 
                     <TextView
                         android:id="@+id/txtLoginWithYourEmail"
@@ -256,6 +256,60 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Login as CareBuddy"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:gravity="center"
+                        android:textSize="@dimen/_12sp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#DED1D1"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:layout_toStartOf="@+id/txtLoginWithYourCompanion"/>
+
+                    <TextView
+                        android:id="@+id/txtLoginWithYourCompanion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="OR"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="#9F8F8F"
+                        android:textSize="@dimen/_16sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#DED1D1"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:layout_toEndOf="@+id/txtLoginWithYourCompanion"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutLoginAsCompanion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/edittext_background_box">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Login as Companion"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/primaryGreen"
                         android:gravity="center"
@@ -332,9 +386,9 @@
                 android:layout_margin="@dimen/_20dp">
 
                 <TextView
+                    android:id="@+id/txtLoginTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CareBuddy"
                     android:textAppearance="@style/fontfamily"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_24sp"
@@ -460,8 +514,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_15dp"
-                    android:layout_marginBottom="@dimen/_15dp">
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
 
                     <View
                         android:layout_width="match_parent"
@@ -504,6 +558,79 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Login as Client"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:gravity="center"
+                        android:textSize="@dimen/_12sp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#DED1D1"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:layout_toStartOf="@+id/txtCompanionLoginWithYourEmail"/>
+
+                    <TextView
+                        android:id="@+id/txtCompanionLoginWithYourEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="OR"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="#9F8F8F"
+                        android:textSize="@dimen/_16sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#DED1D1"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/_10dp"
+                        android:layout_marginEnd="@dimen/_10dp"
+                        android:layout_toEndOf="@+id/txtCompanionLoginWithYourEmail"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutLoginCareBuddyCompanion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/edittext_background_box">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Login as Companion"
+                        android:textAppearance="@style/fontfamily"
+                        android:textColor="@color/primaryGreen"
+                        android:gravity="center"
+                        android:textSize="@dimen/_12sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutLoginCareBuddy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/edittext_background_box"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Login as CareBuddy"
                         android:textAppearance="@style/fontfamily"
                         android:textColor="@color/primaryGreen"
                         android:gravity="center"

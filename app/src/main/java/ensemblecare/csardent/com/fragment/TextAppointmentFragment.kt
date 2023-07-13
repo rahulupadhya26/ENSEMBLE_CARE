@@ -2,21 +2,25 @@ package ensemblecare.csardent.com.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.ContentResolver
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.os.Looper
 import android.provider.OpenableColumns
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.webkit.MimeTypeMap
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -24,6 +28,7 @@ import android.webkit.WebViewClient
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,12 +48,18 @@ import com.bumptech.glide.Glide
 import ensemblecare.csardent.com.R
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import ensemblecare.csardent.com.BuildConfig
+import ensemblecare.csardent.com.databinding.DialogAlertMsgBinding
+import ensemblecare.csardent.com.databinding.DialogRescheduleApptBinding
+import ensemblecare.csardent.com.databinding.DialogRescheduleApptMsgBinding
 import io.agora.rtm.*
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -102,6 +113,10 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
 
     private lateinit var binding: FragmentTextAppointmentBinding
     private var isFileView: Boolean = false
+    private lateinit var dialogRescheduleAppt: DialogRescheduleApptMsgBinding
+    private lateinit var dialogDispMsgBinding: DialogAlertMsgBinding
+    private lateinit var dialogRescheduleAppointment: DialogRescheduleApptBinding
+    private var timerHandler: Handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -261,15 +276,6 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
             }
         }
 
-        /*binding.editTextTextAppointMessage.onFocusChangeListener =
-            OnFocusChangeListener { v, hasFocus ->
-                if(v.hasFocus()){
-                    binding.textAppointMessageList.scrollToPosition(0)
-                } else{
-                    binding.textAppointMessageList.scrollToPosition(mMessageBeanList.size - 1)
-                }
-            }*/
-
         mRtmClient = RtmClient.createInstance(
             requireActivity(),
             BuildConfig.appId,
@@ -280,6 +286,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
                             RtmStatusCode.ConnectionState.CONNECTION_STATE_RECONNECTING -> showToast(
                                 getString(R.string.reconnecting)
                             )
+
                             RtmStatusCode.ConnectionState.CONNECTION_STATE_ABORTED -> {
                                 showToast(getString(R.string.account_offline))
                                 requireActivity().setResult(MessageUtil.ACTIVITY_RESULT_CONN_ABORTED)
@@ -324,7 +331,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
 
             })
 
-            doLogin()
+        doLogin()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -527,22 +534,8 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
         }
     }
 
-    // Sets the NUmber of seconds on the timer.
-    // The runTimer() method uses a Handler
-    // to increment the seconds and
-    // update the text view.
     private fun runTimer() {
-
-        // Creates a new Handler
-        val handler = Handler()
-
-        // Call the post() method,
-        // passing in a new Runnable.
-        // The post() method processes
-        // code without a delay,
-        // so the code in the Runnable
-        // will run almost immediately.
-        handler.post(object : Runnable {
+        timerHandler.post(object : Runnable {
             override fun run() {
                 val hours: Int = seconds / 3600
                 val minutes: Int = seconds % 3600 / 60
@@ -550,7 +543,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
 
                 // Format the seconds into hours, minutes,
                 // and seconds.
-                time = String
+                val time: String = String
                     .format(
                         Locale.getDefault(),
                         "%02d:%02d:%02d", hours,
@@ -560,14 +553,158 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
                 // If running is true, increment the
                 // seconds variable.
                 if (running) {
-                    seconds--
+                    seconds++
+                }
+
+                if (minutes > 14) {
+                    getChannelMemberList()
+                    if (mChannelMemberCount < 2) {
+                        wasRunning = running
+                        running = false
+                        displayProviderNotJoinedMsg()
+                    }
                 }
 
                 // Post the code again
                 // with a delay of 1 second.
-                handler.postDelayed(this, 1000)
+                if (running)
+                    timerHandler.postDelayed(this, 1000)
             }
         })
+    }
+
+    private fun displayProviderNotJoinedMsg() {
+        timerHandler.removeCallbacksAndMessages(null)
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialogDispMsgBinding = DialogAlertMsgBinding.inflate(layoutInflater)
+        val view = dialogDispMsgBinding.root
+        dialog.setContentView(view)
+        dialog.setCanceledOnTouchOutside(true)
+        dialogDispMsgBinding.txtAlertMsg.text =
+            "Provider not joined the call.\nYou can reschedule the appointment."
+        dialogDispMsgBinding.txtOkBtn.setOnClickListener {
+            dialog.dismiss()
+
+            val date: Calendar = Calendar.getInstance()
+            val nextMonthDate = SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(date.time)
+            val endTime = DateUtils(nextMonthDate)
+            actualEndTime = endTime.getTime()
+            duration = time
+            doLogout()
+            Utils.rtmLoggedIn = false
+            missedAppointment(
+                appointment!!.appointment!!.appointment_id.toString(),
+                isClientMissed = true, isProviderMissed = false
+            ) {
+                displayRescheduleAppointmentMsg()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun displayRescheduleAppointmentMsg() {
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialogRescheduleAppt = DialogRescheduleApptMsgBinding.inflate(layoutInflater)
+        val view = dialogRescheduleAppt.root
+        dialog.setContentView(view)
+        dialog.setCanceledOnTouchOutside(true)
+        dialogRescheduleAppt.txtRescheduleApptYesBtn.setOnClickListener {
+            dialog.dismiss()
+            rescheduleAppointment(appointment!!.appointment!!.appointment_id.toString()) { response ->
+                val rescheduleApptType: Type = object : TypeToken<RescheduleAppointment?>() {}.type
+                val rescheduleAppt: RescheduleAppointment =
+                    Gson().fromJson(response, rescheduleApptType)
+                displayRescheduleAppointment(rescheduleAppt)
+            }
+        }
+        dialogRescheduleAppt.txtRescheduleApptNoBtn.setOnClickListener {
+            dialog.dismiss()
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
+        }
+        dialog.show()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun displayRescheduleAppointment(rescheduleAppt: RescheduleAppointment) {
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialogRescheduleAppointment = DialogRescheduleApptBinding.inflate(layoutInflater)
+        val view = dialogRescheduleAppointment.root
+        dialog.setContentView(view)
+        dialog.setCanceledOnTouchOutside(true)
+
+        dialogRescheduleAppointment.txtReschApptTherapistName.text = rescheduleAppt.doctor.name
+        dialogRescheduleAppointment.txtReschApptTherapistType.text =
+            rescheduleAppt.doctor.designation
+
+        val appointmentDate =
+            DateUtils(rescheduleAppt.date + " " + rescheduleAppt.time_slot.starting_time)
+
+        dialogRescheduleAppointment.txtReschApptDateTime.text = appointmentDate.getDay() + " " +
+                appointmentDate.getFullMonthName() + " at " + rescheduleAppt.time_slot.starting_time.dropLast(
+            3
+        )
+
+        Glide.with(requireActivity())
+            .load(BaseActivity.baseURL.dropLast(5) + rescheduleAppt.doctor.photo)
+            .placeholder(R.drawable.doctor_img)
+            .transform(CenterCrop(), RoundedCorners(5))
+            .into(dialogRescheduleAppointment.reschApptMode)
+
+        when (rescheduleAppt.type_of_visit) {
+            "Video" -> {
+                dialogRescheduleAppointment.reschApptMode.setBackgroundResource(R.drawable.video)
+                dialogRescheduleAppointment.reschApptMode.backgroundTintList =
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.primaryGreen
+                        )
+                    )
+            }
+
+            "Audio" -> {
+                dialogRescheduleAppointment.reschApptMode.setBackgroundResource(R.drawable.telephone)
+                dialogRescheduleAppointment.reschApptMode.backgroundTintList =
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.primaryGreen
+                        )
+                    )
+            }
+
+            else -> {
+                dialogRescheduleAppointment.reschApptMode.setBackgroundResource(R.drawable.chat)
+                dialogRescheduleAppointment.reschApptMode.backgroundTintList =
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.primaryGreen
+                        )
+                    )
+            }
+        }
+
+        dialogRescheduleAppointment.txtRescheduleApptOkBtn.setOnClickListener {
+            dialog.dismiss()
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
+        }
+        dialog.show()
     }
 
     /**
@@ -713,10 +850,13 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
                         when (errorCode) {
                             RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_TIMEOUT, RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_FAILURE ->
                                 showToast(getString(R.string.send_msg_failed))
+
                             RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_PEER_UNREACHABLE ->
                                 showToast(getString(R.string.peer_offline))
+
                             RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_CACHED_BY_SERVER ->
                                 showToast(getString(R.string.message_cached))
+
                             else -> {
                                 showToast(errorInfo.errorDescription + " - " + errorInfo.errorCode)
                             }
@@ -800,6 +940,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
                         RtmStatusCode.ChannelMessageError.CHANNEL_MESSAGE_ERR_TIMEOUT,
                         RtmStatusCode.ChannelMessageError.CHANNEL_MESSAGE_ERR_FAILURE ->
                             showToast(getString(R.string.send_msg_failed))
+
                         else -> showToast(errorInfo.errorDescription + " - " + errorInfo.errorCode)
                     }
                 }

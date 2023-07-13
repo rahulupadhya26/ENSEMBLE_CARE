@@ -156,9 +156,10 @@ class SelfCareService : Service() {
                 //Check if personal goals is added or not, If not added then send notification
                 //checkForPersonalGoal()
                 //Getting running logs of Health - Steps, distance, calories and heart rate
-                //readData()
+                readData()
                 //Post the running logs and location details to server
-                //postBackgroundData()
+                postBackgroundData()
+                //Get notification for reach out CareBuddy
                 getDashboardNotifications()
             }
         }
@@ -248,16 +249,21 @@ class SelfCareService : Service() {
 
     private fun postBackgroundData() {
         try {
+            val cal = Calendar.getInstance()
+            val myFormat = "MM/dd/yyyy"
+            val sdf = SimpleDateFormat(myFormat)
             mCompositeDisposable.add(
                 getEncryptedRequestInterface()
                     .sendHealthInfo(
-                        "",
+                        "PI0062",
                         HealthInfo(
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
-                            totalSteps.toInt(),
-                            totalDistance.toInt(),
-                            totalCalories.toInt(),
-                            totalHeartRate.toInt()
+                            sdf.format(cal.time),
+                            totalSteps,
+                            totalDistance,
+                            totalCalories,
+                            totalHeartRate,
+                            "","","",""
                         ), preference!![PrefKeys.PREF_ACCESS_TOKEN, ""]!!
                     )
                     .observeOn(AndroidSchedulers.mainThread())

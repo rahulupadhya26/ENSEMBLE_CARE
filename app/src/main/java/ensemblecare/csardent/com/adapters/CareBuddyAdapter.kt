@@ -40,6 +40,7 @@ class CareBuddyAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
+        holder.binding.imgCompanionCareBuddyReachOut.visibility = View.VISIBLE
         if (item.photo != null) {
             if (item.photo.isNotEmpty()) {
                 holder.binding.txtCompanionCareBuddyLetter.visibility = View.GONE
@@ -50,12 +51,14 @@ class CareBuddyAdapter(
                     .into(holder.binding.imgCompanionCareBuddy)
             } else {
                 holder.binding.txtCompanionCareBuddyLetter.visibility = View.VISIBLE
-                holder.binding.txtCompanionCareBuddyLetter.text = item.first_name.substring(0, 1).uppercase()
+                holder.binding.txtCompanionCareBuddyLetter.text =
+                    item.first_name.substring(0, 1).uppercase()
                 holder.binding.imgCompanionCareBuddy.visibility = View.GONE
             }
         } else {
             holder.binding.txtCompanionCareBuddyLetter.visibility = View.VISIBLE
-            holder.binding.txtCompanionCareBuddyLetter.text = item.first_name.substring(0, 1).uppercase()
+            holder.binding.txtCompanionCareBuddyLetter.text =
+                item.first_name.substring(0, 1).uppercase()
             holder.binding.imgCompanionCareBuddy.visibility = View.GONE
         }
         holder.binding.txtCompanionCareBuddyName.text = item.first_name + " " + item.last_name
@@ -68,23 +71,26 @@ class CareBuddyAdapter(
         }
 
         holder.binding.layoutCompanionCareBuddy.setOnClickListener {
-            adapterItemClickListener!!.onCareBuddyItemClickListener(item,
+            adapterItemClickListener!!.onCareBuddyItemClickListener(
+                item,
                 isCall = false,
-                isChat = false
+                isReachOut = false
             )
         }
 
         holder.binding.imgCompanionCareBuddyCall.setOnClickListener {
-            adapterItemClickListener!!.onCareBuddyItemClickListener(item,
+            adapterItemClickListener!!.onCareBuddyItemClickListener(
+                item,
                 isCall = true,
-                isChat = false
+                isReachOut = false
             )
         }
 
-        holder.binding.imgCompanionCareBuddyChat.setOnClickListener {
-            adapterItemClickListener!!.onCareBuddyItemClickListener(item,
+        holder.binding.imgCompanionCareBuddyReachOut.setOnClickListener {
+            adapterItemClickListener!!.onCareBuddyItemClickListener(
+                item,
                 isCall = false,
-                isChat = true
+                isReachOut = true
             )
         }
     }

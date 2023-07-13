@@ -47,6 +47,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import ensemblecare.csardent.com.databinding.DialogAlertMsgBinding
+import ensemblecare.csardent.com.databinding.DialogNumbersBinding
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -62,6 +64,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 
 abstract class BaseFragment : Fragment(), IFragment, IController {
@@ -78,6 +81,9 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     var preference: SharedPreferences? = null
     private lateinit var displayImageBinding: DisplayImageBinding
     private lateinit var dialogLogoutBinding: DialogLogoutBinding
+    private lateinit var dialogDispMsgBinding: DialogAlertMsgBinding
+    private var dispNumbersDialog: BottomSheetDialog? = null
+    private lateinit var numbersDialog: DialogNumbersBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -140,7 +146,18 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     }
 
     fun displayMsg(title: String, msg: String) {
-        val builder = AlertDialog.Builder(mActivity!!)
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialogDispMsgBinding = DialogAlertMsgBinding.inflate(layoutInflater)
+        val view = dialogDispMsgBinding.root
+        dialog.setContentView(view)
+        dialog.setCanceledOnTouchOutside(true)
+        dialogDispMsgBinding.txtAlertMsg.text = msg
+        dialogDispMsgBinding.txtOkBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+        /*val builder = AlertDialog.Builder(mActivity!!)
         //builder.setIcon(R.drawable.work_in_progress)
         builder.setTitle(title)
         builder.setMessage(msg)
@@ -148,7 +165,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
             dialog.dismiss()
         }
         builder.setCancelable(false)
-        builder.show()
+        builder.show()*/
     }
 
     //Get editText string
@@ -536,7 +553,6 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         preference!![PrefKeys.PREF_PATIENT_ID] =
             jsonObj.getJSONObject("carebuddy").getString("client")
         preference!![PrefKeys.PREF_CARE_BUDDY_PASS] = password
-        preference!![PrefKeys.PREF_IS_CARE_BUDDY_LOGGEDIN] = true
         saveTokens(jsonObj.getString("refresh"), jsonObj.getString("access"))
     }
 
@@ -565,7 +581,8 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                     }
                     if (errList.isNotEmpty()) {
                         val errorStr = errList.joinToString("\n")
-                        displayToast(errorStr)
+                        displayMsg("Alert", errorStr)
+                        //displayToast(errorStr)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -761,6 +778,57 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
         handler.postDelayed(runnable!!, 1000)
     }
 
+    fun missedAppointment(
+        apptId: String,
+        isClientMissed: Boolean,
+        isProviderMissed: Boolean,
+        myCallback: (result: String?) -> Unit
+    ) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .missedApptStatus(
+                        "PI0060",
+                        MissedAppointmentStatus(
+                            apptId,
+                            status = 5,
+                            isClientMissed,
+                            isProviderMissed
+                        ), getAccessToken()
+                    )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            if (status == "202" || status == "200") {
+                                myCallback.invoke("Success")
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        //displayToast("Error ${error.localizedMessage}")
+                        if ((error as HttpException).code() == 401) {
+                            clearCache()
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                            popBackStack()
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
     fun showImage(bitmapStr: String) {
         val dialog = Dialog(requireActivity())
         dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
@@ -808,6 +876,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
     fun clearCache() {
         preference!![PrefKeys.PREF_IS_LOGGEDIN] = false
         preference!![PrefKeys.PREF_IS_CARE_BUDDY_LOGGEDIN] = false
+        preference!![PrefKeys.PREF_IS_COMPANION_LOGGEDIN] = false
         getHeader().visibility = View.GONE
         Utils.bottomNav = Utils.BOTTOM_NAV_DASHBOARD
         swipeSliderEnable(false)
@@ -2131,8 +2200,7 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            val sIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$contactNo"))
-                            startActivity(sIntent)
+                            dialNumber(contactNo)
                         } catch (e: Exception) {
                             hideProgress()
                             e.printStackTrace()
@@ -2184,5 +2252,146 @@ abstract class BaseFragment : Fragment(), IFragment, IController {
             )
         }
         handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun rescheduleAppointment(appointmentId: String, myCallback: (result: String?) -> Unit) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .rescheduleAppointment(appointmentId, getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            myCallback.invoke(responseBody)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        if ((error as HttpException).code() == 401) {
+                            clearCache()
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun setCareBuddyNotification(list: ArrayList<Int>, myCallback: (result: String?) -> Unit) {
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .setCareBuddyNotification(NotificationType("Reach Out", list), getAccessToken())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            myCallback.invoke(responseBody)
+                        } catch (e: Exception) {
+                            hideProgress()
+                            e.printStackTrace()
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    }, { error ->
+                        hideProgress()
+                        if ((error as HttpException).code() == 401) {
+                            clearCache()
+                        } else {
+                            displayAfterLoginErrorMsg(error)
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    fun openMessagingApp(phoneNumber: String, messageBody: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse("sms:$phoneNumber")
+        intent.putExtra("sms_body", messageBody)
+        startActivity(intent)
+    }
+
+    fun openBrowser(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
+    }
+
+    fun displayNumbers(
+        isCrisis: Boolean,
+        count: Int,
+        number1: String,
+        number2: String,
+        number3: String = ""
+    ) {
+        dispNumbersDialog = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+        numbersDialog = DialogNumbersBinding.inflate(layoutInflater)
+        val view = numbersDialog.root
+        //val pictureDialog: View = layoutInflater.inflate(R.layout.dialog_numbers, null)
+        dispNumbersDialog!!.setContentView(view)
+        dispNumbersDialog!!.setCanceledOnTouchOutside(true)
+
+        when (count) {
+            2 -> {
+                numbersDialog.numberDialogCall1.text = number1
+                numbersDialog.numberDialogCall2.text = number2
+                numbersDialog.numberDialogCall3.visibility = View.GONE
+            }
+
+            3 -> {
+                numbersDialog.numberDialogCall1.text = number1
+                numbersDialog.numberDialogCall2.text = number2
+                numbersDialog.numberDialogCall3.text = number3
+            }
+        }
+
+        numbersDialog.numberDialogCall1.setOnClickListener {
+            dispNumbersDialog!!.dismiss()
+            if (isCrisis)
+                sendCallLog(number1)
+            else
+                dialNumber(number1)
+        }
+
+        numbersDialog.numberDialogCall2.setOnClickListener {
+            dispNumbersDialog!!.dismiss()
+            if (isCrisis)
+                sendCallLog(number2)
+            else
+                dialNumber(number2)
+        }
+
+        numbersDialog.numberDialogCall3.setOnClickListener {
+            dispNumbersDialog!!.dismiss()
+            if (isCrisis)
+                sendCallLog(number3)
+            else
+                dialNumber(number3)
+        }
+        dispNumbersDialog!!.show()
+    }
+
+    fun dialNumber(phoneNo: String) {
+        val sIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNo"))
+        startActivity(sIntent)
     }
 }

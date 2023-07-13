@@ -9,6 +9,7 @@ import ensemblecare.csardent.com.R
 import ensemblecare.csardent.com.adapters.AppointmentTabAdapter
 import ensemblecare.csardent.com.databinding.FragmentAppointmentsBinding
 import com.google.android.material.tabs.TabLayout
+import ensemblecare.csardent.com.utils.Utils
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,6 +62,16 @@ class AppointmentsFragment : BaseFragment() {
                 BottomNavigationFragment(),
                 R.id.layout_home,
                 BottomNavigationFragment.TAG
+            )
+        }
+
+        binding.fabCreateAppointment.setOnClickListener {
+            Utils.isTherapististScreen = false
+            clearTempFormData()
+            replaceFragmentNoBackStack(
+                ClientAvailabilityFragment.newInstance(false),
+                R.id.layout_home,
+                ClientAvailabilityFragment.TAG
             )
         }
 

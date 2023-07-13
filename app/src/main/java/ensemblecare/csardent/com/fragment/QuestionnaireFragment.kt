@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import ensemblecare.csardent.com.R
 import ensemblecare.csardent.com.adapters.OptionListAdapter
 import ensemblecare.csardent.com.data.*
@@ -26,11 +27,16 @@ import ensemblecare.csardent.com.utils.InternalLinkMovementMethod
 import ensemblecare.csardent.com.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import ensemblecare.csardent.com.databinding.DialogAppointmentOptionsBinding
+import ensemblecare.csardent.com.databinding.DialogNumbersBinding
+import ensemblecare.csardent.com.utils.DateMethods
+import ensemblecare.csardent.com.utils.DateUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
 import java.io.*
 import java.lang.reflect.Type
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -45,7 +51,8 @@ private const val ARG_PARAM2 = "param2"
  * Use the [QuestionnaireFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLinkMovementMethod.OnLinkClickedListener {
+class QuestionnaireFragment : BaseFragment(), View.OnClickListener,
+    InternalLinkMovementMethod.OnLinkClickedListener {
     // TODO: Rename and change types of parameters
     private var therapy: String? = null
     private var param2: String? = null
@@ -71,9 +78,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentQuestionnaireBinding.inflate(inflater, container, false)
         return binding.root
@@ -126,12 +131,11 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
         /*val jsonString = Constants.getJson(requireActivity())
         jsonArr = JSONArray(jsonString)
         val type: Type = object : TypeToken<ArrayList<Question?>?>() {}.type
-        questions = Gson().fromJson(jsonString, type)*/
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        questions = Gson().fromJson(jsonString, type)*//*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setQuestion()
         }*/
-        
-        binding.txtCall911.movementMethod = InternalLinkMovementMethod(this)
+
+        /*binding.txtCall911.movementMethod = InternalLinkMovementMethod(this)
         binding.txtSuicideCrisisLifeLine.movementMethod = InternalLinkMovementMethod(this)
         binding.txtResourceCrisisTextLine.movementMethod = LinkMovementMethod.getInstance()
         binding.txtDisasterDistressHelpLine.movementMethod = InternalLinkMovementMethod(this)
@@ -141,7 +145,108 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
         binding.txtResourceNationalChildAbuse.movementMethod = InternalLinkMovementMethod(this)
         binding.txtResourceNationalSexualAssault.movementMethod = InternalLinkMovementMethod(this)
         binding.txtResourceElderDisability.movementMethod = InternalLinkMovementMethod(this)
-        binding.txtResourceVeteranCrisis.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResourceVeteranCrisis.movementMethod = InternalLinkMovementMethod(this)*/
+
+        /*binding.txtResNationalSuicide.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtResDisasterDistress.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResNationalDomestic.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResNationalChild.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResNationalSexual.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResTransLifeline.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResTheTrevorProject.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtResVeterans.movementMethod = InternalLinkMovementMethod(this)*/
+
+        binding.cardViewResCall.setOnClickListener {
+            displayNumbers(false, 3, "+1-800-273-8255", "+1-212-673-3000", "911")
+        }
+
+        binding.cardViewResNationalSuicideOpen.setOnClickListener {
+            openBrowser("https://988lifeline.org/")
+        }
+
+        binding.cardViewResNationalSuicideCall.setOnClickListener {
+            displayNumbers(false, 2, "711", "988")
+        }
+
+        binding.cardViewResCrisisTextLineMsg.setOnClickListener {
+            openMessagingApp("741741", "SIGNS")
+        }
+
+        binding.cardViewResDisasterOpen.setOnClickListener {
+            openBrowser("https://www.samhsa.gov/disaster-preparedness")
+        }
+
+        binding.cardViewResDisasterMsg.setOnClickListener {
+            openMessagingApp("1-800-985-5990", "")
+        }
+
+        binding.cardViewResDisasterCall.setOnClickListener {
+            dialNumber("+1-800-985-5990")
+        }
+
+        binding.cardViewResNdvhOpen.setOnClickListener {
+            openBrowser("https://www.thehotline.org/")
+        }
+
+        binding.cardViewResNdvhText.setOnClickListener {
+            openMessagingApp("22522", "LOVEIS")
+        }
+
+        binding.cardViewResNdvhCall.setOnClickListener {
+            dialNumber("1-800-799-7233")
+        }
+
+        binding.cardViewResNcahOpen.setOnClickListener {
+            openBrowser("https://childhelphotline.org/")
+        }
+
+        binding.cardViewResNcahText.setOnClickListener {
+            openMessagingApp("1-800-422-4453", "")
+        }
+
+        binding.cardViewResNcahCall.setOnClickListener {
+            dialNumber("1-800-422-4453")
+        }
+
+        binding.cardViewResNsahOpen.setOnClickListener {
+            openBrowser("https://rainn.org/")
+        }
+
+        binding.cardViewResNsahCall.setOnClickListener {
+            dialNumber("+1-800-656-4673")
+        }
+
+        binding.cardViewResTransLifelineOpen.setOnClickListener {
+            openBrowser("https://translifeline.org/")
+        }
+
+        binding.cardViewResTransLifelineCall.setOnClickListener {
+            dialNumber("1-877-565-8860")
+        }
+
+        binding.cardViewResTrevorProjectOpen.setOnClickListener {
+            openBrowser("https://www.thetrevorproject.org/get-help/")
+        }
+
+        binding.cardViewResTrevorProjectCall.setOnClickListener {
+            dialNumber("1-866-488-7386")
+        }
+
+        binding.cardViewResEldersCall.setOnClickListener {
+            dialNumber("(800) 426-9009")
+        }
+
+        binding.cardViewResVeteranOpen.setOnClickListener {
+            openBrowser("https://www.veteranscrisisline.net/")
+        }
+
+        binding.cardViewResVeteranText.setOnClickListener {
+            openMessagingApp("838255", "")
+        }
+
+        binding.cardViewResVeteranCall.setOnClickListener {
+            dialNumber("988")
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -150,10 +255,8 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
         binding.layoutOptions.visibility = View.GONE
         runnable = Runnable {
             mCompositeDisposable.add(
-                getEncryptedRequestInterface()
-                    .getAllQuestionnaire("True")
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
+                getEncryptedRequestInterface().getAllQuestionnaire("True")
+                    .observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         try {
                             hideProgress()
@@ -206,10 +309,10 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
-                getEncryptedRequestInterface()
-                    .getQuestionnaire(therapy!!, preference!![PrefKeys.PREF_DEVICE_ID, ""]!!)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
+                getEncryptedRequestInterface().getQuestionnaire(
+                    therapy!!,
+                    preference!![PrefKeys.PREF_DEVICE_ID, ""]!!
+                ).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         try {
                             hideProgress()
@@ -254,13 +357,9 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
         setAnswers = Gson().fromJson(preference!![PrefKeys.PREF_SET_ANSWER, ""], type)
         runnable = Runnable {
             mCompositeDisposable.add(
-                getEncryptedRequestInterface()
-                    .sendAllAnswers(
-                        "True",
-                        SendAnswer(preference!![PrefKeys.PREF_ID, 0]!!, setAnswers)
-                    )
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
+                getEncryptedRequestInterface().sendAllAnswers(
+                    "True", SendAnswer(preference!![PrefKeys.PREF_ID, 0]!!, setAnswers)
+                ).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         try {
                             hideProgress()
@@ -321,17 +420,16 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.layoutOptions.visibility = View.GONE
                 val mOptionList = question.options[0].data.split(",").toTypedArray()
                 binding.rvOptionList.layoutManager = GridLayoutManager(
-                    requireActivity(),
-                    3
+                    requireActivity(), 3
                 )
                 binding.rvOptionList.adapter = OptionListAdapter(
-                    requireActivity(),
-                    getListData(mOptionList)
+                    requireActivity(), getListData(mOptionList)
                 )
             }
+
             2 -> {
                 binding.rvOptionList.visibility = View.GONE
-                binding.layoutOptions.visibility= View.VISIBLE
+                binding.layoutOptions.visibility = View.VISIBLE
                 binding.tvOptionOne.text = question.options[0].data
                 binding.tvOptionTwo.text = question.options[1].data
                 binding.cvOptionThree.visibility = View.GONE
@@ -348,6 +446,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             3 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -368,6 +467,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             4 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -389,6 +489,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             5 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -411,6 +512,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             6 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -434,6 +536,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             7 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -458,6 +561,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             8 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -483,6 +587,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             9 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -509,6 +614,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             10 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -536,6 +642,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             11 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -564,6 +671,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             12 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -593,6 +701,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             13 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -623,6 +732,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             14 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -654,6 +764,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.VISIBLE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             15 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -700,8 +811,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
             }
         }
         binding.progressBar.max = questions.size - 1
-        binding.progressBar.progress = count
-        /*if (getIndex == 1) {
+        binding.progressBar.progress = count/*if (getIndex == 1) {
             count = 0
         }*/
         setMaxProgress(count)
@@ -714,8 +824,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
         } else {
             binding.tvCheckApply.visibility = View.GONE
             binding.btnQuestionnaireContinue.visibility = View.GONE
-        }
-        /*when (count) {
+        }/*when (count) {
             1 -> {
                 tv_start_text.text = "Keep going.."
             }
@@ -734,8 +843,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
             else -> {
                 tv_start_text.text = "Few more.."
             }
-        }*/
-        /*if (question!!.next != null && question!!.next.isEmpty()) {
+        }*//*if (question!!.next != null && question!!.next.isEmpty()) {
             tv_start_text.text = "And we are done..."
         }*/
         Log.i("Total count", (questions.size - 1).toString())
@@ -748,14 +856,13 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.layoutOptions.visibility = View.GONE
                 val mOptionList = question!!.options[0].data.split(",").toTypedArray()
                 binding.rvOptionList.layoutManager = GridLayoutManager(
-                    requireActivity(),
-                    3
+                    requireActivity(), 3
                 )
                 binding.rvOptionList.adapter = OptionListAdapter(
-                    requireActivity(),
-                    getListData(mOptionList)
+                    requireActivity(), getListData(mOptionList)
                 )
             }
+
             2 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -775,6 +882,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             3 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -795,6 +903,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             4 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -816,6 +925,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             5 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -838,6 +948,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             6 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -861,6 +972,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             7 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -885,6 +997,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             8 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -910,6 +1023,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             9 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -936,6 +1050,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             10 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -963,6 +1078,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             11 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -991,6 +1107,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             12 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -1020,6 +1137,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             13 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -1050,6 +1168,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.GONE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             14 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -1081,6 +1200,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.VISIBLE
                 binding.cvOptionFifteen.visibility = View.GONE
             }
+
             15 -> {
                 binding.rvOptionList.visibility = View.GONE
                 binding.layoutOptions.visibility = View.VISIBLE
@@ -1113,8 +1233,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.cvOptionFourteen.visibility = View.VISIBLE
                 binding.cvOptionFifteen.visibility = View.VISIBLE
             }
-        }
-        /*if (count == tempQuestions!!.size) {
+        }/*if (count == tempQuestions!!.size) {
             tempQuestions = ArrayList()
             count = 0
             for (question in questions!!) {
@@ -1124,8 +1243,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
             }
             progressBar.max = progressBar.max + tempQuestions!!.size
         }
-        question = tempQuestions!![count]*/
-        /*if (tempQuestions!!.size > 2) {
+        question = tempQuestions!![count]*//*if (tempQuestions!!.size > 2) {
             if (count == tempQuestions!!.size - 1) {
                 tv_next_question.text = ""
                 tv_start_text.text = "And we are done..."
@@ -1133,8 +1251,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 tv_start_text.text = "Few more..."
                 tv_next_question.text = tempQuestions!![count + 1].question
             }
-        }*/
-        /*when (question!!.no_of_options) {
+        }*//*when (question!!.no_of_options) {
             "1" -> {
                 mSelectedOptionId = 0
                 rvOptionList.visibility = View.VISIBLE
@@ -1316,6 +1433,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             2 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1343,6 +1461,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             3 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1370,6 +1489,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             4 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1397,6 +1517,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             5 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1424,6 +1545,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             6 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1451,6 +1573,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             7 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1478,6 +1601,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             8 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1505,6 +1629,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             9 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1532,6 +1657,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             10 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1559,6 +1685,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             11 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1586,6 +1713,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             12 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1613,6 +1741,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             13 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1640,6 +1769,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             14 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1667,6 +1797,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             15 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1694,6 +1825,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             16 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1721,6 +1853,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             17 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1748,6 +1881,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             18 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1775,6 +1909,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             19 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1802,6 +1937,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             20 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1829,6 +1965,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             21 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1856,6 +1993,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             22 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1883,6 +2021,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             22 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1910,6 +2049,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             23 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1937,6 +2077,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.GONE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             24 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -1964,6 +2105,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress24.visibility = View.VISIBLE
                 binding.dashProgress25.visibility = View.GONE
             }
+
             25 -> {
                 binding.dashProgress1.visibility = View.VISIBLE
                 binding.dashProgress2.visibility = View.VISIBLE
@@ -2013,6 +2155,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             2 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2030,6 +2173,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             3 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2047,6 +2191,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             4 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2064,6 +2209,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             5 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2081,6 +2227,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             6 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2098,6 +2245,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             7 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2115,6 +2263,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             8 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2132,6 +2281,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             9 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2149,6 +2299,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             10 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2166,6 +2317,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             11 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2183,6 +2335,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             12 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2200,6 +2353,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             13 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2217,6 +2371,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             14 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2234,6 +2389,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 binding.dashProgress14.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress15.setBackgroundResource(R.drawable.dash_progress_bar)
             }
+
             15 -> {
                 binding.dashProgress1.setBackgroundResource(R.drawable.dash_white_progress_bar)
                 binding.dashProgress2.setBackgroundResource(R.drawable.dash_white_progress_bar)
@@ -2265,13 +2421,12 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String = "") =
-            QuestionnaireFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        fun newInstance(param1: String, param2: String = "") = QuestionnaireFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_PARAM1, param1)
+                putString(ARG_PARAM2, param2)
             }
+        }
 
         const val TAG = "Screen_Questionnaire"
     }
@@ -2328,15 +2483,13 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 }
                 if (!question!!.is_multiple) {
                     selectedOptionsView(
-                        binding.tvOptionOne,
-                        selectedOptions,
-                        question!!.question_id,
-                        nextQuestionId
+                        binding.tvOptionOne, selectedOptions, question!!.question_id, nextQuestionId
                     )
                 } else {
                     optionSelection(binding.tvOptionOne, optionOne)
                 }
             }
+
             R.id.cv_option_two -> {
                 if (question!!.options[1].option_id != null) {
                     nextQuestionId = question!!.options[1].option_id
@@ -2368,15 +2521,13 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 }
                 if (!question!!.is_multiple) {
                     selectedOptionsView(
-                        binding.tvOptionTwo,
-                        selectedOptions,
-                        question!!.question_id,
-                        nextQuestionId
+                        binding.tvOptionTwo, selectedOptions, question!!.question_id, nextQuestionId
                     )
                 } else {
                     optionSelection(binding.tvOptionTwo, optionTwo)
                 }
             }
+
             R.id.cv_option_three -> {
                 if (question!!.options[2].option_id != null) {
                     nextQuestionId = question!!.options[2].option_id
@@ -2413,6 +2564,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                     optionSelection(binding.tvOptionThree, optionThree)
                 }
             }
+
             R.id.cv_option_four -> {
                 if (question!!.options[3].option_id != null) {
                     nextQuestionId = question!!.options[3].option_id
@@ -2449,6 +2601,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                     optionSelection(binding.tvOptionFour, optionFour)
                 }
             }
+
             R.id.cv_option_five -> {
                 if (question!!.options[4].option_id != null) {
                     nextQuestionId = question!!.options[4].option_id
@@ -2485,6 +2638,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                     optionSelection(binding.tvOptionFive, optionFive)
                 }
             }
+
             R.id.cv_option_six -> {
                 if (question!!.options[5].option_id != null) {
                     nextQuestionId = question!!.options[5].option_id
@@ -2512,15 +2666,13 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 }
                 if (!question!!.is_multiple) {
                     selectedOptionsView(
-                        binding.tvOptionSix,
-                        selectedOptions,
-                        question!!.question_id,
-                        nextQuestionId
+                        binding.tvOptionSix, selectedOptions, question!!.question_id, nextQuestionId
                     )
                 } else {
                     optionSelection(binding.tvOptionSix, optionSix)
                 }
             }
+
             R.id.cv_option_seven -> {
                 if (question!!.options[6].option_id != null) {
                     nextQuestionId = question!!.options[6].option_id
@@ -2557,6 +2709,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                     optionSelection(binding.tvOptionSeven, optionSeven)
                 }
             }
+
             R.id.cv_option_eight -> {
                 if (question!!.options[7].option_id != null) {
                     nextQuestionId = question!!.options[7].option_id
@@ -2593,6 +2746,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                     optionSelection(binding.tvOptionEight, optionEight)
                 }
             }
+
             R.id.cv_option_nine -> {
                 if (question!!.options[8].option_id != null) {
                     nextQuestionId = question!!.options[8].option_id
@@ -2629,6 +2783,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                     optionSelection(binding.tvOptionNine, optionNine)
                 }
             }
+
             R.id.cv_option_ten -> {
                 if (question!!.options[9].option_id != null) {
                     nextQuestionId = question!!.options[9].option_id
@@ -2656,15 +2811,13 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                 }
                 if (!question!!.is_multiple) {
                     selectedOptionsView(
-                        binding.tvOptionTen,
-                        selectedOptions,
-                        question!!.question_id,
-                        nextQuestionId
+                        binding.tvOptionTen, selectedOptions, question!!.question_id, nextQuestionId
                     )
                 } else {
                     optionSelection(binding.tvOptionTen, optionTen)
                 }
             }
+
             R.id.cv_option_eleven -> {
                 if (question!!.options[10].option_id != null) {
                     nextQuestionId = question!!.options[10].option_id
@@ -2701,6 +2854,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                     optionSelection(binding.tvOptionEleven, optionEleven)
                 }
             }
+
             R.id.cv_option_twelve -> {
                 if (question!!.options[11].option_id != null) {
                     nextQuestionId = question!!.options[11].option_id
@@ -2737,6 +2891,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                     optionSelection(binding.tvOptionTwelve, optionTwelve)
                 }
             }
+
             R.id.cv_option_thirteen -> {
                 if (question!!.options[12].option_id != null) {
                     nextQuestionId = question!!.options[12].option_id
@@ -2773,6 +2928,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                     optionSelection(binding.tvOptionThirteen, optionThirteen)
                 }
             }
+
             R.id.cv_option_fourteen -> {
                 if (question!!.options[13].option_id != null) {
                     nextQuestionId = question!!.options[13].option_id
@@ -2809,6 +2965,7 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                     optionSelection(binding.tvOptionFourteen, optionFourteen)
                 }
             }
+
             R.id.cv_option_fifteen -> {
                 if (question!!.options[14].option_id != null) {
                     nextQuestionId = question!!.options[14].option_id
@@ -2845,19 +3002,20 @@ class QuestionnaireFragment : BaseFragment(), View.OnClickListener, InternalLink
                     optionSelection(binding.tvOptionFifteen, optionFifteen)
                 }
             }
+
             R.id.btnQuestionnaireContinue -> {
                 if (multipleSelectionCount > 0) {
-                    if (question!!.is_multiple)
-                        selectedOptionsView(
-                            binding.tvOptionFifteen,
-                            selectedOptions,
-                            question!!.question_id,
-                            nextQuestionId
-                        )
+                    if (question!!.is_multiple) selectedOptionsView(
+                        binding.tvOptionFifteen,
+                        selectedOptions,
+                        question!!.question_id,
+                        nextQuestionId
+                    )
                 } else {
-                    displayMsg("Alert", "Select the option.")
+                    displayMsg("Alert", "Select an option.")
                 }
             }
+
             R.id.btnResourceContinue -> {
                 val builder = AlertDialog.Builder(mActivity!!)
                 builder.setTitle("Confirmation")

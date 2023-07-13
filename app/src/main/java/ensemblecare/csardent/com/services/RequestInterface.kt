@@ -414,6 +414,13 @@ interface RequestInterface {
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 
+    @PUT("update/")
+    fun missedApptStatus(
+        @Query("table_id") table_id: String,
+        @Body apptStatus: MissedAppointmentStatus,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
     @POST("create/")
     fun sendExerciseCarePlanPendingTask(
         @Query("table_id") table_id: String,
@@ -558,6 +565,7 @@ interface RequestInterface {
     @GET("carebuddy/add_carebuddy")
     fun searchByEmail(
         @Query("email") email: String,
+        @Query("type") type: String,
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 
@@ -634,6 +642,19 @@ interface RequestInterface {
     @GET("user_basic_details")
     fun getUserBasicDetails(
         @Query("user_id") user_id: Int,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @GET("patient/reschedule_appointment/{id}")
+    fun rescheduleAppointment(
+        @Path("id") id: String,
+        @Header("Authorization") auth: String
+    ): Single<ResponseBody>
+
+    @POST("create/")
+    fun sendVitals(
+        @Query("table_id") table_id: String,
+        @Body sendVitals: SendVitals,
         @Header("Authorization") auth: String
     ): Single<ResponseBody>
 }

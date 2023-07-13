@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.AddVitalsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_above="@+id/cardViewAddVitals">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/addVitalsBack"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/_5dp"
+                android:padding="@dimen/_5dp"
+                android:src="@drawable/journal_resource_back"
+                app:tint="@color/primaryGreen" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Self Report Vitals"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_14sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_15dp"
+                android:layout_marginEnd="@dimen/_15dp"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/_10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_10dp"
+                    android:src="@drawable/vital_signs"
+                    app:tint="#38A387" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reported vitals will be utilized to assess the advancement of your treatment. Make sure that values are accurate."
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="#5F6368"
+                    android:textSize="@dimen/_10sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:text="Weight (lbs)"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sp" />
+
+                <EditText
+                    android:id="@+id/editTextAddVitalsWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:backgroundTint="#F4E0E0"
+                    android:hint="Enter Weight"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:padding="@dimen/_5dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#A3A1A1"
+                    android:textSize="@dimen/_12sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:text="Height (feet)"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sp" />
+
+                <EditText
+                    android:id="@+id/editTextAddVitalsHeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:backgroundTint="#F4E0E0"
+                    android:hint="Enter Height"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:padding="@dimen/_5dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#A3A1A1"
+                    android:textSize="@dimen/_12sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:text="BMI"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sp" />
+
+                <TextView
+                    android:id="@+id/txtAddVitalsBmi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:backgroundTint="#F4E0E0"
+                    android:padding="@dimen/_5dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:text="BP (Systolic)"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sp" />
+
+                <EditText
+                    android:id="@+id/editTextAddVitalsBpSystolic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:backgroundTint="#F4E0E0"
+                    android:hint="Enter BP (Systolic)"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:padding="@dimen/_5dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#A3A1A1"
+                    android:textSize="@dimen/_12sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:text="BP (Diastolic)"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sp" />
+
+                <EditText
+                    android:id="@+id/editTextAddVitalsBpDiastolic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:backgroundTint="#F4E0E0"
+                    android:hint="Enter BP (Diastolic)"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:padding="@dimen/_5dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#A3A1A1"
+                    android:textSize="@dimen/_12sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:text="Temperature"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sp" />
+
+                <EditText
+                    android:id="@+id/editTextAddVitalsTemperature"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:backgroundTint="#F4E0E0"
+                    android:hint="Enter Temperature"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:padding="@dimen/_5dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#A3A1A1"
+                    android:textSize="@dimen/_12sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:text="Pulse"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sp" />
+
+                <EditText
+                    android:id="@+id/editTextAddVitalsPulse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:backgroundTint="#F4E0E0"
+                    android:hint="Enter Pulse"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:padding="@dimen/_5dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#A3A1A1"
+                    android:textSize="@dimen/_12sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:text="Respiration"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sp" />
+
+                <EditText
+                    android:id="@+id/editTextAddVitalsRespiration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:backgroundTint="#F4E0E0"
+                    android:hint="Enter Respiration"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:padding="@dimen/_5dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#A3A1A1"
+                    android:textSize="@dimen/_12sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:text="O2 Saturation"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sp" />
+
+                <EditText
+                    android:id="@+id/editTextAddVitalsO2Saturation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:backgroundTint="#F4E0E0"
+                    android:hint="Enter O2 Saturation"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:padding="@dimen/_5dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#A3A1A1"
+                    android:textSize="@dimen/_12sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:text="Glucose Reading"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sp" />
+
+                <EditText
+                    android:id="@+id/editTextAddVitalsGlucoseReading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:background="@drawable/edittext_rectangle_bg"
+                    android:backgroundTint="#F4E0E0"
+                    android:hint="Enter Glucose Reading"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:padding="@dimen/_5dp"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:textColorHint="#A3A1A1"
+                    android:textSize="@dimen/_12sp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewAddVitals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginTop="@dimen/_5dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        app:cardBackgroundColor="@color/primaryDarkGreen"
+        app:cardCornerRadius="@dimen/_20dp"
+        app:cardElevation="@dimen/_5dp"
+        android:layout_alignParentBottom="true"
+        app:cardUseCompatPadding="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/_10dp"
+            android:text="Add Vitals"
+            android:textAppearance="@style/fontfamily"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14sp"
+            android:textStyle="bold" />
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

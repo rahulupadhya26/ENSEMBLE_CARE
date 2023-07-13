@@ -3,16 +3,19 @@ package ensemblecare.csardent.com.fragment
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.OpenableColumns
 import android.util.Base64
 import android.util.Log
@@ -20,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.webkit.MimeTypeMap
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -31,7 +35,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import ensemblecare.csardent.com.BaseActivity
+import ensemblecare.csardent.com.BuildConfig
+import ensemblecare.csardent.com.R
 import ensemblecare.csardent.com.adapters.MessageAdapter
 import ensemblecare.csardent.com.controller.OnBottomReachedListener
 import ensemblecare.csardent.com.controller.OnMessageClickListener
@@ -39,17 +51,15 @@ import ensemblecare.csardent.com.data.FileDetails
 import ensemblecare.csardent.com.data.GetAppointment
 import ensemblecare.csardent.com.data.MessageBean
 import ensemblecare.csardent.com.data.MessageListBean
+import ensemblecare.csardent.com.data.RescheduleAppointment
+import ensemblecare.csardent.com.databinding.DialogAlertMsgBinding
 import ensemblecare.csardent.com.databinding.DialogOnlineChatBinding
+import ensemblecare.csardent.com.databinding.DialogRescheduleApptBinding
+import ensemblecare.csardent.com.databinding.DialogRescheduleApptMsgBinding
 import ensemblecare.csardent.com.databinding.FragmentVideoCallBinding
 import ensemblecare.csardent.com.preference.PrefKeys
 import ensemblecare.csardent.com.preference.PreferenceHelper.get
 import ensemblecare.csardent.com.utils.*
-import ensemblecare.csardent.com.R
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import ensemblecare.csardent.com.BuildConfig
 import io.agora.rtc2.IRtcEngineEventHandler
 import io.agora.rtc2.RtcEngine
 import io.agora.rtc2.video.VideoCanvas
@@ -62,6 +72,7 @@ import retrofit2.HttpException
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -88,6 +99,10 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener, OnBottomReache
     private var actualStartTime: String? = null
     private var actualEndTime: String? = null
     private var duration: String? = null
+    private lateinit var dialogRescheduleAppt: DialogRescheduleApptMsgBinding
+    private lateinit var dialogDispMsgBinding: DialogAlertMsgBinding
+    private lateinit var dialogRescheduleAppointment: DialogRescheduleApptBinding
+    private var timerHandler: Handler = Handler(Looper.getMainLooper())
 
     // Fill the App ID of your project generated on Agora Console.
     //Gourav
@@ -315,7 +330,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener, OnBottomReache
         builder.show()
     }
 
-    private fun processEndCall(){
+    private fun processEndCall() {
         val date: Calendar = Calendar.getInstance()
         val nextMonthDate = SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(date.time)
         val endTime = DateUtils(nextMonthDate)
@@ -1038,7 +1053,7 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener, OnBottomReache
     private fun refreshChannelTitle() {
         val titleFormat = getString(R.string.channel_title)
         val title = String.format(titleFormat, mChannelName, mChannelMemberCount)
-        onlineChatView!!.txtTherapistChatName.text = mChannelName
+        onlineChatView.txtTherapistChatName.text = mChannelName
     }
 
     private fun showToast(text: String) {
@@ -1067,14 +1082,14 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener, OnBottomReache
 
     override fun onPause() {
         super.onPause()
-        wasRunning = running;
-        running = false;
+        wasRunning = running
+        running = false
     }
 
     override fun onResume() {
         super.onResume()
         if (wasRunning) {
-            running = true;
+            running = true
         }
     }
 
@@ -1082,18 +1097,10 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener, OnBottomReache
     // The runTimer() method uses a Handler
     // to increment the seconds and
     // update the text view.
+
+
     private fun runTimer() {
-
-        // Creates a new Handler
-        val handler = Handler()
-
-        // Call the post() method,
-        // passing in a new Runnable.
-        // The post() method processes
-        // code without a delay,
-        // so the code in the Runnable
-        // will run almost immediately.
-        handler.post(object : Runnable {
+        timerHandler.post(object : Runnable {
             override fun run() {
                 val hours: Int = seconds / 3600
                 val minutes: Int = seconds % 3600 / 60
@@ -1122,11 +1129,156 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener, OnBottomReache
                     seconds++
                 }
 
+                if (minutes > 14) {
+                    getChannelMemberList()
+                    if (mChannelMemberCount < 2) {
+                        wasRunning = running
+                        running = false
+                        displayProviderNotJoinedMsg()
+                    }
+                }
+
                 // Post the code again
                 // with a delay of 1 second.
-                handler.postDelayed(this, 1000)
+                if (running)
+                    timerHandler.postDelayed(this, 1000)
             }
         })
+    }
+
+    private fun displayProviderNotJoinedMsg() {
+        timerHandler.removeCallbacksAndMessages(null)
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialogDispMsgBinding = DialogAlertMsgBinding.inflate(layoutInflater)
+        val view = dialogDispMsgBinding.root
+        dialog.setContentView(view)
+        dialog.setCanceledOnTouchOutside(true)
+        dialogDispMsgBinding.txtAlertMsg.text =
+            "Provider not joined the call.\nYou can reschedule the appointment."
+        dialogDispMsgBinding.txtOkBtn.setOnClickListener {
+            dialog.dismiss()
+
+            val date: Calendar = Calendar.getInstance()
+            val nextMonthDate =
+                SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(date.time)
+            val endTime = DateUtils(nextMonthDate)
+            actualEndTime = endTime.getTime()
+            duration = binding.txtUserAudioTime.text.toString()
+            endCall()
+            Utils.rtmLoggedIn = false
+            missedAppointment(
+                appointment!!.appointment!!.appointment_id.toString(),
+                isClientMissed = true, isProviderMissed = false
+            ) {
+                displayRescheduleAppointmentMsg()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun displayRescheduleAppointmentMsg() {
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialogRescheduleAppt = DialogRescheduleApptMsgBinding.inflate(layoutInflater)
+        val view = dialogRescheduleAppt.root
+        dialog.setContentView(view)
+        dialog.setCanceledOnTouchOutside(true)
+        dialogRescheduleAppt.txtRescheduleApptYesBtn.setOnClickListener {
+            dialog.dismiss()
+            rescheduleAppointment(appointment!!.appointment!!.appointment_id.toString()) { response ->
+                val rescheduleApptType: Type = object : TypeToken<RescheduleAppointment?>() {}.type
+                val rescheduleAppt: RescheduleAppointment =
+                    Gson().fromJson(response, rescheduleApptType)
+                displayRescheduleAppointment(rescheduleAppt)
+            }
+        }
+        dialogRescheduleAppt.txtRescheduleApptNoBtn.setOnClickListener {
+            dialog.dismiss()
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
+        }
+        dialog.show()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun displayRescheduleAppointment(rescheduleAppt: RescheduleAppointment) {
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialogRescheduleAppointment = DialogRescheduleApptBinding.inflate(layoutInflater)
+        val view = dialogRescheduleAppointment.root
+        dialog.setContentView(view)
+        dialog.setCanceledOnTouchOutside(true)
+
+        dialogRescheduleAppointment.txtReschApptTherapistName.text = rescheduleAppt.doctor.name
+        dialogRescheduleAppointment.txtReschApptTherapistType.text =
+            rescheduleAppt.doctor.designation
+
+        val appointmentDate =
+            DateUtils(rescheduleAppt.date + " " + rescheduleAppt.time_slot.starting_time)
+
+        dialogRescheduleAppointment.txtReschApptDateTime.text = appointmentDate.getDay() + " " +
+                appointmentDate.getFullMonthName() + " at " + rescheduleAppt.time_slot.starting_time.dropLast(
+            3
+        )
+
+        Glide.with(requireActivity())
+            .load(BaseActivity.baseURL.dropLast(5) + rescheduleAppt.doctor.photo)
+            .placeholder(R.drawable.doctor_img)
+            .transform(CenterCrop(), RoundedCorners(5))
+            .into(dialogRescheduleAppointment.imgReschApptDoctorImg)
+
+        when (rescheduleAppt.type_of_visit) {
+            "Video" -> {
+                dialogRescheduleAppointment.reschApptMode.setBackgroundResource(R.drawable.video)
+                dialogRescheduleAppointment.reschApptMode.backgroundTintList =
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.primaryGreen
+                        )
+                    )
+            }
+
+            "Audio" -> {
+                dialogRescheduleAppointment.reschApptMode.setBackgroundResource(R.drawable.telephone)
+                dialogRescheduleAppointment.reschApptMode.backgroundTintList =
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.primaryGreen
+                        )
+                    )
+            }
+
+            else -> {
+                dialogRescheduleAppointment.reschApptMode.setBackgroundResource(R.drawable.chat)
+                dialogRescheduleAppointment.reschApptMode.backgroundTintList =
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.primaryGreen
+                        )
+                    )
+            }
+        }
+
+        dialogRescheduleAppointment.txtRescheduleApptOkBtn.setOnClickListener {
+            dialog.dismiss()
+            setBottomNavigation(null)
+            setLayoutBottomNavigation(null)
+            replaceFragmentNoBackStack(
+                BottomNavigationFragment(),
+                R.id.layout_home,
+                BottomNavigationFragment.TAG
+            )
+        }
+        dialog.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

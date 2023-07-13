@@ -55,13 +55,6 @@ class CareBuddyCommunityDashboardAdapter(
                 isChat = false
             )
         }
-
-        holder.binding.imgCompanionCareBuddyChat.setOnClickListener {
-            adapterItemClickListener!!.onCareBuddyDashboardItemClickListener(item,
-                isCall = false,
-                isChat = true
-            )
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

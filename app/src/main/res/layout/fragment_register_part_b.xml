@@ -87,7 +87,6 @@
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:layout_marginBottom="@dimen/_5dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_16sp"
                     android:hint="Email"
@@ -95,6 +94,21 @@
                     android:textColorHint="#807B7B"
                     android:layout_marginTop="@dimen/_5dp"
                     android:background="@drawable/edittext_background_box"/>
+
+                <TextView
+                    android:id="@+id/txtSignUpMailId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:maxLines="1"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:textSize="@dimen/_14sp"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -123,6 +137,19 @@
                     android:textColorHint="#807B7B"
                     android:layout_marginTop="@dimen/_5dp"
                     android:background="@drawable/edittext_background_box"/>
+
+                <TextView
+                    android:id="@+id/txtSignUpPhoneNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layout_marginBottom="@dimen/_5dp"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:textSize="@dimen/_14sp"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="match_parent"

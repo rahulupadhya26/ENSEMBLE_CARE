@@ -65,7 +65,7 @@ class ToDoDataListAdapter(
                 layoutNotCompletedToDo.visibility = View.GONE
                 radioButtonToDo.isChecked = true
                 txtToDoDate.text =
-                    toDoUpdatedDate.getDay() + " " + toDoUpdatedDate.getMonth() + " " + toDoUpdatedDate.getYear() + ", " + toDoUpdatedDate.getTime()
+                    toDoUpdatedDate.getMonth() + " " + toDoUpdatedDate.getDay() + " " + toDoUpdatedDate.getYear() + ", " + toDoUpdatedDate.getTime()
                 radioButtonToDo.setTextColor(
                     ContextCompat.getColor(
                         context,
@@ -86,7 +86,7 @@ class ToDoDataListAdapter(
                 )
             } else {
                 txtToDoDate.text =
-                    endDate.getDay() + " " + endDate.getMonth() + " " + endDate.getYear()
+                    endDate.getMonth() + " " + endDate.getDay() + " " + endDate.getYear()
                 txtToDoCompleted.visibility = View.GONE
                 radioButtonToDo.isChecked = false
                 layoutCompletedToDo.visibility = View.GONE
@@ -96,13 +96,26 @@ class ToDoDataListAdapter(
             if (item.is_assign == "True") {
                 imgToDoDeleteMenu.visibility = View.GONE
                 imgToDoMenu.visibility = View.GONE
+                if (item.document != null) {
+                    layoutViewDocument.visibility = View.VISIBLE
+                }
             } else {
                 imgToDoDeleteMenu.visibility = View.VISIBLE
                 imgToDoMenu.visibility = View.VISIBLE
+                layoutViewDocument.visibility = View.GONE
             }
 
             radioButtonToDo.setOnClickListener {
                 adapterItemClick.onToDoItemClickListener(radioButtonToDo, false, "", item)
+            }
+
+            layoutViewDocument.setOnClickListener {
+                adapterItemClick.onToDoItemClickListener(
+                    layoutViewDocument,
+                    false,
+                    "Document",
+                    item
+                )
             }
 
             imgToDoDeleteMenu.setOnClickListener {

@@ -1,11 +1,13 @@
 package ensemblecare.csardent.com.fragment
 
+import android.app.Dialog
 import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import ensemblecare.csardent.com.BaseActivity
@@ -16,6 +18,10 @@ import ensemblecare.csardent.com.preference.PreferenceHelper.get
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import ensemblecare.csardent.com.databinding.DialogLogoutBinding
+import ensemblecare.csardent.com.databinding.DialogMoveAsClientBinding
+import ensemblecare.csardent.com.preference.PreferenceHelper.set
+import ensemblecare.csardent.com.utils.Utils
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,6 +40,7 @@ class CareBuddyProfileFragment : BaseFragment() {
     private var selectedGender: String = "Prefer not to say"
     private var genderData: Array<String>? = null
     private lateinit var binding: FragmentCareBuddyProfileBinding
+    private lateinit var dialogMoveAsClientBinding: DialogMoveAsClientBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,13 +119,60 @@ class CareBuddyProfileFragment : BaseFragment() {
         binding.btnCareBuddyLogout.setOnClickListener {
             displayConfirmPopup()
         }
+
+        binding.btnCareBuddyMoveAsClient.setOnClickListener {
+            displayConfirmMoveAsClient()
+        }
+    }
+
+    private fun displayConfirmMoveAsClient() {
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialogMoveAsClientBinding = DialogMoveAsClientBinding.inflate(layoutInflater)
+        val view = dialogMoveAsClientBinding.root
+        dialog.setContentView(view)
+        dialog.setCanceledOnTouchOutside(true)
+        dialogMoveAsClientBinding.txtMoveAsClientYesBtn.setOnClickListener {
+            dialog.dismiss()
+            preference!![PrefKeys.PREF_IS_LOGGEDIN] = false
+            preference!![PrefKeys.PREF_IS_CARE_BUDDY_LOGGEDIN] = false
+            preference!![PrefKeys.PREF_GENDER] = ""
+            preference!![PrefKeys.PREF_RELATIONSHIP] = ""
+            preference!![PrefKeys.PREF_PREFERRED_LANG] = ""
+            preference!![PrefKeys.PREF_ETHNICITY] = ""
+            preference!![PrefKeys.PREF_ROLE] = ""
+            preference!![PrefKeys.PREF_DOB] = ""
+            Utils.email = binding.etCareBuddyProfileMailId.text.toString().trim()
+            Utils.phoneNo = binding.etCareBuddyProfilePhoneNo.text.toString().trim()
+            Utils.firstName = preference!![PrefKeys.PREF_FNAME, ""]!!
+            Utils.lastName = preference!![PrefKeys.PREF_LNAME, ""]!!
+            Utils.middleName = preference!![PrefKeys.PREF_MNAME, ""]!!
+            getHeader().visibility = View.GONE
+            Utils.bottomNav = Utils.BOTTOM_NAV_DASHBOARD
+            swipeSliderEnable(false)
+            displayToast("You have logged out")
+            Utils.isMovingAsClient = true
+            clearPreviousFragmentStack()
+            replaceFragmentNoBackStack(
+                CarouselFragment(),
+                R.id.layout_home,
+                CarouselFragment.TAG
+            )
+        }
+        dialogMoveAsClientBinding.txtMoveAsClientNoBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     private fun genderSpinner() {
         if (preference!![PrefKeys.PREF_GENDER, ""]!!.isNotEmpty()) {
             Handler().postDelayed({
                 if (binding.spinnerCareBuddyProfileGender != null)
-                    binding.spinnerCareBuddyProfileGender.setText(preference!![PrefKeys.PREF_GENDER, ""]!!, false)
+                    binding.spinnerCareBuddyProfileGender.setText(
+                        preference!![PrefKeys.PREF_GENDER, ""]!!,
+                        false
+                    )
             }, 300)
         }
         genderData = resources.getStringArray(R.array.gender)

@@ -72,6 +72,10 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
         onClickEvents()
 
         getCarePlanTaskDetails(selectedDayNo)
+
+        binding.cardViewAddVitals.setOnClickListener {
+            replaceFragment(AddVitalsFragment(), R.id.layout_home, AddVitalsFragment.TAG)
+        }
     }
 
     private fun onClickEvents() {
@@ -287,6 +291,7 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
                     ExerciseCarePlanFragment.TAG
                 )
             }
+
             "Nutrition" -> {
                 replaceFragment(
                     NutritionCarePlanFragment.newInstance(selectedDayNo),
@@ -294,6 +299,7 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
                     NutritionCarePlanFragment.TAG
                 )
             }
+
             "Mindfulness" -> {
                 replaceFragment(
                     MindfulnessCarePlanFragment.newInstance(selectedDayNo),
@@ -301,6 +307,7 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
                     MindfulnessCarePlanFragment.TAG
                 )
             }
+
             "Music" -> {
                 replaceFragment(
                     MusicCarePlanFragment.newInstance(selectedDayNo),
@@ -308,6 +315,7 @@ class CarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
                     MusicCarePlanFragment.TAG
                 )
             }
+
             "Yoga" -> {
                 replaceFragment(
                     YogaCarePlanFragment.newInstance(selectedDayNo),

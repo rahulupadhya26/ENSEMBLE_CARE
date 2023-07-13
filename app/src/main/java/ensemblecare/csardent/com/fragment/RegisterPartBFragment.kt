@@ -19,6 +19,7 @@ import ensemblecare.csardent.com.preference.PreferenceHelper.get
 import ensemblecare.csardent.com.utils.Utils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
+import ensemblecare.csardent.com.preference.PreferenceHelper.set
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
@@ -81,7 +82,17 @@ class RegisterPartBFragment : BaseFragment() {
 
         binding.etSignUpMailId.requestFocus()
 
-        binding.etSignUpPhoneNo.addTextChangedListener(object : PhoneNumberFormattingTextWatcher("US") {
+        if (Utils.isMovingAsClient) {
+            binding.etSignUpMailId.visibility = View.GONE
+            binding.etSignUpPhoneNo.visibility = View.GONE
+            binding.txtSignUpMailId.visibility = View.VISIBLE
+            binding.txtSignUpPhoneNo.visibility = View.VISIBLE
+            binding.txtSignUpMailId.text = Utils.email
+            binding.txtSignUpPhoneNo.text = Utils.phoneNo
+        }
+
+        binding.etSignUpPhoneNo.addTextChangedListener(object :
+            PhoneNumberFormattingTextWatcher("US") {
             private var mFormatting = false
             private var mAfter = 0
 
@@ -110,7 +121,8 @@ class RegisterPartBFragment : BaseFragment() {
             "I hereby acknowledge and agree to abide by the terms and conditions set forth by EnsembleCare.",
             SpannableString("terms and conditions")
         ) {
-            val createRegisterTermsConditions = BottomSheetDialog(requireActivity(), R.style.SheetDialog)
+            val createRegisterTermsConditions =
+                BottomSheetDialog(requireActivity(), R.style.SheetDialog)
             val registerTermsConditionsDialog: View = layoutInflater.inflate(
                 R.layout.dialog_register_part_terms_conditions, null
             )
@@ -143,7 +155,11 @@ class RegisterPartBFragment : BaseFragment() {
                                                         ))
                                             ) {
                                                 if (binding.checkboxRegisterTermsConditions.isChecked) {
-                                                    validateUserDetails()
+                                                    if (Utils.isMovingAsClient) {
+                                                        callMoveAsClientSignUpApi()
+                                                    } else {
+                                                        validateUserDetails()
+                                                    }
                                                 } else {
                                                     displayMsg(
                                                         "Message",
@@ -250,6 +266,89 @@ class RegisterPartBFragment : BaseFragment() {
                         //displayToast("Error ${error.localizedMessage}")
                         if ((error as HttpException).code() == 404 || (error as HttpException).code() == 400) {
                             displayErrorMsg(error)
+                        } else {
+                            displayToast("Something went wrong.. Please try after sometime")
+                        }
+                    })
+            )
+        }
+        handler.postDelayed(runnable!!, 1000)
+    }
+
+    private fun callMoveAsClientSignUpApi() {
+        val registerData = Register(
+            Utils.email,
+            Utils.phoneNo,
+            Utils.pass,
+            Utils.confirmPass,
+            Utils.firstName,
+            Utils.lastName,
+            Utils.middleName,
+            Utils.dob,
+            preference!![PrefKeys.PREF_DEVICE_ID, ""]!!,
+            Utils.refEmp,
+            Utils.employer,
+            Utils.employeeId,
+            Utils.gender,
+            Utils.prefLang,
+            ethnicity = Utils.ethnicity,
+            role = Utils.role
+        )
+        preference!![PrefKeys.PREF_REG] = registerData
+        preference!![PrefKeys.PREF_GENDER] = Utils.gender
+        preference!![PrefKeys.PREF_PREFERRED_LANG] = Utils.prefLang
+        preference!![PrefKeys.PREF_ETHNICITY] = Utils.ethnicity
+        preference!![PrefKeys.PREF_ROLE] = Utils.role
+        showProgress()
+        runnable = Runnable {
+            mCompositeDisposable.add(
+                getEncryptedRequestInterface()
+                    .register(registerData)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        try {
+                            hideProgress()
+                            var responseBody = result.string()
+                            Log.d("Response Body", responseBody)
+                            val respBody = responseBody.split("|")
+                            val status = respBody[1]
+                            responseBody = respBody[0]
+                            preference!![PrefKeys.PREF_REG] = ""
+                            preference!![PrefKeys.PREF_RELATIONSHIP] = ""
+                            Utils.isMovingAsClient = false
+                            userLogin(
+                                Utils.email,
+                                Utils.pass
+                            ) { result ->
+                                preference!![PrefKeys.PREF_STEP] = Utils.REGISTER
+                                preference!![PrefKeys.PREF_REG] = null
+                                replaceFragmentNoBackStack(
+                                    RegisterPartCFragment(),
+                                    R.id.layout_home,
+                                    RegisterPartCFragment.TAG
+                                )
+                            }
+                        } catch (e: Exception) {
+                            hideProgress()
+                            //displayToast("Something went wrong.. Please try after sometime")
+                            displayToast("We found invalid data")
+                            replaceFragmentNoBackStack(
+                                RegistrationFragment(),
+                                R.id.layout_home,
+                                RegistrationFragment.TAG
+                            )
+                        }
+
+                    }, { error ->
+                        hideProgress()
+                        if ((error as HttpException).code() == 400) {
+                            displayErrorMsg(error)
+                            replaceFragmentNoBackStack(
+                                RegistrationFragment(),
+                                R.id.layout_home,
+                                RegistrationFragment.TAG
+                            )
                         } else {
                             displayToast("Something went wrong.. Please try after sometime")
                         }

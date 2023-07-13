@@ -30,7 +30,7 @@ class LoginFragment : BaseFragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentLoginBinding
-    private var fcmToken: String? = null
+    private var isCompanion: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +61,7 @@ class LoginFragment : BaseFragment() {
         getSubTitle().text = ""
 
         loadLoginData()
+        isCompanion = false
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
@@ -90,6 +91,50 @@ class LoginFragment : BaseFragment() {
         binding.layoutLoginAsCareBuddy.setOnClickListener {
             binding.layoutClientLogin.visibility = View.GONE
             binding.layoutCareBuddyLogin.visibility = View.VISIBLE
+            binding.layoutLoginCareBuddyCompanion.visibility = View.VISIBLE
+            binding.layoutLoginCareBuddy.visibility = View.GONE
+            binding.txtLoginTitle.text = "CareBuddy"
+            if (preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME, false]!!) {
+                binding.checkBoxCareBuddyKeepMeSignedIn.isChecked = true
+                binding.editCareBuddyEmail.setText(preference!![PrefKeys.PREF_CARE_BUDDY_EMAIL, ""]!!)
+                binding.editCareBuddyPassword.setText(preference!![PrefKeys.PREF_CARE_BUDDY_PASS, ""]!!)
+            }
+        }
+
+        binding.layoutLoginCareBuddy.setOnClickListener {
+            binding.layoutClientLogin.visibility = View.GONE
+            binding.layoutCareBuddyLogin.visibility = View.VISIBLE
+            binding.layoutLoginCareBuddyCompanion.visibility = View.VISIBLE
+            binding.layoutLoginCareBuddy.visibility = View.GONE
+            binding.txtLoginTitle.text = "CareBuddy"
+            if (preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME, false]!!) {
+                binding.checkBoxCareBuddyKeepMeSignedIn.isChecked = true
+                binding.editCareBuddyEmail.setText(preference!![PrefKeys.PREF_CARE_BUDDY_EMAIL, ""]!!)
+                binding.editCareBuddyPassword.setText(preference!![PrefKeys.PREF_CARE_BUDDY_PASS, ""]!!)
+            }
+        }
+
+        binding.layoutLoginAsCompanion.setOnClickListener {
+            isCompanion = true
+            binding.layoutClientLogin.visibility = View.GONE
+            binding.layoutCareBuddyLogin.visibility = View.VISIBLE
+            binding.layoutLoginCareBuddyCompanion.visibility = View.GONE
+            binding.layoutLoginCareBuddy.visibility = View.VISIBLE
+            binding.txtLoginTitle.text = "Companion"
+            if (preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME, false]!!) {
+                binding.checkBoxCareBuddyKeepMeSignedIn.isChecked = true
+                binding.editCareBuddyEmail.setText(preference!![PrefKeys.PREF_CARE_BUDDY_EMAIL, ""]!!)
+                binding.editCareBuddyPassword.setText(preference!![PrefKeys.PREF_CARE_BUDDY_PASS, ""]!!)
+            }
+        }
+
+        binding.layoutLoginCareBuddyCompanion.setOnClickListener {
+            isCompanion = true
+            binding.layoutClientLogin.visibility = View.GONE
+            binding.layoutCareBuddyLogin.visibility = View.VISIBLE
+            binding.layoutLoginCareBuddyCompanion.visibility = View.GONE
+            binding.layoutLoginCareBuddy.visibility = View.VISIBLE
+            binding.txtLoginTitle.text = "Companion"
             if (preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME, false]!!) {
                 binding.checkBoxCareBuddyKeepMeSignedIn.isChecked = true
                 binding.editCareBuddyEmail.setText(preference!![PrefKeys.PREF_CARE_BUDDY_EMAIL, ""]!!)
@@ -152,13 +197,25 @@ class LoginFragment : BaseFragment() {
                         getText(binding.editCareBuddyEmail),
                         getText(binding.editCareBuddyPassword)
                     ) { result ->
-                        preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME] =
-                            binding.checkBoxCareBuddyKeepMeSignedIn.isChecked
-                        replaceFragmentNoBackStack(
-                            CareBuddyDashboardFragment(),
-                            R.id.layout_home,
-                            CareBuddyDashboardFragment.TAG
-                        )
+                        if (isCompanion) {
+                            preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME] =
+                                binding.checkBoxCareBuddyKeepMeSignedIn.isChecked
+                            preference!![PrefKeys.PREF_IS_COMPANION_LOGGEDIN] = true
+                            replaceFragmentNoBackStack(
+                                CompanionDashboardFragment(),
+                                R.id.layout_home,
+                                CompanionDashboardFragment.TAG
+                            )
+                        } else {
+                            preference!![PrefKeys.PREF_CARE_BUDDY_IS_REMEMBER_ME] =
+                                binding.checkBoxCareBuddyKeepMeSignedIn.isChecked
+                            preference!![PrefKeys.PREF_IS_CARE_BUDDY_LOGGEDIN] = true
+                            replaceFragmentNoBackStack(
+                                CareBuddyDashboardFragment(),
+                                R.id.layout_home,
+                                CareBuddyDashboardFragment.TAG
+                            )
+                        }
                     }
                 } else {
                     setEditTextError(binding.editCareBuddyPassword, "Password cannot be blank.")

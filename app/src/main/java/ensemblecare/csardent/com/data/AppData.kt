@@ -338,10 +338,15 @@ data class ClientAvailability(
 
 data class HealthInfo(
     val patient: Int,
-    val total_steps: Int,
-    val total_distance: Int,
-    val total_calaroies: Int,
-    val heart_beat: Int
+    val date: String,
+    val total_steps: String,
+    val total_distance: String,
+    val calories: String,
+    val pulse: String,
+    val blood_pressure: String,
+    val sugar: String,
+    val temperature: String,
+    val oxygen_level: String
 )
 
 data class ProfileData(
@@ -431,7 +436,15 @@ data class AppointmentStatus(
     val actual_start_time: String,
     val actual_end_time: String,
     val duration: String,
-    val status: Int
+    val status: Int,
+    val is_client_missed: Boolean = false
+)
+
+data class MissedAppointmentStatus(
+    val appointment_id: String,
+    val status: Int,
+    val is_client_missed: Boolean,
+    val is_provider_missed: Boolean
 )
 
 @Parcelize
@@ -590,6 +603,9 @@ data class Appointment(
     val prescription_1: String,
     val prescription_2: String,
     val prescription_3: String,
+    val is_client_missed: Boolean,
+    val is_provider_missed: Boolean,
+    val reschedule_by: String,
     val time_slot: AppointmentTimeSlot
 ) : Parcelable
 
@@ -737,8 +753,7 @@ data class GroupAppointment(
     val group_appointment_uid: String,
     val date: String,
     val duration: String,
-    val time: String,
-    val select_am_or_pm: String,
+    val starttime: String,
     val Appointment_description: String,
     val Appointment_note: String,
     val status: String,
@@ -887,6 +902,7 @@ data class ToDoData(
     val description: String,
     val end_date: String,
     val created_on: String,
+    val document: String?,
     val is_completed: Boolean,
     val is_assign: String,
     val updated_on: String,
@@ -1259,7 +1275,8 @@ data class EventCommunity(
 ) : Parcelable
 
 data class FetchCareBuddyList(
-    val client: Int
+    val client: Int,
+    val type: String
 )
 
 data class FetchCareBuddyDetail(
@@ -1283,7 +1300,8 @@ data class CareBuddy(
     val address1: String,
     val photo: String,
     val is_verified: Boolean,
-    val client: Int
+    val client: Int,
+    var isSelected: Boolean = false
 ) : Parcelable
 
 @Parcelize
@@ -1300,7 +1318,8 @@ data class AddCareBuddy(
     val zip_code: String,
     val country: String,
     val address: String,
-    val address1: String
+    val address1: String,
+    val type: String
 ) : Parcelable
 
 @Parcelize
@@ -1336,7 +1355,8 @@ data class InterestData(
 @Parcelize
 data class SendSelectedEmail(
     val email: String,
-    val relation: String = "carebuddy"
+    val relation: String,
+    val type: String
 ) : Parcelable
 
 @Parcelize
@@ -1354,7 +1374,8 @@ data class CallLog(
 )
 
 data class NotificationType(
-    val type: String
+    val type: String,
+    val users_lst: ArrayList<Int>
 )
 
 data class ChatMsg(
@@ -1390,4 +1411,52 @@ data class ChatRoomMsgs(
     val updated_at: String = "",
     val client: Int = 0,
     val chat_room: Int = 0
+) : Parcelable
+
+@Parcelize
+data class SendVitals(
+    val patient: Int,
+    val date: String,
+    val weight: String,
+    val height: String,
+    val bps: String,
+    val bpd: String,
+    val temperature: String,
+    val pulse: String,
+    val respiration: String,
+    val saturation: String,
+    val bmi: String,
+    val source: String = "client"
+) : Parcelable
+
+@Parcelize
+data class RescheduleAppointment(
+    val appointment_id: Int,
+    val appointment_uid: String,
+    val status: Int,
+    val date: String,
+    val is_book: String,
+    val actual_start_time: String,
+    val actual_end_time: String,
+    val duration: String,
+    val cancelled_by: String,
+    val type_of_visit: String,
+    val booking_date: String,
+    val prescription_1: String,
+    val prescription_2: String,
+    val prescription_3: String,
+    val is_client_missed: Boolean,
+    val is_provider_missed: Boolean,
+    val reschedule_by: String,
+    val doctor: RescheduleAppointmentDoctor,
+    val patient: Int,
+    val time_slot: AppointmentTimeSlot
+) : Parcelable
+
+@Parcelize
+data class RescheduleAppointmentDoctor(
+    val id: Int,
+    val name: String,
+    val designation: String,
+    val photo: String
 ) : Parcelable

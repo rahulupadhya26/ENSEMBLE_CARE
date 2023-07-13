@@ -430,13 +430,14 @@
                     android:textSize="@dimen/_12sp" />
 
                 <Button
+                    android:id="@+id/btnCallYes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_20dp"
                     android:layout_marginTop="@dimen/_10dp"
                     android:layout_marginEnd="@dimen/_20dp"
                     android:padding="@dimen/_15dp"
-                    android:text="Yes"
+                    android:text="Call 911"
                     android:backgroundTint="#F92E2E"
                     android:textAppearance="@style/fontfamily"
                     android:textSize="@dimen/_12sp"
@@ -448,14 +449,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10dp"
-                android:layout_marginTop="@dimen/_10dp"
                 android:layout_marginEnd="@dimen/_10dp"
+                android:layout_marginTop="@dimen/_20dp"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/_10dp"
-                android:paddingTop="@dimen/_10dp"
                 android:paddingStart="@dimen/_10dp"
-                android:paddingEnd="@dimen/_10dp">
+                android:paddingEnd="@dimen/_10dp"
+                android:paddingBottom="@dimen/_10dp"
+                android:paddingTop="@dimen/_10dp">
 
                 <ScrollView
                     android:layout_width="match_parent"
@@ -467,31 +468,40 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/emergency_911"
+                            app:tint="@color/black" />
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/fontfamily"
+                            android:gravity="center"
                             android:text="Crisis Line"
-                            android:textColor="#4B4E54"
-                            android:textSize="@dimen/_20sp"/>
+                            android:textAppearance="@style/fontfamily"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sp"
+                            android:textStyle="bold"/>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/fontfamily"
-                            android:text="+1-212-673-3000"
-                            android:textColor="@color/black"
-                            android:autoLink="phone"
-                            android:textSize="@dimen/_20sp"
-                            android:textColorLink="#830CDB"
-                            android:layout_marginTop="@dimen/_10dp"
-                            android:visibility="gone"/>
+                            android:text="If you are in suicidal crisis or emotional distress, use the contact information below to get help."
+                            android:textColor="#AE9393"
+                            android:gravity="center"
+                            android:textSize="@dimen/_10sp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_10dp">
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:visibility="gone">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -514,252 +524,820 @@
 
                         </LinearLayout>
 
-                        <LinearLayout
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#E4DEDE"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"/>
+
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_5dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/txtCrisisLifeLine"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:text="National Suicide Prevention Lifeline"
                                 android:textAppearance="@style/fontfamily"
-                                android:text="@string/crisis_screen_lifeline"
                                 android:textColor="@color/black"
-                                android:clickable="true"
-                                android:textColorLink="#830CDB"
-                                android:lineSpacingMultiplier="1.4"
-                                android:textSize="@dimen/_14sp"
-                                android:focusable="true" />
+                                android:layout_centerVertical="true"
+                                android:textSize="@dimen/_10sp" />
 
-                        </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/_2dp"
+                                android:paddingTop="@dimen/_2dp">
 
-                        <LinearLayout
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNationalSuicideOpen"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#A8D4E2"
+                                    app:cardCornerRadius="@dimen/_40dp"
+                                    android:layout_marginEnd="@dimen/_5dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Open"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNationalSuicideCall"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#38A387"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Call"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="#E4DEDE" />
+
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_20dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/txtCrisisTextLine"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:text="Crisis Text Line"
                                 android:textAppearance="@style/fontfamily"
-                                android:text="@string/crisis_text_line"
                                 android:textColor="@color/black"
-                                android:clickable="true"
-                                android:textColorLink="#830CDB"
-                                android:textSize="@dimen/_14sp"
-                                android:lineSpacingMultiplier="1.4"
-                                android:focusable="true" />
+                                android:layout_centerVertical="true"
+                                android:textSize="@dimen/_10sp" />
 
-                        </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/_2dp"
+                                android:paddingTop="@dimen/_2dp">
 
-                        <LinearLayout
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewCrisisTextLineMsg"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="@color/primaryGreen"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Text"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="#E4DEDE" />
+
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_20dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/txtDisasterHelpline"
+                                android:id="@+id/txtDisasterDistress"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:text="Disaster Distress Helpline"
                                 android:textAppearance="@style/fontfamily"
-                                android:text="@string/crisis_screen_disaster_distress_helpline"
                                 android:textColor="@color/black"
-                                android:clickable="true"
-                                android:lineSpacingMultiplier="1.4"
-                                android:textColorLink="#830CDB"
-                                android:textSize="@dimen/_14sp" />
+                                android:layout_centerVertical="true"
+                                android:textSize="@dimen/_10sp" />
 
-                        </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/_2dp"
+                                android:paddingTop="@dimen/_2dp">
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewDisasterOpen"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#A8D4E2"
+                                    app:cardCornerRadius="@dimen/_40dp"
+                                    android:layout_marginEnd="@dimen/_5dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Open"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewDisasterMsg"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="@color/primaryGreen"
+                                    app:cardCornerRadius="@dimen/_40dp"
+                                    android:layout_marginEnd="@dimen/_5dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Text"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewDisasterCall"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#38A387"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Call"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="#E4DEDE" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/fontfamily"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
                             android:text="Abuse/Assault/Violence"
+                            android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_16sp"
-                            android:textStyle="bold"
-                            android:layout_marginTop="@dimen/_20dp"
-                            android:layout_marginBottom="@dimen/_5dp"/>
+                            android:textStyle="bold" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_2dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/txtNationalViolence"
+                                android:id="@+id/txtNationalDomestic"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:text="National Domestic Violence Hotline"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_10sp"
+                                android:layout_toStartOf="@+id/layoutNationalDomestic"/>
+
+                            <LinearLayout
+                                android:id="@+id/layoutNationalDomestic"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="@style/fontfamily"
-                                android:text="@string/crisis_screen_national_domestic"
-                                android:textColor="@color/black"
-                                android:textColorLink="#830CDB"
-                                android:clickable="true"
-                                android:lineSpacingMultiplier="1.4"
-                                android:textSize="@dimen/_14sp" />
+                                android:layout_alignParentEnd="true"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/_2dp"
+                                android:paddingTop="@dimen/_2dp">
 
-                        </LinearLayout>
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNdvhOpen"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#A8D4E2"
+                                    app:cardCornerRadius="@dimen/_40dp"
+                                    android:layout_marginEnd="@dimen/_5dp">
 
-                        <LinearLayout
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Open"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNdvhText"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="@dimen/_5dp"
+                                    app:cardBackgroundColor="@color/primaryGreen"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Text"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNdvhCall"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#38A387"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Call"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="#E4DEDE" />
+
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_20dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/txtNationalChildAbuse"
+                                android:id="@+id/txtNationalChild"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:text="National Child Abuse Hotline"
+                                android:textAppearance="@style/fontfamily"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_10sp"
+                                android:layout_toStartOf="@+id/layoutNationalChild"/>
+
+                            <LinearLayout
+                                android:id="@+id/layoutNationalChild"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="@style/fontfamily"
-                                android:text="@string/crisis_screen_national_child"
-                                android:textColor="@color/black"
-                                android:textColorLink="#830CDB"
-                                android:lineSpacingMultiplier="1.4"
-                                android:clickable="true"
-                                android:textSize="@dimen/_14sp" />
+                                android:layout_alignParentEnd="true"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/_2dp"
+                                android:paddingTop="@dimen/_2dp">
 
-                        </LinearLayout>
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNcahOpen"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#A8D4E2"
+                                    app:cardCornerRadius="@dimen/_40dp"
+                                    android:layout_marginEnd="@dimen/_5dp">
 
-                        <LinearLayout
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Open"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNcahText"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="@dimen/_5dp"
+                                    app:cardBackgroundColor="@color/primaryGreen"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Text"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNcahCall"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#38A387"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Call"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="#E4DEDE" />
+
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_20dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/txtNationalSexualAssault"
+                                android:id="@+id/txtNationalSexual"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:text="National Sexual Assault Hotline"
                                 android:textAppearance="@style/fontfamily"
-                                android:text="@string/crisis_screen_national_sexual"
                                 android:textColor="@color/black"
-                                android:textColorLink="#830CDB"
-                                android:clickable="true"
-                                android:lineSpacingMultiplier="1.4"
-                                android:textSize="@dimen/_14sp" />
+                                android:textSize="@dimen/_10sp" />
 
-                        </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/_2dp"
+                                android:paddingTop="@dimen/_2dp">
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNsahOpen"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#A8D4E2"
+                                    app:cardCornerRadius="@dimen/_40dp"
+                                    android:layout_marginEnd="@dimen/_5dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Open"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewNsahCall"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#38A387"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Call"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="#E4DEDE" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:text="LGBTQIA+"
                             android:textAppearance="@style/fontfamily"
-                            android:text="LGBTQ+"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_16sp"
-                            android:textStyle="bold"
-                            android:layout_marginTop="@dimen/_20dp"
-                            android:layout_marginBottom="@dimen/_5dp"/>
+                            android:textStyle="bold" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_2dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/txtTransLifeLine"
+                                android:id="@+id/txtTransLifeline"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:text="Trans Lifeline"
                                 android:textAppearance="@style/fontfamily"
-                                android:text="@string/trans_lifeline"
                                 android:textColor="@color/black"
-                                android:textColorLink="#830CDB"
-                                android:clickable="true"
-                                android:lineSpacingMultiplier="1.4"
-                                android:textSize="@dimen/_14sp" />
+                                android:textSize="@dimen/_10sp" />
 
-                        </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/_2dp"
+                                android:paddingTop="@dimen/_2dp">
 
-                        <LinearLayout
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewTransLifelineOpen"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#A8D4E2"
+                                    app:cardCornerRadius="@dimen/_40dp"
+                                    android:layout_marginEnd="@dimen/_5dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Open"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewTransLifelineCall"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#38A387"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Call"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="#E4DEDE" />
+
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_2dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/txtTrevorProject"
+                                android:id="@+id/txtTheTrevorProject"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:text="The Trevor Project"
                                 android:textAppearance="@style/fontfamily"
-                                android:text="@string/the_trevor_project"
                                 android:textColor="@color/black"
-                                android:lineSpacingMultiplier="1.4"
-                                android:textColorLink="#830CDB"
-                                android:clickable="true"
-                                android:textSize="@dimen/_14sp" />
+                                android:textSize="@dimen/_10sp" />
 
-                        </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/_2dp"
+                                android:paddingTop="@dimen/_2dp">
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewTrevorProjectOpen"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#A8D4E2"
+                                    app:cardCornerRadius="@dimen/_40dp"
+                                    android:layout_marginEnd="@dimen/_5dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Open"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewTrevorProjectCall"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#38A387"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Call"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="#E4DEDE" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/fontfamily"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
                             android:text="Elders"
+                            android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_16sp"
-                            android:textStyle="bold"
-                            android:layout_marginTop="@dimen/_20dp"
-                            android:layout_marginBottom="@dimen/_5dp"/>
+                            android:textStyle="bold" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_2dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/txtElderDisability"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:text="Disabled Persons Protection Commission"
                                 android:textAppearance="@style/fontfamily"
-                                android:text="@string/elders"
                                 android:textColor="@color/black"
-                                android:textColorLink="#830CDB"
-                                android:lineSpacingMultiplier="1.4"
-                                android:clickable="true"
-                                android:textSize="@dimen/_14sp" />
+                                android:textSize="@dimen/_10sp" />
 
-                        </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/_2dp"
+                                android:paddingTop="@dimen/_2dp">
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewEldersCall"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#38A387"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Call"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="#E4DEDE" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/fontfamily"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
                             android:text="Veterans/Active-duty Military"
+                            android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_16sp"
-                            android:textStyle="bold"
-                            android:layout_marginTop="@dimen/_20dp"
-                            android:layout_marginBottom="@dimen/_5dp"/>
+                            android:textStyle="bold" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/_2dp"
-                            android:layout_marginBottom="@dimen/_10dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/txtVeteranCrisis"
+                                android:id="@+id/txtVeterans"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:text="Veteran’s Crisis Line"
                                 android:textAppearance="@style/fontfamily"
-                                android:text="@string/veterans"
                                 android:textColor="@color/black"
-                                android:textColorLink="#830CDB"
-                                android:lineSpacingMultiplier="1.4"
-                                android:clickable="true"
-                                android:textSize="@dimen/_14sp" />
+                                android:textSize="@dimen/_10sp" />
 
-                        </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/_2dp"
+                                android:paddingTop="@dimen/_2dp">
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewVeteranOpen"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#A8D4E2"
+                                    app:cardCornerRadius="@dimen/_40dp"
+                                    android:layout_marginEnd="@dimen/_5dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Open"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewVeteranText"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="@dimen/_5dp"
+                                    app:cardBackgroundColor="@color/primaryGreen"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Text"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewVeteranCall"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="#38A387"
+                                    app:cardCornerRadius="@dimen/_40dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="@dimen/_5dp"
+                                        android:text="Call"
+                                        android:textAppearance="@style/fontfamily"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sp" />
+
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
 
                     </LinearLayout>
 

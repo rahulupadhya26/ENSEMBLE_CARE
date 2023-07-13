@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.CareBuddyFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutCareBuddies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabTextAppearance="@style/customTabText"
+            app:tabIndicatorColor="@color/primaryGreen"
+            app:tabIndicatorHeight="@dimen/_2dp"
+            app:tabSelectedTextAppearance="@style/customTabText1"
+            app:tabIndicatorFullWidth="false"
+            app:tabGravity="fill"
+            app:tabIndicator="@null"
+            android:elevation="@dimen/_10dp"
+            app:tabSelectedTextColor="@color/primaryGreen"
+            app:tabTextColor="#908A94"/>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPagerCareBuddies"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F1F5FC"/>
+
+    </LinearLayout>
+
+</FrameLayout>

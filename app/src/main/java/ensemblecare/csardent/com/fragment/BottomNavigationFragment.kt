@@ -179,33 +179,33 @@ class BottomNavigationFragment : BaseFragment() {
     }
 
     private fun navigateWellness() {
-        if (preference!![PrefKeys.PREF_INTEREST_SELECTED, false]!!) {
-            Utils.bottomNav = Utils.BOTTOM_NAV_WELLNESS
-            binding.imgCoaches.visibility = View.GONE
-            binding.cardViewCoaches.visibility = View.VISIBLE
+        //if (preference!![PrefKeys.PREF_INTEREST_SELECTED, false]!!) {
+        Utils.bottomNav = Utils.BOTTOM_NAV_WELLNESS
+        binding.imgCoaches.visibility = View.GONE
+        binding.cardViewCoaches.visibility = View.VISIBLE
 
-            binding.imgActivity.visibility = View.VISIBLE
-            binding.cardViewActivity.visibility = View.GONE
+        binding.imgActivity.visibility = View.VISIBLE
+        binding.cardViewActivity.visibility = View.GONE
 
-            binding.imgDashboard.visibility = View.VISIBLE
-            binding.cardViewDashboard.visibility = View.GONE
+        binding.imgDashboard.visibility = View.VISIBLE
+        binding.cardViewDashboard.visibility = View.GONE
 
-            binding.imgCrisis.visibility = View.VISIBLE
-            binding.cardViewCrisis.visibility = View.GONE
+        binding.imgCrisis.visibility = View.VISIBLE
+        binding.cardViewCrisis.visibility = View.GONE
 
-            replaceFragmentNoBackStack(
-                CoachesFragment(),
-                R.id.layoutContent,
-                CoachesFragment.TAG
-            )
-            binding.fab.visibility = View.GONE
-        } else {
+        replaceFragmentNoBackStack(
+            CoachesFragment(),
+            R.id.layoutContent,
+            CoachesFragment.TAG
+        )
+        binding.fab.visibility = View.GONE
+        /*} else {
             replaceFragmentNoBackStack(
                 InterestFragment.newInstance("wellness"),
                 R.id.layout_home,
                 InterestFragment.TAG
             )
-        }
+        }*/
     }
 
     private fun navigateCrisis() {

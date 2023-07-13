@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/_10dp"
+        android:paddingBottom="@dimen/_5dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Move as Client?"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14sp"
+            android:gravity="center"
+            android:padding="@dimen/_5dp"
+            android:layout_marginTop="@dimen/_5dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Are you sure do you want to move as Client?"
+            android:textColor="#957979"
+            android:textSize="@dimen/_12sp"
+            android:gravity="center"
+            android:padding="@dimen/_5dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E8D2D2"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_5dp"/>
+
+        <TextView
+            android:id="@+id/txtMoveAsClientYesBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="Yes"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_12sp"
+            android:gravity="center"
+            android:padding="@dimen/_10dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E8D2D2"
+            android:layout_marginTop="@dimen/_5dp"
+            android:layout_marginBottom="@dimen/_5dp"/>
+
+        <TextView
+            android:id="@+id/txtMoveAsClientNoBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/fontfamily"
+            android:text="No"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_12sp"
+            android:gravity="center"
+            android:padding="@dimen/_10dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

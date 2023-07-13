@@ -18,6 +18,7 @@ import ensemblecare.csardent.com.preference.PrefKeys
 import ensemblecare.csardent.com.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import ensemblecare.csardent.com.controller.OnRescheduleAppointment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
@@ -83,7 +84,9 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
                         LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
                     adapter = AppointmentsAdapter(
                         mActivity!!,
-                        appointmentList.today, "Today", this@TodayAppointmentFragment
+                        appointmentList.today,
+                        "Today",
+                        this@TodayAppointmentFragment
                     )
                 }
             } else {
@@ -210,7 +213,7 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
                     }
                 } else {
                     if (appointment.appointment_type == "Training_appointment") {
-                        getTrainingSessionToken(appointment){response->
+                        getTrainingSessionToken(appointment) { response ->
                             val jsonObj = JSONObject(response!!)
                             val rtcToken = jsonObj.getString("rtc_token")
                             val rtmToken = jsonObj.getString("rtm_token")
@@ -250,6 +253,7 @@ class TodayAppointmentFragment : BaseFragment(), OnAppointmentItemClickListener 
                                             TextAppointmentFragment.TAG
                                         )
                                     }
+
                                     else -> {
                                         clearPreviousFragmentStack()
                                         //Start video call

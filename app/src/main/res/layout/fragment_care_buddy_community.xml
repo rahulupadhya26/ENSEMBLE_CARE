@@ -85,7 +85,7 @@
             android:textAppearance="@style/fontfamily"
             android:textSize="@dimen/_12sp"
             android:textStyle="bold"
-            android:text="CareBuddy's"/>
+            android:text="CareBuddies"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewCareBuddyList"
@@ -181,7 +181,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -257,7 +258,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -333,7 +335,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -409,7 +412,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -485,7 +489,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -561,7 +566,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -637,7 +643,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -713,7 +720,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -789,7 +797,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -865,7 +874,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -941,7 +951,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -1017,7 +1028,8 @@
                             android:layout_width="@dimen/_40dp"
                             android:layout_height="@dimen/_40dp"
                             android:padding="@dimen/_10dp"
-                            android:src="@drawable/mode_comment"/>
+                            android:src="@drawable/mode_comment"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 

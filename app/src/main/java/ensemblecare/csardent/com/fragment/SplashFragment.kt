@@ -99,7 +99,10 @@ class SplashFragment : BaseFragment() {
                             consentRoisFormsNotifyList =
                                 Gson().fromJson(columbiaSeverity, consentRoisNotifyType)
                             replaceFragment(
-                                ConsentRoisSignFragment.newInstance(consentRoisFormsNotifyList, true),
+                                ConsentRoisSignFragment.newInstance(
+                                    consentRoisFormsNotifyList,
+                                    true
+                                ),
                                 R.id.layout_home,
                                 ConsentRoisSignFragment.TAG
                             )
@@ -128,6 +131,12 @@ class SplashFragment : BaseFragment() {
                         CareBuddyDashboardFragment(),
                         R.id.layout_home,
                         CareBuddyDashboardFragment.TAG
+                    )
+                } else if (preference!![PrefKeys.PREF_IS_COMPANION_LOGGEDIN, false]!!) {
+                    replaceFragmentNoBackStack(
+                        CompanionDashboardFragment(),
+                        R.id.layout_home,
+                        CompanionDashboardFragment.TAG
                     )
                 } else {
                     replaceFragmentNoBackStack(

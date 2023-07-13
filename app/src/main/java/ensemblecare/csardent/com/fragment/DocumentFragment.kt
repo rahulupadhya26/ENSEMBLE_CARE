@@ -100,7 +100,7 @@ class DocumentFragment : BaseFragment(), OnDocumentItemClickListener,
                             val respBody = responseBody.split("|")
                             val status = respBody[1]
                             responseBody = respBody[0]
-                            var documentList: ArrayList<Documents> = arrayListOf()
+                            val documentList: ArrayList<Documents> = arrayListOf()
                             val jsonArray = JSONArray(responseBody)
                             for (i in 0 until jsonArray.length()) {
                                 val jsonObj = jsonArray.getJSONObject(i).toString()

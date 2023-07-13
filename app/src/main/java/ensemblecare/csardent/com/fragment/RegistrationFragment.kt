@@ -92,6 +92,12 @@ class RegistrationFragment : BaseFragment() {
             binding.txtSignupDob.text = Utils.dob
         }
 
+        if (Utils.isMovingAsClient) {
+            binding.etSignUpFname.setText(Utils.firstName)
+            binding.etSignUpMname.setText(Utils.middleName)
+            binding.etSignUpLname.setText(Utils.lastName)
+        }
+
         genderSpinner()
         preferredLangSpinner()
         statusSpinner()

@@ -4,6 +4,7 @@ class PrefKeys {
     companion object {
         const val PREF_IS_LOGGEDIN = "is_logged_in"
         const val PREF_IS_CARE_BUDDY_LOGGEDIN = "is_care_buddy_logged_in"
+        const val PREF_IS_COMPANION_LOGGEDIN = "is_companion_logged_in"
         const val PREF_IS_REMEMBER_ME = "is_remember_me"
         const val PREF_CARE_BUDDY_IS_REMEMBER_ME = "care_buddy_is_remember_me"
         const val PREF_STEP = "step"            //Int

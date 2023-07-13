@@ -13,6 +13,7 @@
     <string name="crisis_lifeline"><a href="https://988lifeline.org/">988 Suicide &amp; Crisis Lifeline</a> (formerly known as the National Suicide Prevention Lifeline): <a href="988">988</a> or English or Spanish, or <a href="https://988lifeline.org/chat/">Lifeline Chat</a>. TTY users can use their preferred relay service or dial <a href="711">711</a> then <a href="988">988</a>.</string>
     <string name="crisis_text_line">Crisis Text Line: Text <a href="sms:741741?body=SIGNS">SIGNS</a> to <a href="sms:741741?body=SIGNS">741741</a> for 24/7, anonymous, free crisis counseling</string>
     <string name="disaster_distress_helpline"><a href="https://www.samhsa.gov/disaster-preparedness">Disaster Distress Helpline</a>: CALL or TEXT <a href="1-800-985-5990">1-800-985-5990</a> (press 2 for Spanish)</string>
+
     <string name="trans_lifeline"><a href="https://translifeline.org/">Trans Lifeline</a>: <a href="1-877-565-8860">1-877-565-8860</a> (para español presiona el 2)</string>
     <string name="the_trevor_project">The Trevor Project’s <a href="https://www.thetrevorproject.org/get-help/">TrevorLifeline</a>: <a href="1-866-488-7386">1-866-488-7386</a></string>
 
@@ -24,4 +25,13 @@
     <string name="crisis_screen_national_sexual"><a href="https://rainn.org/">National Sexual Assault Hotline</a>: <a href="1-800-656-HOPE">1-800-656-HOPE</a>(4673) or <a href="https://hotline.rainn.org/online">Online Chat</a></string>
     <string name="elders">To report abuse of a person with a disability under the age of 60:\nDisabled Persons Protection Commission : <a href="(800) 426-9009">(800) 426-9009</a></string>
     <string name="veterans"><a href="https://www.veteranscrisisline.net/">Veteran’s Crisis Line</a>: <a href="988">988</a> , then select 1, or <a href="https://www.veteranscrisisline.net/get-help-now/chat/">Crisis Chat</a> or text: <a href="sms:838255">838255</a></string>
+
+    <string name="national_suicide"><a href="https://988lifeline.org/">National Suicide Prevention Lifeline</a></string>
+    <string name="disaster_distress"><a href="https://www.samhsa.gov/disaster-preparedness">Disaster Distress Helpline</a></string>
+    <string name="national_domestic"><a href="https://www.thehotline.org/">National Domestic Violence Hotline</a></string>
+    <string name="national_child"><a href="https://childhelphotline.org/">National Child Abuse Hotline</a></string>
+    <string name="national_sexual"><a href="https://rainn.org/">National Sexual Assault Hotline</a></string>
+    <string name="crisis_veterans"><a href="https://www.veteranscrisisline.net/">Veteran’s Crisis Line</a></string>
+    <string name="crisis_trans_lifeline"><a href="https://translifeline.org/">Trans Lifeline</a></string>
+    <string name="crisis_the_trevor_project"><a href="https://www.thetrevorproject.org/get-help/">The Trevor Project</a></string>
 </resources>

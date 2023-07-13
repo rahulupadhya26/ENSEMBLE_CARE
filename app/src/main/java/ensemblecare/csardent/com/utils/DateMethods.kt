@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 class DateMethods {
 
@@ -264,4 +266,10 @@ class DateMethods {
 
     /** The maximum date possible.  */
     var MAX_DATE: Date = Date(Long.MAX_VALUE)
+
+    fun areDatesWithinNHours(date1: Date, date2: Date, noOfHours: Int): Boolean {
+        val diffInMilliseconds = abs(date1.time - date2.time)
+        val diffInHours = TimeUnit.MILLISECONDS.toHours(diffInMilliseconds)
+        return diffInHours <= noOfHours
+    }
 }

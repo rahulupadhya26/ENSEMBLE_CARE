@@ -44,8 +44,10 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsResponse
 import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.tasks.Task
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import ensemblecare.csardent.com.BuildConfig
 import ensemblecare.csardent.com.R
+import ensemblecare.csardent.com.databinding.DialogNumbersBinding
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -106,9 +108,9 @@ class CrisisManagementFragment : BaseFragment(), InternalLinkMovementMethod.OnLi
             )
         }
 
-        binding.txtCrisisCall.movementMethod = InternalLinkMovementMethod(this)
-        binding.txtCrisisLifeLine.movementMethod = InternalLinkMovementMethod(this)
-        binding.txtCrisisTextLine.movementMethod = LinkMovementMethod.getInstance()
+        //binding.txtCrisisCall.movementMethod = InternalLinkMovementMethod(this)
+        //binding.txtCrisisLifeLine.movementMethod = InternalLinkMovementMethod(this)
+        /*binding.txtCrisisTextLine.movementMethod = LinkMovementMethod.getInstance()
         binding.txtDisasterHelpline.movementMethod = InternalLinkMovementMethod(this)
         binding.txtNationalViolence.movementMethod = InternalLinkMovementMethod(this)
         binding.txtNationalChildAbuse.movementMethod = InternalLinkMovementMethod(this)
@@ -116,11 +118,111 @@ class CrisisManagementFragment : BaseFragment(), InternalLinkMovementMethod.OnLi
         binding.txtTransLifeLine.movementMethod = InternalLinkMovementMethod(this)
         binding.txtTrevorProject.movementMethod = InternalLinkMovementMethod(this)
         binding.txtElderDisability.movementMethod = InternalLinkMovementMethod(this)
-        binding.txtVeteranCrisis.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtVeteranCrisis.movementMethod = InternalLinkMovementMethod(this)*/
+
+        /*binding.txtNationalSuicide.movementMethod = LinkMovementMethod.getInstance()
+        binding.txtDisasterDistress.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtNationalDomestic.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtNationalChild.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtNationalSexual.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtTransLifeline.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtTheTrevorProject.movementMethod = InternalLinkMovementMethod(this)
+        binding.txtVeterans.movementMethod = InternalLinkMovementMethod(this)*/
 
         checkLocationPermission()
 
-        binding.txtCrisisCall.movementMethod = InternalLinkMovementMethod(this)
+        binding.btnCallYes.setOnLongClickListener {
+            sendCallLog("911")
+            false
+        }
+
+        binding.cardViewNationalSuicideOpen.setOnClickListener {
+            openBrowser("https://988lifeline.org/")
+        }
+
+        binding.cardViewNationalSuicideCall.setOnClickListener {
+            displayNumbers(true, 2, "711", "988")
+        }
+
+        binding.cardViewCrisisTextLineMsg.setOnClickListener {
+            openMessagingApp("741741", "SIGNS")
+        }
+
+        binding.cardViewDisasterOpen.setOnClickListener {
+            openBrowser("https://www.samhsa.gov/disaster-preparedness")
+        }
+
+        binding.cardViewDisasterMsg.setOnClickListener {
+            openMessagingApp("1-800-985-5990", "")
+        }
+
+        binding.cardViewDisasterCall.setOnClickListener {
+            sendCallLog("1-800-985-5990")
+        }
+
+        binding.cardViewNdvhOpen.setOnClickListener {
+            openBrowser("https://www.thehotline.org/")
+        }
+
+        binding.cardViewNdvhText.setOnClickListener {
+            openMessagingApp("22522", "LOVEIS")
+        }
+
+        binding.cardViewNdvhCall.setOnClickListener {
+            sendCallLog("1-800-799-7233")
+        }
+
+        binding.cardViewNcahOpen.setOnClickListener {
+            openBrowser("https://childhelphotline.org/")
+        }
+
+        binding.cardViewNcahText.setOnClickListener {
+            openMessagingApp("1-800-422-4453", "")
+        }
+
+        binding.cardViewNcahCall.setOnClickListener {
+            sendCallLog("1-800-422-4453")
+        }
+
+        binding.cardViewNsahOpen.setOnClickListener {
+            openBrowser("https://rainn.org/")
+        }
+
+        binding.cardViewNsahCall.setOnClickListener {
+            sendCallLog("1-800-656-4673")
+        }
+
+        binding.cardViewTransLifelineOpen.setOnClickListener {
+            openBrowser("https://translifeline.org/")
+        }
+
+        binding.cardViewTransLifelineCall.setOnClickListener {
+            sendCallLog("1-877-565-8860")
+        }
+
+        binding.cardViewTrevorProjectOpen.setOnClickListener {
+            openBrowser("https://www.thetrevorproject.org/get-help/")
+        }
+
+        binding.cardViewTrevorProjectCall.setOnClickListener {
+            sendCallLog("1-866-488-7386")
+        }
+
+        binding.cardViewEldersCall.setOnClickListener {
+            sendCallLog("(800) 426-9009")
+        }
+
+        binding.cardViewVeteranOpen.setOnClickListener {
+            openBrowser("https://www.veteranscrisisline.net/")
+        }
+
+        binding.cardViewVeteranText.setOnClickListener {
+            openMessagingApp("838255", "")
+        }
+
+        binding.cardViewVeteranCall.setOnClickListener {
+            sendCallLog("988")
+        }
     }
 
     private fun checkLocationPermission() {

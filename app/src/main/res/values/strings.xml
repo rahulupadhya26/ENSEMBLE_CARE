@@ -91,6 +91,15 @@
     <string name="elders">To report abuse of a person with a disability under the age of 60:\nDisabled Persons Protection Commission : <a href="(800) 426-9009">(800) 426-9009</a></string>
     <string name="veterans"><a href="https://www.veteranscrisisline.net/">Veteran’s Crisis Line</a>: <a href="988">988</a> , then select 1, or <a href="https://www.veteranscrisisline.net/get-help-now/chat/">Crisis Chat</a> or text: <a href="sms:838255">838255</a></string>
 
+    <string name="national_suicide"><a href="https://988lifeline.org/">National Suicide Prevention Lifeline</a></string>
+    <string name="disaster_distress"><a href="https://www.samhsa.gov/disaster-preparedness">Disaster Distress Helpline</a></string>
+    <string name="national_domestic"><a href="https://www.thehotline.org/">National Domestic Violence Hotline</a></string>
+    <string name="national_child"><a href="https://childhelphotline.org/">National Child Abuse Hotline</a></string>
+    <string name="national_sexual"><a href="https://rainn.org/">National Sexual Assault Hotline</a></string>
+    <string name="crisis_veterans"><a href="https://www.veteranscrisisline.net/">Veteran’s Crisis Line</a></string>
+    <string name="crisis_trans_lifeline"><a href="https://translifeline.org/">Trans Lifeline</a></string>
+    <string name="crisis_the_trevor_project"><a href="https://www.thetrevorproject.org/get-help/">The Trevor Project</a></string>
+
     <string-array name="gender">
         <item>Gender</item>
         <item>Prefer not to say</item>
@@ -103,7 +112,7 @@
         <item>Military Status</item>
         <item>Active Duty</item>
         <item>Veteran</item>
-        <item>Other</item>
+        <item>None</item>
     </string-array>
 
     <string-array name="ethnicity">
