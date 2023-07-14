@@ -156,6 +156,10 @@ class RegisterPartBFragment : BaseFragment() {
                                             ) {
                                                 if (binding.checkboxRegisterTermsConditions.isChecked) {
                                                     if (Utils.isMovingAsClient) {
+                                                        Utils.email = binding.txtSignUpMailId.text.toString()
+                                                        Utils.phoneNo = binding.txtSignUpPhoneNo.text.toString().replace("-", "")
+                                                        Utils.pass = getText(binding.etSignUpPass)
+                                                        Utils.confirmPass = getText(binding.etSignUpConfirmPass)
                                                         callMoveAsClientSignUpApi()
                                                     } else {
                                                         validateUserDetails()

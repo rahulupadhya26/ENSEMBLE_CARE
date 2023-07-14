@@ -369,7 +369,7 @@ class CompanionCommunityFragment : BaseFragment(), OnCareBuddyItemClickListener 
             startActivity(sIntent)
         } else {
             replaceFragment(
-                ViewCareBuddyFragment.newInstance(careBuddy),
+                ViewCareBuddyFragment.newInstance(careBuddy, "Companion"),
                 R.id.layout_home,
                 ViewCareBuddyFragment.TAG
             )

@@ -57,6 +57,10 @@ class CompanionDashboardAdapter(
         holder.binding.imgCompanionChat.setOnClickListener {
             adapterItemClickListener!!.onCareBuddyDashboardItemClickListener(item, false, true)
         }
+
+        holder.binding.layoutCompanion.setOnClickListener {
+            adapterItemClickListener!!.onCareBuddyDashboardItemClickListener(item, false, false)
+        }
     }
 
     inner class ViewHolder(val binding: LayoutItemCompanionBinding) :

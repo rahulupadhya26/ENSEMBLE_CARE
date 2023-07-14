@@ -243,8 +243,14 @@ class CompanionDashboardFragment : BaseFragment(), OnCareBuddyDashboardItemClick
     ) {
         if (isCall) {
             dialNumber(careBuddyDashboard.phone)
-        } else {
+        } else if (isChat) {
 
+        } else {
+            replaceFragment(
+                CareBuddyCarePlanFragment.newInstance(careBuddyDashboard),
+                R.id.layout_home,
+                CareBuddyCarePlanFragment.TAG
+            )
         }
     }
 }

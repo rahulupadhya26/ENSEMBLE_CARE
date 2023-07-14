@@ -35,9 +35,10 @@
                 android:textAppearance="@style/fontfamily"
                 android:textColor="@color/black"
                 android:gravity="center"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:textSize="@dimen/_14sp"
                 android:maxLines="1"
+                android:marqueeRepeatLimit="marquee_forever"
                 android:textStyle="bold" />
 
         </RelativeLayout>

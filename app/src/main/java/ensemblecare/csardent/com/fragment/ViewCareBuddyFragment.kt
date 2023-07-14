@@ -34,14 +34,14 @@ private const val ARG_PARAM2 = "param2"
 class ViewCareBuddyFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var careBuddy: CareBuddy? = null
-    private var param2: String? = null
+    private var type: String? = null
     private lateinit var binding: FragmentViewCareBuddyBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             careBuddy = it.getParcelable(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            type = it.getString(ARG_PARAM2)
         }
     }
 
@@ -63,6 +63,12 @@ class ViewCareBuddyFragment : BaseFragment() {
         getHeader().visibility = View.GONE
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
+
+        if (type != null) {
+            if (type!!.isNotEmpty()) {
+                binding.txtViewCompanionTitle.text = type
+            }
+        }
 
         displayCareBuddyDetail()
 
