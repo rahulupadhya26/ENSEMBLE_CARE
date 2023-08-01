@@ -261,14 +261,23 @@ class ExerciseCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener,
     override fun onCarePlanTaskViewClickListener(careDayIndividualTaskDetail: CareDayIndividualTaskDetail) {
         when (careDayIndividualTaskDetail.task_detail.details.type) {
             "Video" -> {
-                replaceFragment(
-                    VideoDetailFragment.newInstance(
-                        null,
-                        careDayIndividualTaskDetail.task_detail.details.url
-                    ),
-                    R.id.layout_home,
-                    VideoDetailFragment.TAG
-                )
+                val url = careDayIndividualTaskDetail.task_detail.details.url
+                if(url.contains("gif")){
+                    replaceFragment(
+                        CommonWebViewFragment.newInstance(url, careDayIndividualTaskDetail.task_detail.details.exercise_name),
+                        R.id.layout_home,
+                        AssignedToDoWebViewFragment.TAG
+                    )
+                } else {
+                    replaceFragment(
+                        VideoDetailFragment.newInstance(
+                            null,
+                            url
+                        ),
+                        R.id.layout_home,
+                        VideoDetailFragment.TAG
+                    )
+                }
             }
 
             "Podcast" -> {

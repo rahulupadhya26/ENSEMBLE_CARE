@@ -132,11 +132,11 @@ class AddVitalsFragment : BaseFragment() {
         return inches * 2.54
     }
 
-    private fun calculateBMI(weight: Double, height: Double): Double {
+    private fun calculateBMI(weightLbs: Double, height: Double): Double {
         // Convert height to meters
-        val heightInMeters = height / 100
+        val heightInInches = height * 12.0
         // Calculate BMI
-        return weight / (heightInMeters * heightInMeters)
+        return (weightLbs / (heightInInches * heightInInches)) * 703
     }
 
     private fun sendVitals() {

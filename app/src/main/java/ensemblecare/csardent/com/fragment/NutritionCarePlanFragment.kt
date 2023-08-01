@@ -281,7 +281,15 @@ class NutritionCarePlanFragment : BaseFragment(), OnCarePlanDayItemClickListener
             }
 
             "Article" -> {
-
+                replaceFragment(
+                    NewsDetailFragment.newInstance(
+                        null,
+                        "",
+                        careDayIndividualTaskDetail.task_detail.details.url
+                    ),
+                    R.id.layout_home,
+                    NewsDetailFragment.TAG
+                )
             }
         }
     }

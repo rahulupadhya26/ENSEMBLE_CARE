@@ -753,10 +753,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_5dp"
                             android:layout_marginBottom="@dimen/_5dp"
-                            android:text="Abuse/Assault/Violence"
+                            android:text="Abuse Crisis/Assault Crisis/Violence Crisis"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_16sp"
+                            android:textSize="@dimen/_14sp"
                             android:textStyle="bold" />
 
                         <RelativeLayout
@@ -1027,10 +1027,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_5dp"
                             android:layout_marginBottom="@dimen/_5dp"
-                            android:text="LGBTQIA+"
+                            android:text="LGBTQIA+ Crisis"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_16sp"
+                            android:textSize="@dimen/_14sp"
                             android:textStyle="bold" />
 
                         <RelativeLayout
@@ -1184,10 +1184,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_5dp"
                             android:layout_marginBottom="@dimen/_5dp"
-                            android:text="Elders"
+                            android:text="Elders Crisis"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_16sp"
+                            android:textSize="@dimen/_14sp"
                             android:textStyle="bold" />
 
                         <RelativeLayout
@@ -1247,10 +1247,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_5dp"
                             android:layout_marginBottom="@dimen/_5dp"
-                            android:text="Veterans/Active-duty Military"
+                            android:text="Veterans/Active-duty Military Crisis"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_16sp"
+                            android:textSize="@dimen/_14sp"
                             android:textStyle="bold" />
 
                         <RelativeLayout

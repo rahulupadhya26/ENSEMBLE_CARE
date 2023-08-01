@@ -9,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import ensemblecare.csardent.com.R
 import ensemblecare.csardent.com.databinding.FragmentCongratsUserBinding
+import ensemblecare.csardent.com.preference.PrefKeys
+import ensemblecare.csardent.com.preference.PreferenceHelper.set
+import ensemblecare.csardent.com.utils.Utils
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -82,6 +85,12 @@ class CongratsUserFragment : BaseFragment() {
             // Callback function, fired
             // when the time is up
             override fun onFinish() {
+                preference!![PrefKeys.PREF_GENDER] = ""
+                preference!![PrefKeys.PREF_RELATIONSHIP] = ""
+                preference!![PrefKeys.PREF_PREFERRED_LANG] = ""
+                preference!![PrefKeys.PREF_ROLE] = ""
+                preference!![PrefKeys.PREF_REG] = ""
+                Utils.dob = ""
                 replaceFragmentNoBackStack(
                     RegistrationFragment(),
                     R.id.layout_home,

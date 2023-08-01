@@ -543,7 +543,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
 
                 // Format the seconds into hours, minutes,
                 // and seconds.
-                val time: String = String
+                time = String
                     .format(
                         Locale.getDefault(),
                         "%02d:%02d:%02d", hours,
@@ -580,7 +580,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
         dialogDispMsgBinding = DialogAlertMsgBinding.inflate(layoutInflater)
         val view = dialogDispMsgBinding.root
         dialog.setContentView(view)
-        dialog.setCanceledOnTouchOutside(true)
+        dialog.setCanceledOnTouchOutside(false)
         dialogDispMsgBinding.txtAlertMsg.text =
             "Provider not joined the call.\nYou can reschedule the appointment."
         dialogDispMsgBinding.txtOkBtn.setOnClickListener {
@@ -609,7 +609,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
         dialogRescheduleAppt = DialogRescheduleApptMsgBinding.inflate(layoutInflater)
         val view = dialogRescheduleAppt.root
         dialog.setContentView(view)
-        dialog.setCanceledOnTouchOutside(true)
+        dialog.setCanceledOnTouchOutside(false)
         dialogRescheduleAppt.txtRescheduleApptYesBtn.setOnClickListener {
             dialog.dismiss()
             rescheduleAppointment(appointment!!.appointment!!.appointment_id.toString()) { response ->
@@ -657,7 +657,7 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
             .load(BaseActivity.baseURL.dropLast(5) + rescheduleAppt.doctor.photo)
             .placeholder(R.drawable.doctor_img)
             .transform(CenterCrop(), RoundedCorners(5))
-            .into(dialogRescheduleAppointment.reschApptMode)
+            .into(dialogRescheduleAppointment.imgReschApptDoctorImg)
 
         when (rescheduleAppt.type_of_visit) {
             "Video" -> {
@@ -804,8 +804,8 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
             binding.textAppointMessageList.adapter = mMessageAdapter
 
             binding.layoutTextAppointSend.setOnClickListener {
-                val msg: String = getText(binding.editTextTextAppointMessage)
-                if (msg != "") {
+                if (isValidText(binding.editTextTextAppointMessage)) {
+                    val msg: String = getText(binding.editTextTextAppointMessage)
                     val message = mRtmClient!!.createMessage()
                     message.text = msg
                     val patientName =
@@ -821,6 +821,8 @@ class TextAppointmentFragment : BaseFragment(), OnMessageClickListener, OnBottom
                     } else {
                         sendChannelMessage(message)
                     }
+                } else {
+                    displayMsg("","Message has obscene words")
                 }
                 binding.editTextTextAppointMessage.setText("")
             }

@@ -525,8 +525,8 @@ class TrainingSessionFragment : BaseFragment(), OnMessageClickListener, OnBottom
         onlineChatView.txtTrainerChatName.text =
             appointment!!.host!!.first_name + " " + appointment!!.host!!.last_name
         onlineChatView.layoutTrainingSessionSend.setOnClickListener {
-            val msg: String = getText(onlineChatView.editTextTrainingSessionMessage)
-            if (msg.isNotEmpty()) {
+            if (isValidText(onlineChatView.editTextTrainingSessionMessage)) {
+                val msg: String = getText(onlineChatView.editTextTrainingSessionMessage)
                 val message = mRtmClient!!.createMessage()
                 message.text = msg
                 val patientName =
@@ -538,6 +538,8 @@ class TrainingSessionFragment : BaseFragment(), OnMessageClickListener, OnBottom
                 mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
                 onlineChatView.textTrainingSessionMessageList.scrollToPosition(mMessageBeanList.size - 1)
                 sendChannelMessage(message)
+            } else {
+                displayMsg("","Message has obscene words")
             }
             onlineChatView.editTextTrainingSessionMessage.setText("")
         }

@@ -167,7 +167,7 @@ class UpcomingAppointmentFragment : BaseFragment(), OnAppointmentItemClickListen
         dispOptionsDialog!!.setCanceledOnTouchOutside(true)
 
         val appointmentDateTime = if (appointment.is_group_appointment) {
-            appointment.group_appointment!!.date + " " + appointment.group_appointment.starttime.dropLast(3)
+            appointment.group_appointment!!.date + " " + appointment.group_appointment.starttime!!.dropLast(3)
         } else {
             appointment.appointment!!.date + " " + appointment.appointment.time_slot.starting_time
         }

@@ -133,8 +133,8 @@ class ForumChatRoomFragment : BaseFragment(), OnChatRoomMessageClickListener,
         binding.txtChatRoomDescription.text = forumData!!.description
 
         binding.layoutChatRoomSend.setOnClickListener {
-            val msg: String = getText(binding.editTextChatRoomMessage)
-            if (msg != "") {
+            if (isValidText(binding.editTextChatRoomMessage)) {
+                val msg: String = getText(binding.editTextChatRoomMessage)
                 val message = mRtmClient!!.createMessage()
                 message.text = msg
                 val patientName =
@@ -160,6 +160,8 @@ class ForumChatRoomFragment : BaseFragment(), OnChatRoomMessageClickListener,
                 mMessageAdapter!!.notifyItemRangeChanged(mMessageBeanList.size, 1)
                 binding.chatRoomMessageList.scrollToPosition(mMessageBeanList.size - 1)
                 sendChannelMessage(message)
+            } else {
+                displayMsg("","Message has obscene words")
             }
             binding.editTextChatRoomMessage.setText("")
         }

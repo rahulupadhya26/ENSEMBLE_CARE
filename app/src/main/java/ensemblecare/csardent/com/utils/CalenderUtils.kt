@@ -87,15 +87,19 @@ object CalenderUtils {
                 durationData[0] -> {
                     values.put(CalendarContract.Events.DTEND, startMillis + 60 * 60 * 1000)
                 }
+
                 durationData[1] -> {
                     values.put(CalendarContract.Events.RRULE, "FREQ=DAILY;COUNT=$dailyCount")
                 }
+
                 durationData[2] -> {
                     values.put(CalendarContract.Events.RRULE, "FREQ=WEEKLY;COUNT=10")
                 }
+
                 durationData[3] -> {
                     values.put(CalendarContract.Events.RRULE, "FREQ=MONTHLY;COUNT=12")
                 }
+
                 durationData[4] -> {
                     values.put(CalendarContract.Events.RRULE, "FREQ=YEARLY;COUNT=10")
                 }
@@ -108,15 +112,16 @@ object CalenderUtils {
                 "Calendar ID - $calendarId",Toast.LENGTH_LONG
             ).show()*/
             println(Calendar.getInstance().timeZone.id)
+            if (!isEventInCalendar(context, title, startMillis, (startMillis + 60 * 60 * 1000))) {
+                val uri: Uri? = cr.insert(CalendarContract.Events.CONTENT_URI, values)
 
-            val uri: Uri? = cr.insert(CalendarContract.Events.CONTENT_URI, values)
-
-            // Save the eventId into the Task object for possible future delete.
-            this.eventId = uri!!.lastPathSegment!!.toLong()
-            // Add a 5 minute, 1 hour and 1 day reminders (3 reminders)
-            setReminder(context, cr, this.eventId, reminderTimeBefore)
-            //setReminder(cr, this.eventId, 60)
-            //setReminder(cr, this.eventId, 1440)
+                // Save the eventId into the Task object for possible future delete.
+                this.eventId = uri!!.lastPathSegment!!.toLong()
+                // Add a 5 minute, 1 hour and 1 day reminders (3 reminders)
+                setReminder(context, cr, this.eventId, reminderTimeBefore)
+                //setReminder(cr, this.eventId, 60)
+                //setReminder(cr, this.eventId, 1440)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -202,5 +207,26 @@ object CalenderUtils {
             }
         }
         return null
+    }
+
+    @SuppressLint("Range")
+    private fun isEventInCalendar(
+        context: Context,
+        titleText: String,
+        dtStart: Long,
+        dtEnd: Long
+    ): Boolean {
+        val projection = arrayOf(
+            CalendarContract.Instances.BEGIN,
+            CalendarContract.Instances.END,
+            CalendarContract.Instances.TITLE
+        )
+        val cursor =
+            CalendarContract.Instances.query(context.contentResolver, projection, dtStart, dtEnd)
+        return cursor != null && cursor.moveToFirst() && cursor.getString(
+            cursor.getColumnIndex(
+                CalendarContract.Instances.TITLE
+            )
+        ).equals(titleText, ignoreCase = true)
     }
 }

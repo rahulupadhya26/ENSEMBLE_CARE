@@ -135,6 +135,7 @@ dependencies {
     implementation 'com.stripe:financial-connections:20.17.0'
     implementation 'org.slf4j:slf4j-api:1.7.30'
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+    implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
 }
 
 /*

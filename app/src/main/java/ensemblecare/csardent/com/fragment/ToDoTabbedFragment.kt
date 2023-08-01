@@ -79,7 +79,6 @@ class ToDoTabbedFragment : BaseFragment() {
             TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 binding.viewPagerToDo.currentItem = tab.position
-
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}

@@ -58,11 +58,18 @@ class AppointmentsAdapter(
             holder.binding.txtAppointmentTherapistType.text =
                 item.doctor_first_name + " " + item.doctor_last_name
             val dateTime = DateUtils(item.group_appointment!!.date + " " + "00:00:00")
-            holder.binding.txtAppointmentDateTime.text =
-                dateTime.getCurrentDay() + ", " +
-                        dateTime.getDay() + " " +
-                        dateTime.getMonth() + " at " +
-                        item.group_appointment.starttime.dropLast(3)
+            if (item.group_appointment.starttime != null) {
+                holder.binding.txtAppointmentDateTime.text =
+                    dateTime.getCurrentDay() + ", " +
+                            dateTime.getDay() + " " +
+                            dateTime.getMonth() + " at " +
+                            item.group_appointment.starttime.dropLast(3)
+            } else {
+                holder.binding.txtAppointmentDateTime.text =
+                    dateTime.getCurrentDay() + ", " +
+                            dateTime.getDay() + " " +
+                            dateTime.getMonth()
+            }
         } else {
             if (item.appointment_type == "Training_appointment") {
                 holder.binding.txtTherapistName.text =

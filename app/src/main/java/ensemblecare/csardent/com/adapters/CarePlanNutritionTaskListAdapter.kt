@@ -63,7 +63,7 @@ class CarePlanNutritionTaskListAdapter(
                 if ((position + 1) < list.size) {
                     progressNutritionCompletedTask.visibility = View.VISIBLE
                     if (list[position + 1].is_completed) {
-                        progressNutritionCompletedTask.progress = 50.0F
+                        progressNutritionCompletedTask.progress = 100.0F
                     }
                 } else {
                     progressNutritionCompletedTask.visibility = View.GONE

@@ -555,7 +555,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                         appointmentDate.getCurrentDay() + ", " +
                                 appointmentDate.getDay() + " " +
                                 appointmentDate.getMonth() + " at " +
-                                appointmentLists.today[0].group_appointment!!.starttime.dropLast(3)
+                                appointmentLists.today[0].group_appointment!!.starttime!!.dropLast(3)
                 } else {
                     val appointmentDate =
                         DateUtils(appointmentLists.today[0].appointment!!.date + " 00:00:00")
@@ -714,7 +714,7 @@ class DashboardFragment : BaseFragment(), OnAppointmentItemClickListener {
                         appointmentDate.getCurrentDay() + ", " +
                                 appointmentDate.getDay() + " " +
                                 appointmentDate.getMonth() + " at " +
-                                appointmentLists.upcoming[0].group_appointment!!.starttime.dropLast(3)
+                                appointmentLists.upcoming[0].group_appointment!!.starttime!!.dropLast(3)
                 } else {
                     val appointmentDate =
                         DateUtils(appointmentLists.upcoming[0].appointment!!.date + " 00:00:00")

@@ -138,11 +138,23 @@ class CreateJournalFragment : BaseFragment() {
         }
 
         binding.createJournalBack.setOnClickListener {
-            if (getText(binding.editTxtJournalTitle).isNotEmpty() || getText(binding.editTxtJournal).isNotEmpty()) {
+            if (isValidText(binding.editTxtJournalTitle)) {
+                if (isValidText(binding.editTxtJournal)) {
+                    //Call create journal api
+                    createJournal(
+                        getText(binding.editTxtJournalTitle),
+                        getText(binding.editTxtJournal)
+                    )
+                } else if (isValidText(binding.editTxtJournalTitle)) {
+                    //Call create journal api
+                    createJournal(getText(binding.editTxtJournalTitle), "")
+                } else {
+                    popBackStack()
+                }
+            } else if (isValidText(binding.editTxtJournal)) {
                 //Call create journal api
-                createJournal()
+                createJournal("", getText(binding.editTxtJournal))
             } else {
-                //setEditTextError(edit_txt_journal_title, "Title cannot be empty!")
                 popBackStack()
             }
         }
@@ -174,7 +186,7 @@ class CreateJournalFragment : BaseFragment() {
         }
     }
 
-    private fun createJournal() {
+    private fun createJournal(journalTitle: String, journalDesc: String) {
         showProgress()
         runnable = Runnable {
             mCompositeDisposable.add(
@@ -182,8 +194,8 @@ class CreateJournalFragment : BaseFragment() {
                     .createJournalData(
                         "PI0017",
                         CreateJournal(
-                            getText(binding.editTxtJournalTitle),
-                            getText(binding.editTxtJournal),
+                            journalTitle,
+                            journalDesc,
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!,
                             getText(binding.editTextJournalDate),
                             createdJournalTime!!
@@ -241,7 +253,7 @@ class CreateJournalFragment : BaseFragment() {
                                 preference!![PrefKeys.PREF_EMAIL]!!,
                                 preference!![PrefKeys.PREF_PASS]!!
                             ) { result ->
-                                createJournal()
+                                clearCache()
                             }
                         } else {
                             displayAfterLoginErrorMsg(error)

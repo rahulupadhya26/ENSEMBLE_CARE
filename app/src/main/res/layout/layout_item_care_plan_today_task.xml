@@ -164,7 +164,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_toStartOf="@+id/imgPendingTaskArrow">
 
                         <TextView
                             android:id="@+id/txtPendingTaskTitle"
@@ -176,9 +177,10 @@
 
                         <TextView
                             android:id="@+id/txtPendingTaskSubTitle"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="-5dp"
+                            android:maxLines="2"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_14sp" />
@@ -186,6 +188,7 @@
                     </LinearLayout>
 
                     <ImageView
+                        android:id="@+id/imgPendingTaskArrow"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_alignParentEnd="true"
@@ -268,7 +271,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_toStartOf="@+id/imgPendingLaterTaskArrow">
 
                         <TextView
                             android:id="@+id/txtPendingLaterTaskTitle"
@@ -285,11 +289,13 @@
                             android:layout_marginTop="-5dp"
                             android:textAppearance="@style/fontfamily"
                             android:textColor="#9D8686"
+                            android:maxLines="2"
                             android:textSize="@dimen/_14sp" />
 
                     </LinearLayout>
 
                     <ImageView
+                        android:id="@+id/imgPendingLaterTaskArrow"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_alignParentEnd="true"

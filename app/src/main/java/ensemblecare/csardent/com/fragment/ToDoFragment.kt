@@ -181,7 +181,7 @@ class ToDoFragment : BaseFragment(), OnToDoItemClickListener {
                             toDoData.id,
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
                             toDoData.title,
-                            toDoData.description,
+                            toDoData.description ?: "",
                             toDoData.end_date,
                             is_completed = isCompleted
                         ),

@@ -16,6 +16,7 @@ import ensemblecare.csardent.com.databinding.FragmentNewsDetailBinding
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param3"
 
 /**
  * A simple [Fragment] subclass.
@@ -26,6 +27,7 @@ class NewsDetailFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
     private var articles: Articles? = null
     private var wellnessType: String? = null
+    private var articleUrl: String? = null
     private var isFavourite: Boolean = false
     private lateinit var binding: FragmentNewsDetailBinding
 
@@ -34,6 +36,7 @@ class NewsDetailFragment : BaseFragment() {
         arguments?.let {
             articles = it.getParcelable(ARG_PARAM1)
             wellnessType = it.getString(ARG_PARAM2)
+            articleUrl = it.getString(ARG_PARAM3)
         }
     }
 
@@ -58,43 +61,54 @@ class NewsDetailFragment : BaseFragment() {
         getSubTitle().visibility = View.GONE
         updateStatusBarColor(R.color.white)
 
-        if (articles!!.is_favourite) {
-            binding.articlesDetailFav.setImageResource(R.drawable.favorite)
-        } else {
-            binding.articlesDetailFav.setImageResource(R.drawable.favorite_outline)
-        }
-
-        isFavourite = articles!!.is_favourite
-
         binding.articlesDetailBack.setOnClickListener {
             popBackStack()
         }
 
-        binding.articlesDetailFav.setOnClickListener {
-            if (wellnessType!!.isNotEmpty()) {
-                sendFavoriteData(
-                    articles!!.id,
-                    "Article",
-                    !isFavourite,
-                    wellnessType!!
-                ) {
-                    if (!isFavourite) {
-                        binding.articlesDetailFav.setImageResource(R.drawable.favorite)
-                    } else {
-                        binding.articlesDetailFav.setImageResource(R.drawable.favorite_outline)
-                    }
-                    isFavourite = !isFavourite
-                }
+        if (articles != null) {
+            binding.articlesAlert.visibility = View.GONE
+            binding.articlesDetailFav.visibility = View.VISIBLE
+            if (articles!!.is_favourite) {
+                binding.articlesDetailFav.setImageResource(R.drawable.favorite)
             } else {
-                sendResourceFavoriteData(articles!!.id, "Article", !isFavourite) {
-                    if (!isFavourite) {
-                        binding.articlesDetailFav.setImageResource(R.drawable.favorite)
-                    } else {
-                        binding.articlesDetailFav.setImageResource(R.drawable.favorite_outline)
+                binding.articlesDetailFav.setImageResource(R.drawable.favorite_outline)
+            }
+
+            isFavourite = articles!!.is_favourite
+
+            binding.articlesDetailFav.setOnClickListener {
+                if (wellnessType!!.isNotEmpty()) {
+                    sendFavoriteData(
+                        articles!!.id,
+                        "Article",
+                        !isFavourite,
+                        wellnessType!!
+                    ) {
+                        if (!isFavourite) {
+                            binding.articlesDetailFav.setImageResource(R.drawable.favorite)
+                        } else {
+                            binding.articlesDetailFav.setImageResource(R.drawable.favorite_outline)
+                        }
+                        isFavourite = !isFavourite
                     }
-                    isFavourite = !isFavourite
+                } else {
+                    sendResourceFavoriteData(articles!!.id, "Article", !isFavourite) {
+                        if (!isFavourite) {
+                            binding.articlesDetailFav.setImageResource(R.drawable.favorite)
+                        } else {
+                            binding.articlesDetailFav.setImageResource(R.drawable.favorite_outline)
+                        }
+                        isFavourite = !isFavourite
+                    }
                 }
             }
+        } else {
+            binding.articlesDetailFav.visibility = View.GONE
+            binding.articlesAlert.visibility = View.VISIBLE
+        }
+
+        binding.articlesAlert.setOnClickListener {
+            displayMsg("","This is the suggested recipe provided by a third party. EnsembleCare does not take any responsibility. Please use it with your responsibility.")
         }
 
         try {
@@ -103,7 +117,11 @@ class NewsDetailFragment : BaseFragment() {
             binding.newsWebview.webViewClient = WebViewClient()
 
             // this will load the url of the website
-            binding.newsWebview.loadUrl(articles!!.article_url)
+            if (articles != null) {
+                binding.newsWebview.loadUrl(articles!!.article_url)
+            } else {
+                binding.newsWebview.loadUrl(articleUrl!!)
+            }
 
             // this will enable the javascript settings
             binding.newsWebview.settings.javaScriptEnabled = true
@@ -126,11 +144,12 @@ class NewsDetailFragment : BaseFragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(articles: Articles, param2: String) =
+        fun newInstance(articles: Articles?, param2: String, param3: String = "") =
             NewsDetailFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, articles)
                     putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM3, param3)
                 }
             }
 

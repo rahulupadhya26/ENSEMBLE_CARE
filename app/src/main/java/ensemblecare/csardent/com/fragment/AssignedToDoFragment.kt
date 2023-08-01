@@ -1,6 +1,7 @@
 package ensemblecare.csardent.com.fragment
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.RelativeLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ensemblecare.csardent.com.R
@@ -26,10 +28,21 @@ import ensemblecare.csardent.com.preference.PrefKeys
 import ensemblecare.csardent.com.preference.PreferenceHelper.get
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
+import ensemblecare.csardent.com.adapters.ToDoDataListAdapter
+import ensemblecare.csardent.com.calendar.EventDecorator
+import ensemblecare.csardent.com.utils.CalenderUtils
+import ensemblecare.csardent.com.utils.CurrentDayDecorator
+import ensemblecare.csardent.com.utils.DateUtils
+import ensemblecare.csardent.com.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
 import java.lang.reflect.Type
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,11 +54,17 @@ private const val ARG_PARAM2 = "param2"
  * Use the [AssignedToDoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+/*
+ * https://github.com/prolificinteractive/material-calendarview
+ */
 class AssignedToDoFragment : BaseFragment(), OnToDoItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentAssignedToDoBinding
+    private var widget: MaterialCalendarView? = null
+    private var isCalendarView: Boolean = false
+    private var sortedList: List<ToDoData> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,10 +92,30 @@ class AssignedToDoFragment : BaseFragment(), OnToDoItemClickListener {
         getBackButton().visibility = View.GONE
         getSubTitle().visibility = View.GONE
 
+        widget = binding.calendarViewAssignedTodo
+
+        isCalendarView = false
+
         displayAssignedToDoList()
 
         binding.swipeRefreshLayoutAssignedToDo.setOnRefreshListener {
             displayAssignedToDoList()
+        }
+
+        binding.fabAssignedToDo.setOnClickListener {
+            if (isCalendarView) {
+                binding.scrollViewCalendarAssignedToDo.visibility = View.GONE
+                binding.recyclerViewAssignedToDoList.visibility = View.VISIBLE
+                binding.fabAssignedToDo.setImageResource(R.drawable.calendar_img)
+                widget = null
+            } else {
+                binding.recyclerViewAssignedToDoList.visibility = View.GONE
+                binding.scrollViewCalendarAssignedToDo.visibility = View.VISIBLE
+                binding.fabAssignedToDo.setImageResource(R.drawable.tasklist)
+                widget = binding.calendarViewAssignedTodo
+                calendarView()
+            }
+            isCalendarView = !isCalendarView
         }
     }
 
@@ -109,14 +148,13 @@ class AssignedToDoFragment : BaseFragment(), OnToDoItemClickListener {
                             if (toDoList.results.isNotEmpty()) {
                                 binding.txtNoAssignedToDoList.visibility = View.GONE
                                 binding.recyclerViewAssignedToDoList.visibility = View.VISIBLE
-                                val sortedList =
+                                sortedList =
                                     toDoList.results.sortedWith(
                                         compareByDescending<ToDoData> { it.created_on }.then(
                                             compareBy { it.is_completed })
                                     )
 
                                 val toDoMap = sortedList.groupBy { it.created_on }
-
                                 binding.recyclerViewAssignedToDoList.apply {
                                     layoutManager = LinearLayoutManager(
                                         requireActivity(), RecyclerView.VERTICAL, false
@@ -128,6 +166,8 @@ class AssignedToDoFragment : BaseFragment(), OnToDoItemClickListener {
                                         this@AssignedToDoFragment
                                     )
                                 }
+
+                                calendarView()
                             } else {
                                 binding.txtNoAssignedToDoList.visibility = View.VISIBLE
                                 binding.recyclerViewAssignedToDoList.visibility = View.GONE
@@ -154,6 +194,113 @@ class AssignedToDoFragment : BaseFragment(), OnToDoItemClickListener {
             )
         }
         handler.postDelayed(runnable!!, 1000)
+    }
+
+    private fun calendarView() {
+        val hashSet = HashSet<CalendarDay>()
+        for (list in sortedList) {
+            val durationData = resources.getStringArray(R.array.goal_duration)
+            CalenderUtils.addEvent(
+                requireActivity(),
+                "${list.created_on} 00:00:00",
+                "Journal - " + list.title,
+                list.description ?: "",
+                durationData[0], "30", "09",
+                30
+            )
+            if (list.is_assign == "True") {
+                val dt = DateUtils(list.created_on + " 00:00:00")
+                val myDate = CalendarDay.from(
+                    dt.getYear().toInt(),
+                    dt.getMonthNoFormat().toInt(),
+                    dt.getDay().toInt()
+                )
+                hashSet.add(myDate)
+            }
+        }
+        if (hashSet.isNotEmpty()) {
+            val colorId = ContextCompat.getColor(
+                requireActivity(),
+                R.color.black
+            )
+            widget!!.addDecorators(EventDecorator(colorId, hashSet))
+        }
+
+        val myDate = CalendarDay.today()
+        widget!!.addDecorators(
+            CurrentDayDecorator(
+                requireActivity(),
+                myDate,
+                R.drawable.bg_round_gray
+            )
+        )
+        previewCalendarEvent(hashSet, myDate)
+
+        widget!!.setOnDateChangedListener { widget, date, selected ->
+            previewCalendarEvent(hashSet, date)
+        }
+    }
+
+    private fun previewCalendarEvent(hashSet: HashSet<CalendarDay>, date: CalendarDay) {
+        val toDoMap = ArrayList<ToDoData>()
+        val todayDate = CalendarDay.today()
+        if (hashSet.isNotEmpty()) {
+            for (set in hashSet) {
+                if (set == date) {
+                    var month = ""
+                    if (date.month < 10) {
+                        month = "0" + date.month
+                    } else {
+                        month += date.month
+                    }
+                    var day = ""
+                    if (date.day < 10) {
+                        day = "0" + date.day
+                    } else {
+                        day += date.day
+                    }
+                    val selectedDate =
+                        "" + month + "/" + day + "/" + date.year
+                    sortedList.filterTo(toDoMap) {
+                        it.created_on == selectedDate
+                    }
+                    break
+                }
+            }
+        }
+        if (toDoMap.isNotEmpty()) {
+            binding.recyclerViewSelectedAssignedToDoList.visibility =
+                View.VISIBLE
+            binding.txtNoSelectedAssignedToDoList.visibility = View.GONE
+            val childLayoutManager = LinearLayoutManager(
+                requireActivity(),
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+            binding.recyclerViewSelectedAssignedToDoList.apply {
+                layoutManager = childLayoutManager
+                adapter =
+                    ToDoDataListAdapter(
+                        context,
+                        toDoMap,
+                        this@AssignedToDoFragment
+                    )
+            }
+        } else if (date == todayDate) {
+            binding.recyclerViewSelectedAssignedToDoList.visibility =
+                View.GONE
+            binding.txtNoSelectedAssignedToDoList.visibility =
+                View.VISIBLE
+            binding.txtNoSelectedAssignedToDoList.text =
+                "Today you don't have any Assigned ToDo's"
+        } else {
+            binding.recyclerViewSelectedAssignedToDoList.visibility =
+                View.GONE
+            binding.txtNoSelectedAssignedToDoList.visibility =
+                View.VISIBLE
+            binding.txtNoSelectedAssignedToDoList.text =
+                "There are no Assigned ToDo's on selected date."
+        }
     }
 
     companion object {
@@ -189,7 +336,7 @@ class AssignedToDoFragment : BaseFragment(), OnToDoItemClickListener {
                             toDoData.id,
                             preference!![PrefKeys.PREF_PATIENT_ID, ""]!!.toInt(),
                             toDoData.title,
-                            toDoData.description,
+                            toDoData.description ?: "",
                             toDoData.end_date,
                             is_completed = isCompleted
                         ),

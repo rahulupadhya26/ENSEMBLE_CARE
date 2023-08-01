@@ -106,7 +106,57 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
             }
 
             override fun afterTextChanged(editable: Editable) {
-                filterOne(editable.toString())
+                if (editable.isNotEmpty()) {
+                    filterOne(editable.toString())
+                } else {
+                    binding.scrollViewJournal.visibility = View.VISIBLE
+                    binding.llPrevious7Days.visibility = View.VISIBLE
+                    binding.llPreviousMonths.visibility = View.GONE
+                    binding.recyclerViewJournalListLastWeek.visibility = View.GONE
+                    binding.recyclerViewFilteredJournalList.visibility = View.GONE
+                    journalPrevious7DaysLists = arrayListOf()
+                    journalWeeksLists = arrayListOf()
+                    for (i in 0 until journalLists.size) {
+                        val d1 = sdf.parse(journalLists[i].journal_date)
+                        val d2 = sdf.parse(currentDate!!)
+                        // Finding the absolute difference between
+                        // the two dates.time (in milli seconds)
+                        val mDifference = abs(d1!!.time - d2!!.time)
+
+                        // Converting milli seconds to dates
+                        val mDifferenceDates = mDifference / (24 * 60 * 60 * 1000)
+                        val mDayDifference = mDifferenceDates.toString()
+                        if (mDayDifference.toInt() <= 7) {
+                            binding.recyclerViewJournalList.visibility = View.VISIBLE
+                            journalPrevious7DaysLists.add(journalLists[i])
+                        }
+                        if (mDayDifference.toInt() > 7) {
+                            journalWeeksLists.add(journalLists[i])
+                            binding.llPreviousMonths.visibility = View.VISIBLE
+                            binding.recyclerViewJournalListLastWeek.visibility = View.VISIBLE
+                        }
+                    }
+                    binding.recyclerViewJournalList.apply {
+                        layoutManager = StaggeredGridLayoutManager(
+                            2,
+                            RecyclerView.VERTICAL,
+                        )
+                        adapter = JournalListAdapter(
+                            mActivity!!,
+                            journalPrevious7DaysLists, this@JournalFragment
+                        )
+                    }
+                    binding.recyclerViewJournalListLastWeek.apply {
+                        layoutManager = StaggeredGridLayoutManager(
+                            2,
+                            RecyclerView.VERTICAL,
+                        )
+                        adapter = JournalListAdapter(
+                            mActivity!!,
+                            journalWeeksLists, this@JournalFragment
+                        )
+                    }
+                }
             }
         })
 
@@ -181,6 +231,9 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                             if (journalLists.isNotEmpty()) {
                                 binding.layoutJournalData.visibility = View.VISIBLE
                                 binding.txtNoJournal.visibility = View.GONE
+                                binding.llPreviousMonths.visibility = View.GONE
+                                binding.recyclerViewJournalListLastWeek.visibility = View.GONE
+                                binding.rlExpandedListLastWeek.visibility = View.GONE
 
                                 for (i in 0 until journalLists.size) {
                                     val d1 = sdf.parse(journalLists[i].journal_date)
@@ -199,6 +252,8 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                                     if (mDayDifference.toInt() > 7) {
                                         journalWeeksLists.add(journalLists[i])
                                         binding.llPreviousMonths.visibility = View.VISIBLE
+                                        binding.rlExpandedListLastWeek.visibility = View.VISIBLE
+                                        binding.recyclerViewJournalListLastWeek.visibility = View.VISIBLE
                                     }
                                 }
 
@@ -270,8 +325,8 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
         if (text.isEmpty()) {
             binding.scrollViewJournal.visibility = View.VISIBLE
             binding.llPrevious7Days.visibility = View.VISIBLE
-            binding.llPreviousMonths.visibility = View.VISIBLE
-            binding.recyclerViewJournalListLastWeek.visibility = View.VISIBLE
+            binding.llPreviousMonths.visibility = View.GONE
+            binding.recyclerViewJournalListLastWeek.visibility = View.GONE
             binding.recyclerViewFilteredJournalList.visibility = View.GONE
             journalPrevious7DaysLists = arrayListOf()
             journalWeeksLists = arrayListOf()
@@ -292,6 +347,7 @@ class JournalFragment : BaseFragment(), OnJournalItemClickListener {
                 if (mDayDifference.toInt() > 7) {
                     journalWeeksLists.add(journalLists[i])
                     binding.llPreviousMonths.visibility = View.VISIBLE
+                    binding.recyclerViewJournalListLastWeek.visibility = View.VISIBLE
                 }
             }
             binding.recyclerViewJournalList.apply {

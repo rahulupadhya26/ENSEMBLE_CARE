@@ -710,8 +710,8 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener, OnBottomReache
             Resources.getSystem().displayMetrics.heightPixels
         createPostDialog!!.setCanceledOnTouchOutside(false)
         onlineChatView.relativeLayoutSend.setOnClickListener {
-            val msg: String = getText(onlineChatView.editTextMessage)
-            if (msg != "") {
+            if (isValidText(onlineChatView.editTextMessage)) {
+                val msg: String = getText(onlineChatView.editTextMessage)
                 val message = mRtmClient!!.createMessage()
                 message.text = msg
                 val patientName =
@@ -727,6 +727,8 @@ class VideoCallFragment : BaseFragment(), OnMessageClickListener, OnBottomReache
                 } else {
                     sendChannelMessage(message)
                 }
+            } else {
+                displayMsg("","Message has obscene words")
             }
             onlineChatView.editTextMessage.setText("")
         }

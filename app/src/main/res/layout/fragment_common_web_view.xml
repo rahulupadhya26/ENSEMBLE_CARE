@@ -28,17 +28,21 @@
 
             <TextView
                 android:id="@+id/txtCommonUrl"
-                android:layout_toEndOf="@+id/imgCommonWebViewBack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_toEndOf="@+id/imgCommonWebViewBack"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:marqueeRepeatLimit ="marquee_forever"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
                 android:textAppearance="@style/fontfamily"
                 android:textColor="@color/black"
-                android:gravity="center"
-                android:ellipsize="marquee"
                 android:textSize="@dimen/_14sp"
-                android:maxLines="1"
-                android:marqueeRepeatLimit="marquee_forever"
                 android:textStyle="bold" />
 
         </RelativeLayout>

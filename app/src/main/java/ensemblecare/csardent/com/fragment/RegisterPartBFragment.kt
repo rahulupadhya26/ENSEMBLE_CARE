@@ -138,90 +138,137 @@ class RegisterPartBFragment : BaseFragment() {
         }
 
         binding.btnRegisterB.setOnClickListener {
-            if (getText(binding.etSignUpMailId).isNotEmpty()) {
-                if (isValidEmail(binding.etSignUpMailId)) {
-                    if (getText(binding.etSignUpPhoneNo).isNotEmpty()) {
-                        if (getText(binding.etSignUpPhoneNo).replace("-", "").length == 10) {
-                            if (getText(binding.etSignUpPass).isNotEmpty()) {
-                                if (getText(binding.etSignUpConfirmPass).isNotEmpty()) {
-                                    if (getText(binding.etSignUpPass) == getText(binding.etSignUpConfirmPass)) {
-                                        if (isValidPasswordFormat(getText(binding.etSignUpPass))) {
-                                            if (!(getText(binding.etSignUpPass).contains(Utils.firstName) ||
-                                                        getText(binding.etSignUpPass).contains(Utils.lastName) ||
-                                                        getText(binding.etSignUpPass).contains(
-                                                            getText(
-                                                                binding.etSignUpMailId
-                                                            )
-                                                        ))
-                                            ) {
-                                                if (binding.checkboxRegisterTermsConditions.isChecked) {
-                                                    if (Utils.isMovingAsClient) {
-                                                        Utils.email = binding.txtSignUpMailId.text.toString()
-                                                        Utils.phoneNo = binding.txtSignUpPhoneNo.text.toString().replace("-", "")
-                                                        Utils.pass = getText(binding.etSignUpPass)
-                                                        Utils.confirmPass = getText(binding.etSignUpConfirmPass)
-                                                        callMoveAsClientSignUpApi()
-                                                    } else {
-                                                        validateUserDetails()
-                                                    }
-                                                } else {
-                                                    displayMsg(
-                                                        "Message",
-                                                        "Please select terms and conditions for further procedure"
-                                                    )
-                                                }
-                                            } else {
-                                                setEditTextError(
-                                                    binding.etSignUpPass,
-                                                    "Password should not contain name or email"
-                                                )
-                                            }
-                                        } else {
-                                            setEditTextError(
-                                                binding.etSignUpPass,
-                                                "Password must be contain at least 9 characters, " +
-                                                        "1 uppercase, 1 lowercase, alphanumeric, special characters " +
-                                                        "and should not contain whitespaces."
-                                            )
-                                        }
+            if (Utils.isMovingAsClient) {
+                if (getText(binding.etSignUpPass).isNotEmpty()) {
+                    if (getText(binding.etSignUpConfirmPass).isNotEmpty()) {
+                        if (getText(binding.etSignUpPass) == getText(binding.etSignUpConfirmPass)) {
+                            if (isValidPasswordFormat(getText(binding.etSignUpPass))) {
+                                if (!(getText(binding.etSignUpPass).contains(Utils.firstName) ||
+                                            getText(binding.etSignUpPass).contains(Utils.lastName) ||
+                                            getText(binding.etSignUpPass).contains(Utils.email))
+                                ) {
+                                    if (binding.checkboxRegisterTermsConditions.isChecked) {
+                                        Utils.email = binding.txtSignUpMailId.text.toString()
+                                        Utils.phoneNo = binding.txtSignUpPhoneNo.text.toString()
+                                            .replace("-", "")
+                                        Utils.pass = getText(binding.etSignUpPass)
+                                        Utils.confirmPass = getText(binding.etSignUpConfirmPass)
+                                        callMoveAsClientSignUpApi()
                                     } else {
-                                        displayToast("Password Mismatch")
+                                        displayMsg(
+                                            "Message",
+                                            "Please select terms and conditions for further procedure"
+                                        )
                                     }
                                 } else {
                                     setEditTextError(
-                                        binding.etSignUpConfirmPass,
-                                        "Confirm password cannot be blank"
+                                        binding.etSignUpPass,
+                                        "Password should not contain name or email"
                                     )
                                 }
                             } else {
                                 setEditTextError(
                                     binding.etSignUpPass,
-                                    "Password cannot be blank"
+                                    "Password must be contain at least 9 characters, " +
+                                            "1 uppercase, 1 lowercase, alphanumeric, special characters " +
+                                            "and should not contain whitespaces."
+                                )
+                            }
+                        } else {
+                            displayToast("Password Mismatch")
+                        }
+                    } else {
+                        setEditTextError(
+                            binding.etSignUpConfirmPass,
+                            "Confirm password cannot be blank"
+                        )
+                    }
+                } else {
+                    setEditTextError(
+                        binding.etSignUpPass,
+                        "Password cannot be blank"
+                    )
+                }
+            } else {
+                if (getText(binding.etSignUpMailId).isNotEmpty()) {
+                    if (isValidEmail(binding.etSignUpMailId)) {
+                        if (getText(binding.etSignUpPhoneNo).isNotEmpty()) {
+                            if (getText(binding.etSignUpPhoneNo).replace("-", "").length == 10) {
+                                if (getText(binding.etSignUpPass).isNotEmpty()) {
+                                    if (getText(binding.etSignUpConfirmPass).isNotEmpty()) {
+                                        if (getText(binding.etSignUpPass) == getText(binding.etSignUpConfirmPass)) {
+                                            if (isValidPasswordFormat(getText(binding.etSignUpPass))) {
+                                                if (!(getText(binding.etSignUpPass).contains(Utils.firstName) ||
+                                                            getText(binding.etSignUpPass).contains(
+                                                                Utils.lastName
+                                                            ) ||
+                                                            getText(binding.etSignUpPass).contains(
+                                                                getText(
+                                                                    binding.etSignUpMailId
+                                                                )
+                                                            ))
+                                                ) {
+                                                    if (binding.checkboxRegisterTermsConditions.isChecked) {
+                                                        validateUserDetails()
+                                                    } else {
+                                                        displayMsg(
+                                                            "Message",
+                                                            "Please select terms and conditions for further procedure"
+                                                        )
+                                                    }
+                                                } else {
+                                                    setEditTextError(
+                                                        binding.etSignUpPass,
+                                                        "Password should not contain name or email"
+                                                    )
+                                                }
+                                            } else {
+                                                setEditTextError(
+                                                    binding.etSignUpPass,
+                                                    "Password must be contain at least 9 characters, " +
+                                                            "1 uppercase, 1 lowercase, alphanumeric, special characters " +
+                                                            "and should not contain whitespaces."
+                                                )
+                                            }
+                                        } else {
+                                            displayToast("Password Mismatch")
+                                        }
+                                    } else {
+                                        setEditTextError(
+                                            binding.etSignUpConfirmPass,
+                                            "Confirm password cannot be blank"
+                                        )
+                                    }
+                                } else {
+                                    setEditTextError(
+                                        binding.etSignUpPass,
+                                        "Password cannot be blank"
+                                    )
+                                }
+                            } else {
+                                setEditTextError(
+                                    binding.etSignUpPhoneNo,
+                                    "Enter valid phone number"
                                 )
                             }
                         } else {
                             setEditTextError(
                                 binding.etSignUpPhoneNo,
-                                "Enter valid phone number"
+                                "Phone number cannot be blank"
                             )
                         }
                     } else {
                         setEditTextError(
-                            binding.etSignUpPhoneNo,
-                            "Phone number cannot be blank"
+                            binding.etSignUpMailId,
+                            "Enter valid Mail Id"
                         )
                     }
                 } else {
                     setEditTextError(
                         binding.etSignUpMailId,
-                        "Enter valid Mail Id"
+                        "Email ID cannot be blank"
                     )
                 }
-            } else {
-                setEditTextError(
-                    binding.etSignUpMailId,
-                    "Email ID cannot be blank"
-                )
             }
         }
     }

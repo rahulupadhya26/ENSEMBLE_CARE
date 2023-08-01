@@ -398,32 +398,41 @@ class CrisisManagementFragment : BaseFragment(), InternalLinkMovementMethod.OnLi
     }
 
     private fun updateAddress(location: Location) {
-        val geocoder = Geocoder(requireActivity(), Locale.getDefault())
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            geocoder.getFromLocation(
-                location.latitude,
-                location.longitude, 1
-            ) { addresses ->
-                Log.d("Location", "$addresses")
-                /*if (addresses[0].subLocality != null && addresses[0].subLocality.isNotEmpty()) {
-                                    binding.txtCurrentLocation.text = addresses[0].subLocality
-                                } else if (addresses[0].thoroughfare != null && addresses[0].thoroughfare.isNotEmpty()) {
-                                    binding.txtCurrentLocation.text = addresses[0].thoroughfare
-                                } else if (addresses[0].subAdminArea != null && addresses[0].subAdminArea.isNotEmpty()) {
-                                    binding.txtCurrentLocation.text = addresses[0].subLocality
-                                }*/
-                binding.txtCurrentLocation.text = addresses[0].getAddressLine(0)
+        try {
+            val geocoder = Geocoder(requireActivity(), Locale.getDefault())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                geocoder.getFromLocation(
+                    location.latitude,
+                    location.longitude, 1
+                ) { addresses ->
+                    Log.d("Location", "$addresses")
+                    /*if (addresses[0].subLocality != null && addresses[0].subLocality.isNotEmpty()) {
+                                        binding.txtCurrentLocation.text = addresses[0].subLocality
+                                    } else if (addresses[0].thoroughfare != null && addresses[0].thoroughfare.isNotEmpty()) {
+                                        binding.txtCurrentLocation.text = addresses[0].thoroughfare
+                                    } else if (addresses[0].subAdminArea != null && addresses[0].subAdminArea.isNotEmpty()) {
+                                        binding.txtCurrentLocation.text = addresses[0].subLocality
+                                    }*/
+                    binding.txtCurrentLocation.text = addresses[0].getAddressLine(0)
+                }
+            } else {
+                val addressList = geocoder.getFromLocation(
+                    location.latitude,
+                    location.longitude,
+                    1
+                ) as ArrayList<Address>
+                Log.d("Last Location", "$addressList")
+                if (addressList.isNotEmpty()) {
+                    binding.txtCurrentLocation.text = addressList[0].getAddressLine(0)
+                    fusedLocationProvider!!.removeLocationUpdates(locationCallback)
+                } else {
+                    checkLocationPermission()
+                }
             }
-        } else {
-            val addressList = geocoder.getFromLocation(
-                location.latitude,
-                location.longitude,
-                1
-            ) as ArrayList<Address>
-            Log.d("Last Location", "$addressList")
-            binding.txtCurrentLocation.text = addressList[0].getAddressLine(0)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            checkLocationPermission()
         }
-        fusedLocationProvider!!.removeLocationUpdates(locationCallback)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

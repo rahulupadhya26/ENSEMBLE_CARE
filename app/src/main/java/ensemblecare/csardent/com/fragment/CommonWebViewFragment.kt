@@ -1,21 +1,26 @@
 package ensemblecare.csardent.com.fragment
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.TranslateAnimation
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import ensemblecare.csardent.com.BaseActivity
 import ensemblecare.csardent.com.R
 import ensemblecare.csardent.com.databinding.FragmentCommonWebViewBinding
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -75,7 +80,10 @@ class CommonWebViewFragment : BaseFragment() {
             builder.show()
         }
 
+
+
         binding.txtCommonUrl.text = screenName
+        binding.txtCommonUrl.isSelected = true
         binding.webViewCommon.settings.apply {
             loadWithOverviewMode = true
             useWideViewPort = true

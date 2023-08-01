@@ -1,39 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayoutAssignedToDo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:id="@+id/swipeRefreshLayoutAssignedToDo"
     tools:context=".fragment.AssignedToDoFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewAssignedToDoList"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/_10dp"
-            android:layout_marginEnd="@dimen/_10dp"
-            android:layoutAnimation="@anim/layout_animation_slide_from_bottom"/>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtNoAssignedToDoList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/_10dp"
-            android:gravity="center"
-            android:padding="@dimen/_10dp"
-            android:text="Currently you don't have any Assigned ToDo's\n"
-            android:textAppearance="@style/fontfamily"
-            android:textColor="@color/localBackground"
-            android:textSize="@dimen/_16sp"
-            android:visibility="gone"
-            android:textStyle="bold"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewAssignedToDoList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/_10dp"
+                android:layout_marginEnd="@dimen/_10dp"
+                android:layoutAnimation="@anim/layout_animation_slide_from_bottom" />
 
-    </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/scrollViewCalendarAssignedToDo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/_50dp"
+                android:visibility="gone">
+
+                <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                    android:id="@+id/calendarViewAssignedTodo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:mcv_calendarMode="month"
+                    app:mcv_dateTextAppearance="@style/fontfamily"
+                    app:mcv_firstDayOfWeek="monday"
+                    app:mcv_headerTextAppearance="@style/fontfamily"
+                    app:mcv_selectionColor="@color/shimmer_color"
+                    app:mcv_selectionMode="single"
+                    app:mcv_showOtherDates="all"
+                    app:mcv_weekDayTextAppearance="@style/fontfamily" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewSelectedAssignedToDoList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_10dp"
+                    android:layout_marginEnd="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_5dp"
+                    android:layoutAnimation="@anim/layout_animation_slide_from_bottom"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/txtNoSelectedAssignedToDoList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_10dp"
+                    android:gravity="center"
+                    android:padding="@dimen/_10dp"
+                    android:text="There are no Assigned ToDo's on selected date."
+                    android:textAppearance="@style/fontfamily"
+                    android:textColor="@color/localBackground"
+                    android:textSize="@dimen/_16sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/txtNoAssignedToDoList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_10dp"
+                android:gravity="center"
+                android:padding="@dimen/_10dp"
+                android:text="Currently you don't have any Assigned ToDo's\n"
+                android:textAppearance="@style/fontfamily"
+                android:textColor="@color/localBackground"
+                android:textSize="@dimen/_16sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAssignedToDo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="@dimen/_20dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/primaryGreen"
+            android:contentDescription="@string/app_name"
+            app:maxImageSize="30dp"
+            app:srcCompat="@drawable/calendar_img"
+            app:tint="@color/white" />
+
+    </RelativeLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
